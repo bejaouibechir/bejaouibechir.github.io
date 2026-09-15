@@ -1,0 +1,87 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 7</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 7 of 14 · Add a destination</div><h1>Close the job with a destination</h1><p class="lead">A short lesson, because you already know most of it: a destination is configured exactly like a source. One rule differs, and it is worth the five minutes.</p></div>
+<div class="lesson-meta"><span class="mono">Destinations</span><span>about 8 minutes</span><span>a transformation in place</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Add the node that ends the job, recognise that its dialogs are the ones you already filled in for sources, and learn the single rule that sets destinations apart: a job writes to exactly one place.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A job with a source and at least one transformation.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Read the six destinations</h3>
+    <h4>Objective</h4><p>See what Hydra can write to, and notice what is missing.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Destinations</b> in the job palette.</li><li>Compare the list with <b>Sources</b> just above it.</li><li>Count the difference.</li></ol>
+    <pre class="cmd">Jobs configuration → Destinations (6)</pre>
+    <p>Six connectors, and you have met all six already — three file formats and three databases. The seventh source, <b>Web API</b>, has no counterpart here: Hydra reads from an HTTP endpoint but never writes to one. To send data out over HTTP, orchestrate a <b>Webhook</b> action in the workflow scene instead.</p>
+    <div class="expect"><b>What you should see</b><p>Seven entries on the way in, six on the way out. The difference is one, and it is deliberate.</p><pre class="out">Sources        CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB  Web API
+Destinations   CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB</pre>
+      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/screen1.png" width="404" height="815" loading="lazy" decoding="async" alt="The job palette with Destinations expanded, listing CSV, JSON, Parquet, MySQL, PostgreSQL and MongoDB." /><figcaption>The same six connectors as the sources, minus <b>Web API</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Configure it — you already know how</h3>
+    <h4>Objective</h4><p>Fill in a destination, and recognise the dialog.</p>
+    <h4>Actions</h4><ol><li>Drag <b>CSV</b> from <b>Destinations</b> onto the canvas.</li><li>Connect the last transformation to it.</li><li>Double-click it and set the output path.</li></ol>
+    <pre class="cmd">Destinations → CSV → connect → File path → Save</pre>
+    <p>The dialogs are the ones from lesson 5, unchanged. A file destination asks for a path; a database destination asks for host, port, database, user and password — and the same rule applies to the password: write <code>${ENV:MY_SECRET}</code> and keep the value under <b>Environments</b>, never in the manifest.</p>
+    <table><thead><tr><th>Destination</th><th>What it asks for</th></tr></thead><tbody>
+      <tr><td><b>CSV · JSON · Parquet</b></td><td>An output path. <b>Browse</b> writes one that exists.</td></tr>
+      <tr><td><b>MySQL · PostgreSQL · MongoDB</b></td><td>A connection and a target table or collection.</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>The red badge clears as soon as the required field is filled, exactly as it did for the source.</p><pre class="out">CSV  DESTINATION   Writes a CSV file
+  STEP NAME   dest_csv_1
+  FILE PATH * ./output/result.csv</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>One destination, and one only</h3>
+    <h4>Objective</h4><p>Learn the rule that separates destinations from every other node.</p>
+    <h4>Actions</h4><ol><li>Look at the shape of the finished job, from left to right.</li><li>Count the sources, then the destinations.</li><li>Read the <b>Pipeline</b> tab of <b>Hydra DSL</b>.</li></ol>
+    <pre class="cmd">Hydra DSL → Pipeline</pre>
+    <p>A job may read from <b>several</b> sources and chain <b>several</b> transformations. It writes to <b>exactly one</b> destination. Branching is allowed upstream, where streams converge; it is not allowed downstream, where the job would have to split.</p>
+    <table><thead><tr><th>Node</th><th>How many</th><th>May branch</th></tr></thead><tbody>
+      <tr><td><b>Sources</b></td><td>one or more</td><td><b>Yes</b> — several may converge on one transformation</td></tr>
+      <tr><td><b>Transformations</b></td><td>none, one or many</td><td>Yes, as a chain</td></tr>
+      <tr><td><b>Destination</b></td><td><b>exactly one</b></td><td><b>No</b></td></tr>
+    </tbody></table>
+    <p>That is why <code>pipeline.yaml</code> holds a single <code>from</code> and a single <code>to</code>. If you need the same data in two places, write two jobs and orchestrate them in the workflow — which is what the next lessons build towards.</p>
+    <div class="expect"><b>What you should see</b><p>One <code>from</code>, one <code>to</code>, and identifiers rather than paths.</p><pre class="out">pipeline:
+  from: source_csv_8
+  to:   dest_json_10</pre>
+      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/screen2.png" width="1584" height="906" loading="lazy" decoding="async" alt="A finished job canvas with two sources converging on a Join transformation, which feeds a single JSON destination, marked Valid." /><figcaption>Two sources converge, one destination closes. The counter reads <b>4 nodes · 3 edges</b>, and the job is <b>Valid</b>.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">A destination is configured <b>exactly like a source</b>. Same dialogs, opposite direction.</p>
+  <p data-kind="TRAP">A job writes to <b>one destination</b>. Two outputs means two jobs, joined in the workflow.</p>
+  <p data-kind="TIP">Branching is allowed <b>upstream</b> only. Sources converge; destinations never split.</p>
+  <p data-kind="TRAP">There is <b>no HTTP destination</b>. To push over HTTP, use the <b>Webhook</b> action instead.</p>
+  <p data-kind="TIP">A password belongs in <b>Environments</b>, written as <b>${ENV:NAME}</b> — in a destination as in a source.</p>
+  <p data-kind="TRAP">Nothing can follow a destination. It has <b>no output handle</b>, and that is why the edge refuses.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Palette</td><td>Six destinations, no Web API</td></tr>
+    <tr><td>Dialog</td><td>The same fields as the matching source</td></tr>
+    <tr><td>Count</td><td>Exactly one destination on the canvas</td></tr>
+    <tr><td>Pipeline tab</td><td>One <code>from</code>, one <code>to</code></td></tr>
+    <tr><td>Status</td><td>The job reads <b>Valid</b></td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>No HTTP destination in the list</td><td>Web API is a source only</td><td>Use the <b>Webhook</b> action in the workflow scene</td></tr>
+    <tr><td>A second destination is refused</td><td>A job writes to one place</td><td>Create a second job and orchestrate both</td></tr>
+    <tr><td>Nothing connects after the destination</td><td>It has no output handle</td><td>Expected — the destination ends the job</td></tr>
+    <tr><td>The badge stays after saving</td><td>The output path or table is empty</td><td>Reopen the node and fill the field marked with a red asterisk</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>The job is complete: it reads, reshapes and writes. The next lesson opens the manifests Studio has been writing all along, and checks that they say what you meant.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/08-see-the-yaml">See the YAML <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

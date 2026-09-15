@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import head from '../../_mock/dsl-sources-yaml.head.html?raw';
+import tail from '../../_mock/dsl-sources-yaml.tail.html?raw';
+import js from '../../_mock/dsl-sources-yaml.js?raw';
+---
+
+<BaseLayout title="sources.yaml — Hydra DSL" description="sources.yaml declares every input the job may read. Declaring one does not open it.">
+  <style is:global set:html={css}></style>
+  <DslShell current="manifest-sources-yaml">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

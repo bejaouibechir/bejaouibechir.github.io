@@ -1,0 +1,108 @@
+<section class="doc">
+  <h2>What <code>connection</code> is</h2>
+  <p>
+    <code>connection</code> answers one question: <b>how does the engine reach the data?</b> It holds the
+    coordinates and the credentials of a system — a folder, a database server, an HTTP host — and nothing
+    else. It performs no reading, applies no operation, and never contains a row.
+  </p>
+  <p>
+    It sits inside a source or a destination, beside two other keys. <code>type</code> names the connector
+    that will read it. <code>extract</code> — or <code>load</code> on a destination — says <em>what</em> to
+    read once the connection is established. <code>connection</code> only says <em>where</em> and
+    <em>with what rights</em>.
+  </p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 268" role="img" aria-labelledby="cnxTitle cnxDesc" class="cnx">
+      <title id="cnxTitle">The three keys of a source block and what each one decides</title>
+      <desc id="cnxDesc">type chooses the connector, connection says how to reach the system, extract says what to read once connected.</desc>
+
+      <text class="d-cap" x="18" y="20">the manifest</text>
+      <text class="d-cap" x="440" y="20">what it decides</text>
+
+      <rect class="d-panel" x="12" y="32" width="228" height="212" rx="12"/>
+      <text class="d-key" x="30" y="62">type:</text>
+      <text class="d-val" x="76" y="62">csv</text>
+
+      <rect class="d-hi" x="24" y="88" width="204" height="66" rx="9"/>
+      <text class="d-key lit" x="30" y="110">connection:</text>
+      <text class="d-sub" x="34" y="132">host · user · delimiter …</text>
+
+      <text class="d-key" x="30" y="182">extract:</text>
+      <text class="d-sub" x="34" y="204">table: orders.csv</text>
+
+      <path class="d-arrow" d="M244 56 H 424" marker-end="url(#ar)"/>
+      <path class="d-arrow lit" d="M244 120 H 424" marker-end="url(#arlit)"/>
+      <path class="d-arrow" d="M244 190 H 424" marker-end="url(#ar)"/>
+
+      <text class="d-lbl" x="252" y="46">chooses</text>
+      <text class="d-lbl lit" x="252" y="110">reaches</text>
+      <text class="d-lbl" x="252" y="180">picks</text>
+
+      <rect class="d-box" x="432" y="36" width="272" height="40" rx="9"/>
+      <text class="d-txt" x="448" y="61">one of nine connectors</text>
+
+      <rect class="d-box lit" x="432" y="90" width="272" height="66" rx="9"/>
+      <text class="d-txt lit" x="448" y="114">a folder, a server, an HTTP host</text>
+      <text class="d-sub" x="448" y="136">location · identity · scope · format · transport</text>
+
+      <rect class="d-box" x="432" y="170" width="272" height="40" rx="9"/>
+      <text class="d-txt" x="448" y="195">the rows to read inside it</text>
+
+      <text class="d-foot" x="12" y="262">connection carries no data and performs no read — only coordinates and rights.</text>
+
+      <defs>
+        <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="d-head"/>
+        </marker>
+        <marker id="arlit" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="d-head lit"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Three keys, three decisions. Only the middle one is about reaching the system.</figcaption>
+  </figure>
+
+  <h2>What it contains</h2>
+  <p>The keys differ from one type to the next, but they always play one of five roles.</p>
+  <ul>
+    <li>
+      <b>Location</b> — where the system is.
+      <code>base_path</code> for CSV, <code>file</code> for JSON and Parquet,
+      <code>host</code> and <code>port</code> for databases, <code>base_url</code> for a web API.
+    </li>
+    <li>
+      <b>Identity</b> — who is asking.
+      <code>user</code> and <code>password</code> for databases,
+      the <code>auth</code> block — <code>type</code>, <code>token</code> — for a web API.
+      Always a reference such as <code>${SECRET:DB_PASSWORD}</code>, never a literal.
+    </li>
+    <li>
+      <b>Scope</b> — which part of the system.
+      <code>database</code>, <code>schema</code> on PostgreSQL, <code>collection</code> on MongoDB.
+    </li>
+    <li>
+      <b>Format</b> — how to decode the bytes.
+      <code>delimiter</code>, <code>encoding</code>, <code>quotechar</code> for CSV.
+    </li>
+    <li>
+      <b>Transport</b> — how to fetch, in several trips.
+      The <code>pagination</code> block for a web API: <code>strategy</code>, <code>cursor_field</code>,
+      <code>page_size</code>.
+    </li>
+  </ul>
+  <p>
+    Two consequences follow. A connector reads only the keys it knows, so a key meant for another type is
+    ignored rather than rejected — a misspelling has no effect and raises no error. And the block is never
+    correct on its own: it is correct <em>for a type</em>.
+  </p>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/tutorial/01-first-job">Lesson 1 — a source inside a job that runs</a></li>
+    <li><a href="/dsl/pipeline">pipeline — which source feeds which destination</a></li>
+    <li><a href="/dsl/interpolation">Interpolation — how a secret gets in</a></li>
+    <li><a href="/dsl/reference">Reference — every key of every block</a></li>
+    <li><a href="/guide">Guide — connecting to a real database</a></li>
+  </ul>
+</section>

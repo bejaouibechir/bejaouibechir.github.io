@@ -1,0 +1,174 @@
+<section class="doc">
+  <h2>Steps</h2>
+
+  <h3>1. Create the folder and drop the export</h3>
+  <ol>
+    <li>Create a folder <code>sales/</code> wherever you work.</li>
+    <li>Inside it, create <code>data/</code> and <code>out/</code>.</li>
+    <li>Put the export in <code>sales/data/sales_2025-03-04.csv</code>.</li>
+  </ol>
+  <pre class="cmd">mkdir -p sales/data sales/out</pre>
+  <div class="callout check"><b>Check</b> — the file is at <code>sales/data/sales_2025-03-04.csv</code> and has a header line.</div>
+  <div class="callout tip"><b>Tip</b> — Hydra never moves or copies your file. It reads it where it sits, so the layout is yours to choose.</div>
+
+  <h3>2. Declare the source</h3>
+  <ol>
+    <li>Create <code>sales/sources.yaml</code>.</li>
+    <li>Name the entry <code>src_sales</code> — you choose this name.</li>
+    <li>Set <code>type: csv</code>, then <code>base_path</code> to the folder and <code>extract.table</code> to the file.</li>
+  </ol>
+  <pre class="cmd">version: "1.0"
+sources:
+  src_sales:
+    type: csv
+    connection:
+      base_path: "sales/data"
+    extract:
+      table: sales_2025-03-04.csv
+      batch_size: 10000</pre>
+  <div class="callout trap"><b>Trap</b> — <code>base_path</code> is resolved from the folder you run the command in, not from the job folder. Run everything from the folder that contains <code>sales/</code>, or write an absolute path.</div>
+
+  <h3>3. Declare the destination</h3>
+  <ol>
+    <li>Create <code>sales/destinations.yaml</code>.</li>
+    <li>Name the entry <code>dest_large_orders</code>.</li>
+    <li>Set <code>mode: replace</code>.</li>
+  </ol>
+  <pre class="cmd">version: "1.0"
+destinations:
+  dest_large_orders:
+    type: csv
+    connection:
+      base_path: "sales/out"
+    load:
+      table: large_orders.csv
+      mode: replace</pre>
+  <div class="callout tip"><b>Tip</b> — the default is <code>append</code>. With <code>replace</code> the output stays at three rows however many times you run; with <code>append</code> it would grow every evening.</div>
+
+  <h3>4. Wire the two ends</h3>
+  <ol>
+    <li>Create <code>sales/pipeline.yaml</code>.</li>
+    <li>Write the two identifiers declared above — not paths.</li>
+  </ol>
+  <pre class="cmd">version: "1.0"
+pipeline:
+  from: src_sales
+  to: dest_large_orders</pre>
+  <div class="callout check"><b>Check</b> — three files now, and the job is already runnable. It would copy the seven rows unchanged.</div>
+
+  <h3>5. Type the amounts</h3>
+  <ol>
+    <li>Create <code>sales/transformations.yaml</code>.</li>
+    <li>Write <code>steps</code> at the root, then one <code>cast</code> entry.</li>
+  </ol>
+  <pre class="cmd">version: "1.0"
+steps:
+  - cast:
+      mapping:
+        amount: float</pre>
+  <div class="callout trap"><b>Trap</b> — <code>hdrctl test</code> only counts the steps of this short shape. Written under a <code>transformations</code> key it reports <em>0 step(s) valid</em> and says nothing about it.</div>
+
+  <h3>6. Apply the business rule</h3>
+  <ol>
+    <li>Add a second entry after the cast: keep the orders of 100 and above.</li>
+  </ol>
+  <pre class="cmd">  - filter:
+      expr: "amount &gt;= 100"</pre>
+  <div class="callout trap"><b>Trap</b> — the order of the two steps is the whole point. A CSV holds text, so the comparison only makes sense after the cast has produced numbers.</div>
+
+  <h3>7. Check the manifest</h3>
+  <ol>
+    <li>Run <code>hdrctl test</code> from the folder containing <code>sales/</code>.</li>
+  </ol>
+  <pre class="cmd">hdrctl test sales</pre>
+  <pre class="cmd out">  Sources
+  ok  sources.yaml         — DSL valid
+  ok  src_sales            — csv (local file)
+
+  Destinations
+  ok  destinations.yaml    — DSL valid
+  ok  dest_large_orders    — mode replace
+
+  Transformations
+  ok  transformations.yaml — 2 step(s) valid
+  Operations: cast, filter
+
+  ✅ All tests pass — ready to execute.</pre>
+  <div class="callout check"><b>Check</b> — <em>2 step(s) valid</em> and the two operations named. No data has been read at this point.</div>
+
+  <h3>8. Run the job</h3>
+  <ol>
+    <li>Run <code>hdrctl run</code> on the same folder.</li>
+  </ol>
+  <pre class="cmd">hdrctl run sales</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully
+  Rows read   : 7
+  Rows written: 3</pre>
+
+  <h3>9. Read the result</h3>
+  <ol>
+    <li>Open <code>sales/out/large_orders.csv</code>.</li>
+  </ol>
+  <pre class="cmd out">order_id,customer,city,amount,status,order_date
+A-1001,Alice Martin,Paris,120.5,paid,2025-03-04
+A-1003,Chloe Ruiz,Madrid,310.75,paid,2025-03-04
+A-1006,Farid Ziani,Nantes,260.0,paid,2025-03-04</pre>
+
+  <h2>Expected result</h2>
+  <ul>
+    <li><b>Seven rows read, three written.</b> The four orders below 100 were dropped by the filter.</li>
+    <li><b>The amounts are numbers.</b> <code>120.50</code> is written <code>120.5</code> and <code>260.00</code> becomes <code>260.0</code> — the trailing zero is a text artefact, not a value.</li>
+    <li><b>The file can be regenerated.</b> Run it twice: still three rows.</li>
+  </ul>
+
+  <h2>Reading the results</h2>
+
+  <h3>Why seven and three?</h3>
+  <p>
+    The two counters bracket the job. <em>Rows read</em> is what the source produced, <em>Rows written</em>
+    what reached the destination. The gap is the work of the steps — here a filter that kept 3 of 7,
+    or 43 % of the orders, which is the share of the day above 100.
+  </p>
+
+  <h3>What would happen without the cast?</h3>
+  <p>
+    The filter would compare text to a number and the run would stop at step 1 of 2, before writing
+    anything. Nothing would be lost — the destination is only touched once every step has passed.
+  </p>
+
+  <h3>What the manifest does not know</h3>
+  <p>
+    Nothing here says <em>today's</em> file. The name is written in <code>extract.table</code>, so the
+    job reads that one file. Making the date a parameter is the subject of the next workshop.
+  </p>
+
+  <h2>Did we answer the question?</h2>
+  <table class="spectable">
+    <thead><tr><th>objective</th><th>result</th><th>where</th></tr></thead>
+    <tbody>
+      <tr><td>Read without copying</td><td>yes</td><td><code>base_path</code> points at the folder in place</td></tr>
+      <tr><td>Type the amounts</td><td>yes</td><td><code>cast</code>, first step</td></tr>
+      <tr><td>Keep orders ≥ 100</td><td>yes</td><td><code>filter</code>, second step</td></tr>
+      <tr><td>Regenerable output</td><td>yes</td><td><code>mode: replace</code></td></tr>
+      <tr><td>Read today's file automatically</td><td>not yet</td><td>the date is written in the manifest</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Before and after</h2>
+  <ul>
+    <li><b>Before</b> — open the file, convert a column, sort, filter by hand, copy the result out. Around
+      fifteen minutes, every evening, and the rule exists only in the head of whoever does it.</li>
+    <li><b>After</b> — one command. The rule is written in <code>transformations.yaml</code>, readable by
+      anyone, versioned with the rest, and it produces the same result every time.</li>
+    <li><b>What is really gained</b> is not the fifteen minutes. It is that the rule left the spreadsheet
+      and became text a colleague can read, review and correct.</li>
+  </ul>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/sources">The connection block — all nine types</a></li>
+    <li><a href="/dsl/transformations-yaml">transformations.yaml — the ordered list</a></li>
+    <li><a href="/dsl/tutorial/01-first-job">Tutorial — the same four files, explained line by line</a></li>
+    <li><a href="/playground">Playground — a full job on real data</a></li>
+  </ul>
+</section>

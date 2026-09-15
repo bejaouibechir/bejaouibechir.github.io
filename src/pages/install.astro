@@ -1,0 +1,399 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/install.css?raw';
+import js from '../_mock/install.js?raw';
+
+/* Activation de l'environnement virtuel : la seule commande qui change
+   vraiment d'un terminal a l'autre. Trois cartes, pas de menu deroulant. */
+const shells = [
+  { name: 'macOS / Linux', cmd: 'source .venv/bin/activate' },
+  { name: 'Windows — PowerShell', cmd: '.\\.venv\\Scripts\\Activate.ps1' },
+  { name: 'Windows — cmd.exe', cmd: '.venv\\Scripts\\activate.bat' },
+];
+
+/* Chemins d'installation : ajouter une entree ici suffit a creer une carte.
+   status: 'ready' rend les etapes, 'soon' rend une carte pointillee. */
+const paths = [
+  {
+    id: 'pypi',
+    num: '01',
+    title: 'The CLI and the engine',
+    status: 'ready',
+    lead: 'The default path. Installs hdrctl and the execution engine — enough to write a manifest and run a job on files.',
+    code: [
+      { t: 'comment', v: '# create an isolated environment, then activate it' },
+      { t: 'cmd', v: 'python -m venv .venv' },
+      { t: 'cmd', v: 'source .venv/bin/activate' },
+      { t: 'blank', v: '' },
+      { t: 'cmd', v: 'pip install hydra-etl' },
+    ],
+    foot: 'The virtual environment is optional but recommended: it keeps Hydra and its dependencies away from your system Python.',
+  },
+  {
+    id: 'server',
+    num: '02',
+    title: 'With the API and the Studio',
+    status: 'ready',
+    lead: 'Adds the HTTP server and unlocks hdrctl serve, which starts the API and the visual canvas. The Studio ships inside the package — no Node, no separate download.',
+    code: [
+      { t: 'cmd', v: 'pip install "hydra-etl[server]"' },
+      { t: 'cmd', v: 'hdrctl serve' },
+      { t: 'blank', v: '' },
+      { t: 'comment', v: '# Studio and API on http://127.0.0.1:5678' },
+    ],
+    foot: 'Keep the quotes around <code>"hydra-etl[server]"</code>: zsh and PowerShell read the square brackets as their own syntax.',
+  },
+  {
+    id: 'source',
+    num: '03',
+    title: 'From the repository',
+    status: 'ready',
+    lead: 'For reading the connectors, following unreleased changes or contributing. The editable install keeps hdrctl pointed at your working copy.',
+    code: [
+      { t: 'cmd', v: 'git clone https://github.com/andaluzlab/hydra.git' },
+      { t: 'cmd', v: 'cd hydra' },
+      { t: 'cmd', v: 'pip install -e ".[all]"' },
+    ],
+    foot: 'Editable mode: any change in the source tree is picked up on the next <code>hdrctl</code> call.',
+  },
+  {
+    id: 'docker',
+    num: '04',
+    title: 'Container image',
+    status: 'ready',
+    lead: 'Run the CLI, API and bundled Studio without installing Python or Node. The official image is published on GitHub Container Registry.',
+    code: [
+      { t: 'cmd', v: 'docker pull ghcr.io/bejaouibechir/hydra:0.9.6' },
+      { t: 'cmd', v: 'docker run --rm -p 5678:5678 -v hydra-workspace:/workspace ghcr.io/bejaouibechir/hydra:0.9.6' },
+    ],
+    foot: 'Open <code>http://localhost:5678</code>. Your projects remain in the <code>hydra-workspace</code> Docker volume after the container stops.',
+  },
+  {
+    id: 'uv',
+    num: '05',
+    title: 'With uv, without a virtual environment',
+    status: 'third',
+    lead: 'uv installs Hydra as a standalone tool: it provisions its own Python, keeps it isolated and puts hdrctl on your PATH. Nothing to activate — the path with the fewest steps to get wrong.',
+    warn: '<b>uv is built by Astral, not by the Hydra team.</b> We do not control its releases and cannot vouch for its content. Install it through a package manager you already trust, rather than through the <code>curl | sh</code> bootstrap advertised on its own site.',
+    code: [
+      { t: 'comment', v: '# 1. install uv once, with the package manager you already use' },
+      { t: 'cmd', v: 'brew install uv' },
+      { t: 'comment', v: '#    Windows        : winget install --id=astral-sh.uv -e' },
+      { t: 'comment', v: '#    Python present : pip install uv' },
+      { t: 'blank', v: '' },
+      { t: 'comment', v: '# 2. install Hydra as an isolated tool' },
+      { t: 'cmd', v: 'uv tool install "hydra-etl[server]"' },
+    ],
+    foot: 'If <code>hdrctl</code> is still not found, run <code>uv tool update-shell</code> and open a new terminal.',
+  },
+];
+
+/* Extras : le socle reste leger, chaque besoin s'ajoute explicitement. */
+const extras = [
+  { name: 'server', what: 'API server, scheduler and Hydra Studio', when: 'You want the visual canvas or you trigger runs over HTTP' },
+  { name: 'postgres', what: 'PostgreSQL connector', when: 'A source or a destination is a PostgreSQL database' },
+  { name: 'mysql', what: 'MySQL connector', when: 'A source or a destination is a MySQL database' },
+  { name: 'mongodb', what: 'MongoDB connector', when: 'A source or a destination is a MongoDB collection' },
+  { name: 'duckdb', what: 'DuckDB connector', when: 'You query files with SQL, or use DuckDB as a local warehouse' },
+  { name: 'parquet', what: 'Parquet read and write', when: 'Your files are Parquet rather than CSV or JSON' },
+  { name: 'http', what: 'HTTP and REST connector', when: 'A source is a web API' },
+  { name: 'all', what: 'Everything above, in one command', when: 'You are exploring and do not want to pick yet' },
+];
+
+/* Depannage : les erreurs reelles, pas les erreurs theoriques. */
+const trouble = [
+  {
+    q: 'hdrctl: command not found',
+    fix: 'The environment is not active, or the terminal still holds an older PATH. Activate the environment, then check which binary answers:',
+    pre: '<b>$</b> which hdrctl        <i># macOS, Linux</i>\n<b>$</b> where.exe hdrctl    <i># Windows</i>',
+    tail: 'The path must point inside your <code>.venv</code>. If it does not, open a new terminal and activate again.',
+  },
+  {
+    q: 'pip says "Requirement already satisfied" and downloads nothing',
+    fix: 'You are installing into the system Python, not into the environment. The prompt must show <code>(.venv)</code> before you run pip. If it does not, the activation step silently failed — see the next entry.',
+  },
+  {
+    q: 'On Windows, the activation script does nothing or raises a SyntaxError',
+    fix: 'Each terminal has its own script, and <code>activate</code> is never run through Python. In PowerShell use <code>.\\.venv\\Scripts\\Activate.ps1</code>; in cmd.exe use <code>.venv\\Scripts\\activate.bat</code>. If PowerShell refuses to run scripts, allow it for that window only:',
+    pre: '<b>PS></b> Set-ExecutionPolicy -Scope Process RemoteSigned',
+  },
+  {
+    q: 'ModuleNotFoundError when hdrctl starts',
+    fix: 'An older Hydra is installed in your system Python and its launcher shadows the new one. Remove it outside any environment, then open a new terminal:',
+    pre: '<b>$</b> pip uninstall hydra-etl',
+  },
+  {
+    q: 'Nothing works when I test inside the Hydra source folder',
+    fix: 'Python imports the local <code>hydra_etl/</code> directory instead of the installed package, so you are never testing what your users get. Run the verification from any other folder.',
+  },
+];
+
+/* Le bloc de commandes est produit ici en HTML : un <Fragment> dans un
+   ternaire imbrique casse la compilation Astro. */
+/* Trois etats possibles pour une carte : disponible, tiers, planifie. */
+const badgeOf = (status) =>
+  status === 'ready' ? { cls: 'badge ok', text: 'AVAILABLE' }
+  : status === 'third' ? { cls: 'badge third', text: 'THIRD PARTY' }
+  : { cls: 'badge soon', text: 'PLANNED' };
+
+const renderCode = (lines) => lines.map((l) =>
+  l.t === 'cmd' ? '<b>$</b> ' + l.v
+  : l.t === 'comment' ? '<i>' + l.v + '</i>'
+  : ''
+).join('\n');
+---
+
+<BaseLayout title="Install Hydra" description="Install Hydra in one command: pip install hydra-etl. Prerequisites, optional extras, verification and troubleshooting.">
+  <style is:global set:html={css}></style>
+
+  <header class="topbar">
+    <a class="brand" href="/get-started" aria-label="Hydra Get started">
+      <img class="logo" src="/hydra-mark.png" width="22" height="22" alt="" decoding="async" />
+      Hydra Guide
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+    </nav>
+    <div class="spacer"></div>
+    <a class="header-cta" href="/guide/sources/csv">Build your first job <span aria-hidden="true">→</span></a>
+    <button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">☰</button>
+    <button class="iconbtn" id="themeBtn" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+    <a href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+  </nav>
+
+  <main class="install-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/get-started">Get started</a><span aria-hidden="true">/</span><span>Install</span>
+    </nav>
+
+    <section class="install-intro">
+      <div class="eyebrow"><span></span>Get Hydra on your machine</div>
+      <h1>Install Hydra</h1>
+      <p>Hydra is one Python package on PyPI. A single command installs the engine and the <code>hdrctl</code> command line. The API server, the Studio and the database connectors are extras you add only when you need them.</p>
+    </section>
+
+    <div class="hero-cmd">
+      <code><b>$</b> pip install hydra-etl</code>
+      <button class="copy" type="button" data-copy="pip install hydra-etl">Copy</button>
+    </div>
+    <p class="hero-note">Requires Python 3.9 or later. Package page: <a href="https://pypi.org/project/hydra-etl/"><code>pypi.org/project/hydra-etl</code></a></p>
+
+    <section aria-labelledby="prereqTitle">
+      <div class="section-head">
+        <h2 id="prereqTitle">Before you start</h2>
+      </div>
+      <div class="prereq">
+        <div><b>Python 3.9 or later</b><small>Check with <code>python --version</code></small></div>
+        <div><b>pip, up to date</b><small>Refresh with <code>python -m pip install --upgrade pip</code></small></div>
+        <div><b>Git — source install only</b><small>Needed to clone the repository</small></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="venvTitle">
+      <div class="section-head">
+        <h2 id="venvTitle">Activate an environment</h2>
+        <p>The one command that differs per terminal</p>
+      </div>
+      <div class="os">
+        {shells.map((s) => (
+          <div><b>{s.name}</b><code>{s.cmd}</code></div>
+        ))}
+      </div>
+    </section>
+
+    <div class="notice">
+      <h3>Read this before you run any command</h3>
+      <p>Every command on this page installs software on your machine, with your own rights. Three habits make that safe — here and anywhere else.</p>
+      <ul>
+        <li><b>Install from a source you can name.</b> On this page that means PyPI for <code>hydra-etl</code>, the Hydra repository on GitHub for the source build, GitHub Container Registry for the image, and <code>astral.sh</code> for uv. Nothing else.</li>
+        <li><b>Never pipe a remote script into a shell before reading it.</b> <code>curl … | sh</code> and <code>irm … | iex</code> download code and execute it in the same breath, leaving you no chance to look at it. Open the URL in a browser and read it first — or use a package manager such as <code>brew</code>, <code>winget</code> or <code>pip</code>, which spares you the trade-off entirely.</li>
+        <li><b>Check what actually landed.</b> <code>pip show hydra-etl</code> prints the version and the exact install location, so you can confirm you got what you asked for.</li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="pathsTitle">
+      <div class="section-head">
+        <h2 id="pathsTitle">Installation paths</h2>
+        <p>Pick the one that matches what you need</p>
+      </div>
+      <div class="paths">
+        {paths.map((p) => (
+          <article class={p.status === 'soon' ? 'path soon' : 'path'} id={p.id}>
+            <div class="path-top">
+              <span class="path-num">{p.num}</span>
+              <h3>{p.title}</h3>
+              <span class={badgeOf(p.status).cls}>{badgeOf(p.status).text}</span>
+            </div>
+            <p>{p.lead}</p>
+            {p.warn && <p class="path-warn" set:html={p.warn}></p>}
+            {p.code && <pre><code set:html={renderCode(p.code)}></code></pre>}
+            {p.foot && <p class="path-foot" set:html={p.foot}></p>}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="docker-guide" aria-labelledby="dockerTitle">
+      <div class="section-head">
+        <h2 id="dockerTitle">Install with Docker</h2>
+        <p>Hydra Core, CLI, API and Studio in one image</p>
+      </div>
+
+      <div class="docker-prereq">
+        <b>Before you start</b>
+        <span>Install Docker Desktop, or Docker Engine on Linux, and make sure <code>docker version</code> can reach the server.</span>
+      </div>
+
+      <div class="docker-steps">
+        <article class="docker-step">
+          <span class="path-num">01</span>
+          <div>
+            <h3>Download the image</h3>
+            <p>Use the versioned tag for a reproducible installation.</p>
+            <div class="docker-command">
+              <code>docker pull ghcr.io/bejaouibechir/hydra:0.9.6</code>
+              <button class="copy" type="button" data-copy="docker pull ghcr.io/bejaouibechir/hydra:0.9.6">Copy</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="docker-step">
+          <span class="path-num">02</span>
+          <div>
+            <h3>Start Hydra Studio</h3>
+            <p>Publish port 5678 and keep projects in a named Docker volume.</p>
+            <div class="docker-command">
+              <code>docker run --rm -p 5678:5678 -v hydra-workspace:/workspace ghcr.io/bejaouibechir/hydra:0.9.6</code>
+              <button class="copy" type="button" data-copy="docker run --rm -p 5678:5678 -v hydra-workspace:/workspace ghcr.io/bejaouibechir/hydra:0.9.6">Copy</button>
+            </div>
+            <p class="docker-result">When the container is healthy, open <a href="http://localhost:5678"><code>http://localhost:5678</code></a>. Stop it with <kbd>Ctrl</kbd>+<kbd>C</kbd>; the workspace volume is preserved.</p>
+          </div>
+        </article>
+
+        <article class="docker-step">
+          <span class="path-num">03</span>
+          <div>
+            <h3>Use the CLI on a local project</h3>
+            <p>Mount the current folder at <code>/project</code>. On PowerShell, <code>&#36;{'{PWD}'}</code> resolves to your current directory.</p>
+            <div class="docker-command">
+              <code>docker run --rm -v "&#36;{'{PWD}'}:/project" -w /project ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl validate .</code>
+              <button class="copy" type="button" data-copy={'docker run --rm -v "${PWD}:/project" -w /project ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl validate .'}>Copy</button>
+            </div>
+            <div class="docker-command">
+              <code>docker run --rm -v "&#36;{'{PWD}'}:/project" -w /project ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl run .</code>
+              <button class="copy" type="button" data-copy={'docker run --rm -v "${PWD}:/project" -w /project ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl run .'}>Copy</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="docker-step">
+          <span class="path-num">04</span>
+          <div>
+            <h3>Verify and update</h3>
+            <p>Confirm the packaged CLI, then pull the tag again whenever a new Hydra image is released.</p>
+            <div class="docker-command">
+              <code>docker run --rm ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl --version</code>
+              <button class="copy" type="button" data-copy="docker run --rm ghcr.io/bejaouibechir/hydra:0.9.6 hdrctl --version">Copy</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <p class="docker-note"><b>Image tags.</b> Use <code>0.9.6</code> in production or CI so every pull resolves to the intended release. Use <code>latest</code> only when you explicitly want the newest published version.</p>
+    </section>
+
+    <section class="verify" aria-labelledby="verifyTitle">
+      <div class="section-head">
+        <h2 id="verifyTitle">Verify the installation</h2>
+        <p>Run this from any folder except the Hydra source tree</p>
+      </div>
+      <pre><code><b>$</b> hdrctl --version
+hydra 0.9.6  |  Hydra ETL Framework  |  Python 3.12.0
+
+<b>$</b> hdrctl --help</code></pre>
+    </section>
+
+    <section aria-labelledby="partsTitle">
+      <div class="section-head">
+        <h2 id="partsTitle">What you just installed</h2>
+        <p>One package, four surfaces</p>
+      </div>
+      <div class="parts">
+        <article class="part">
+          <span class="part-tag">CLI</span>
+          <h3>hdrctl</h3>
+          <p>Scaffolds, validates, runs and lists your jobs and workflows. Also available as <code>hydra</code>.</p>
+        </article>
+        <article class="part">
+          <span class="part-tag">ENGINE</span>
+          <h3>Execution engine</h3>
+          <p>Reads the manifests, resolves connectors and executes the steps in declared order.</p>
+        </article>
+        <article class="part">
+          <span class="part-tag">API</span>
+          <h3>API server</h3>
+          <p>Serves the same jobs over HTTP so schedulers and services can trigger a run. Needs the <code>server</code> extra.</p>
+        </article>
+        <article class="part">
+          <span class="part-tag">UI</span>
+          <h3>Hydra Studio</h3>
+          <p>The visual canvas, bundled inside the package. Started by <code>hdrctl serve</code> with the <code>server</code> extra.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="extrasTitle">
+      <div class="section-head">
+        <h2 id="extrasTitle">Optional extras</h2>
+        <p>Written as <code>pip install "hydra-etl[name]"</code></p>
+      </div>
+      <table class="extras">
+        <thead>
+          <tr><th scope="col">Extra</th><th scope="col">What it adds</th><th scope="col">Add it when</th></tr>
+        </thead>
+        <tbody>
+          {extras.map((e) => (
+            <tr><td><code>{e.name}</code></td><td>{e.what}</td><td>{e.when}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+
+    <section aria-labelledby="troubleTitle">
+      <div class="section-head">
+        <h2 id="troubleTitle">If something goes wrong</h2>
+        <p>The five failures we see most</p>
+      </div>
+      <div class="trouble">
+        {trouble.map((t) => (
+          <details>
+            <summary>{t.q}</summary>
+            <div class="fix">
+              <span set:html={t.fix}></span>
+              {t.pre && <pre set:html={t.pre}></pre>}
+              {t.tail && <p set:html={t.tail}></p>}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="afterTitle">
+      <div class="section-head">
+        <h2 id="afterTitle">Once installed</h2>
+      </div>
+      <div class="after">
+        <a href="/cli/01-install-and-verify"><b>Install and verify</b><i aria-hidden="true">→</i><small>The CLI lesson that walks through the same steps in detail.</small></a>
+        <a href="/guide/sources/csv"><b>Build your first job</b><i aria-hidden="true">→</i><small>CSV in, two operations, CSV out — the complete guided example.</small></a>
+        <a href="/dsl"><b>Read the grammar</b><i aria-hidden="true">→</i><small>Every manifest block, field by field.</small></a>
+      </div>
+    </section>
+  </main>
+
+  <script is:inline set:html={js}></script>
+</BaseLayout>

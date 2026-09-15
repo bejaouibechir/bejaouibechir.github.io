@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-workflow-retry.head.html?raw';
+import tail from '../../../_mock/dsl-element-workflow-retry.tail.html?raw';
+import js from '../../../_mock/dsl-element-workflow-retry.js?raw';
+---
+
+<BaseLayout title="retry — Hydra DSL" description="Configure retry count, delay and backoff for one workflow step.">
+  <style is:global set:html={css}></style>
+  <DslShell current="workflow-retry">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+/*
+  Tableau de spécification d'un bloc du DSL.
+  Les données viennent de src/data/dsl-specs.json, généré depuis les modèles Pydantic
+  du moteur par Hydra/scripts/gen_specs.py. Rien n'est écrit à la main ici.
+
+  Un bloc absent du fichier est signalé à l'écran, jamais tu (règle 3 de la charte).
+*/
+import specs from '../data/dsl-specs.json';
+
+interface Props {
+  block: string;
+  title?: string;
+  note?: string;
+}
+const { block, title, note } = Astro.props;
+const spec = (specs.blocks as Record<string, any>)[block];
+const keys = spec?.keys ?? [];
+const label = title ?? block;
+---
+
+<section class="spec" aria-labelledby={`spec-${block}`}>
+  <div class="section-head">
+    <div>
+      <h2 id={`spec-${block}`}>{label}</h2>
+      {note && <p>{note}</p>}
+    </div>
+    <span class="rows">{keys.length} {keys.length === 1 ? 'key' : 'keys'}</span>
+  </div>
+
+  {!spec ? (
+    <div class="verdict"><div class="vrow"><span class="vdot err" aria-hidden="true"></span><span>
+      No specification found for <code>{block}</code>. Run <code>scripts/gen_specs.py</code>.
+    </span></div></div>
+  ) : (
+    <table class="spectable">
+      <thead>
+        <tr><th>key</th><th>type</th><th>required</th><th>default</th><th>constraint</th></tr>
+      </thead>
+      <tbody>
+        {keys.map((k: any) => (
+          <tr>
+            <td>{k.key}</td>
+            <td>{k.type}</td>
+            <td>{k.required ? 'yes' : 'no'}</td>
+            <td>{k.default === null || k.default === undefined
+              ? '—'
+              : <code>{typeof k.default === 'object' ? JSON.stringify(k.default) : String(k.default)}</code>}</td>
+            <td>{k.constraint || '—'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</section>

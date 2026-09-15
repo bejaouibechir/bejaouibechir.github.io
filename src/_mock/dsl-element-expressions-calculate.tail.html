@@ -1,0 +1,60 @@
+<section class="doc">
+  <h2>What <code>calculate.expr</code> is</h2>
+  <p><code>calculate.expr</code> is the formula used to <b>produce one named output column</b> from the current frame.</p>
+  <p>It does not filter rows and it cannot declare several outputs at once. Use separate calculate steps or a script with an explicit output mapping.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Current column references</b> — Names available when the step begins.</li>
+    <li><b>Arithmetic expression</b> — Evaluated by pandas eval with the Python engine.</li>
+    <li><b>One destination column</b> — Declared separately by <code>calculate.column</code>.</li>
+  </ul>
+
+  <h2>Name the output outside the formula</h2>
+  <p>Separating <code>column</code> from <code>expr</code> makes assignment explicit. A reader can identify what changes without parsing the expression text.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="expressions-calculateTitle expressions-calculateDesc" class="cnx">
+      <title id="expressions-calculateTitle">Calculate expression maps current columns to one output</title>
+      <desc id="expressions-calculateDesc">The current amount value is multiplied by 1.2 and assigned to amount_with_tax.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">amount</text><text class="d-sub" x="28" y="70">current float</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#expressions-calculateArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">amount * 1.2</text><text class="d-sub" x="282" y="68">calculate.expr</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#expressions-calculateArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">amount_with_tax</text><text class="d-sub" x="540" y="70">named column</text>
+      <text class="d-foot" x="12" y="116">Every current row remains; each receives one calculated value.</text>
+      <defs><marker id="expressions-calculateArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>The formula computes; column names the destination.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+transformations:
+  steps:
+    - cast:
+        mapping: {amount: float}
+    - calculate:
+        column: amount_with_tax
+        expr: "amount * 1.2"</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements -t compute.yaml</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.9s
+  Rows read   : 30
+  Rows written: 30</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/transformations/compute">Compute — calculate and script</a></li>
+    <li><a href="/dsl/expressions/filter">filter.expr — boolean predicates</a></li>
+    <li><a href="/dsl/expressions/script">script.code — multiple outputs</a></li>
+    <li><a href="/dsl/transformations/columns">Columns — prepare types</a></li>
+    <li><a href="/dsl/reference">Reference — calculate keys</a></li>
+  </ul>
+</section>

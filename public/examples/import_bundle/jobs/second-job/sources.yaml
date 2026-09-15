@@ -1,0 +1,8 @@
+version: "1.0"
+sources:
+  src_orders_clean:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../output/orders_clean.csv
+      batch_size: 500

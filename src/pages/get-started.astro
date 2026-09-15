@@ -1,0 +1,301 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/get-started.css?raw';
+import js from '../_mock/get-started.js?raw';
+
+/* Les captures sont lues dans /public au build : deposer un fichier suffit.
+   Un captions.json optionnel dans le dossier associe un libelle a chaque image. */
+const PUBLIC_DIR = fileURLToPath(new URL('../../public/', import.meta.url));
+const IMAGE_EXT = /\.(png|jpe?g|webp|avif|gif)$/i;
+
+function pngSize(file: string) {
+  try {
+    const buf = Buffer.alloc(33);
+    const fd = fs.openSync(file, 'r');
+    fs.readSync(fd, buf, 0, 33, 0);
+    fs.closeSync(fd);
+    if (buf.subarray(12, 16).toString('ascii') !== 'IHDR') return null;
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  } catch { return null; }
+}
+
+function readGallery(dir: string) {
+  const abs = path.join(PUBLIC_DIR, dir);
+  let files: string[] = [];
+  try { files = fs.readdirSync(abs).filter((f) => IMAGE_EXT.test(f)); } catch { return []; }
+  files.sort((a, b) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' }));
+  let captions: Record<string, string> = {};
+  try { captions = JSON.parse(fs.readFileSync(path.join(abs, 'captions.json'), 'utf8')); } catch {}
+  return files.map((f) => {
+    const size = pngSize(path.join(abs, f));
+    return {
+      src: `/${dir}/${f}`,
+      w: size?.w ?? null,
+      h: size?.h ?? null,
+      caption: captions[f] ?? '',
+    };
+  });
+}
+
+const galleries = {
+  studio: {
+    eyebrow: 'Hydra Studio',
+    title: 'Design, validate and follow a job on the canvas',
+    link: { href: '/studio', label: 'Open the Studio tutorials' },
+    shots: readGallery('studio'),
+  },
+  cli: {
+    eyebrow: 'Hydra CLI',
+    title: 'Create, validate and run a job from the terminal',
+    link: { href: '/cli', label: 'Open the CLI tutorials' },
+    shots: readGallery('cli'),
+  },
+};
+---
+
+<BaseLayout title="Get started" description="Understand Hydra in one page, then create, validate and run your first declarative data job.">
+  <style is:global set:html={css}></style>
+
+  <header class="topbar">
+    <a class="brand" href="/get-started" aria-label="Hydra Get started">
+      <img class="logo" src="/hydra-mark.png" width="22" height="22" alt="" decoding="async" />
+      Hydra Guide
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="active" href="/get-started" aria-current="page">Get started</a>
+      <a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+    </nav>
+    <div class="spacer"></div>
+    <a class="header-cta" href="/firstjob">Build your first job <span aria-hidden="true">→</span></a>
+    <button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">☰</button>
+    <button class="iconbtn" id="themeBtn" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+    <a class="active" href="/get-started" aria-current="page">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+  </nav>
+
+  <main class="start-wrap">
+    <section class="intro" aria-labelledby="pageTitle">
+      <div class="eyebrow"><span></span>Get started with Hydra</div>
+      <h1 id="pageTitle">From raw data to a repeatable pipeline</h1>
+      <p>Hydra turns a data task into a small set of readable YAML files. Describe what enters, what changes and where the result goes—then validate and run the same contract anywhere.</p>
+    </section>
+
+    <div class="start-layout">
+    <section class="next-path" aria-labelledby="nextTitle">
+      <div><span class="eyebrow"><span></span>Your first 30 minutes</span><h2 id="nextTitle">A short path from reading to running</h2></div>
+      <ol>
+        <li><a href="/firstjob"><span>1</span><b>Run a complete example</b><small>Download, integrate and run a complete Studio job.</small></a></li>
+        <li><a href="/playground"><span>2</span><b>Change one decision</b><small>Explore valid variants without installing.</small></a></li>
+        <li><a href="/dsl"><span>3</span><b>Read the exact grammar</b><small>Understand every manifest block.</small></a></li>
+      </ol>
+    </section>
+
+    <section class="overview-grid" aria-label="Hydra overview">
+      <article class="overview-column">
+        <div class="column-title"><span class="title-num">01</span><h2>Overview</h2></div>
+
+        <figure class="hydra-emblem">
+          <img src="/Hydra.png" width="943" height="926" loading="lazy" decoding="async"
+               alt="The Hydra emblem: seven dragon heads growing from a single body, inside a circle." />
+          <figcaption>
+            <b class="emblem-name">HYDRA</b>
+            <span class="emblem-tag">One body, many heads</span>
+          </figcaption>
+        </figure>
+
+        <h3>What is Hydra?</h3>
+        <p>Hydra is an open-source declarative ETL platform. A job connects one source to one destination through an ordered list of transformations. Larger processes combine those jobs in a workflow.</p>
+        <p>The manifests are the contract. They are readable in a code review, testable before execution and reusable from the CLI, API or Studio.</p>
+
+        <div class="zoomable shot-trigger" data-gallery="studio" role="button" tabindex="0"
+             aria-haspopup="dialog" aria-label="See Hydra Studio in screenshots">
+        <svg class="hydra-map" id="hydraMap" viewBox="0 0 620 330" role="img" aria-labelledby="hydraMapTitle hydraMapDesc">
+          <title id="hydraMapTitle">How a Hydra job moves data</title>
+          <desc id="hydraMapDesc">CSV, database and API sources enter a declarative Hydra job. Sources, transformations, pipeline and destinations manifests describe execution, which produces a result and an observable run.</desc>
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" class="map-arrow-head"/></marker>
+          </defs>
+
+          <rect class="map-zone" x="12" y="34" width="142" height="244" rx="18"/>
+          <text class="map-cap" x="83" y="64" text-anchor="middle">INPUTS</text>
+          <g class="map-chip"><rect x="32" y="88" width="102" height="42" rx="9"/><text x="83" y="114" text-anchor="middle">CSV / JSON</text></g>
+          <g class="map-chip"><rect x="32" y="144" width="102" height="42" rx="9"/><text x="83" y="170" text-anchor="middle">DATABASE</text></g>
+          <g class="map-chip"><rect x="32" y="200" width="102" height="42" rx="9"/><text x="83" y="226" text-anchor="middle">WEB API</text></g>
+
+          <path class="map-arrow" d="M154 156h46" marker-end="url(#arrow)"/>
+
+          <rect class="map-core" x="210" y="18" width="202" height="278" rx="22"/>
+          <text class="map-brand" x="311" y="52" text-anchor="middle">HYDRA JOB</text>
+          <g class="map-file"><rect x="235" y="72" width="152" height="38" rx="8"/><text x="251" y="96">sources.yaml</text></g>
+          <path class="map-flow" d="M311 110v13" marker-end="url(#arrow)"/>
+          <g class="map-file active"><rect x="235" y="126" width="152" height="38" rx="8"/><text x="251" y="150">transformations.yaml</text></g>
+          <path class="map-flow" d="M311 164v13" marker-end="url(#arrow)"/>
+          <g class="map-file"><rect x="235" y="180" width="152" height="38" rx="8"/><text x="251" y="204">destinations.yaml</text></g>
+          <path class="map-flow" d="M311 218v13" marker-end="url(#arrow)"/>
+          <g class="map-file"><rect x="235" y="234" width="152" height="38" rx="8"/><text x="251" y="258">pipeline.yaml</text></g>
+
+          <path class="map-arrow" d="M412 156h46" marker-end="url(#arrow)"/>
+
+          <rect class="map-zone" x="468" y="34" width="140" height="244" rx="18"/>
+          <text class="map-cap" x="538" y="64" text-anchor="middle">EXECUTION</text>
+          <g class="map-chip"><rect x="488" y="88" width="100" height="42" rx="9"/><text x="538" y="114" text-anchor="middle">CLI / API</text></g>
+          <g class="map-chip"><rect x="488" y="144" width="100" height="42" rx="9"/><text x="538" y="170" text-anchor="middle">WORKFLOW</text></g>
+          <g class="map-chip success"><rect x="488" y="200" width="100" height="42" rx="9"/><text x="538" y="226" text-anchor="middle">RESULT</text></g>
+          <text class="map-foot" x="310" y="320" text-anchor="middle">declare once · validate · run · observe</text>
+        </svg>
+          <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v12H3zM8 21h8M12 17v4"/><path d="M10 9.2l4 2.3-4 2.3z"/></svg>See Hydra Studio</span>
+        </div>
+      </article>
+
+      <article class="principles-column">
+        <div class="column-title"><span class="title-num">02</span><h2>The core idea</h2></div>
+
+        <div class="principle">
+          <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></svg></span>
+          <div><h3>Everything is YAML</h3><p>YAML is the main language of Hydra: sources, transformations, destinations and workflows are all declared in it. Version them, review them and move them between environments.</p></div>
+        </div>
+        <div class="principle">
+          <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
+          <div><h3>Declare the outcome</h3><p>Choose a <button class="term" type="button" data-term="connectors" aria-haspopup="dialog" aria-expanded="false">connector</button> and compose proven operations. Hydra handles batching, execution order and delivery while the business rule stays visible.</p></div>
+        </div>
+        <div class="principle">
+          <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></span>
+          <div><h3>One path from check to run</h3><p><button class="term" type="button" data-term="validate" aria-haspopup="dialog" aria-expanded="false">Validate</button> the manifest first, execute it through the same <button class="term" type="button" data-term="cli" aria-haspopup="dialog" aria-expanded="false">CLI</button> and read row counts and step states from the run.</p></div>
+        </div>
+        <div class="principle">
+          <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h5v5H5zM14 13h5v5h-5zM14 3h5v5h-5zM10 8l4-2M10 10l4 5"/></svg></span>
+          <div><h3>Jobs compose into workflows</h3><p>A workflow is the pipeline of your jobs. Keep each job independently runnable, then add dependencies, schedules, actions and retry policies only where orchestration needs them.</p></div>
+        </div>
+      </article>
+
+      <article class="audience-column">
+        <a class="install-cta" href="/install">
+          <span class="install-cta-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v11M8 10l4 4 4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg></span>
+          <span><b>Install Hydra</b><small>Get the CLI, the engine and the Studio — every installation path.</small></span>
+          <i aria-hidden="true">→</i>
+        </a>
+
+        <div class="column-title"><span class="title-num">03</span><h2>Start where you are</h2></div>
+
+        <div class="product-tracks" aria-label="Hydra product tutorial tracks">
+          <a href="/cli"><span>CLI</span><b>Hydra CLI tutorials</b><small>Create, validate, run and automate from the terminal.</small><i aria-hidden="true">→</i></a>
+          <a href="/studio"><span>UI</span><b>Hydra Studio tutorials</b><small>Design, validate and follow jobs on the visual canvas.</small><i aria-hidden="true">→</i></a>
+        </div>
+
+        <a class="audience" href="/firstjob">
+          <span class="audience-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16M7 16l3-9h4l3 9M9 12h6"/></svg></span>
+          <span><b>Data engineers</b><small>Build the first file-to-file job, then replace either end with the connector you need.</small></span>
+          <i aria-hidden="true">→</i>
+        </a>
+        <a class="audience" href="/guide/workflows/depends_on">
+          <span class="audience-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18h16M6 18v-6h4v6M14 18V8h4v10M9 8a3 3 0 116 0"/></svg></span>
+          <span><b>Platform and operations teams</b><small>Orchestrate existing jobs, schedule them and follow every terminal state.</small></span>
+          <i aria-hidden="true">→</i>
+        </a>
+
+        <div class="quick-card shot-trigger" id="quickCard" data-gallery="cli" role="button" tabindex="0"
+             aria-haspopup="dialog" aria-label="See the Hydra CLI in screenshots">
+          <span class="quick-label">Three commands to a first run</span>
+          <span class="shot-hint dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v12H3zM8 21h8M12 17v4"/><path d="M10 9.2l4 2.3-4 2.3z"/></svg>See the CLI</span>
+          <pre><code><span>$</span> hdrctl init my_job
+<span>$</span> hdrctl test my_job
+<span>$</span> hdrctl run my_job -vv</code></pre>
+          <p>Requires Python 3.9+. The repository install uses <code>pip install -e .</code></p>
+          <a class="primary-action" href="/firstjob">Build the guided example <span aria-hidden="true">→</span></a>
+          <a class="secondary-action" href="/dsl">Explore the language</a>
+        </div>
+      </article>
+    </section>
+    </div>
+  </main>
+
+  <!-- Contenu des popovers de termes : cloné par get-started.js -->
+  <template id="term-connectors">
+    <h4>Which connector?</h4>
+    <p>In a manifest, <code>type</code> is the discriminator that selects the connector interpreting the declaration. The outer YAML stays stable; the connector owns <code>connection</code> and <code>extract</code>.</p>
+    <ul class="term-list">
+      <li><b>CSV</b><em>Built in</em></li>
+      <li><b>JSON</b><em>Built in</em></li>
+      <li><b>Database</b><em>Same slot, optional connector</em></li>
+      <li><b>Web API</b><em>Same slot, optional connector</em></li>
+    </ul>
+    <pre><code>sources:
+  src_orders:
+    type: csv
+    connection:
+      base_path: "data/canonical"
+    extract:
+      table: orders.csv</code></pre>
+    <a href="/dsl/sources/type">Read the full contract →</a>
+  </template>
+
+  <template id="term-validate">
+    <h4>Validate before running</h4>
+    <p><code>hdrctl test</code> checks the manifests and the connections without writing anything to the destination.</p>
+    <pre><code>hdrctl test [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml</code></pre>
+    <p class="term-note">Example: <code>hdrctl test examples/tutorial/01-first-job</code></p>
+    <a href="/dsl">Explore the language →</a>
+  </template>
+
+  <template id="term-cli">
+    <h4>One CLI: hdrctl</h4>
+    <p>The same binary validates and executes. <code>run</code> takes the identical flags as <code>test</code>, plus parameter overrides.</p>
+    <pre><code>hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable
+  -vv                         verbose run output</code></pre>
+    <p class="term-note">Also available: <code>hdrctl init</code>, <code>hdrctl ls sources</code>, <code>hdrctl run --help</code>.</p>
+    <a href="/firstjob">Run the guided example →</a>
+  </template>
+
+  <div class="zoom-overlay" id="zoomOverlay" role="dialog" aria-modal="true" aria-label="Enlarged view" hidden>
+    <button class="zoom-close" id="zoomClose" type="button" aria-label="Close">×</button>
+    <div class="zoom-stage" id="zoomStage"></div>
+  </div>
+
+  <div class="term-pop" id="termPop" role="dialog" aria-label="Details" hidden></div>
+
+  <!-- Carrousel de captures : contenu genere depuis /public/studio et /public/cli -->
+  <script type="application/json" id="galleryData" is:inline set:html={JSON.stringify(galleries)}></script>
+
+  <div class="shots" id="shots" role="dialog" aria-modal="true" aria-labelledby="shotsTitle" hidden>
+    <div class="shots-panel" role="document">
+      <header class="shots-head">
+        <div>
+          <span class="shots-eyebrow" id="shotsEyebrow"></span>
+          <h3 id="shotsTitle"></h3>
+        </div>
+        <button class="shots-close" id="shotsClose" type="button" aria-label="Close">×</button>
+      </header>
+
+      <div class="shots-stage">
+        <img id="shotsImg" alt="" decoding="async" />
+        <button class="shots-nav prev" id="shotsPrev" type="button" aria-label="Previous screenshot">‹</button>
+        <button class="shots-nav next" id="shotsNext" type="button" aria-label="Next screenshot">›</button>
+      </div>
+
+      <footer class="shots-foot">
+        <p class="shots-caption" id="shotsCaption" aria-live="polite"></p>
+        <div class="shots-dots" id="shotsDots" role="tablist" aria-label="Choose a screenshot"></div>
+        <div class="shots-meta">
+          <span class="shots-count" id="shotsCount"></span>
+          <a class="shots-link" id="shotsLink" href="/studio"></a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script is:inline set:html={js}></script>
+</BaseLayout>

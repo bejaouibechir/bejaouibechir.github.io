@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-interpolation-param-env.head.html?raw';
+import tail from '../../../_mock/dsl-element-interpolation-param-env.tail.html?raw';
+import js from '../../../_mock/dsl-element-interpolation-param-env.js?raw';
+---
+
+<BaseLayout title="{{ param }} and {{ env }} — Hydra DSL" description="Substitute job parameters and environment variables into YAML before model validation.">
+  <style is:global set:html={css}></style>
+  <DslShell current="interpolation-param-and-env">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

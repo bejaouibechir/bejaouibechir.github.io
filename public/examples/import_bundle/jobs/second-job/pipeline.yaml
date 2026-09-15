@@ -1,0 +1,4 @@
+version: "1.0"
+pipeline:
+  from: src_orders_clean
+  to: dst_sales_by_region

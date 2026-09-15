@@ -1,0 +1,114 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><a href="/dsl/tutorial/01-first-job">Tutorial</a><span>›</span><span>Lesson 1</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Lesson 1 of 7</div>
+    <h1>Your first job</h1>
+    <p class="lead">Read a CSV, keep the large orders, write the result. Four files, one command.</p>
+  </div>
+</div>
+
+<section class="doc">
+  <h2>1. What to Expect</h2>
+
+  <h3>Objectives</h3>
+  <ul>
+    <li>You will see the four files that make up every Hydra job.</li>
+    <li>You will read a CSV, convert a column, filter rows and write the result.</li>
+    <li>You will run the job and read what the engine reports.</li>
+  </ul>
+
+  <h3>Description</h3>
+  <p>
+    We start from <code>orders.csv</code>, thirty rows of a small shop. Amounts are stored as text,
+    as they always are in a CSV. We convert them to numbers, keep the orders above fifty, drop the
+    columns we do not need, and write what remains.
+  </p>
+  <p>
+    This project exists in the repository under <code>examples/tutorial/01-first-job</code>. Every
+    block below is copied from it, and the output shown is the output it produced.
+  </p>
+
+  <h3>Processing Steps</h3>
+  <ol>
+    <li>Read <code>orders.csv</code> as a CSV source.</li>
+    <li>Cast <code>amount</code> from text to a number.</li>
+    <li>Keep the rows above fifty, then select four columns.</li>
+    <li>Write the result to <code>big_orders.csv</code>.</li>
+  </ol>
+
+  <h2>2. Implementation</h2>
+  <p>Walk the four files with <b>Next</b>. The highlighted line is the one being explained.</p>
+</section>
+
+<section class="workbench" aria-labelledby="lessonGoal">
+  <div class="editor-pane">
+    <div class="pane-head">
+      <span class="file-dot"></span>
+      <strong id="fileName">sources.yaml</strong>
+      <span class="edit-label">10 steps</span>
+    </div>
+    <div class="filetabs" role="tablist" aria-label="Project files">
+      <button class="ftab on" type="button" role="tab" data-file="sources">sources.yaml</button>
+      <button class="ftab" type="button" role="tab" data-file="transformations">transformations.yaml</button>
+      <button class="ftab" type="button" role="tab" data-file="destinations">destinations.yaml</button>
+      <button class="ftab" type="button" role="tab" data-file="pipeline">pipeline.yaml</button>
+    </div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal">
+      <div class="goal-icon" aria-hidden="true">1</div>
+      <div><b id="lessonGoal">What the engine produced</b><p>Thirty rows in, six out. These are the real rows, not an illustration.</p></div>
+    </div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="tablewrap">
+      <div class="tabletop"><strong>big_orders.csv</strong><span class="rows">6 of 30 rows</span></div>
+      <table>
+        <thead><tr><th>order_id</th><th>customer_id</th><th>amount</th><th>status</th></tr></thead>
+        <tbody id="outRows"></tbody>
+      </table>
+    </div>
+    <div class="runbar">
+      <span class="status ok" role="status">✓ Pipeline completed · 30 read · 6 written</span>
+    </div>
+  </div>
+</section>
+
+<section class="doc">
+  <h2>3. Execution</h2>
+  <p>From the root of the repository:</p>
+  <pre class="cmd">hdrctl run examples/tutorial/01-first-job</pre>
+  <p>The engine reports what it did:</p>
+  <pre class="cmd out">  ▶  Pipeline  01-first-job  — examples/tutorial/01-first-job
+
+  ✅ Pipeline completed successfully in 3.3s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>
+    Before running anything, <code>hdrctl validate</code> reads the four files and reports what it
+    finds without touching the data. It does not type-check expressions, so a comparison between a
+    text column and a number passes validation and fails at run time — that is exactly why
+    <code>cast</code> comes before <code>filter</code> here.
+  </p>
+
+  <h2>4. Next Lesson</h2>
+  <p>
+    Lesson 2 chains more operations on the same project: computing a column, renaming it, and
+    sorting the result.
+  </p>
+  <ul class="linklist">
+    <li><a href="/dsl">Rows — filter, sort, deduplicate</a></li>
+    <li><a href="/dsl/sources">sources.connection — the nine types</a></li>
+    <li><span>Lesson 2 — Transformations<em class="soonmark">soon</em></span></li>
+  </ul>
+</section>

@@ -1,0 +1,42 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>6 · Workflow</span><span>›</span><span>name and version</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Grammar element · workflow.name + version</div>
+    <h1>A workflow needs an identity before it runs</h1>
+    <p class="lead">Three complete identities. Name labels the run; version records the manifest shape.</p>
+  </div>
+</div>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong>workflow.yaml</strong><span class="edit-label">4 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+    <div class="control">
+      <label for="selCase"><span>the identity contains</span></label>
+      <select id="selCase">
+        <option value="full">name, version, description</option>
+        <option value="default-version">the default version</option>
+        <option value="minimal">a minimal identity</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal"><div class="goal-icon" aria-hidden="true">6</div><div><b id="goalTitle">What the model stores</b><p>A required run name, an optional description, and a version defaulting to 1.0.</p></div></div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict tall" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">✓ workflow identity complete</span>
+      <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+    </div>
+  </div>
+</section>

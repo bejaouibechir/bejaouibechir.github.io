@@ -1,0 +1,42 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>5 · Transformations</span><span>›</span><span>Reshape</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Grammar element · operations.reshape</div>
+    <h1>Reshape changes where values live</h1>
+    <p class="lead">Unpivot, pivot, and transpose alter layout without inventing a second data source.</p>
+  </div>
+</div>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong>transformations.yaml</strong><span class="edit-label">4 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+    <div class="control">
+      <label for="selCase"><span>the layout change is</span></label>
+      <select id="selCase">
+        <option value="unpivot">wide to long</option>
+        <option value="pivot">long to wide</option>
+        <option value="transpose">rows and columns exchange</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal"><div class="goal-icon" aria-hidden="true">5</div><div><b id="goalTitle">What changes</b><p>Rows become columns, columns become rows, or repeated value columns become observations.</p></div></div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict tall" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">✓ 5 wide rows → 20 long rows</span>
+      <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+    </div>
+  </div>
+</section>

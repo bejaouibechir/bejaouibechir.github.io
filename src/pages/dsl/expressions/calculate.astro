@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-expressions-calculate.head.html?raw';
+import tail from '../../../_mock/dsl-element-expressions-calculate.tail.html?raw';
+import js from '../../../_mock/dsl-element-expressions-calculate.js?raw';
+---
+
+<BaseLayout title="calculate.expr — Hydra DSL" description="Write an expression that derives one output column from the current frame.">
+  <style is:global set:html={css}></style>
+  <DslShell current="expressions-calculate-expr">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

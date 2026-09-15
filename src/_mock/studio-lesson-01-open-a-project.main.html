@@ -1,0 +1,133 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 1</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 1 of 14 · Create a project</div><h1>Create a project and its first workflow</h1><p class="lead">Create the cumulative workspace, add <code>first-workflow</code> to it, choose how that workflow is triggered, and open it on an empty canvas.</p></div>
+<div class="lesson-meta"><span class="mono">Overview</span><span>about 15 minutes</span><span>API and Studio running</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Create <code>studio-course</code> from the real <b>New project</b> dialog, add a workflow named <code>first-workflow</code> to it, and open that workflow in the editor. Read the project name, disk path and workflow count without confusing those summaries with validation.</p>
+  <h3>Why this matters</h3><p>A project is a folder on disk; a workflow is a file inside it. Studio never runs a project — it runs a workflow. Creating both in the same sitting makes that hierarchy concrete, and the trigger you pick here is the one written into <code>workflow.yaml</code>.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>Nothing from an earlier lesson — this one opens the course.</li></ul>
+
+  <h2>2. Steps</h2>
+  <div class="step">
+    <h3><i>01</i>Open the start page</h3>
+    <h4>Objective</h4><p>Reach the page that lists projects and exposes the supported workspace actions.</p>
+    <h4>Actions</h4><ol><li>Open <b>http://localhost:5173</b>.</li><li>Select <b>Overview</b> in the sidebar if another page is active.</li><li>Find the <b>Get started</b> card on the right.</li></ol>
+    <pre class="cmd">Studio → Overview</pre>
+    <div class="expect"><b>What you should see</b><p>The page identifies Hydra Studio and shows the three start actions. <b>Clone a repository</b> is dimmed: it is announced, not implemented.</p><pre class="out">Hydra Studio
+Get started
+Clone a repository
+Open a project
+Create a project</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen1.png" width="1909" height="984" loading="lazy" decoding="async" alt="Hydra Studio Overview page, with the project search field, the Get started card listing three actions, and the Statistics panel." /><figcaption>The <b>Statistics</b> panel counts projects and runs across the whole workspace, not inside one project.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Create the cumulative project</h3>
+    <h4>Objective</h4><p>Generate a Studio project with the standard data, output, jobs and workflows structure.</p>
+    <h4>Actions</h4><ol><li>Select <b>Create a project</b>.</li><li>Enter <code>studio-course</code> in <b>Project name</b>.</li><li>Leave <b>Parent folder</b> empty to use the default workspace, then select <b>Create project</b>.</li></ol>
+    <pre class="cmd">Create a project → Project name: studio-course → Create project</pre>
+    <div class="expect"><b>What you should see</b><p>Only the name is required. An empty parent folder puts the project under the default workspace.</p><pre class="out">New project
+Project name *
+Description
+Parent folder (optional)
+Create project</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen2.png" width="1911" height="986" loading="lazy" decoding="async" alt="The New project dialog with studio-course typed in the Project name field, an empty description, an empty parent folder and the Create project button." /><figcaption>The <b>Create project</b> button stays disabled while the name is blank.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Find the project in the list</h3>
+    <h4>Objective</h4><p>Use the indexed project row instead of creating a second workspace.</p>
+    <h4>Actions</h4><ol><li>Look under <b>All projects</b> on the Overview.</li><li>Read the disk path printed under the project name.</li><li>Select the <b>studio-course</b> row.</li></ol>
+    <pre class="cmd">Overview → All projects → studio-course</pre>
+    <div class="expect"><b>What you should see</b><p>The project is listed with its path on disk, and the <b>Projects</b> statistic has gone up by one.</p><pre class="out">ALL PROJECTS
+studio-course
+&lt;workspace&gt;\studio-course
+Projects  2</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen3.png" width="1903" height="986" loading="lazy" decoding="async" alt="The Overview after creation, showing studio-course under All projects with its path, and the Projects statistic now reading 2." /><figcaption>The star pins a project to the top; the bin deletes it. <b>Recently opened</b> and <b>All projects</b> are two views of the same index.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read the empty project</h3>
+    <h4>Objective</h4><p>Recognize what a project holds before anything has been designed in it.</p>
+    <h4>Actions</h4><ol><li>Read the breadcrumb, the project name and its path.</li><li>Read the workflow count under the path.</li><li>Note the two ways in: <b>Import workflow</b> and <b>New workflow</b>.</li></ol>
+    <pre class="cmd">Overview / studio-course</pre>
+    <div class="expect"><b>What you should see</b><p>A project with no workflow is not an error state — it is the normal starting point. Nothing here can be run yet.</p><pre class="out">Overview / studio-course
+&lt;project path&gt;
+0 workflow
+No workflows</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen4.png" width="1912" height="946" loading="lazy" decoding="async" alt="The studio-course project page showing zero workflows, the empty-state message and the New workflow button repeated in the header and in the centre." /><figcaption><b>Import workflow</b> reads an existing <code>workflow.yaml</code>; <b>New workflow</b> writes a fresh one.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Create the first workflow</h3>
+    <h4>Objective</h4><p>Add a workflow to the project and choose what will start it.</p>
+    <h4>Actions</h4><ol><li>Select <b>New workflow</b>.</li><li>Enter <code>first-workflow</code> in <b>Workflow name</b>.</li><li>Open the <b>Trigger</b> list, keep <b>Manual</b>, then confirm.</li></ol>
+    <pre class="cmd">New workflow → Workflow name: first-workflow → Trigger: Manual</pre>
+    <p>The <b>Trigger</b> list holds three modes, and the one you pick becomes <code>trigger.type</code> in <code>workflow.yaml</code>. The choice is not final — the workflow card lets you change it later.</p>
+    <table class="triggers"><thead><tr><th>Trigger</th><th>What starts the run</th><th>When to use it</th></tr></thead><tbody>
+      <tr><td>Manual</td><td>You do, from Studio or with <code>hdrctl workflow run</code>.</td><td>While designing. The only mode that needs no extra configuration, and the right one for this course.</td></tr>
+      <tr><td>Schedule (cron)</td><td>A cron expression, evaluated by the scheduler.</td><td>Recurring loads — a nightly extract, a quarter-hourly sync. Requires a <code>cron</code> value; without it the workflow will not validate.</td></tr>
+      <tr><td>Webhook</td><td>An incoming HTTP call to the API.</td><td>Runs driven by an external system: a file landing, a job finishing elsewhere. Requires the API to be reachable by that caller.</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>The name is required; the trigger defaults to <b>Manual</b>.</p><pre class="out">New Workflow
+Workflow name *
+Trigger
+Manual
+Schedule (cron)
+Webhook</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen5.png" width="1910" height="990" loading="lazy" decoding="async" alt="The New Workflow dialog with first-workflow typed in the name field and the Trigger list open, showing Manual, Schedule (cron) and Webhook." /><figcaption>Three modes, no more. Anything else is expressed inside the workflow, not by its trigger.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read the workflow card</h3>
+    <h4>Objective</h4><p>Separate what the card states about the file from what it states about execution.</p>
+    <h4>Actions</h4><ol><li>Read the workflow name and the trigger printed under it.</li><li>Read the <b>Draft</b> badge and the run history beside it.</li><li>Open the <b>Trigger</b> selector on the card to confirm the mode can still be changed.</li></ol>
+    <pre class="cmd">studio-course → first-workflow</pre>
+    <div class="expect"><b>What you should see</b><p>The count moves to <b>1 workflow</b>. <b>Draft</b> describes the file — it has no nodes yet — while <b>never run</b> describes its history. Neither means the workflow is invalid.</p><pre class="out">1 workflow
+first-workflow
+Manual
+Draft   never run
+Open in editor</pre>
+      <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen6.png" width="1912" height="989" loading="lazy" decoding="async" alt="The studio-course project page with one workflow card named first-workflow, marked Manual and Draft, never run, carrying a Trigger selector and an Open in editor link." /><figcaption>Changing the trigger here rewrites <code>trigger.type</code> in the file — no need to reopen the editor.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>07</i>Open the workflow in the editor</h3>
+    <h4>Objective</h4><p>Reach the canvas where the following lessons will place nodes.</p>
+    <h4>Actions</h4><ol><li>Select <b>Open in editor</b> on the card.</li><li>Read the node and edge counters beside the workflow name.</li><li>Look at the <b>Node palette</b> and the two configuration tabs.</li></ol>
+    <pre class="cmd">first-workflow → Open in editor</pre>
+    <div class="expect"><b>What you should see</b><p>An empty canvas, and a palette whose <b>Jobs</b> group is empty because no job exists yet. The URL carries both the workflow and the project it belongs to.</p><pre class="out">first-workflow   0 nodes · 0 edges
+Jobs configuration   Workflow configuration
+NODE PALETTE
+Actions (9)   Control Flow (2)   Containers (3)   Jobs (0)</pre>
+      <div class="shots">
+        <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen7.png" width="1899" height="987" loading="lazy" decoding="async" alt="The workflow card with the browser status bar showing the editor URL, which carries both a workflow identifier and a project identifier." /><figcaption>The link carries <code>projectId</code>: a workflow is always opened in the context of its project.</figcaption></figure>
+        <figure class="shot"><img src="/tutorials/studio-01-open-a-project/screen8.png" width="1913" height="985" loading="lazy" decoding="async" alt="The Hydra Studio editor on an empty canvas for first-workflow, with the node palette on the left listing Actions, Control Flow, Containers and an empty Jobs group." /><figcaption>The palette says it plainly: <b>no jobs defined — create one in the Jobs configuration tab</b>.</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">Sources and transformations live in <b>Jobs configuration</b>. Jobs and actions live in <b>Workflow configuration</b>.</p>
+  <p data-kind="TRAP">A <b>container never runs</b>. Five nodes on screen can mean <b>four steps</b> in the YAML.</p>
+  <p data-kind="TIP">An edge leaves a <b>right handle</b> and enters a <b>left handle</b>. Direction is never ambiguous.</p>
+  <p data-kind="TRAP">The <b>Valid</b> badge means the manifest parses. Only a <b>run</b> proves the job works.</p>
+  <p data-kind="TIP">A policy reaches only what sits <b>inside</b> the container. A node beside it gets <b>nothing</b>.</p>
+  <p data-kind="TRAP">Studio can be <b>ahead of the disk</b>. Open the file to be sure.</p>
+  <p data-kind="TIP">Counts and durations are <b>live values</b>. Never quote them as thresholds.</p>
+  <p data-kind="TRAP">An animation is <b>not an outcome</b>. Wait for a <b>terminal state</b> on the Runs page.</p>
+</div>
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Project list</td><td>Contains <code>studio-course</code></td></tr><tr><td>Project detail</td><td>Shows its disk path</td></tr><tr><td>Workflow count</td><td>Reads <code>1 workflow</code></td></tr><tr><td>Workflow card</td><td><code>first-workflow</code>, trigger <b>Manual</b>, badge <b>Draft</b></td></tr><tr><td>Editor</td><td>Opens on <code>0 nodes · 0 edges</code></td></tr><tr><td>Overview statistics</td><td>Read as live workspace values, not constants</td></tr></tbody></table>
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Create button stays disabled</td><td>The required name is empty</td><td>Enter a non-blank project or workflow name</td></tr><tr><td>Project path is unexpected</td><td>No parent directory was selected</td><td>Use <b>Browse</b> when a specific parent is required</td></tr><tr><td>Opening an arbitrary folder fails</td><td><b>Open a project</b> requires Hydra structure</td><td>Create the project in Studio or open a folder already containing jobs/workflows</td></tr><tr><td><b>New workflow</b> does nothing</td><td>The API is unreachable, so nothing can be written to disk</td><td>Check the top-bar indicator reads <b>API online</b>, and see the next lesson</td></tr><tr><td>The palette shows <b>Jobs (0)</b></td><td>No job exists in the project yet</td><td>Expected at this point — jobs arrive in lesson 5</td></tr></tbody></table>
+  <h2>5. Next lesson</h2><p>The workspace exists, holds a workflow and opens on a canvas. Before designing anything on it, the next lesson verifies the top-bar connection indicator and the backend health route that supplies every value you have just read.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/02-check-the-api">Check the API <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/cli/11-serve-the-api">Serve the Hydra API</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

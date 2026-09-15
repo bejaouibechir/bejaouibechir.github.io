@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-transformations-combine.head.html?raw';
+import tail from '../../../_mock/dsl-element-transformations-combine.tail.html?raw';
+import js from '../../../_mock/dsl-element-transformations-combine.js?raw';
+---
+
+<BaseLayout title="Combine — Hydra DSL" description="Combine the current frame with a second source using join, merge or union.">
+  <style is:global set:html={css}></style>
+  <DslShell current="transformations-combine">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

@@ -1,0 +1,915 @@
+{
+ "generated_from": "pydantic model_json_schema()",
+ "blocks": {
+  "op.select": {
+   "model": "SelectOp",
+   "keys": [
+    {
+     "key": "columns",
+     "type": "list[string]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    }
+   ]
+  },
+  "op.rename": {
+   "model": "RenameOp",
+   "keys": [
+    {
+     "key": "mapping",
+     "type": "mapping[string]",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.cast": {
+   "model": "CastOp",
+   "keys": [
+    {
+     "key": "mapping",
+     "type": "mapping[string]",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.filter": {
+   "model": "FilterOp",
+   "keys": [
+    {
+     "key": "expr",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    }
+   ]
+  },
+  "op.calculate": {
+   "model": "CalculateOp",
+   "keys": [
+    {
+     "key": "column",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "expr",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    }
+   ]
+  },
+  "op.sort": {
+   "model": "SortOp",
+   "keys": [
+    {
+     "key": "by",
+     "type": "list[string]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "ascending",
+     "type": "any",
+     "required": false,
+     "default": true,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.deduplicate": {
+   "model": "DeduplicateOp",
+   "keys": [
+    {
+     "key": "columns",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "keep",
+     "type": "string",
+     "required": false,
+     "default": "first",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.fill_null": {
+   "model": "FillNullOp",
+   "keys": [
+    {
+     "key": "value",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "columns",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.trim": {
+   "model": "TrimOp",
+   "keys": [
+    {
+     "key": "columns",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.aggregate": {
+   "model": "AggregateOp",
+   "keys": [
+    {
+     "key": "by",
+     "type": "list[string]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "agg",
+     "type": "mapping",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.join": {
+   "model": "JoinOp",
+   "keys": [
+    {
+     "key": "right",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "key",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "left_key",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "right_key",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "how",
+     "type": "string",
+     "required": false,
+     "default": "inner",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.clean": {
+   "model": "CleanOp",
+   "keys": [
+    {
+     "key": "columns",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "case",
+     "type": "string",
+     "required": false,
+     "default": "none",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.pivot": {
+   "model": "PivotOp",
+   "keys": [
+    {
+     "key": "index",
+     "type": "list[string]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "column",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "values",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "aggfunc",
+     "type": "string",
+     "required": false,
+     "default": "first",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.unpivot": {
+   "model": "UnpivotOp",
+   "keys": [
+    {
+     "key": "id_vars",
+     "type": "list[string]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "value_vars",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "var_name",
+     "type": "string",
+     "required": false,
+     "default": "variable",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "value_name",
+     "type": "string",
+     "required": false,
+     "default": "value",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.transpose": {
+   "model": "TransposeOp",
+   "keys": [
+    {
+     "key": "index_col",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "header_name",
+     "type": "string",
+     "required": false,
+     "default": "column",
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.merge": {
+   "model": "MergeOp",
+   "keys": [
+    {
+     "key": "right",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "key",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "delete_unmatched",
+     "type": "bool",
+     "required": false,
+     "default": false,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.union": {
+   "model": "UnionOp",
+   "keys": [
+    {
+     "key": "right",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "distinct",
+     "type": "bool",
+     "required": false,
+     "default": false,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "op.script": {
+   "model": "ScriptOp",
+   "keys": [
+    {
+     "key": "inputs",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "outputs",
+     "type": "mapping[string]",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "code",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "mode",
+     "type": "vectorized · row",
+     "required": false,
+     "default": "vectorized",
+     "constraint": "valeurs : vectorized · row",
+     "description": ""
+    }
+   ]
+  },
+  "transformations": {
+   "model": "TransformConfig",
+   "keys": [
+    {
+     "key": "steps",
+     "type": "list[any]",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    }
+   ]
+  },
+  "transformations.step": {
+   "model": "TransformStep",
+   "keys": [
+    {
+     "key": "op",
+     "type": "select · rename · cast · filter · calculate · sort · deduplicate · fill_null · trim · aggregate · join · clean · pivot · unpivot · transpose · merge · union · script",
+     "required": true,
+     "default": null,
+     "constraint": "valeurs : select · rename · cast · filter · calculate · sort · deduplicate · fill_null · trim · aggregate · join · clean · pivot · unpivot · transpose · merge · union · script",
+     "description": ""
+    },
+    {
+     "key": "params",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "name",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "sources.<id>": {
+   "model": "SourceDefinition",
+   "keys": [
+    {
+     "key": "type",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "connection",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "extract",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "schema",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "sources.<id>.extract": {
+   "model": "ExtractConfig",
+   "keys": [
+    {
+     "key": "table",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "query",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "collection",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "filter",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "limit",
+     "type": "int",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "batch_size",
+     "type": "int",
+     "required": false,
+     "default": 10000,
+     "constraint": "minimum 1",
+     "description": ""
+    }
+   ]
+  },
+  "sources.<id>.schema": {
+   "model": "SchemaConfig",
+   "keys": [
+    {
+     "key": "mode",
+     "type": "string",
+     "required": false,
+     "default": "auto",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "fields",
+     "type": "list[any]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "drift_policy",
+     "type": "string",
+     "required": false,
+     "default": "warn",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "validation_policy",
+     "type": "string",
+     "required": false,
+     "default": "best_effort",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "sample_size",
+     "type": "int",
+     "required": false,
+     "default": 100,
+     "constraint": "minimum 1",
+     "description": ""
+    }
+   ]
+  },
+  "sources.<id>.schema.fields": {
+   "model": "SchemaFieldConfig",
+   "keys": [
+    {
+     "key": "name",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "type",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "path",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "required",
+     "type": "bool",
+     "required": false,
+     "default": false,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "default",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "array_handling",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "description",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "destinations.<id>": {
+   "model": "DestinationDefinition",
+   "keys": [
+    {
+     "key": "type",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "connection",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "load",
+     "type": "any",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "destinations.<id>.load": {
+   "model": "LoadConfig",
+   "keys": [
+    {
+     "key": "table",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "collection",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 caractere(s)",
+     "description": ""
+    },
+    {
+     "key": "mode",
+     "type": "any",
+     "required": false,
+     "default": "append",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "key",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "batch_size",
+     "type": "int",
+     "required": false,
+     "default": 10000,
+     "constraint": "minimum 10 · maximum 100000",
+     "description": ""
+    }
+   ]
+  },
+  "workflow": {
+   "model": "WorkflowDef",
+   "keys": [
+    {
+     "key": "version",
+     "type": "string",
+     "required": false,
+     "default": "1.0",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "name",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "description",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "trigger",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "steps",
+     "type": "list[any]",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "workflow.trigger": {
+   "model": "Trigger",
+   "keys": [
+    {
+     "key": "type",
+     "type": "manual · schedule · webhook",
+     "required": false,
+     "default": "manual",
+     "constraint": "valeurs : manual · schedule · webhook",
+     "description": ""
+    },
+    {
+     "key": "cron",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "workflow.steps": {
+   "model": "WorkflowStep",
+   "keys": [
+    {
+     "key": "name",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "type",
+     "type": "job · action",
+     "required": true,
+     "default": null,
+     "constraint": "valeurs : job · action",
+     "description": ""
+    },
+    {
+     "key": "job",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "action",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "params",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "depends_on",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "on_failure",
+     "type": "fail · skip · continue",
+     "required": false,
+     "default": "fail",
+     "constraint": "valeurs : fail · skip · continue",
+     "description": ""
+    },
+    {
+     "key": "enabled",
+     "type": "bool",
+     "required": false,
+     "default": true,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "retry",
+     "type": "any",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "when",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    }
+   ]
+  },
+  "workflow.steps.retry": {
+   "model": "RetryPolicy",
+   "keys": [
+    {
+     "key": "max",
+     "type": "int",
+     "required": false,
+     "default": 0,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "delay",
+     "type": "float",
+     "required": false,
+     "default": 0.0,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "backoff",
+     "type": "fixed · exponential",
+     "required": false,
+     "default": "fixed",
+     "constraint": "valeurs : fixed · exponential",
+     "description": ""
+    }
+   ]
+  }
+ }
+}

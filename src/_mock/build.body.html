@@ -1,0 +1,35 @@
+<div class="wrap">
+<h1>Watch a Hydra manifest take shape</h1>
+<p class="lede">Three finished projects. Change one setting and see exactly which lines appear, move or disappear. That is the whole point — no editor to learn, no canvas to fight.</p>
+
+<div class="projs" id="projs"></div>
+
+<div class="grid">
+  <div class="card">
+    <div class="ch"><h2>Settings</h2><span class="rt"><button class="mini" id="reset">Reset</button></span></div>
+    <div class="ctl" id="ctl"></div>
+  </div>
+  <div class="card out">
+    <div class="ch"><h2>Generated DSL</h2>
+      <span class="rt">
+        <button class="mini" id="build">▶ Watch it build</button>
+        <button class="mini" id="copy">Copy</button>
+        <button class="mini p" id="take">Take the project →</button>
+      </span></div>
+    <div class="stage" id="stage"><svg class="wf" id="svg" role="img" aria-label="Workflow diagram"></svg></div>
+    <div class="tabs" id="tabs"></div>
+    <pre class="yml" id="yml"></pre>
+    <div class="cap" id="cap"></div>
+  </div>
+</div>
+</div>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT">
+  <div class="gbox">
+    <div class="gh"><h3 id="gateT">—</h3><button class="x" id="gateX" aria-label="Close">×</button></div>
+    <div class="gb"><p id="gateP"></p><pre id="gateC"></pre></div>
+    <div class="gf"><button class="mini" id="gateCopy">Copy</button><span class="sp"></span>
+      <button class="mini" id="gateBack">Keep exploring</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>

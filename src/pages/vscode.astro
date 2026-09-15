@@ -1,0 +1,559 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/vscode.css?raw';
+import js from '../_mock/vscode.js?raw';
+
+/* Demonstration : un onglet par manifeste. Les extraits sont corrects et sortis
+   des exemples du depot de l'extension (examples/valid_job, valid_workflow).
+   Rendus en set:html pour que ${ENV:...} ne soit pas lu comme une expression. */
+const demo = [
+  {
+    id: 'sources',
+    label: 'sources.yaml',
+    file: 'jobs/orders/sources.yaml',
+    note: 'Type first. Once <b>type</b> is set, the keys offered under <b>connection</b> change with it — host and port for a database, base_url and pagination for an API.',
+    code:
+      '<span class="k">sources</span>:\n' +
+      '  <span class="k">src_orders</span>:\n' +
+      '    <span class="k">type</span>: <mark>mysql</mark>\n' +
+      '    <span class="k">connection</span>:\n' +
+      '      <span class="k">host</span>: <span class="v">${ENV:DB_HOST}</span>\n' +
+      '      <span class="k">port</span>: <span class="v">3306</span>\n' +
+      '      <span class="k">database</span>: <span class="v">${ENV:DB_NAME}</span>\n' +
+      '    <span class="k">extract</span>:\n' +
+      '      <span class="k">table</span>: <span class="v">orders</span>\n' +
+      '      <span class="k">batch_size</span>: <span class="v">10000</span>   <span class="c"># 10 to 100000</span>',
+  },
+  {
+    id: 'destinations',
+    label: 'destinations.yaml',
+    file: 'jobs/orders/destinations.yaml',
+    note: 'Conditional rule. Choosing <b>upsert</b> makes <b>key</b> required, and the editor says so before you run anything.',
+    code:
+      '<span class="k">destinations</span>:\n' +
+      '  <span class="k">dst_dwh</span>:\n' +
+      '    <span class="k">type</span>: <span class="v">postgresql</span>\n' +
+      '    <span class="k">load</span>:\n' +
+      '      <span class="k">table</span>: <span class="v">fact_orders</span>\n' +
+      '      <span class="k">mode</span>: <mark>upsert</mark>\n' +
+      '      <span class="k">key</span>: <span class="v">[id]</span>          <span class="c"># required by upsert</span>\n' +
+      '      <span class="k">batch_size</span>: <span class="v">5000</span>',
+  },
+  {
+    id: 'pipeline',
+    label: 'pipeline.yaml',
+    file: 'jobs/orders/pipeline.yaml',
+    note: 'Both fields are required. Whether the identifiers match a declared source and destination is checked by hdrctl validate, not by the editor.',
+    code:
+      '<span class="k">version</span>: <span class="v">"1.0"</span>\n' +
+      '<span class="k">pipeline</span>:\n' +
+      '  <span class="k">from</span>: <mark>src_orders</mark>\n' +
+      '  <span class="k">to</span>: <mark>dst_dwh</mark>',
+  },
+  {
+    id: 'transformations',
+    label: 'transformations.yaml',
+    file: 'jobs/orders/transformations.yaml',
+    note: 'All 18 operations are offered, each with its own parameters. A step carries exactly one operation, and cast only accepts the six known types.',
+    code:
+      '<span class="k">steps</span>:\n' +
+      '  - <mark>select</mark>:\n' +
+      '      <span class="k">columns</span>: <span class="v">[id, amount, status]</span>\n' +
+      '  - <mark>filter</mark>:\n' +
+      '      <span class="k">expr</span>: <span class="v">"status == \'paid\'"</span>\n' +
+      '  - <mark>cast</mark>:\n' +
+      '      <span class="k">mapping</span>:\n' +
+      '        <span class="k">amount</span>: <span class="v">float</span>   <span class="c"># int float str bool date datetime</span>',
+  },
+  {
+    id: 'workflow',
+    label: 'workflow.yaml',
+    file: 'workflow.yaml',
+    note: 'Same conditional logic on the orchestration side: a schedule trigger requires cron, and a job step requires job.',
+    code:
+      '<span class="k">workflow</span>:\n' +
+      '  <span class="k">name</span>: <span class="v">"daily_sales_etl"</span>\n' +
+      '  <span class="k">trigger</span>:\n' +
+      '    <span class="k">type</span>: <mark>schedule</mark>\n' +
+      '    <span class="k">cron</span>: <span class="v">"0 8 * * *"</span>   <span class="c"># required by schedule</span>\n' +
+      '  <span class="k">steps</span>:\n' +
+      '    - <span class="k">name</span>: <span class="v">"extract"</span>\n' +
+      '      <span class="k">type</span>: <span class="v">job</span>\n' +
+      '      <span class="k">job</span>: <span class="v">"./jobs/extract"</span>\n' +
+      '      <span class="k">depends_on</span>: <span class="v">[]</span>',
+  },
+];
+
+/* Erreurs volontaires du dossier examples/invalid_examples. Elles sont decrites,
+   jamais mises en scene : la page ne montre aucun manifeste fautif. */
+const expected = [
+  { file: 'destinations.yaml', count: '4', sample: 'Missing property "key" — upsert needs one' },
+  { file: 'transformations.yaml', count: '7', sample: '"integer" is not one of int, float, str, bool, date, datetime' },
+  { file: 'workflow.yaml', count: '5', sample: '"cron" is a required property' },
+];
+---
+
+<BaseLayout
+  title="VS Code extension"
+  description="Install and test the HYDRA ETL extension for Visual Studio Code: context-aware completion, live validation and snippets for job and workflow manifests."
+>
+  <style is:global set:html={css}></style>
+
+  <header class="topbar">
+    <a class="brand" href="/get-started" aria-label="Hydra Get started">
+      <img class="logo" src="/hydra-mark.png" width="22" height="22" alt="" decoding="async" />
+      Hydra Guide
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a class="active" href="/vscode" aria-current="page">VS Code extension</a>
+    </nav>
+    <div class="spacer"></div>
+    <a class="header-cta" href="/guide/sources/csv">Build your first job <span aria-hidden="true">→</span></a>
+    <button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">☰</button>
+    <button class="iconbtn" id="themeBtn" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+    <a href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+  </nav>
+
+  <main class="vs-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/get-started">Get started</a><span aria-hidden="true">/</span><span>VS Code extension</span>
+    </nav>
+
+    <section class="vs-intro">
+      <div class="eyebrow"><span></span>Write manifests faster</div>
+      <h1>VS Code extension</h1>
+      <p>Context-aware completion, live validation and ready-to-fill skeletons for the five Hydra manifests. The extension runs nothing: it speeds up authoring and flags structural mistakes. Cross-file consistency stays the job of <code>hdrctl validate</code>.</p>
+    </section>
+
+    <section aria-labelledby="gainsTitle">
+      <div class="section-head">
+        <h2 id="gainsTitle">What you get</h2>
+        <p>Three mechanisms</p>
+      </div>
+      <div class="gains">
+        <article class="gain">
+          <span class="gain-tag">COMPLETION</span>
+          <h3>Keys that match the context</h3>
+          <p>The offered keys depend on where the cursor sits. A MySQL source offers host and port; a web_api source offers base_url and pagination. Enumerated values come with their explanation.</p>
+        </article>
+        <article class="gain">
+          <span class="gain-tag">VALIDATION</span>
+          <h3>Mistakes shown as you type</h3>
+          <p>Unknown key, wrong type, value outside the allowed set, missing required field, unsatisfied conditional rule. Errors are underlined in the editor and listed in the Problems panel.</p>
+        </article>
+        <article class="gain">
+          <span class="gain-tag">SNIPPETS</span>
+          <h3>Skeletons instead of blank files</h3>
+          <p>32 prefixes, all starting with h. Type hsrc-pg and press Tab to get a complete PostgreSQL source, then Tab through the fields. Fixed-value fields open a dropdown.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="beforeTitle">
+      <div class="section-head">
+        <h2 id="beforeTitle">Before you start</h2>
+      </div>
+      <div class="prereq">
+        <div><b>Visual Studio Code 1.75 or later</b><small>Check under Help then About</small></div>
+        <div><b>Python 3.9 or later</b><small>Used to build the package, not to run the extension</small></div>
+        <div><b>The Hydra repository</b><small>The extension lives in <code>VS Code Extension/</code></small></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="demoTitle">
+      <div class="section-head">
+        <h2 id="demoTitle">Pick a manifest</h2>
+        <p>What the editor knows about each file</p>
+      </div>
+      <div class="demo">
+        <div class="demo-pick" role="tablist" aria-label="Hydra manifests" aria-orientation="vertical">
+          {demo.map((d, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${d.id}`}
+              aria-controls={`panel-${d.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-file={d.file}
+              data-note={d.note}
+            >{d.label}</button>
+          ))}
+        </div>
+        <div class="demo-view">
+          <div class="demo-bar"><i></i><span id="demoFile">{demo[0].file}</span></div>
+          {demo.map((d, i) => (
+            <pre
+              class="demo-code"
+              data-panel
+              role="tabpanel"
+              id={`panel-${d.id}`}
+              aria-labelledby={`tab-${d.id}`}
+              hidden={i !== 0}
+              set:html={d.code}
+            ></pre>
+          ))}
+        </div>
+        <p class="demo-note" id="demoNote" set:html={demo[0].note}></p>
+      </div>
+    </section>
+
+
+
+    <section aria-labelledby="installTitle">
+      <div class="section-head">
+        <h2 id="installTitle">Install</h2>
+        <p>Three steps, about two minutes</p>
+      </div>
+      <div class="steps">
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">01</span>
+            <h3>Install the YAML engine</h3>
+            <span class="step-time">30 SEC</span>
+          </div>
+          <p>The Red Hat YAML extension provides the language server that reads the Hydra schemas. VS Code installs it on its own, since it is declared as a dependency, but you can add it first.</p>
+          <pre class="cmd"><button class="copy" type="button" data-copy="code --install-extension redhat.vscode-yaml" aria-label="Copy the command">Copy</button><b>$</b> code --install-extension redhat.vscode-yaml</pre>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>The extension appears under <code>Ctrl+Shift+X</code>, or a message saying it is already installed.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">02</span>
+            <h3>Build the package</h3>
+            <span class="step-time">10 SEC</span>
+          </div>
+          <p>A .vsix file is a ZIP archive. The build script assembles it with the Python standard library, so neither Node, npm nor vsce is needed.</p>
+          <pre class="cmd"><button class="copy" type="button" data-copy="python build_vsix.py" aria-label="Copy the command">Copy</button><i># from the VS Code Extension directory</i>
+<b>$</b> python build_vsix.py</pre>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>The list of packaged files, then the path to install.</p>
+              <pre class="out">Package built: hydra-etl-0.1.2.vsix  (42.0 KB, 12 entries)
+  extension/schemas/sources.schema.json
+  extension/snippets/hydra.json
+  ...</pre>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen3.png" width="558" height="347" loading="lazy" decoding="async"
+                     alt="The extension directory in Windows Explorer, listing hydra-etl-0.1.2.vsix next to the schemas, snippets and examples folders." />
+                <figcaption>The file appears in the extension directory. <b>Take the highest version</b> — earlier builds are kept but only the latest matters.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">03</span>
+            <h3>Install the package</h3>
+            <span class="step-time">30 SEC</span>
+          </div>
+          <p>Install it from VS Code, never from the file explorer. Two routes lead to the same result — pick either.</p>
+          <div class="routes">
+
+            <div class="route">
+              <h4><span>A</span> From the command line</h4>
+              <pre class="cmd"><button class="copy" type="button" data-copy="code --install-extension hydra-etl-0.1.2.vsix" aria-label="Copy the command">Copy</button><b>$</b> code --install-extension hydra-etl-0.1.2.vsix</pre>
+              <ol>
+                <li>Run it from the extension directory.</li>
+                <li>If <code>code</code> is not recognised, run <b>Shell Command: Install 'code' command in PATH</b> from the command palette first.</li>
+              </ol>
+            </div>
+
+            <div class="route">
+              <h4><span>B</span> From the Extensions panel</h4>
+              <ol>
+                <li>Open <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>X</kbd>.</li>
+                <li>Click the <code>...</code> menu at the top of the panel.</li>
+                <li>Choose <b>Install from VSIX…</b> and pick the file.</li>
+              </ol>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen1.png" width="842" height="517" loading="lazy" decoding="async"
+                     alt="The Extensions panel overflow menu open in VS Code, with the Install from VSIX entry at the bottom of the list." />
+                <figcaption><b>Install from VSIX…</b> sits at the bottom of the overflow menu.</figcaption>
+              </figure>
+            </div>
+
+          </div>
+          <p>Whichever route you took, reload with <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>P</kbd>, then <b>Developer: Reload Window</b>.</p>
+          <div class="callout">
+            <div>
+              <b>Trap</b>
+              <p>Do not double-click the .vsix in the file explorer: Windows hands it to the Visual Studio installer, which refuses it. Do not copy the folder into the extensions directory either — since VS Code 1.74 a directory missing from the registry is ignored at startup, silently.</p>
+            </div>
+          </div>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>A notification confirming the installation, and the extension in the installed list.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">04</span>
+            <h3>Confirm it is active</h3>
+            <span class="step-time">15 SEC</span>
+          </div>
+          <ol>
+            <li>Open <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>X</kbd> and search for <code>Hydra</code>.</li>
+            <li>Check the name, the version and the publisher on the card.</li>
+          </ol>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p><b>HYDRA ETL</b>, version 0.1.2, published by Bechir Bejaoui. The full identifier is <code>Bechir Bejaoui.hydra-etl</code> — it contains a space, so quote it when passing it to a shell.</p>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen2.png" width="1217" height="612" loading="lazy" decoding="async"
+                     alt="The HYDRA ETL extension card in the VS Code Extensions panel, showing version 0.1.2 and the publisher name, with the extension README open beside it." />
+                <figcaption>The card carries the red hydra mark. The pane on the right is this README, rendered by VS Code.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section aria-labelledby="testTitle">
+      <div class="section-head">
+        <h2 id="testTitle">Test it</h2>
+        <p>Five checks, about five minutes</p>
+      </div>
+      <p style="margin:0 0 14px;color:var(--soft);font-size:14.5px">Open the <code>examples/</code> folder of the extension in VS Code. It ships correct manifests and a set of deliberately faulty ones, each error documented in a comment.</p>
+      <div class="steps">
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">T1</span>
+            <h3>Errors are caught</h3>
+            <span class="step-time">1 MIN</span>
+          </div>
+          <ol>
+            <li>Open <code>examples/invalid_examples/destinations.yaml</code>.</li>
+            <li>Open the Problems panel with <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>M</kbd>.</li>
+            <li>Repeat with <code>workflow.yaml</code> and <code>transformations.yaml</code>.</li>
+          </ol>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>Sixteen entries in total, each pointing at the right line. The offending keys are underlined in the editor, and the file tab carries the error count.</p>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen4.png" width="1572" height="786" loading="lazy" decoding="async"
+                     alt="VS Code showing destinations.yaml with underlined keys, and the Problems panel below listing four schema errors with their line and column." />
+                <figcaption>Each entry names the schema that raised it and gives a line and column. <b>Missing property "key"</b> is the conditional rule on <code>upsert</code> firing.</figcaption>
+              </figure>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen5.png" width="572" height="314" loading="lazy" decoding="async"
+                     alt="Right-click menu on a Problems panel entry, offering Fix and Explain." />
+                <figcaption>Right-clicking an entry offers <b>Fix</b> and <b>Explain</b> — these come from VS Code, not from the extension.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">T2</span>
+            <h3>Correct files stay silent</h3>
+            <span class="step-time">30 SEC</span>
+          </div>
+          <ol>
+            <li>Open the four files under <code>examples/valid_job/</code>.</li>
+            <li>Open <code>examples/valid_workflow/workflow.yaml</code>.</li>
+            <li>Look at the Problems panel again.</li>
+          </ol>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>No entry at all. A warning here means the schema is stricter than the engine — worth reporting.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">T3</span>
+            <h3>Completion follows the context</h3>
+            <span class="step-time">1 MIN</span>
+          </div>
+          <p>This is the check that matters: it proves the conditional schemas are wired correctly.</p>
+          <ol>
+            <li>In <code>examples/valid_job/sources.yaml</code>, replace <code>type: mysql</code> with <code>type: web_api</code>.</li>
+            <li>Delete the contents of the <code>connection:</code> block, keeping the key itself.</li>
+            <li>Put the cursor on an indented empty line below it and press <kbd>Ctrl</kbd> <kbd>Space</kbd>.</li>
+          </ol>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>Typing <code>web</code> on the <code>type</code> line already offers <code>web_api</code>. Once it is set, the keys under <code>connection</code> switch from host, port, database, user and password to base_url, auth and pagination.</p>
+              <div class="shots">
+                <figure class="shot">
+                  <img src="/tutorials/vscode/screen6.png" width="678" height="525" loading="lazy" decoding="async"
+                       alt="The sources.yaml editor with type set to web, and a completion popup offering web_api." />
+                  <figcaption>Values are completed too, not just keys.</figcaption>
+                </figure>
+                <figure class="shot">
+                  <img src="/tutorials/vscode/screen7.png" width="745" height="324" loading="lazy" decoding="async"
+                       alt="The same file after switching to web_api, with the connection block now holding url, auth, type and key." />
+                  <figcaption>The connection block now carries API keys instead of database ones.</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">T4</span>
+            <h3>Snippets expand</h3>
+            <span class="step-time">1 MIN</span>
+          </div>
+          <ol>
+            <li>Create an empty file named <code>sources.yaml</code>.</li>
+            <li>Type <code>sources:</code></li>
+            <li>On a new line, press <kbd>Esc</kbd>, then type <code>hsrc-pg</code> and press <kbd>Tab</kbd>.</li>
+            <li>Press <kbd>Tab</kbd> again to move between fields.</li>
+          </ol>
+          <div class="callout">
+            <div>
+              <b>Tip</b>
+              <p>The <kbd>Esc</kbd> matters. On an empty line the schema opens its own key suggestions, and that popup captures the <kbd>Tab</kbd> before the snippet does. Dismissing it first lets the prefix expand. Typing <code>h</code> then <kbd>Ctrl</kbd> <kbd>Space</kbd> lists all 32 prefixes.</p>
+            </div>
+          </div>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>A complete PostgreSQL source, cursor on the source name. On the table or query field, a dropdown opens.</p>
+              <figure class="shot">
+                <img src="/tutorials/vscode/screen8.png" width="1509" height="548" loading="lazy" decoding="async"
+                     alt="A sources.yaml file with the prefix hsr typed, and the suggestion list showing the Hydra snippets, hsrc-pg highlighted as the PostgreSQL source." />
+                <figcaption>Every prefix starts with <b>h</b>, and each carries the manifest it belongs to.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-top">
+            <span class="step-num">T5</span>
+            <h3>Schemas match the engine</h3>
+            <span class="step-time">1 MIN</span>
+          </div>
+          <p>The same checks, run without opening the editor. Useful in continuous integration.</p>
+          <pre class="cmd"><button class="copy" type="button" data-copy="python examples/check_schemas.py" aria-label="Copy the command">Copy</button><b>$</b> pip install jsonschema pyyaml
+<b>$</b> python examples/check_schemas.py</pre>
+          <div class="expect">
+            <div>
+              <b>What you should see</b>
+              <p>Every schema valid, correct manifests clean, faulty ones caught.</p>
+              <pre class="out">=== 1. Schema validity ===
+[  OK  ] destinations.schema.json
+...
+PASSED — every check succeeded.</pre>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section aria-labelledby="errTitle">
+      <div class="section-head">
+        <h2 id="errTitle">Expected errors</h2>
+        <p>What the faulty examples advertise</p>
+      </div>
+      <div class="tablewrap">
+        <table class="errtable">
+          <thead>
+            <tr><th scope="col">File</th><th scope="col">Errors</th><th scope="col">One of them</th></tr>
+          </thead>
+          <tbody>
+            {expected.map((e) => (
+              <tr><td>{e.file}</td><td>{e.count}</td><td>{e.sample}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="troubleTitle">
+      <div class="section-head">
+        <h2 id="troubleTitle">Troubleshooting</h2>
+      </div>
+      <div class="trouble">
+        <details>
+          <summary>The extension is not listed after installing</summary>
+          <div class="body">
+            <p>Copying the folder into the extensions directory no longer works. Since VS Code 1.74, <code>extensions.json</code> acts as the registry, and a directory missing from it is ignored at startup without any message.</p>
+            <p>Install through the .vsix instead, then remove the stray copy.</p>
+          </div>
+        </details>
+        <details>
+          <summary>The VSIX installer refuses the file</summary>
+          <div class="body">
+            <p>The window titled VSIX Installer belongs to Visual Studio, not to VS Code. Windows opens it on double-click.</p>
+            <p>Close it and install from inside VS Code, through <b>Install from VSIX</b> or the <code>code</code> command.</p>
+          </div>
+        </details>
+        <details>
+          <summary>No completion and no errors at all</summary>
+          <div class="body">
+            <p>The YAML language server has not taken over. Check the language mode in the status bar reads YAML, then reload the window once more — the server sometimes needs a second cycle to pick up schemas from a freshly installed extension.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Suggestions disappear while filling in a snippet</summary>
+          <div class="body">
+            <p>The extension sets <code>editor.suggest.snippetsPreventQuickSuggestions</code> to false by default. A workspace or user setting can override it.</p>
+          </div>
+        </details>
+        <details>
+          <summary>A connector type is underlined but the job runs</summary>
+          <div class="body">
+            <p>Connectors supplied by a plugin are not part of the offered list. They are accepted without error, so this should not happen — report the case with the manifest.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section aria-labelledby="limitsTitle">
+      <div class="section-head">
+        <h2 id="limitsTitle">Known limitations</h2>
+        <p>Version 0.1.0</p>
+      </div>
+      <ul class="limits">
+        <li>Validation is structural only. Whether <code>pipeline.from</code> matches a declared source, or a step directory exists, is checked by <code>hdrctl validate</code>.</li>
+        <li>The schemas were written from the Pydantic models by hand and may drift as the DSL evolves.</li>
+        <li>Plugin connectors do not appear in the offered types, though they are accepted.</li>
+        <li>Snippets apply to every YAML file. The <code>h</code> prefix keeps collisions rare.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="nextTitle">
+      <div class="section-head">
+        <h2 id="nextTitle">Next</h2>
+      </div>
+      <div class="linklist">
+        <a href="/dsl"><b>Read the grammar</b><i aria-hidden="true">→</i><small>Every manifest block the schemas are built from, field by field.</small></a>
+        <a href="/cli"><b>Use the CLI</b><i aria-hidden="true">→</i><small>Validate, test and run what you just wrote in the editor.</small></a>
+        <a href="/guide/sources/csv"><b>Build your first job</b><i aria-hidden="true">→</i><small>CSV in, two operations, CSV out — the complete guided example.</small></a>
+      </div>
+    </section>
+  </main>
+
+  <script is:inline set:html={js}></script>
+</BaseLayout>

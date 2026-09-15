@@ -1,0 +1,71 @@
+<div class="crumbs"><a href="/guide">Guide</a><span>›</span><a href="/guide">Sources</a><span>›</span><span>csv</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Workshop 1 · 20 minutes</div>
+    <h1>Ingesting the daily sales export</h1>
+    <p class="lead">A shop receives one CSV a day and opens it by hand. Nine steps to automate the reading, the typing and the filtering — then read what the run tells you.</p>
+  </div>
+</div>
+
+<section class="doc">
+  <h2>Context — a shop that closes its day in Excel</h2>
+  <p>
+    A retailer exports its orders every evening from the point-of-sale software. The file lands in a
+    folder, someone opens it in a spreadsheet, converts the amounts, keeps the large orders and mails
+    the result to the sales manager. Fifteen minutes a day, every day, done by hand.
+  </p>
+
+  <h3>Where things stand</h3>
+  <ul>
+    <li><b>One file a day</b> — <code>sales_2025-03-04.csv</code>, seven orders, six columns.</li>
+    <li><b>Everything is text.</b> A CSV has no types: <code>120.50</code> is a string until someone converts it.</li>
+    <li><b>No trace.</b> Nobody can say afterwards which file produced which figure.</li>
+    <li><b>Manual filtering.</b> The rule — keep orders of 100 and above — lives in a person's head.</li>
+  </ul>
+
+  <h3>The question</h3>
+  <p>
+    How do you read that file automatically, type its columns, apply the rule and write the result —
+    without opening a spreadsheet, and in a way that runs the same tomorrow?
+  </p>
+  <ul class="constraints">
+    <li>Read the file where it sits, without copying or moving it</li>
+    <li>Turn the amounts into numbers before comparing them</li>
+    <li>Keep only the orders of 100 and above</li>
+    <li>Write a file that can be regenerated without piling up</li>
+  </ul>
+
+  <h3>The solution in one line</h3>
+  <p>
+    A Hydra job: four small YAML files in one folder, one command to check them, one command to run.
+  </p>
+</section>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong id="fileName">data/sales_2025-03-04.csv</strong><span class="edit-label">9 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="File of the current step">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Workshop steps">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal">
+      <div class="goal-icon" aria-hidden="true" id="stepNum">1</div>
+      <div><b id="goalTitle">What you do</b><p id="goalText">Create the folder and drop the export inside it.</p></div>
+    </div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">Step 1 · nothing to run yet</span>
+      <button class="btn" id="resetBtn" type="button">↺ Start over</button>
+    </div>
+  </div>
+</section>

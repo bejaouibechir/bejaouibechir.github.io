@@ -1,0 +1,42 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>5 · Transformations</span><span>›</span><span>Compute</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Grammar element · operations.compute</div>
+    <h1>Compute creates values without hiding the contract</h1>
+    <p class="lead">Calculate handles expressions; script handles declared custom outputs. Both name what they add.</p>
+  </div>
+</div>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong>transformations.yaml</strong><span class="edit-label">4 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+    <div class="control">
+      <label for="selCase"><span>the computation uses</span></label>
+      <select id="selCase">
+        <option value="calculate">a calculate expression</option>
+        <option value="row-script">a row script</option>
+        <option value="vectorized">a vectorized script</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal"><div class="goal-icon" aria-hidden="true">5</div><div><b id="goalTitle">What the step produces</b><p>Named output columns derived from values already present in the current frame.</p></div></div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict tall" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">✓ amount_with_tax calculated</span>
+      <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+    </div>
+  </div>
+</section>

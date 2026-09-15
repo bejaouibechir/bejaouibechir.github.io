@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-transformations-compute.head.html?raw';
+import tail from '../../../_mock/dsl-element-transformations-compute.tail.html?raw';
+import js from '../../../_mock/dsl-element-transformations-compute.js?raw';
+---
+
+<BaseLayout title="Compute — Hydra DSL" description="Create derived columns with calculate or restricted script operations.">
+  <style is:global set:html={css}></style>
+  <DslShell current="transformations-compute">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

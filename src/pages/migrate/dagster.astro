@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import css from '../../_mock/tunnel.css?raw';
+import body from '../../_mock/tunnel-dagster.body.html?raw';
+import js from '../../_mock/tunnel-dagster.js?raw';
+---
+
+<BaseLayout title="Migrate from Dagster" description={"Dagster → Hydra. Paste an asset, get the manifest, with everything Dagster keeps owning listed."}>
+  <style is:global set:html={css}></style>
+  <Fragment set:html={body} />
+  <script is:inline set:html={js}></script>
+</BaseLayout>

@@ -1,0 +1,63 @@
+<section class="doc">
+  <h2>What <code>destinations.yaml</code> is</h2>
+  <p><code>destinations.yaml</code> declares <b>the systems a job is allowed to write to</b>. Its root <code>destinations</code> mapping gives each target a local identifier; <code>pipeline.to</code> selects one.</p>
+  <p>It does not choose the data or transform it. Sources read, transformations reshape, and a destination receives the final rows with the writing policy declared here.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Identity</b> — the identifier referenced by <code>pipeline.to</code>.</li>
+    <li><b>Reachability</b> — <code>type</code> selects a connector and <code>connection</code> supplies its settings.</li>
+    <li><b>Writing policy</b> — <code>load</code> names the table or file, the mode, optional upsert keys, and batch size.</li>
+  </ul>
+
+  <h2>The write policy belongs with the target</h2>
+  <p>The same six rows can replace a reporting file, append to a history, or update matching database records. That choice belongs beside the target because it describes how that system accepts rows, not how the rows were produced.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 122" role="img" aria-labelledby="dstTitle dstDesc" class="cnx">
+      <title id="dstTitle">The destination turns final rows into a write operation</title>
+      <desc id="dstDesc">Six transformed rows enter the selected destination; its connector, target and load mode determine the write.</desc>
+      <rect class="d-box" x="12" y="28" width="146" height="50" rx="9"/>
+      <text class="d-txt" x="28" y="50">6 final rows</text><text class="d-sub" x="28" y="67">from transformations</text>
+      <path class="d-arrow lit" d="M162 53 H 214" marker-end="url(#dstArrow)"/>
+      <rect class="d-box lit" x="222" y="18" width="270" height="70" rx="9"/>
+      <text class="d-key lit" x="238" y="42">dest_big_orders</text><text class="d-sub" x="238" y="59">csv · big_orders.csv · replace</text><text class="d-sub" x="238" y="76">connector · target · policy</text>
+      <path class="d-arrow lit" d="M496 53 H 548" marker-end="url(#dstArrow)"/>
+      <rect class="d-box" x="556" y="28" width="148" height="50" rx="9"/>
+      <text class="d-txt" x="572" y="50">big_orders.csv</text><text class="d-sub" x="572" y="67">6 rows written</text>
+      <text class="d-foot" x="12" y="112">The rows are already final; the destination decides only where and how they land.</text>
+      <defs><marker id="dstArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>The destination owns the last decision: how the target is written.</figcaption>
+  </figure>
+
+  <h2>Run the complete declaration</h2>
+  <p>This is the destination used by the tutorial job:</p>
+  <pre class="yaml">version: "1.0"
+destinations:
+  dest_big_orders:
+    type: csv
+    connection:
+      base_path: "examples/tutorial/01-first-job/out"
+    load:
+      table: big_orders.csv
+      mode: replace</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/01-first-job -d examples/tutorial/01-first-job/destinations.yaml</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 7.8s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -d, --destinations FILE   explicit path to destinations.yaml
+  --dry-run                 validate configuration without writing data
+  -v, -vv, -vvv             more detail, up to full logs</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/pipeline-yaml">pipeline.yaml — selecting this destination</a></li>
+    <li><a href="/dsl/sources-yaml">sources.yaml — where rows enter</a></li>
+    <li><a href="/dsl/transformations-yaml">transformations.yaml — shaping rows before the write</a></li>
+    <li><a href="/dsl/tutorial/01-first-job">Lesson 1 — the complete job</a></li>
+    <li><a href="/dsl/reference">Reference — every destination key</a></li>
+  </ul>
+</section>

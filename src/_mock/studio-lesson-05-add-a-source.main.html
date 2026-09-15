@@ -1,0 +1,169 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 5</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 5 of 14 · Add a source</div><h1>Create a job, then give it a source</h1><p class="lead">A job is four manifests in a folder. Studio writes them for you — and the first one you fill in is the source.</p></div>
+<div class="lesson-meta"><span class="mono">Sources</span><span>about 20 minutes</span><span>palette understood</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Create a job from the canvas, learn what that gesture writes on disk, then place a source in it and configure it. Along the way, tell <b>archive</b> from <b>delete</b> before you need the difference.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>What a job is</h3>
+  <p>A job is not a file — it is a folder holding <b>four manifests</b>, and it is only complete when all four exist.</p>
+  <table><thead><tr><th>Manifest</th><th>Answers</th></tr></thead><tbody>
+    <tr><td><code>sources.yaml</code></td><td>Where does the data come from?</td></tr>
+    <tr><td><code>transformations.yaml</code></td><td>What happens to it along the way?</td></tr>
+    <tr><td><code>destinations.yaml</code></td><td>Where does it go?</td></tr>
+    <tr><td><code>pipeline.yaml</code></td><td>Which source feeds which destination?</td></tr>
+  </tbody></table>
+  <p>You can write those four by hand, and <code>hdrctl</code> will run them. Studio offers the other route: you design on a canvas and it writes the same four files. Neither is more legitimate — they produce the same folder.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A workflow open in the editor.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Create a job</h3>
+    <h4>Objective</h4><p>Add a job to the project without leaving the canvas.</p>
+    <h4>Actions</h4><ol><li>Open the <b>Jobs configuration</b> tab.</li><li>Find the <b>+</b> button at the bottom left of the scene.</li><li>Select it, and name the job.</li></ol>
+    <pre class="cmd">Jobs configuration → +</pre>
+    <p>The button sits in the tab bar, under the palette. One press creates the folder and its four manifests, then opens an empty canvas for it. Nothing else is required — a job with no node is a valid, if idle, job.</p>
+    <div class="expect"><b>What you should see</b><p>A new tab beside the existing ones, already selected, and an empty canvas beside the source palette.</p><pre class="out">jobs/&lt;name&gt;/
+  sources.yaml
+  transformations.yaml
+  destinations.yaml
+  pipeline.yaml</pre>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen1.png" width="1595" height="991" loading="lazy" decoding="async" alt="The Jobs configuration scene with the source palette on the left and the plus button highlighted in red at the bottom left of the tab bar." /><figcaption>The <b>+</b> is easy to miss — it is at the very bottom left, in the tab bar.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Add as many jobs as the work needs</h3>
+    <h4>Objective</h4><p>See that a project holds a library of jobs, not a single one.</p>
+    <h4>Actions</h4><ol><li>Press <b>+</b> again to create a second job.</li><li>Switch between the two tabs and note that each keeps its own canvas.</li><li>Open <b>Workflow configuration</b> and expand <b>Jobs</b> in the palette.</li></ol>
+    <pre class="cmd">Jobs configuration → + → Workflow configuration → Jobs</pre>
+    <p>Each job is independent: its own folder, its own four manifests, its own canvas. What connects them is the workflow, and nothing else.</p>
+    <div class="callout"><b>Tip</b><p>Every job you create <b>joins the workflow palette by itself</b>. You never register it anywhere — the <b>Jobs</b> category simply lists what the project contains. That is what makes a job reusable: design it once, orchestrate it in as many workflows as you like.</p></div>
+    <div class="expect"><b>What you should see</b><p>The count beside <b>Jobs</b> matches the number of tabs, and each job appears by name.</p><pre class="out">Jobs (2)
+  job1
+  job2</pre>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen3.png" width="1539" height="945" loading="lazy" decoding="async" alt="The workflow scene with two jobs listed in the palette under Jobs, and one job node selected on the canvas showing its hover toolbar." /><figcaption>Two jobs in the project, two entries in the palette. The node on the canvas carries a red badge because the job is not configured yet.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Rename, archive or delete a job</h3>
+    <h4>Objective</h4><p>Learn the three ways to dispose of a job, and which one is reversible.</p>
+    <h4>Actions</h4><ol><li>Right-click a job in the <b>Jobs</b> list of the palette, or in its tab.</li><li>Read the three entries in the menu.</li><li>Close the menu without choosing.</li></ol>
+    <pre class="cmd">Jobs → right-click → Rename · Archive · Delete</pre>
+    <p><b>Archive</b> and <b>Delete</b> look alike and are not. This is the difference worth knowing before you need it.</p>
+    <table><thead><tr><th>Action</th><th>What happens on disk</th><th>Reversible</th></tr></thead><tbody>
+      <tr><td><b>Rename</b></td><td>The job takes a new name; its four manifests are untouched.</td><td>—</td></tr>
+      <tr><td><b>Archive</b></td><td>The folder is renamed <code>&lt;name&gt;.backup</code>. Every manifest survives. A second archive of the same name is timestamped, so nothing is ever overwritten.</td><td><b>Yes</b> — rename the folder back.</td></tr>
+      <tr><td><b>Delete</b></td><td>The folder and its four manifests are removed.</td><td><b>No.</b></td></tr>
+    </tbody></table>
+    <div class="callout"><b>Trap</b><p>A job still placed on the workflow canvas <b>cannot be archived</b>. Studio refuses and tells you to remove the node first — otherwise the workflow would point at a job that no longer answers to that name. Remove the node, then archive.</p></div>
+    <div class="expect"><b>What you should see</b><p>Three entries, <b>Delete</b> set apart below a separator and printed in red. The separator is the warning.</p><pre class="out">Rename
+Archive
+────────
+Delete</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Enter a job from the workflow</h3>
+    <h4>Objective</h4><p>Move from orchestration to design without hunting for a tab.</p>
+    <h4>Actions</h4><ol><li>Stay on <b>Workflow configuration</b>.</li><li>Double-click a job node on the canvas.</li><li>Read the breadcrumb once the scene has changed.</li></ol>
+    <pre class="cmd">Workflow configuration → double-click a job node</pre>
+    <p>Double-clicking a job node does not open a dialog — it takes you inside. The breadcrumb then reads the workflow, then the job, so you always know how deep you are.</p>
+    <div class="expect"><b>What you should see</b><p>The scene switches to <b>Jobs configuration</b>, on the job you double-clicked, with the source palette in place of the action palette.</p><pre class="out">wf1 / job1   1 nodes · 0 edges   Valid</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Drop a source, and read its warning</h3>
+    <h4>Objective</h4><p>Place a node, and learn what Studio says about a node it cannot use yet.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Sources</b> in the palette.</li><li>Drag <b>CSV</b> onto the canvas.</li><li>Look at the top right corner of the node.</li></ol>
+    <pre class="cmd">Sources → CSV → drag onto the canvas</pre>
+    <p>A freshly dropped node carries a small red exclamation mark. It is not an error — it is an unanswered question. The node exists, its type is chosen, but the one thing it needs, a file to read, is still missing.</p>
+    <div class="expect"><b>What you should see</b><p>A node named after its type, with a badge in the corner. The badge disappears the moment the required field is filled.</p><pre class="out">source_csv_1
+CSV   (!)</pre>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen4.png" width="1632" height="863" loading="lazy" decoding="async" alt="A CSV source node freshly dropped on the job canvas, carrying a red exclamation badge in its top-right corner." /><figcaption>The red badge means <b>not configured yet</b>, never <b>broken</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Configure a file source</h3>
+    <h4>Objective</h4><p>Answer the only question a CSV asks.</p>
+    <h4>Actions</h4><ol><li>Double-click the node.</li><li>Fill <b>File path</b>, or use <b>Browse</b> to pick the file.</li><li>Save, and watch the badge go.</li></ol>
+    <pre class="cmd">double-click → File path → Save</pre>
+    <p>One required field, marked with a red asterisk. Prefer <b>Browse</b> to typing: it writes a path that exists, which removes the most common cause of a job failing on its first run.</p>
+    <div class="expect"><b>What you should see</b><p>The badge disappears and the node takes the step name you gave it. That name is the identifier <code>pipeline.yaml</code> will refer to.</p><pre class="out">CSV  SOURCE   Reads a CSV file
+  STEP NAME   source_csv_1
+  FILE PATH * ./data/file.csv</pre>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen5.png" width="1913" height="905" loading="lazy" decoding="async" alt="The CSV source dialog, with a step name, a required file path field and a Browse button." /><figcaption>JSON and Parquet ask exactly the same question — only the format differs.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>07</i>Configure a database source</h3>
+    <h4>Objective</h4><p>Read a connection form, and learn where a password belongs.</p>
+    <h4>Actions</h4><ol><li>Drag <b>PostgreSQL</b>, <b>MySQL</b> or <b>MongoDB</b> onto the canvas.</li><li>Choose between <b>Table</b> and <b>SQL query</b>.</li><li>Read the tip under the password field.</li></ol>
+    <pre class="cmd">Sources → PostgreSQL → Table | SQL query</pre>
+    <p>A database asks more than a file, and the first choice shapes the rest. <b>Table</b> reads a whole table. <b>SQL query</b> lets the server do the filtering and the joining before a single row reaches Hydra — usually the faster option on a large table.</p>
+    <div class="callout"><b>Never type a password here</b><p>Write <code>${ENV:MY_SECRET}</code> instead, and define the real value under <b>Environments</b>, in a <code>.env</code> file kept out of Git. Studio says so under the field, and it is the one rule to respect without exception: a manifest is a file you commit, share and paste into a ticket.</p></div>
+    <div class="expect"><b>What you should see</b><p>Required fields marked with a red asterisk — the table, the host, the database and the user. The port is pre-filled with the usual value for that engine.</p><pre class="out">PostgreSQL  SOURCE   PostgreSQL query
+  DATA SOURCE   Table | SQL query
+  TABLE *  HOST *  PORT 5432  DATABASE *  USER *  PASSWORD</pre>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen6.png" width="703" height="1253" loading="lazy" decoding="async" alt="The PostgreSQL source dialog, with a Table or SQL query switch, connection fields, and a security tip under the password field recommending an environment reference." /><figcaption>The password field shows the syntax to use, and names where the real value belongs.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Configure an HTTP source</h3>
+    <h4>Objective</h4><p>Read from a service instead of a file or a table.</p>
+    <h4>Actions</h4><ol><li>Drag <b>Web API</b> onto the canvas.</li><li>Enter the endpoint URL.</li><li>Open the <b>Method</b> list and read the four verbs.</li></ol>
+    <pre class="cmd">Sources → Web API → URL · Method</pre>
+    <p>The URL is the only required field; the method defaults to <b>GET</b>, which is what reading normally means. The other three exist because some services expect a <b>POST</b> to return a result — a search endpoint taking its criteria in the body, for instance.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen7.png" width="1911" height="946" loading="lazy" decoding="async" alt="The Web API source dialog, with a required URL field and a method list set to GET." /><figcaption><b>Web API.</b> One required field, and a method that defaults to reading.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-05-add-a-source/screen8.png" width="1911" height="986" loading="lazy" decoding="async" alt="The same dialog with the method list open, showing GET, POST, PUT and DELETE." /><figcaption>Four verbs. <b>GET</b> covers almost every case where an API is a source.</figcaption></figure>
+    </div>
+    <div class="callout"><b>Web API reads, it never writes</b><p>There is no HTTP destination in the palette. To send data out over HTTP, orchestrate a <b>Webhook</b> action in the workflow scene instead. Same protocol, opposite direction, different scene.</p></div>
+    <div class="expect"><b>What you should see</b><p>A short form, and a method list holding exactly four entries.</p><pre class="out">Web API  SOURCE   REST HTTP call
+  URL *
+  METHOD   GET  POST  PUT  DELETE</pre>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">Any job is <b>four manifests in a folder</b>. Studio writes them, <code>hdrctl</code> reads them.</p>
+  <p data-kind="TRAP">A red badge means <b>not configured</b>, not broken. It clears as soon as the required field is filled.</p>
+  <p data-kind="TIP">Reach for <b>Browse</b> rather than typing a path. A path that exists cannot be misspelled.</p>
+  <p data-kind="TRAP">A password never belongs in a node. Write <b>${ENV:NAME}</b> and keep the value in <b>Environments</b>.</p>
+  <p data-kind="TIP">On a large table, prefer <b>SQL query</b> to <b>Table</b>. Filtering at the server saves rows Hydra never reads.</p>
+  <p data-kind="TRAP">Archiving a job placed on a canvas is <b>refused</b>. Remove the node first, then archive.</p>
+  <p data-kind="TIP">An <b>archive</b> keeps the folder as <code>.backup</code>; a <b>delete</b> keeps nothing at all.</p>
+  <p data-kind="TRAP">Double-clicking a job node <b>changes scene</b>. It does not open a dialog — look at the breadcrumb.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Job creation</td><td>A tab appears, and a folder with four manifests</td></tr>
+    <tr><td>Workflow palette</td><td>Lists the job without any registration step</td></tr>
+    <tr><td>Job menu</td><td>Rename, Archive, then Delete below a separator</td></tr>
+    <tr><td>Fresh node</td><td>Carries a red badge until it is configured</td></tr>
+    <tr><td>CSV source</td><td>One required field: the file path</td></tr>
+    <tr><td>Database source</td><td>Table or SQL query, and a password written as <code>${ENV:NAME}</code></td></tr>
+    <tr><td>Web API source</td><td>A URL, and a method defaulting to GET</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>No <b>+</b> button</td><td>You are in the workflow scene</td><td>Switch to <b>Jobs configuration</b>; the button is at the bottom left</td></tr>
+    <tr><td>The badge stays after saving</td><td>A required field is still empty</td><td>Reopen the node and look for the red asterisk</td></tr>
+    <tr><td>Archive is refused</td><td>The job is placed on the workflow canvas</td><td>Delete the node from the canvas, then archive</td></tr>
+    <tr><td>The job runs but reads nothing</td><td>The path is valid but the file is elsewhere</td><td>Reopen the source and use <b>Browse</b></td></tr>
+    <tr><td>A password ended up in the manifest</td><td>The value was typed into the field</td><td>Replace it with <code>${ENV:NAME}</code> and rotate the secret</td></tr>
+    <tr><td>No HTTP destination in the palette</td><td>Web API is a source only</td><td>Use the <b>Webhook</b> action in the workflow scene</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>The job exists and knows where its data comes from. The next lesson places what comes after it: the transformations that reshape the data on its way through.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/06-add-a-transformation">Add a transformation <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/dsl/interpolation">Secrets and interpolation</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

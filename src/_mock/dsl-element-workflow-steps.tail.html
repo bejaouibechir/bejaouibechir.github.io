@@ -1,0 +1,70 @@
+<section class="doc">
+  <h2>What <code>workflow.steps</code> is</h2>
+  <p>Workflow <code>steps</code> is the list of <b>named nodes in an orchestration graph</b>.</p>
+  <p>It is not an ordered transformation list. Runtime groups come from <code>depends_on</code>; independent nodes may run in parallel even when written on different lines.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Identity and kind</b> — Unique name plus <code>job</code> or <code>action</code> type.</li>
+    <li><b>Work target</b> — A job directory or action name with parameters.</li>
+    <li><b>Control</b> — Dependencies, condition, enabled flag, failure policy, and optional retry.</li>
+  </ul>
+
+  <h2>Edges make the schedule</h2>
+  <p>List order keeps YAML readable. Dependency edges create the executable plan, so review <code>depends_on</code> whenever you need to understand sequencing or parallelism.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="workflow-stepsTitle workflow-stepsDesc" class="cnx">
+      <title id="workflow-stepsTitle">Dependencies turn workflow steps into a graph</title>
+      <desc id="workflow-stepsDesc">The publish step depends on prepare and therefore runs in the next execution group.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">prepare</text><text class="d-sub" x="28" y="70">ready node</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#workflow-stepsArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">depends_on</text><text class="d-sub" x="282" y="68">directed edge</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#workflow-stepsArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">publish</text><text class="d-sub" x="540" y="70">next group</text>
+      <text class="d-foot" x="12" y="116">Without the edge, both actions would be ready together.</text>
+      <defs><marker id="workflow-stepsArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>Names create nodes; depends_on creates order.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">workflow:
+  version: "1.0"
+  name: docs_workflow
+  description: Two actions used by the DSL documentation.
+  trigger: {type: manual}
+  steps:
+    - name: prepare
+      type: action
+      action: log
+      params: {message: "Preparation complete."}
+      retry: {max: 2, delay: 0, backoff: fixed}
+    - name: publish
+      type: action
+      action: log
+      params: {message: "Publication complete."}
+      depends_on: [prepare]
+      when: "1 == 1"
+      on_failure: fail</pre>
+  <pre class="cmd">hdrctl workflow run examples/tutorial/dsl-elements/workflow.yaml</pre>
+  <pre class="cmd out">  ✓  Step 'prepare' OK (0.0s)
+  ✓  Step 'publish' OK (0.0s)
+
+  ✅ Workflow 'docs_workflow' completed in 0.0s — 2/2 steps OK</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl workflow run --help</code>:</p>
+  <pre class="cmd">hdrctl workflow run PATH
+  PATH          path to workflow.yaml
+  --lang LANG   interface language
+  -h, --help    show command help</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/workflow/trigger">trigger — starting the graph</a></li>
+    <li><a href="/dsl/workflow/retry">retry — attempts around one node</a></li>
+    <li><a href="/dsl/expressions/when">step.when — conditional readiness</a></li>
+    <li><a href="/dsl/workflow-yaml">workflow.yaml — complete graph</a></li>
+    <li><a href="/dsl/reference">Reference — all step fields</a></li>
+  </ul>
+</section>

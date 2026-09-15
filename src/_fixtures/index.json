@@ -1,0 +1,90 @@
+{
+ "generated_from": "PandasEngine",
+ "cases": [
+  {
+   "op": "select",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "rename",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "cast",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "filter",
+   "rows_in": 30,
+   "rows_out": 13
+  },
+  {
+   "op": "calculate",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "sort",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "deduplicate",
+   "rows_in": 30,
+   "rows_out": 28
+  },
+  {
+   "op": "fill_null",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "trim",
+   "rows_in": 8,
+   "rows_out": 8
+  },
+  {
+   "op": "clean",
+   "rows_in": 8,
+   "rows_out": 8
+  },
+  {
+   "op": "aggregate",
+   "rows_in": 30,
+   "rows_out": 3
+  },
+  {
+   "op": "join",
+   "rows_in": 30,
+   "rows_out": 30
+  },
+  {
+   "op": "merge",
+   "rows_in": 8,
+   "rows_out": 8
+  },
+  {
+   "op": "union",
+   "rows_in": 30,
+   "rows_out": 34
+  },
+  {
+   "op": "pivot",
+   "rows_in": 30,
+   "rows_out": 9
+  },
+  {
+   "op": "unpivot",
+   "rows_in": 5,
+   "rows_out": 20
+  },
+  {
+   "op": "transpose",
+   "rows_in": 5,
+   "rows_out": 4
+  }
+ ]
+}

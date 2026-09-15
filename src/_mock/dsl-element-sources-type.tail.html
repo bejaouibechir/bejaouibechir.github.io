@@ -1,0 +1,79 @@
+<section class="doc">
+  <h2>What <code>sources.&lt;id&gt;.type</code> is</h2>
+  <p><code>type</code> is the discriminator that tells Hydra <b>which connector must interpret a source declaration</b>.</p>
+  <p>It is not a file format hint applied after reading. Connector construction happens first; that connector owns the accepted connection settings and extraction behavior.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>One normalized string</b> — Whitespace is trimmed and the value is lower-cased.</li>
+    <li><b>A registered connector name</b> — CSV and JSON are built in; database and optional connectors use the same slot.</li>
+    <li><b>A downstream contract</b> — The selected connector interprets <code>connection</code> and <code>extract</code>.</li>
+  </ul>
+
+  <h2>The type changes the contract</h2>
+  <p>The outer YAML stays stable while the inner meaning changes. Choose <code>type</code> first, then fill the connection and extraction blocks that belong to that connector.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="sources-typeTitle sources-typeDesc" class="cnx">
+      <title id="sources-typeTitle">Type selects the connector contract</title>
+      <desc id="sources-typeDesc">The csv type selects the CSV connector, which interprets connection and extract to read orders.csv.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">type: csv</text><text class="d-sub" x="28" y="70">one discriminator</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#sources-typeArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">CSV connector</text><text class="d-sub" x="282" y="68">interprets both blocks</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#sources-typeArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">orders.csv</text><text class="d-sub" x="540" y="70">rows produced</text>
+      <text class="d-foot" x="12" y="116">The same keys are not interpreted by a generic reader; the selected connector owns them.</text>
+      <defs><marker id="sources-typeArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>One word selects the code that reads the rest of the declaration.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+sources:
+  src_orders:
+    type: csv
+    connection:
+      base_path: "data/canonical"
+    extract:
+      table: orders.csv
+      batch_size: 10000
+    schema:
+      mode: manual
+      fields:
+        - name: order_id
+          type: string
+          required: true
+        - name: amount
+          type: float
+      drift_policy: warn
+      validation_policy: best_effort
+      sample_size: 100
+  src_orders_extra:
+    type: csv
+    connection:
+      base_path: "data/canonical"
+    extract:
+      table: orders_extra.csv
+      batch_size: 10000</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.6s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/sources-yaml">sources.yaml — the catalogue</a></li>
+    <li><a href="/dsl/sources">connection — connector settings</a></li>
+    <li><a href="/dsl/sources/extract">extract — what to read</a></li>
+    <li><a href="/dsl/sources/schema">schema — expected fields</a></li>
+    <li><a href="/dsl/reference">Reference — every source key</a></li>
+  </ul>
+</section>

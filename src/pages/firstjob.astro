@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import baseCss from '../_mock/get-started.css?raw';
+import lessonCss from '../_mock/cli-lesson.css?raw';
+import pageCss from '../_mock/firstjob.css?raw';
+import js from '../_mock/get-started.js?raw';
+---
+
+<BaseLayout title="Build your first Studio job" description="Download and import a complete Hydra job, inspect its four manifests, and run it in a blank Studio project.">
+  <style is:global set:html={baseCss}></style>
+  <style is:global set:html={lessonCss}></style>
+  <style is:global set:html={pageCss}></style>
+
+  <header class="topbar">
+    <a class="brand" href="/get-started" aria-label="Hydra Get started">
+      <img class="logo" src="/hydra-mark.png" width="22" height="22" alt="" decoding="async" />
+      Hydra Guide
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="active" href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+    </nav>
+    <div class="spacer"></div>
+    <a class="header-cta" href="/examples/first-job-example.zip" download>Download the job <span aria-hidden="true">↓</span></a>
+    <button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">☰</button>
+    <button class="iconbtn" id="themeBtn" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+    <a class="active" href="/get-started">Get started</a><a href="/cli">Hydra CLI</a><a href="/studio">Hydra Studio</a><a href="/playground">Playground</a><a href="/dsl">Hydra DSL</a><a href="/guide">Guide</a><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a>
+  </nav>
+
+  <main class="firstjob-wrap">
+    <div class="crumbs"><a href="/get-started">Get started</a><span>›</span><span>Build your first job</span></div>
+    <div class="lesson-head">
+      <div class="eyebrow"><span></span>Hydra Studio quickstart</div>
+      <h1>Build your first Studio job</h1>
+      <p class="lead">Download a working file-to-file example, import it into a blank Studio project, inspect its four manifests, and verify its first execution.</p>
+      <div class="firstjob-hero-actions"><a class="primary" href="/examples/first-job-example.zip" download>Download the complete example ↓</a><a href="/studio/01-open-a-project">Review project creation</a></div>
+    </div>
+    <div class="lesson-meta"><span class="mono">first-project / first-workflow / first-job-example</span><span>about 20 minutes</span><span>4 manifests + 1 CSV</span></div>
+
+    <section class="doc">
+      <h2>1. Download the example</h2>
+      <p>Take the complete archive or download only the files you need. The archive preserves the expected folder structure.</p>
+
+      <div class="download-grid">
+        <a class="download-card bundle" href="/examples/first-job-example.zip" download><span class="file-icon">ZIP</span><span><b>first-job-example.zip</b><small>Four manifests, input data, and README</small></span><i aria-hidden="true">↓</i></a>
+        <a class="download-card" href="/examples/first-job/sources.yaml" download><span class="file-icon">YAML</span><span><b>sources.yaml</b><small>Declares the orders CSV input</small></span><i aria-hidden="true">↓</i></a>
+        <a class="download-card" href="/examples/first-job/destinations.yaml" download><span class="file-icon">YAML</span><span><b>destinations.yaml</b><small>Writes the cleaned orders CSV</small></span><i aria-hidden="true">↓</i></a>
+        <a class="download-card" href="/examples/first-job/transformations.yaml" download><span class="file-icon">YAML</span><span><b>transformations.yaml</b><small>Filters, casts, cleans, selects, and sorts</small></span><i aria-hidden="true">↓</i></a>
+        <a class="download-card" href="/examples/first-job/pipeline.yaml" download><span class="file-icon">YAML</span><span><b>pipeline.yaml</b><small>Connects source to destination</small></span><i aria-hidden="true">↓</i></a>
+        <a class="download-card" href="/examples/first-job/data/orders.csv" download><span class="file-icon">CSV</span><span><b>orders.csv</b><small>Twelve input rows</small></span><i aria-hidden="true">↓</i></a>
+      </div>
+
+      <div class="callout"><b>Expected project structure</b><p>Studio stores jobs below the project. Keep the input and output folders at project level so the relative paths in the manifests resolve unchanged.</p></div>
+      <pre class="out">first-project/
+├── data/
+│   └── orders.csv
+├── output/
+├── jobs/
+│   └── first-job-example/
+│       ├── sources.yaml
+│       ├── destinations.yaml
+│       ├── transformations.yaml
+│       └── pipeline.yaml
+└── workflows/
+    └── first-workflow/</pre>
+
+      <h2>2. Integrate the job in Studio</h2>
+
+      <div class="step">
+        <h3><i>01</i>Create a blank project</h3>
+        <h4>Actions</h4><ol><li>Open Hydra Studio.</li><li>Create a project named <code>first-project</code>.</li><li>Choose the blank or empty project option.</li><li>Open the new project.</li></ol>
+        <div class="expect"><b>What you should see</b><p><code>first-project</code> opens without an existing workflow or job.</p></div>
+      </div>
+
+      <div class="step">
+        <h3><i>02</i>Create the first workflow</h3>
+        <h4>Actions</h4><ol><li>Create a workflow named <code>first-workflow</code>.</li><li>Choose <b>Manual</b> as its trigger.</li><li>Open the workflow editor.</li></ol>
+        <div class="expect"><b>What you should see</b><p>The header identifies <code>first-workflow</code> and the editor opens on an empty canvas.</p></div>
+      </div>
+
+      <div class="step">
+        <h3><i>03</i>Import the downloaded job</h3>
+        <h4>Actions</h4><ol><li>Extract <code>first-job-example.zip</code>.</li><li>In Studio, select <b>Workflow configuration</b>.</li><li>Open <b>Import</b>, then select <b>Import a job</b>.</li><li>Choose the extracted folder that contains the four YAML manifests.</li><li>When the browser asks for permission, select <b>Upload</b>.</li></ol>
+        <div class="expect"><b>What you should see</b><p>Studio reads the four manifests, creates a job named from the selected folder, and adds it to the project.</p></div>
+        <div class="shots">
+          <figure class="shot"><img src="/tutorials/first_job/screen1.png" width="1903" height="946" loading="lazy" decoding="async" alt="Hydra Studio Workflow configuration with the Import menu open on Import a job" /><figcaption><b>Choose the job folder.</b> The import command expects a folder containing four YAML files.</figcaption></figure>
+          <figure class="shot"><img src="/tutorials/first_job/screen2.png" width="1917" height="987" loading="lazy" decoding="async" alt="Browser confirmation asking permission to upload every file from the first-job-example folder" /><figcaption><b>Allow the folder upload.</b> Confirm only after checking that the selected folder is the extracted example.</figcaption></figure>
+        </div>
+        <div class="callout"><b>Manual alternative</b><p>If folder import is unavailable, open <b>Jobs configuration</b>, select the <b>+</b> button, create <code>first-job-example</code>, then paste the four downloaded manifests into their matching Hydra DSL tabs.</p></div>
+      </div>
+
+      <div class="step">
+        <h3><i>04</i>Explore the imported job</h3>
+        <h4>Actions</h4><ol><li>Switch to <b>Jobs configuration</b>.</li><li>Select the <code>first-job-example</code> tab.</li><li>Read the source node, destination node, connecting edge, and validity indicator.</li><li>Confirm that <b>Run Job</b> is available.</li></ol>
+        <div class="expect"><b>What you should see</b><p>The imported declarations become a two-node graph: <code>src_orders</code> flows to <code>dst_orders_clean</code>, and the header reports <b>Valid</b>.</p></div>
+        <figure class="shot"><img src="/tutorials/first_job/screen3.png" width="1912" height="986" loading="lazy" decoding="async" alt="Imported first-job-example open in Jobs configuration with source and destination nodes connected" /><figcaption><b>The job after import.</b> The tab at the bottom identifies the imported folder; the canvas shows the pipeline reconstructed from its manifests.</figcaption></figure>
+      </div>
+
+      <div class="step">
+        <h3><i>05</i>Explore the four DSL manifests</h3>
+        <h4>Actions</h4><ol><li>Select <b>Hydra DSL</b>.</li><li>Open <b>Sources</b>, <b>Transformations</b>, <b>Destinations</b>, and <b>Pipeline</b> in turn.</li><li>Compare each panel with the downloaded file of the same name.</li><li>If a panel is empty or incomplete, paste the matching downloaded manifest.</li><li>Save after all four panels match the example.</li></ol>
+        <table class="file-map"><thead><tr><th>Downloaded file</th><th>Paste into</th><th>Purpose</th></tr></thead><tbody><tr><td><code>sources.yaml</code></td><td>Sources</td><td>Read orders</td></tr><tr><td><code>destinations.yaml</code></td><td>Destinations</td><td>Write cleaned orders</td></tr><tr><td><code>transformations.yaml</code></td><td>Transformations</td><td>Keep and normalize valid rows</td></tr><tr><td><code>pipeline.yaml</code></td><td>Pipeline</td><td>Wire <code>src_orders</code> to <code>dst_orders_clean</code></td></tr></tbody></table>
+        <div class="expect"><b>What you should see</b><p>Studio regenerates a source-to-destination graph and the header reports <b>Valid</b>.</p></div>
+        <figure class="shot"><img src="/tutorials/first_job/screen4.png" width="1889" height="1028" loading="lazy" decoding="async" alt="Hydra DSL button highlighted above the imported job canvas" /><figcaption><b>Open the DSL inspector.</b> The four manifest tabs appear in a panel beside the canvas.</figcaption></figure>
+        <div class="shots">
+          <figure class="shot"><img src="/tutorials/first_job/screen5.png" width="1907" height="941" loading="lazy" decoding="async" alt="Hydra DSL Sources tab showing a CSV source and the relative orders data path" /><figcaption><b>Sources.</b> Confirm the CSV type, source identifier, and relative path to <code>orders.csv</code>.</figcaption></figure>
+          <figure class="shot"><img src="/tutorials/first_job/screen6.png" width="1914" height="991" loading="lazy" decoding="async" alt="Hydra DSL Transformations tab open beside the job canvas" /><figcaption><b>Transformations.</b> If the tab contains an empty step list, replace it with the downloaded transformation chain.</figcaption></figure>
+          <figure class="shot"><img src="/tutorials/first_job/screen7.png" width="1909" height="987" loading="lazy" decoding="async" alt="Hydra DSL Destinations tab showing a CSV destination configuration" /><figcaption><b>Destinations.</b> Confirm that <code>load.table</code> points to the project output file; an empty value must be replaced.</figcaption></figure>
+          <figure class="shot"><img src="/tutorials/first_job/screen8.png" width="1911" height="1029" loading="lazy" decoding="async" alt="Hydra DSL Pipeline tab showing source and destination references" /><figcaption><b>Pipeline.</b> Its <code>from</code> and <code>to</code> values must match the identifiers declared in Sources and Destinations.</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3><i>06</i>Place the input data</h3>
+        <h4>Actions</h4><ol><li>Open the workspace folder used by Studio.</li><li>Create <code>first-project/data</code> if it does not exist.</li><li>Copy the downloaded <code>orders.csv</code> to <code>first-project/data/orders.csv</code>.</li><li>Create <code>first-project/output</code> for the generated result.</li></ol>
+        <pre class="cmd">first-project/data/orders.csv</pre>
+        <div class="expect"><b>What you should see</b><p>The input file contains twelve orders and is reachable through <code>../../data/orders.csv</code> from the imported job folder.</p></div>
+      </div>
+
+      <div class="step">
+        <h3><i>07</i>Run the job</h3>
+        <h4>Actions</h4><ol><li>Return to the <code>first-job-example</code> canvas.</li><li>Confirm the API is online and the job is valid.</li><li>Select <b>Run Job</b>.</li><li>Wait for a terminal state before editing anything.</li></ol>
+        <div class="expect"><b>What you should see</b><p>The lower execution panel opens and the job moves from pending to running, then to success.</p></div>
+      </div>
+
+      <div class="step">
+        <h3><i>08</i>Verify the execution</h3>
+        <h4>Actions</h4><ol><li>Read the terminal status and row counters.</li><li>Open <code>first-project/output/orders_clean.csv</code>.</li><li>Confirm pending, cancelled, and zero-amount orders are absent.</li><li>Open <b>Runs</b> to inspect the persisted execution.</li></ol>
+        <div class="result-line"><div><small>Status</small><b>SUCCESS</b></div><div><small>Rows in</small><b>12</b></div><div><small>Rows out</small><b>8</b></div></div>
+        <pre class="out">id,order_date,region,customer,amount
+1001,2026-01-04,north,Alice,120.5
+1002,2026-01-05,south,Bob,89.0
+…
+1012,2026-01-14,west,Lea,64.3</pre>
+      </div>
+
+      <div class="rules"><h5>Tips and traps</h5><p data-kind="TIP">Keep the downloaded filenames unchanged so each manifest is pasted into the correct editor.</p><p data-kind="TRAP">Paths are resolved from <b>jobs/first-job-example</b>. Moving <code>orders.csv</code> without updating <code>sources.yaml</code> breaks the run.</p><p data-kind="TIP">Wait for <b>Valid</b> before selecting Run Job.</p><p data-kind="TRAP">A successful animation is not enough. Confirm the terminal state, counters, and output file.</p></div>
+
+      <h2>3. Completion checklist</h2>
+      <table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Project</td><td><code>first-project</code></td></tr><tr><td>Workflow</td><td><code>first-workflow</code>, Manual trigger</td></tr><tr><td>Job</td><td><code>first-job-example</code></td></tr><tr><td>Manifests</td><td>Four files saved and Valid</td></tr><tr><td>Input</td><td>Twelve rows in <code>data/orders.csv</code></td></tr><tr><td>Execution</td><td>Success, 12 rows in, 8 rows out</td></tr><tr><td>Output</td><td><code>output/orders_clean.csv</code></td></tr></tbody></table>
+
+      <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review the run <span aria-hidden="true">→</span></a><a href="/get-started">Back to Get started</a></div>
+    </section>
+  </main>
+
+  <script is:inline set:html={js}></script>
+</BaseLayout>

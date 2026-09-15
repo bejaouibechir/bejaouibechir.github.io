@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DslShell from '../components/DslShell.astro';
+import SpecTable from '../components/SpecTable.astro';
+import css from '../_mock/dsl.css?raw';
+import head from '../_mock/dsl-rows.head.html?raw';
+import tail from '../_mock/dsl-rows.tail.html?raw';
+import engine from '../scripts/dsl-engine.js?raw';
+import js from '../_mock/dsl.js?raw';
+---
+
+<BaseLayout title="Rows — Hydra DSL" description="Filter, sort, deduplicate: the operations that choose and clean rows.">
+  <style is:global set:html={css}></style>
+  <DslShell current="rows">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <SpecTable block="op.filter" title="filter" note="Generated from the engine models." />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={engine}></script>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

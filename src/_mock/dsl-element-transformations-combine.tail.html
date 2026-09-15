@@ -1,0 +1,58 @@
+<section class="doc">
+  <h2>What <code>operations.combine</code> is</h2>
+  <p>Combine operations bring <b>a second source into the current transformation frame</b>.</p>
+  <p>The transformation engine does not open that source itself. The runner resolves <code>right</code>, loads its rows, and injects them before join, merge, or union executes.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>join</b> — Matches rows with inner, left, right, or outer semantics.</li>
+    <li><b>merge</b> — Reconciles rows by a required key, optionally deleting unmatched left rows.</li>
+    <li><b>union</b> — Stacks compatible rows and optionally removes duplicates.</li>
+  </ul>
+
+  <h2>Right is prepared before the operation</h2>
+  <p>A two-frame operation still has one transformation input. The runner turns <code>right</code> into ready rows first, so the engine receives two frames rather than a connector configuration.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="transformations-combineTitle transformations-combineDesc" class="cnx">
+      <title id="transformations-combineTitle">Combine adds a prepared right frame</title>
+      <desc id="transformations-combineDesc">Thirty current rows are combined with four prepared right rows to produce 34 rows.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">30 current rows</text><text class="d-sub" x="28" y="70">left frame</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#transformations-combineArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">union + right</text><text class="d-sub" x="282" y="68">runner prepared</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#transformations-combineArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">34 rows</text><text class="d-sub" x="540" y="70">stacked frame</text>
+      <text class="d-foot" x="12" y="116">The runner resolves right; the operation combines data frames.</text>
+      <defs><marker id="transformations-combineArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>Connector work finishes before combination begins.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+transformations:
+  steps:
+    - union:
+        right: src_orders_extra
+        distinct: false</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements -t combine.yaml</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.7s
+  Rows read   : 30
+  Rows written: 34</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/sources-yaml">sources.yaml — declaring right</a></li>
+    <li><a href="/dsl/transformations/steps">steps — current frame order</a></li>
+    <li><a href="/dsl/transformations/aggregate">Aggregate — grouped summaries</a></li>
+    <li><a href="/dsl/transformations/reshape">Reshape — layout changes</a></li>
+    <li><a href="/dsl/reference">Reference — join, merge, union</a></li>
+  </ul>
+</section>

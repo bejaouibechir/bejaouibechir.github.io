@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import head from '../../_mock/dsl-sources.head.html?raw';
+import tail from '../../_mock/dsl-sources.tail.html?raw';
+import js from '../../_mock/dsl-sources.js?raw';
+---
+
+<BaseLayout title="sources.connection — Hydra DSL" description="The connection block changes shape with the source type.">
+  <style is:global set:html={css}></style>
+  <DslShell current="sources">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

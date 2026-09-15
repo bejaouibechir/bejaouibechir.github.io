@@ -1,0 +1,253 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 4</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 4 of 14 · Use the palette</div><h1>Everything Hydra can do, in one panel</h1><p class="lead">The palette is not a list of icons. It is the complete vocabulary of the product: seven connectors, eighteen transformations, nine actions, three containers — and your own jobs.</p></div>
+<div class="lesson-meta"><span class="mono">Node palette</span><span>about 20 minutes</span><span>editor open</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Open both palettes, read every category, and leave knowing what Hydra can do without writing a line of YAML. By the end you should be able to answer one question for any task: <b>is there a node for this, and in which scene does it live?</b></p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A workflow open in the editor.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Discover the palette</h3>
+    <h4>Objective</h4><p>See that there are two catalogues, not one, and read what each offers.</p>
+    <h4>Actions</h4><ol><li>Open the <b>Workflow configuration</b> tab and read the four categories.</li><li>Switch to <b>Jobs configuration</b> and read them again.</li><li>Note the number beside each category name.</li></ol>
+    <pre class="cmd">Workflow configuration ⇄ Jobs configuration</pre>
+    <p>The palette follows the scene. Orchestration offers what a workflow can do; a job offers what data can go through. Nothing is hidden — what a scene does not show, it cannot do.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen1.png" width="845" height="950" loading="lazy" decoding="async" alt="The node palette in the workflow scene, showing four collapsed categories: Actions, Control Flow, Containers and Jobs, each with a count." /><figcaption><b>Workflow scene.</b> Actions, Control Flow, Containers, Jobs.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen9.png" width="405" height="445" loading="lazy" decoding="async" alt="The node palette in the job scene, showing four collapsed categories: Sources, Transformations, Destinations and Containers." /><figcaption><b>Job scene.</b> Sources, Transformations, Destinations, Containers.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Only <b>Containers</b> appears in both. Every other category belongs to one scene and one only.</p><pre class="out">Workflow    Actions (9)  Control Flow (2)  Containers (3)  Jobs (2)
+Job         Sources (7)  Transformations (18)  Destinations (6)  Containers (3)</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read what a workflow can do</h3>
+    <h4>Objective</h4><p>Discover that a workflow is not limited to running jobs.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Actions</b>.</li><li>Read the nine entries from top to bottom.</li><li>Leave it expanded for the next steps.</li></ol>
+    <pre class="cmd">Actions (9)</pre>
+    <p>This is where a data pipeline becomes an operational one. A job moves rows; an action tells someone, calls something, runs a command, or remembers a value.</p>
+    <table><thead><tr><th>Action</th><th>What it does</th></tr></thead><tbody>
+      <tr><td><b>Log</b></td><td>Writes a message to the run log. Always succeeds.</td></tr>
+      <tr><td><b>Webhook</b></td><td>Sends an HTTP request — notify a service, trigger a build.</td></tr>
+      <tr><td><b>Email</b></td><td>Sends a message when a load finishes or fails.</td></tr>
+      <tr><td><b>Bash</b> · <b>PowerShell</b></td><td>Runs a shell command on the host that carries Hydra.</td></tr>
+      <tr><td><b>Python</b></td><td>Runs Python — inline or a <code>.py</code> file. Works on every platform.</td></tr>
+      <tr><td><b>SSH</b></td><td>Runs a command on another machine.</td></tr>
+      <tr><td><b>Set Param</b> · <b>Assign Param</b></td><td>Create and update values that later steps can read.</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Nine entries, one of them dimmed. That dimming is the subject of the next step.</p>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen4.png" width="427" height="735" loading="lazy" decoding="async" alt="The Actions category expanded, listing Log, Webhook, Email, Bash, PowerShell, Python, SSH, Set Param and Assign Param, with Bash dimmed and carrying a Unix badge while PowerShell carries a Win badge." /><figcaption>Nine actions. <b>Bash</b> is greyed out here, and it carries a badge.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Tell someone, or tell something</h3>
+    <h4>Objective</h4><p>Meet the three actions that carry news out of the workflow.</p>
+    <h4>Actions</h4><ol><li>Open <b>Log</b> and read its subtitle.</li><li>Open <b>Webhook</b> and read the method list.</li><li>Open <b>Email</b> and note which fields carry a red asterisk.</li></ol>
+    <pre class="cmd">Actions → Log · Webhook · Email</pre>
+    <p>These three answer the same question — <i>who needs to know?</i> — at three distances. <b>Log</b> speaks to whoever reads the run afterwards. <b>Webhook</b> speaks to another system. <b>Email</b> speaks to a person who is not watching.</p>
+    <table><thead><tr><th>Action</th><th>Required</th><th>Worth knowing</th></tr></thead><tbody>
+      <tr><td><b>Log</b></td><td>nothing</td><td>The only action that <b>always succeeds</b>. Safe to place anywhere, including after a failure.</td></tr>
+      <tr><td><b>Webhook</b></td><td>a URL</td><td><b>POST</b> by default, with a JSON body. Choose another method from the list when the service expects one.</td></tr>
+      <tr><td><b>Email</b></td><td>recipient and subject</td><td>Sends over SMTP. The server, port and credentials belong to the step, so each workflow can use its own.</td></tr>
+    </tbody></table>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen23.png" width="1913" height="946" loading="lazy" decoding="async" alt="The Log action dialog, whose subtitle states that it writes a message to the run logs and always succeeds, with a free-text message field." /><figcaption><b>Log.</b> Even the message is optional — the step is a marker as much as a sentence.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen24.png" width="1910" height="949" loading="lazy" decoding="async" alt="The Webhook action dialog, described as an outgoing HTTP call, with a required URL, a method list set to POST and a JSON body field." /><figcaption><b>Webhook</b> is the outgoing HTTP call — not to be confused with the incoming webhook trigger.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen25.png" width="1912" height="950" loading="lazy" decoding="async" alt="The Email action dialog, with required recipient and subject fields and a body." /><figcaption><b>Email.</b> Recipient and subject are required; the body is not.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Three subtitles that say exactly what each one does, and no more.</p><pre class="out">Log       ACTION   Writes a message to the run logs (always succeeds)
+Webhook   ACTION   Outgoing HTTP call
+Email     ACTION   Send email</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>The palette knows which machine it runs on</h3>
+    <h4>Objective</h4><p>Read the platform badges, and understand why one shell is always unavailable.</p>
+    <h4>Actions</h4><ol><li>Find <b>Bash</b> and <b>PowerShell</b> in the list.</li><li>Read the badge on the right of each: <b>Unix</b> or <b>Win</b>.</li><li>Note which of the two is dimmed.</li></ol>
+    <pre class="cmd">Actions → Bash · PowerShell</pre>
+    <p>Hydra runs the command on the machine that hosts it, so only one of the two shells can ever work. The palette does not hide the other — it shows it, dimmed, with the platform it needs. You always know the whole vocabulary, and what your host is missing.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen4.png" width="427" height="735" loading="lazy" decoding="async" alt="The Actions list on a Windows host: PowerShell is active with a blue Win badge, Bash is dimmed with a grey Unix badge." /><figcaption><b>Hydra on Windows.</b> PowerShell is available, Bash is dimmed.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen17.png" width="429" height="735" loading="lazy" decoding="async" alt="The same Actions list on a Linux host: Bash is active with a blue Unix badge, PowerShell is dimmed with a grey Win badge." /><figcaption><b>Hydra on Linux or macOS.</b> The pair is simply reversed.</figcaption></figure>
+    </div>
+    <div class="callout"><b>Trap</b><p>Hydra never substitutes one shell for the other. A workflow carrying a <b>PowerShell</b> step fails on Linux, and a <b>Bash</b> step fails on Windows — by design, with a clear message. If a workflow must run on both, use <b>Python</b> instead: it is the only interpreter available everywhere.</p></div>
+    <div class="expect"><b>What you should see</b><p>Both dialogs are the same, only the command differs. The subtitle states the platform outright.</p><pre class="out">Bash        ACTION   Runs a Bash script (Linux / macOS)
+PowerShell  ACTION   Runs a PowerShell script (Windows)</pre>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen18.png" width="1911" height="944" loading="lazy" decoding="async" alt="The Bash action dialog, with a step name, an on-failure list, a run condition, the required Bash command field and a working directory." /><figcaption>Beyond the command, every action shares the same frame: <b>on failure</b>, <b>run condition</b>, <b>working directory</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Run Python, on any host</h3>
+    <h4>Objective</h4><p>Find the one interpreter that never depends on the platform, and its two ways of receiving code.</p>
+    <h4>Actions</h4><ol><li>Open the <b>Python</b> action.</li><li>Select <b>Inline script</b> and read the editor.</li><li>Select <b>.py file</b> and read the fields that replace it.</li></ol>
+    <pre class="cmd">Actions → Python → Inline script | .py file</pre>
+    <p>Python carries no platform badge, because there is nothing to warn about: it runs on Windows, Linux and macOS alike. Where a shell action ties a workflow to one host, this one keeps it portable — which is why it is the answer whenever a workflow has to travel.</p>
+    <table><thead><tr><th>Mode</th><th>What you provide</th><th>When to choose it</th></tr></thead><tbody>
+      <tr><td><b>Inline script</b></td><td>The code, typed in the dialog</td><td>A few lines that belong to this workflow and nowhere else. Everything stays in one file.</td></tr>
+      <tr><td><b>.py file</b></td><td>A path, plus a working directory</td><td>Real code — one you test, review and version separately. The workflow references it instead of copying it.</td></tr>
+    </tbody></table>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen19.png" width="1908" height="946" loading="lazy" decoding="async" alt="The Python action dialog in Inline script mode, with a code editor holding an import of sys and a print of the version." /><figcaption><b>Inline script.</b> The code lives in the workflow file itself.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen19-2.png" width="1909" height="947" loading="lazy" decoding="async" alt="The same Python action switched to .py file mode, showing a required file path with a Browse button and a working directory." /><figcaption><b>.py file.</b> The editor gives way to a path and a working directory.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>One toggle, two shapes, the same action. Parameters set earlier reach the script as environment variables, so you rarely need to hard-code a value.</p><pre class="out">Python  ACTION  Runs a Python script
+  Inline script   →  PYTHON SCRIPT *
+  .py file        →  .PY FILE PATH *   WORKING DIRECTORY</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Reach outside the machine, and carry values across steps</h3>
+    <h4>Objective</h4><p>Meet the three actions that make a workflow more than a sequence of loads.</p>
+    <h4>Actions</h4><ol><li>Open <b>SSH</b> and read the fields it requires.</li><li>Open <b>Set Param</b>, then <b>Assign Param</b>.</li><li>Compare the two subtitles word for word.</li></ol>
+    <pre class="cmd">Actions → SSH · Set Param · Assign Param</pre>
+    <p><b>SSH</b> runs a command on another machine — restart a service, move a file, trigger a job on a server Hydra does not live on.</p>
+    <p><b>Set Param</b> creates a value; <b>Assign Param</b> changes one that already exists. The distinction is deliberate: creating twice is a mistake, and Hydra refuses it rather than overwriting something you forgot about. Later steps read the value with <code>{{ param:name }}</code>, and shell and Python actions also receive it as an environment variable.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen20.png" width="1910" height="949" loading="lazy" decoding="async" alt="The SSH action dialog, requiring a host, a port defaulting to 22 and a user." /><figcaption><b>SSH.</b> Host and user are required; the port defaults to 22.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen21.png" width="1905" height="950" loading="lazy" decoding="async" alt="The Set Param dialog, whose subtitle reads that it creates a runtime parameter and fails if it already exists, with a parameter name, a value and a type." /><figcaption><b>Set Param</b> creates — and <b>fails if the name already exists</b>.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen22.png" width="1909" height="944" loading="lazy" decoding="async" alt="The Assign Param dialog, whose subtitle reads that it assigns a value to an existing runtime parameter." /><figcaption><b>Assign Param</b> updates a parameter that already exists.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Two dialogs that look alike and mean the opposite. Read the subtitle, not the shape.</p><pre class="out">Set Param      Creates a runtime parameter (fails if it already exists)
+Assign Param   Assigns a value to an existing runtime parameter</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>07</i>Steer the graph, and group what it holds</h3>
+    <h4>Objective</h4><p>Find the two categories that shape execution rather than perform it.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Control Flow</b> and read its two entries.</li><li>Expand <b>Containers</b> in the workflow scene.</li><li>Switch to <b>Jobs configuration</b> and expand <b>Containers</b> there too.</li></ol>
+    <pre class="cmd">Control Flow (2) · Containers (3)</pre>
+    <p><b>Condition</b> evaluates an expression and lets downstream steps decide whether to run; <b>Delay</b> simply waits. Containers do not execute at all — they group nodes and hand a policy down to whatever they enclose.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen5.png" width="431" height="511" loading="lazy" decoding="async" alt="The Control Flow category expanded, showing Condition and Delay." /><figcaption><b>Control Flow.</b> Two entries, and both change when things run rather than what runs.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen6.png" width="431" height="533" loading="lazy" decoding="async" alt="The Containers category expanded in the workflow scene, showing Sequence Container, Error Scope and Retry Scope." /><figcaption><b>Containers, workflow scene.</b> Sequence, Error Scope, Retry Scope.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen13.png" width="391" height="811" loading="lazy" decoding="async" alt="The same three containers offered in the job scene, below Sources, Transformations and Destinations." /><figcaption><b>Containers, job scene.</b> The same three — this is the only category shared by both.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Three containers in both scenes, and the same names. Their effect differs: in a workflow they write a policy onto steps, in a job they only tidy the canvas.</p><pre class="out">Control Flow   Condition   Delay
+Containers     Sequence Container   Error Scope   Retry Scope</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Your own jobs become palette entries</h3>
+    <h4>Objective</h4><p>See that the palette is not fixed — it grows with the project.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Jobs</b> in the workflow scene.</li><li>Read the names listed there.</li><li>Look at the tab bar at the bottom of the job scene.</li></ol>
+    <pre class="cmd">Jobs (2)</pre>
+    <p>Every job you design in this project appears here, ready to be dropped into any workflow. That is what makes a job reusable: written once in <b>Jobs configuration</b>, orchestrated as many times as needed. The count is the size of your own library, not a product limit.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen7.png" width="429" height="477" loading="lazy" decoding="async" alt="The Jobs category expanded in the workflow palette, listing first-job and second-job." /><figcaption>The two jobs of the project, offered as nodes.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen8.png" width="544" height="41" loading="lazy" decoding="async" alt="The job tab bar at the bottom of the editor, with a tab per job and a plus button to add one." /><figcaption>The tab bar switches between jobs. <b>+</b> creates one, and it joins the palette.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>The job names you created, nothing else. An empty project shows <code>Jobs (0)</code> and says so in plain words.</p><pre class="out">Jobs (2)
+  first-job
+  second-job</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Read the connectors, in and out</h3>
+    <h4>Objective</h4><p>Learn what Hydra can read from and write to, and spot the one asymmetry.</p>
+    <h4>Actions</h4><ol><li>In <b>Jobs configuration</b>, expand <b>Sources</b>.</li><li>Expand <b>Destinations</b>.</li><li>Compare the two lists entry by entry.</li></ol>
+    <pre class="cmd">Sources (7) · Destinations (6)</pre>
+    <p>Six connectors work in both directions: three file formats and three databases. The seventh, <b>Web API</b>, reads only — Hydra pulls from an HTTP endpoint but does not push to one. To send data out over HTTP, use the <b>Webhook</b> action in the workflow scene instead.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen10.png" width="390" height="776" loading="lazy" decoding="async" alt="The Sources category expanded, listing CSV, JSON, Parquet, MySQL, PostgreSQL, MongoDB and Web API." /><figcaption><b>Sources.</b> Three file formats, three databases, one HTTP API.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen12.png" width="425" height="810" loading="lazy" decoding="async" alt="The Destinations category expanded, listing CSV, JSON, Parquet, MySQL, PostgreSQL and MongoDB." /><figcaption><b>Destinations.</b> The same six, without Web API.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Seven on the way in, six on the way out. The difference is one entry, and it is not an oversight.</p><pre class="out">Sources        CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB  Web API
+Destinations   CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>10</i>Eighteen ways to reshape data</h3>
+    <h4>Objective</h4><p>Read the full transformation list once, so you stop reinventing what already exists.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Transformations</b>.</li><li>Scroll to the end of the list.</li><li>Note the last entry, <b>Script</b>.</li></ol>
+    <pre class="cmd">Transformations (18)</pre>
+    <p>They fall into four families. Knowing which family you need is usually faster than remembering a name.</p>
+    <table><thead><tr><th>Family</th><th>Operations</th></tr></thead><tbody>
+      <tr><td><b>Choose</b></td><td>Filter · Select · Deduplicate</td></tr>
+      <tr><td><b>Change</b></td><td>Rename · Cast · Derive · Fill Null · Trim · Clean</td></tr>
+      <tr><td><b>Reshape</b></td><td>Sort · Aggregate · Pivot · Unpivot · Transpose</td></tr>
+      <tr><td><b>Combine</b></td><td>Join · Merge · Union</td></tr>
+    </tbody></table>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen11.png" width="414" height="815" loading="lazy" decoding="async" alt="The Transformations category expanded, showing Filter, Select, Rename, Cast, Aggregate, Sort, Deduplicate, Derive and Join." /><figcaption>The first nine.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen14.png" width="485" height="771" loading="lazy" decoding="async" alt="The rest of the transformation list, showing Fill Null, Trim, Clean, Pivot, Unpivot, Transpose, Merge, Union and Script." /><figcaption>And the last nine, ending on <b>Script</b>.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Seventeen named operations, then one that is not an operation at all.</p><pre class="out">Filter  Select  Rename  Cast  Aggregate  Sort  Deduplicate  Derive  Join
+Fill Null  Trim  Clean  Pivot  Unpivot  Transpose  Merge  Union  Script</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>11</i>Write the transformation that does not exist</h3>
+    <h4>Objective</h4><p>Find the way out when none of the seventeen operations fits.</p>
+    <h4>Actions</h4><ol><li>Drop a <b>Script</b> node onto the job canvas.</li><li>Read the two execution modes.</li><li>Use <b>Preview</b> to run it against real rows before saving.</li></ol>
+    <pre class="cmd">Transformations → Script</pre>
+    <p>Every declarative tool eventually meets a rule its authors did not foresee. Hydra answers with <b>Script</b>: you declare which columns come in and which go out, then write Python between the two. The contract stays readable in the YAML even though the logic is code.</p>
+    <table><thead><tr><th>Execution mode</th><th>What your code receives</th><th>When to choose it</th></tr></thead><tbody>
+      <tr><td><b>Vectorized</b></td><td>Each input column as a pandas Series</td><td>The default. Operates on whole columns, so it stays fast on large volumes.</td></tr>
+      <tr><td><b>Row-by-row</b></td><td>Each input column as a single value</td><td>Easier to reason about, much slower. Keep it for genuinely per-row logic.</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p><code>np</code>, <code>pd</code>, <code>math</code> and <code>re</code> are available, and <kbd>Ctrl</kbd> <kbd>Space</kbd> completes as you type. <b>Preview</b> runs the code on real rows so you find out here, not during a run.</p>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen15.png" width="1914" height="947" loading="lazy" decoding="async" alt="The Script transformation dialog, offering a Vectorized or Row-by-row execution mode, a Python code editor with Preview and Expand buttons, and a note listing the available libraries." /><figcaption>A custom transformation, declared like any other node — and testable before it is saved.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>12</i>Give the canvas room</h3>
+    <h4>Objective</h4><p>Recover screen space once you know where everything is.</p>
+    <h4>Actions</h4><ol><li>Select the <b>&lt;</b> control at the top right of the palette.</li><li>Work on the canvas with the palette collapsed.</li><li>Select it again to bring the panel back.</li></ol>
+    <pre class="cmd">NODE PALETTE → ‹</pre>
+    <p>Collapsed, the palette keeps its icons: you can still drag a node onto the canvas without giving up the width. The vertical toolbar beside it stays put in both states — pan, select, undo, redo, minimap and terminal.</p>
+    <div class="expect"><b>What you should see</b><p>The panel narrows to a strip of icons. Nothing is lost, and the canvas gains a third of the window.</p>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/screen3.png" width="436" height="875" loading="lazy" decoding="async" alt="The palette beside the vertical canvas toolbar, highlighted in red, holding pan, select, undo, redo, minimap and terminal controls." /><figcaption>The toolbar highlighted here belongs to the canvas, not to the palette — it stays whatever the panel does.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">The palette follows the <b>scene</b>. If a node is missing, you are probably in the other tab.</p>
+  <p data-kind="TRAP">A dimmed entry is <b>not a bug</b>. It names what your host cannot run, and tells you which platform it needs.</p>
+  <p data-kind="TIP">Only <b>Python</b> runs everywhere, <b>inline</b> or from a <b>.py file</b>. Prefer it when a workflow must travel.</p>
+  <p data-kind="TRAP">Remember that <b>Set Param</b> creates and <b>Assign Param</b> updates. The wrong one fails on purpose.</p>
+  <p data-kind="TIP">A <b>Web API</b> node reads only. To send data out over HTTP, use the <b>Webhook</b> action.</p>
+  <p data-kind="TRAP">Reach for <b>Script</b> last. Seventeen named operations are read by everyone; your Python is read by you.</p>
+  <p data-kind="TIP">Counts beside <b>Jobs</b> grow with the project. Every job you write becomes a reusable node.</p>
+  <p data-kind="TRAP">The <b>Webhook action</b> calls out; the <b>Webhook trigger</b> listens in. Same word, opposite direction.</p>
+  <p data-kind="TIP">A container in a job <b>tidies the canvas</b>. Only in a workflow does it write a policy.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Workflow palette</td><td>Actions, Control Flow, Containers, Jobs</td></tr>
+    <tr><td>Job palette</td><td>Sources, Transformations, Destinations, Containers</td></tr>
+    <tr><td>Shared category</td><td><b>Containers</b>, and it alone</td></tr>
+    <tr><td>Platform badges</td><td>One shell active, the other dimmed</td></tr>
+    <tr><td>Connectors</td><td>Seven in, six out — <b>Web API</b> reads only</td></tr>
+    <tr><td>Transformations</td><td>Eighteen, the last one being <b>Script</b></td></tr>
+    <tr><td>Jobs category</td><td>Lists the jobs of this project</td></tr>
+    <tr><td>Collapse</td><td>Icons remain, and stay draggable</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>No Sources in the palette</td><td>You are in the workflow scene</td><td>Switch to <b>Jobs configuration</b></td></tr>
+    <tr><td>No Actions in the palette</td><td>You are inside a job</td><td>Actions orchestrate; switch to <b>Workflow configuration</b></td></tr>
+    <tr><td>Bash or PowerShell cannot be dragged</td><td>Your host does not provide that shell</td><td>Use the other one, or <b>Python</b> for portability</td></tr>
+    <tr><td><b>Jobs (0)</b> in the palette</td><td>The project has no job yet</td><td>Create one from the tab bar in <b>Jobs configuration</b></td></tr>
+    <tr><td>No HTTP destination</td><td>Web API is a source only</td><td>Send data out with the <b>Webhook</b> action</td></tr>
+    <tr><td><b>Set Param</b> fails at runtime</td><td>The parameter already exists</td><td>Use <b>Assign Param</b> to change an existing value</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>You now know the whole vocabulary and where each word lives. The next lesson puts it to use: dragging a source onto the canvas and pointing it at a real file.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/05-add-a-source">Add a source <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/dsl/transformations-yaml">transformations.yaml reference</a></li><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

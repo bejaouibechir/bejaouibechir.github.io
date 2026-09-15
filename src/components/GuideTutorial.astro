@@ -1,0 +1,147 @@
+---
+interface Note { 0: string; 1: string }
+interface Step {
+  file: string;
+  title: string;
+  goal: string;
+  bubble: string;
+  context: string;
+  code: string;
+  notes: Note[];
+  status: string;
+}
+interface Tutorial {
+  category: string;
+  name: string;
+  title: string;
+  duration: number;
+  lead: string;
+  contextTitle: string;
+  context: string;
+  question: string;
+  constraints: string[];
+  solution: string;
+  steps: Step[];
+  expected: string[];
+  reading: string;
+  answer: string[][];
+  before: string;
+  after: string;
+  gain: string;
+  lesson: string;
+  related: { label: string; href: string; note?: string }[];
+}
+interface Props { tutorial: Tutorial; workshopNumber: number }
+const { tutorial, workshopNumber } = Astro.props;
+const first = tutorial.steps[0];
+const familyLabel = tutorial.category.charAt(0).toUpperCase() + tutorial.category.slice(1);
+const clientData = JSON.stringify(tutorial.steps).replace(/</g, '\\u003c');
+---
+
+<div class="crumbs"><a href="/guide">Guide</a><span>›</span><a href={`/guide?category=${familyLabel}`}>{familyLabel}</a><span>›</span><span>{tutorial.name}</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Workshop {workshopNumber} · {tutorial.duration} minutes</div>
+    <h1>{tutorial.title}</h1>
+    <p class="lead">{tutorial.lead}</p>
+  </div>
+</div>
+
+<section class="doc">
+  <h2>{tutorial.contextTitle}</h2>
+  <p>{tutorial.context}</p>
+
+  <h3>Where things stand</h3>
+  <ul>
+    <li><b>The current result is fragile.</b> Its assumptions are split between tools, clicks and memory.</li>
+    <li><b>Reruns are uncertain.</b> The write mode or orchestration rule is not visible beside the data.</li>
+    <li><b>Evidence is missing.</b> A colleague cannot compare a declared rule with a concrete before and after state.</li>
+  </ul>
+
+  <h3>The question</h3>
+  <p>{tutorial.question}</p>
+  <ul class="constraints">
+    {tutorial.constraints.map((constraint) => <li>{constraint}</li>)}
+  </ul>
+
+  <h3>The solution in one line</h3>
+  <p>{tutorial.solution}</p>
+</section>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong id="fileName">{first.file}</strong><span class="edit-label">{tutorial.steps.length} steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="File of the current step">
+      <pre class="yaml" id="yaml">{first.code}</pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Workshop steps">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal">
+      <div class="goal-icon" aria-hidden="true" id="stepNum">1</div>
+      <div><b id="goalTitle">What you do</b><p id="goalText">{first.goal}</p></div>
+    </div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">{first.status}</span>
+      <button class="btn" id="resetBtn" type="button">↺ Start over</button>
+    </div>
+  </div>
+</section>
+
+<section class="doc">
+  <h2>Steps</h2>
+  {tutorial.steps.map((step, index) => (
+    <Fragment>
+      <h3>{index + 1}. {step.title}</h3>
+      <ol>
+        <li>{step.goal}</li>
+        <li>Compare the file with the explanation in the workbench.</li>
+        <li>Record the shown check before moving to the next step.</li>
+      </ol>
+      <pre class:list={["cmd", index === tutorial.steps.length - 1 && "out"]}>{step.code}</pre>
+      <div class="callout check"><b>Check</b> — <Fragment set:html={step.notes[0][1]} /></div>
+      {step.notes[1] && <div class="callout trap"><b>Trap</b> — <Fragment set:html={step.notes[1][1]} /></div>}
+    </Fragment>
+  ))}
+
+  <h2>Expected result</h2>
+  <ul>{tutorial.expected.map((item) => <li>{item}</li>)}</ul>
+
+  <h2>Reading the results</h2>
+  <p>{tutorial.reading}</p>
+  <h3>What the counters do—and do not—prove</h3>
+  <p>They prove how many records entered and left this run. They do not replace checking the target schema, the business meaning of values or the reason a workflow step was skipped.</p>
+  <h3>The rule to carry forward</h3>
+  <p>{tutorial.lesson}</p>
+
+  <h2>Did we answer the question?</h2>
+  <table class="spectable">
+    <thead><tr><th>objective</th><th>result</th><th>where</th></tr></thead>
+    <tbody>{tutorial.answer.map((row) => <tr>{row.map((cell) => <td>{cell}</td>)}</tr>)}</tbody>
+  </table>
+
+  <h2>Before and after</h2>
+  <ul>
+    <li><b>Before</b> — {tutorial.before.replace(/^Before — /, '')}</li>
+    <li><b>After</b> — {tutorial.after.replace(/^After — /, '')}</li>
+    <li><b>What is really gained</b> — {tutorial.gain}</li>
+  </ul>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    {tutorial.related.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+    <li><a href="/guide">All Guide workshops</a></li>
+  </ul>
+</section>
+
+<script id="guideTutorialData" type="application/json" set:html={clientData}></script>
+

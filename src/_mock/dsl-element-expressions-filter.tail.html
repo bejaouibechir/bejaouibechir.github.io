@@ -1,0 +1,60 @@
+<section class="doc">
+  <h2>What <code>filter.expr</code> is</h2>
+  <p><code>filter.expr</code> is a boolean expression evaluated <b>once across the current table to decide which rows continue</b>.</p>
+  <p>It is not validated against runtime column types by <code>hdrctl validate</code>. Earlier steps must prepare both names and types before the filter runs.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Current column names</b> — Resolved by pandas query at this step.</li>
+    <li><b>Literals and comparisons</b> — Numbers, quoted strings, and comparison operators.</li>
+    <li><b>Boolean composition</b> — Conditions combined with <code>and</code>, <code>or</code>, and parentheses.</li>
+  </ul>
+
+  <h2>The expression sees the current frame</h2>
+  <p>A filter never reaches back to source columns. Rename or cast first, and the expression sees only those resulting names and values.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="expressions-filterTitle expressions-filterDesc" class="cnx">
+      <title id="expressions-filterTitle">Filter expression turns rows into boolean decisions</title>
+      <desc id="expressions-filterDesc">Thirty current rows are evaluated against amount greater than 50 and six true rows continue.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">30 current rows</text><text class="d-sub" x="28" y="70">after cast</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#expressions-filterArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">amount &gt; 50</text><text class="d-sub" x="282" y="68">boolean predicate</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#expressions-filterArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">6 rows</text><text class="d-sub" x="540" y="70">true only</text>
+      <text class="d-foot" x="12" y="116">False rows stop here; every column on true rows continues.</text>
+      <defs><marker id="expressions-filterArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>A filter changes membership, not the column contract.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+transformations:
+  steps:
+    - cast:
+        mapping:
+          amount: float
+    - filter:
+        expr: "amount &gt; 50"</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.6s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl">Rows — filter and related operations</a></li>
+    <li><a href="/dsl/transformations/columns">Columns — prepare names and types</a></li>
+    <li><a href="/dsl/expressions/calculate">calculate.expr — producing values</a></li>
+    <li><a href="/dsl/transformations/steps">steps — expression order</a></li>
+    <li><a href="/dsl/reference">Reference — filter contract</a></li>
+  </ul>
+</section>

@@ -1,0 +1,70 @@
+<section class="doc">
+  <h2>What <code>workflow.steps.when</code> is</h2>
+  <p><code>step.when</code> is a safe boolean guard evaluated <b>after dependencies are complete and before one workflow node runs</b>.</p>
+  <p>It is not Python eval. Hydra parses an allow-listed AST of comparisons, boolean operators, literals, lists, tuples, and parameter/environment placeholders.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Comparisons</b> — Equality and ordered comparisons, with numeric coercion when appropriate.</li>
+    <li><b>Boolean logic</b> — <code>and</code>, <code>or</code>, and <code>not</code>.</li>
+    <li><b>Safe values</b> — Literals plus <code>{{ param:NAME }}</code> and <code>{{ env:NAME }}</code> placeholders.</li>
+  </ul>
+
+  <h2>Ready does not always mean run</h2>
+  <p>Dependencies decide when a node is ready. <code>when</code> makes the final admission decision for that node without changing the topology of the graph.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="expressions-whenTitle expressions-whenDesc" class="cnx">
+      <title id="expressions-whenTitle">When gates a ready workflow step</title>
+      <desc id="expressions-whenDesc">After dependencies complete, a true when expression admits the step to execution.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">dependencies done</text><text class="d-sub" x="28" y="70">node ready</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#expressions-whenArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">when: true</text><text class="d-sub" x="282" y="68">safe guard</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#expressions-whenArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">step runs</text><text class="d-sub" x="540" y="70">node admitted</text>
+      <text class="d-foot" x="12" y="116">A false guard records a skip instead of running the node.</text>
+      <defs><marker id="expressions-whenArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>Dependency readiness and conditional admission are separate decisions.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">workflow:
+  version: "1.0"
+  name: docs_workflow
+  description: Two actions used by the DSL documentation.
+  trigger: {type: manual}
+  steps:
+    - name: prepare
+      type: action
+      action: log
+      params: {message: "Preparation complete."}
+      retry: {max: 2, delay: 0, backoff: fixed}
+    - name: publish
+      type: action
+      action: log
+      params: {message: "Publication complete."}
+      depends_on: [prepare]
+      when: "1 == 1"
+      on_failure: fail</pre>
+  <pre class="cmd">hdrctl workflow run examples/tutorial/dsl-elements/workflow.yaml</pre>
+  <pre class="cmd out">  ✓  Step 'prepare' OK (0.0s)
+  ✓  Step 'publish' OK (0.0s)
+
+  ✅ Workflow 'docs_workflow' completed in 0.0s — 2/2 steps OK</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl workflow run --help</code>:</p>
+  <pre class="cmd">hdrctl workflow run PATH
+  PATH          path to workflow.yaml
+  --lang LANG   interface language
+  -h, --help    show command help</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/workflow/steps">workflow steps — graph nodes</a></li>
+    <li><a href="/dsl/workflow/retry">retry — attempts after admission</a></li>
+    <li><a href="/dsl/interpolation/param-env">parameters and environment</a></li>
+    <li><a href="/dsl/workflow-yaml">workflow.yaml — full context</a></li>
+    <li><a href="/dsl/reference">Reference — when field</a></li>
+  </ul>
+</section>

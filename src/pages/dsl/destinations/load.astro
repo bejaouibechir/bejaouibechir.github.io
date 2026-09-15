@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-destinations-load.head.html?raw';
+import tail from '../../../_mock/dsl-element-destinations-load.tail.html?raw';
+import js from '../../../_mock/dsl-element-destinations-load.js?raw';
+---
+
+<BaseLayout title="load — Hydra DSL" description="Name a destination target and define how final rows are loaded.">
+  <style is:global set:html={css}></style>
+  <DslShell current="destinations-load">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

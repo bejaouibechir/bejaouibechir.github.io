@@ -1,0 +1,233 @@
+[
+  {
+    "key": "sources-type",
+    "route": "/dsl/sources/type",
+    "slug": "sources-type",
+    "parts": [
+      "dsl-element-sources-type.head.html",
+      "dsl-element-sources-type.tail.html"
+    ],
+    "js": "dsl-element-sources-type.js",
+    "defaultCase": "csv"
+  },
+  {
+    "key": "sources-extract",
+    "route": "/dsl/sources/extract",
+    "slug": "sources-extract",
+    "parts": [
+      "dsl-element-sources-extract.head.html",
+      "dsl-element-sources-extract.tail.html"
+    ],
+    "js": "dsl-element-sources-extract.js",
+    "defaultCase": "table"
+  },
+  {
+    "key": "sources-schema",
+    "route": "/dsl/sources/schema",
+    "slug": "sources-schema",
+    "parts": [
+      "dsl-element-sources-schema.head.html",
+      "dsl-element-sources-schema.tail.html"
+    ],
+    "js": "dsl-element-sources-schema.js",
+    "defaultCase": "manual"
+  },
+  {
+    "key": "destinations-type",
+    "route": "/dsl/destinations/type",
+    "slug": "destinations-type",
+    "parts": [
+      "dsl-element-destinations-type.head.html",
+      "dsl-element-destinations-type.tail.html"
+    ],
+    "js": "dsl-element-destinations-type.js",
+    "defaultCase": "csv"
+  },
+  {
+    "key": "destinations-connection",
+    "route": "/dsl/destinations/connection",
+    "slug": "destinations-connection",
+    "parts": [
+      "dsl-element-destinations-connection.head.html",
+      "dsl-element-destinations-connection.tail.html"
+    ],
+    "js": "dsl-element-destinations-connection.js",
+    "defaultCase": "explicit"
+  },
+  {
+    "key": "destinations-load",
+    "route": "/dsl/destinations/load",
+    "slug": "destinations-load",
+    "parts": [
+      "dsl-element-destinations-load.head.html",
+      "dsl-element-destinations-load.tail.html"
+    ],
+    "js": "dsl-element-destinations-load.js",
+    "defaultCase": "replace"
+  },
+  {
+    "key": "transformations-steps",
+    "route": "/dsl/transformations/steps",
+    "slug": "transformations-steps",
+    "parts": [
+      "dsl-element-transformations-steps.head.html",
+      "dsl-element-transformations-steps.tail.html"
+    ],
+    "js": "dsl-element-transformations-steps.js",
+    "defaultCase": "one"
+  },
+  {
+    "key": "transformations-columns",
+    "route": "/dsl/transformations/columns",
+    "slug": "transformations-columns",
+    "parts": [
+      "dsl-element-transformations-columns.head.html",
+      "dsl-element-transformations-columns.tail.html"
+    ],
+    "js": "dsl-element-transformations-columns.js",
+    "defaultCase": "select"
+  },
+  {
+    "key": "transformations-compute",
+    "route": "/dsl/transformations/compute",
+    "slug": "transformations-compute",
+    "parts": [
+      "dsl-element-transformations-compute.head.html",
+      "dsl-element-transformations-compute.tail.html"
+    ],
+    "js": "dsl-element-transformations-compute.js",
+    "defaultCase": "calculate"
+  },
+  {
+    "key": "transformations-aggregate",
+    "route": "/dsl/transformations/aggregate",
+    "slug": "transformations-aggregate",
+    "parts": [
+      "dsl-element-transformations-aggregate.head.html",
+      "dsl-element-transformations-aggregate.tail.html"
+    ],
+    "js": "dsl-element-transformations-aggregate.js",
+    "defaultCase": "long"
+  },
+  {
+    "key": "transformations-combine",
+    "route": "/dsl/transformations/combine",
+    "slug": "transformations-combine",
+    "parts": [
+      "dsl-element-transformations-combine.head.html",
+      "dsl-element-transformations-combine.tail.html"
+    ],
+    "js": "dsl-element-transformations-combine.js",
+    "defaultCase": "union-all"
+  },
+  {
+    "key": "transformations-reshape",
+    "route": "/dsl/transformations/reshape",
+    "slug": "transformations-reshape",
+    "parts": [
+      "dsl-element-transformations-reshape.head.html",
+      "dsl-element-transformations-reshape.tail.html"
+    ],
+    "js": "dsl-element-transformations-reshape.js",
+    "defaultCase": "unpivot"
+  },
+  {
+    "key": "workflow-name-and-version",
+    "route": "/dsl/workflow/name-version",
+    "slug": "workflow-name-version",
+    "parts": [
+      "dsl-element-workflow-name-version.head.html",
+      "dsl-element-workflow-name-version.tail.html"
+    ],
+    "js": "dsl-element-workflow-name-version.js",
+    "defaultCase": "full"
+  },
+  {
+    "key": "workflow-trigger",
+    "route": "/dsl/workflow/trigger",
+    "slug": "workflow-trigger",
+    "parts": [
+      "dsl-element-workflow-trigger.head.html",
+      "dsl-element-workflow-trigger.tail.html"
+    ],
+    "js": "dsl-element-workflow-trigger.js",
+    "defaultCase": "manual"
+  },
+  {
+    "key": "workflow-steps",
+    "route": "/dsl/workflow/steps",
+    "slug": "workflow-steps",
+    "parts": [
+      "dsl-element-workflow-steps.head.html",
+      "dsl-element-workflow-steps.tail.html"
+    ],
+    "js": "dsl-element-workflow-steps.js",
+    "defaultCase": "action"
+  },
+  {
+    "key": "workflow-retry",
+    "route": "/dsl/workflow/retry",
+    "slug": "workflow-retry",
+    "parts": [
+      "dsl-element-workflow-retry.head.html",
+      "dsl-element-workflow-retry.tail.html"
+    ],
+    "js": "dsl-element-workflow-retry.js",
+    "defaultCase": "none"
+  },
+  {
+    "key": "expressions-filter-expr",
+    "route": "/dsl/expressions/filter",
+    "slug": "expressions-filter",
+    "parts": [
+      "dsl-element-expressions-filter.head.html",
+      "dsl-element-expressions-filter.tail.html"
+    ],
+    "js": "dsl-element-expressions-filter.js",
+    "defaultCase": "amount"
+  },
+  {
+    "key": "expressions-calculate-expr",
+    "route": "/dsl/expressions/calculate",
+    "slug": "expressions-calculate",
+    "parts": [
+      "dsl-element-expressions-calculate.head.html",
+      "dsl-element-expressions-calculate.tail.html"
+    ],
+    "js": "dsl-element-expressions-calculate.js",
+    "defaultCase": "tax"
+  },
+  {
+    "key": "expressions-step-when",
+    "route": "/dsl/expressions/when",
+    "slug": "expressions-when",
+    "parts": [
+      "dsl-element-expressions-when.head.html",
+      "dsl-element-expressions-when.tail.html"
+    ],
+    "js": "dsl-element-expressions-when.js",
+    "defaultCase": "literal"
+  },
+  {
+    "key": "expressions-script-code",
+    "route": "/dsl/expressions/script",
+    "slug": "expressions-script",
+    "parts": [
+      "dsl-element-expressions-script.head.html",
+      "dsl-element-expressions-script.tail.html"
+    ],
+    "js": "dsl-element-expressions-script.js",
+    "defaultCase": "row"
+  },
+  {
+    "key": "interpolation-param-and-env",
+    "route": "/dsl/interpolation/param-env",
+    "slug": "interpolation-param-env",
+    "parts": [
+      "dsl-element-interpolation-param-env.head.html",
+      "dsl-element-interpolation-param-env.tail.html"
+    ],
+    "js": "dsl-element-interpolation-param-env.js",
+    "defaultCase": "embedded-param"
+  }
+]

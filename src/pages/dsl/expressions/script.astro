@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-expressions-script.head.html?raw';
+import tail from '../../../_mock/dsl-element-expressions-script.tail.html?raw';
+import js from '../../../_mock/dsl-element-expressions-script.js?raw';
+---
+
+<BaseLayout title="script.code — Hydra DSL" description="Write restricted Python code inside a script transformation contract.">
+  <style is:global set:html={css}></style>
+  <DslShell current="expressions-script-code">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/guide.css?raw';
+import body from '../_mock/guide.body.html?raw';
+import js from '../_mock/guide.js?raw';
+---
+
+<BaseLayout title="Guide" description={"Executable reference for Hydra DSL sources, destinations, transformations, workflows, triggers and policies."}>
+  <style is:global set:html={css}></style>
+  <Fragment set:html={body} />
+  <script is:inline set:html={js}></script>
+</BaseLayout>

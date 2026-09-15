@@ -1,0 +1,22 @@
+version: "1.0"
+steps:
+  - cast:
+      mapping:
+        amount: float
+
+  - aggregate:
+      by: [region]
+      agg:
+        orders:
+          func: count
+          col: id
+        revenue:
+          func: sum
+          col: amount
+        average_order:
+          func: mean
+          col: amount
+
+  - sort:
+      by: [revenue]
+      ascending: false

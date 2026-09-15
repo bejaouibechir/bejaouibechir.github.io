@@ -1,0 +1,57 @@
+      <script type="application/json" id="rowsData">[{"order_id": "O1001", "amount": "13.50", "status": "paid"}, {"order_id": "O1003", "amount": "48.00", "status": "pending"}, {"order_id": "O1005", "amount": "29.00", "status": "refunded"}, {"order_id": "O1007", "amount": null, "status": "pending"}, {"order_id": "O1012", "amount": "72.00", "status": "paid"}, {"order_id": "O1014", "amount": "4.50", "status": "paid"}, {"order_id": "O1019", "amount": "79.80", "status": "paid"}, {"order_id": "O1020", "amount": "54.00", "status": "paid"}]</script>
+      <div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>5 · Transformations</span><span>›</span><span>Rows</span></div>
+      <div class="lesson-head">
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Interactive lesson · 4 min</div>
+          <h1>Keep only the rows you need</h1>
+          <p class="lead">Change one value, run the pipeline, and watch how a <code>filter</code> transforms the orders dataset.</p>
+        </div>
+      </div>
+
+      <div class="steps" role="tablist" aria-label="Lesson steps">
+        <button class="step done" type="button" role="tab" data-step="1"><b>✓ Observe</b><span>See the input</span></button>
+        <button class="step on" type="button" role="tab" aria-selected="true" data-step="2"><b>2 Modify</b><span>Set the threshold</span></button>
+        <button class="step locked" type="button" role="tab" aria-disabled="true" data-step="3"><b>3 Run</b><span>Execute locally</span></button>
+        <button class="step locked" type="button" role="tab" aria-disabled="true" data-step="4"><b>4 Explain</b><span>Read the result</span></button>
+        <button class="step locked" type="button" role="tab" aria-disabled="true" data-step="5"><b>5 Challenge</b><span>Fix an error</span></button>
+      </div>
+
+      <section class="workbench" aria-labelledby="lessonGoal">
+        <div class="editor-pane">
+          <div class="pane-head"><span class="file-dot"></span><strong>transformations.yaml</strong><span class="edit-label">change one value</span></div>
+          <div class="codewrap" aria-label="Hydra DSL example">
+            <div class="lines" aria-hidden="true">1<br>2<br>3<br>4<br>5<br>6</div>
+            <pre class="yaml"><span class="c-key">transformations:</span>
+  <span class="c-key">steps:</span>
+    - <span class="c-key">filter:</span>
+        <span class="c-key">expr:</span> <span class="c-str">amount &gt; <span id="codeAmount">20</span></span>
+        <span class="c-comment"># keep matching rows</span>
+        <span class="c-key">on_error:</span> <span class="c-val">stop</span></pre>
+          </div>
+          <div class="control">
+            <label for="amount"><span>Minimum order amount</span><output id="amountOut" for="amount">€20</output></label>
+            <input id="amount" type="range" min="0" max="100" step="10" value="20">
+          </div>
+        </div>
+        <div class="result-pane">
+          <div class="goal"><div class="goal-icon" aria-hidden="true">1</div><div><b id="lessonGoal">Your goal</b><p>Keep orders above €50. Move the threshold, then run the pipeline.</p></div></div>
+          <div class="flow" aria-label="Pipeline diagram"><span class="node">orders.csv</span><span class="arr">→</span><span class="node active">filter</span><span class="arr">→</span><span class="node">preview</span></div>
+          <div class="tablewrap">
+            <div class="tabletop"><strong>Output preview</strong><span class="rows" id="rowCount">8 input rows</span></div>
+            <table>
+              <thead><tr><th>order_id</th><th>amount</th><th>status</th></tr></thead>
+              <tbody id="dataRows"></tbody>
+            </table>
+          </div>
+          <div class="runbar">
+            <span class="status" id="status" role="status" aria-live="polite">Simulation ready · no data leaves your browser</span>
+            <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+            <button class="btn primary" id="runBtn" type="button">▶ Run</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite">
+        <div aria-hidden="true">✓</div><div><strong>That’s it — 2 rows remain.</strong><span>You changed the filter condition and verified its effect on real sample rows.</span></div>
+        <button class="btn" id="nextBtn" type="button">Continue →</button>
+      </div>

@@ -1,0 +1,42 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>7 · Expressions</span><span>›</span><span>step.when</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Grammar element · workflow.steps.when</div>
+    <h1>step.when gates one workflow node</h1>
+    <p class="lead">Three safe boolean guards. A true guard runs the node; a false guard skips it and its dependants.</p>
+  </div>
+</div>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong>workflow.yaml</strong><span class="edit-label">4 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+    <div class="control">
+      <label for="selCase"><span>the guard checks</span></label>
+      <select id="selCase">
+        <option value="literal">a numeric comparison</option>
+        <option value="membership">membership</option>
+        <option value="placeholder">an environment placeholder</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal"><div class="goal-icon" aria-hidden="true">7</div><div><b id="goalTitle">What the runner decides</b><p>Whether one ready node may execute after its dependencies have completed.</p></div></div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict tall" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">✓ guard true · step runs</span>
+      <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import GuideShell from '../../../components/GuideShell.astro';
+import GuideTutorial from '../../../components/GuideTutorial.astro';
+import css from '../../../_mock/dsl.css?raw';
+import tutorialJs from '../../../scripts/guide-tutorial.js?raw';
+import { guideTutorials } from '../../../data/guide-tutorials.js';
+
+export function getStaticPaths() {
+  return guideTutorials.map((tutorial, index) => ({
+    params: { category: tutorial.category, slug: tutorial.name },
+    props: { tutorial, workshopNumber: index + 2 }
+  }));
+}
+
+const { tutorial, workshopNumber } = Astro.props;
+---
+
+<BaseLayout title={`${tutorial.title} — Hydra Guide`} description={tutorial.lead}>
+  <style is:global set:html={css}></style>
+  <GuideShell current={tutorial.key} related={tutorial.related}>
+    <div class="main-inner">
+      <GuideTutorial tutorial={tutorial} workshopNumber={workshopNumber} />
+    </div>
+  </GuideShell>
+  <script is:inline set:html={tutorialJs}></script>
+</BaseLayout>
+

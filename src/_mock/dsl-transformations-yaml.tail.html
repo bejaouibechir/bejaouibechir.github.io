@@ -1,0 +1,121 @@
+<section class="doc">
+  <h2>What <code>transformations.yaml</code> is</h2>
+  <p>
+    <code>transformations.yaml</code> holds <b>the ordered list of operations applied between reading and
+    writing</b>. One root key, <code>transformations</code>, containing one key, <code>steps</code>,
+    containing a list.
+  </p>
+  <p>
+    It is the only file of a job you may omit. Without it the rows travel from the source to the
+    destination unchanged — a copy job, which is a legitimate thing to want.
+  </p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>A list, not a set.</b> Position is meaning. Each entry receives what the previous one
+      produced, never the source.</li>
+    <li><b>One operation per entry</b> — a mapping with a single key, the operation name, whose value
+      holds its parameters. Eighteen names are accepted; anything else stops the run.</li>
+    <li><b>An optional label.</b> A step may carry a <code>name</code>, used in messages. It changes
+      nothing to the result.</li>
+  </ul>
+
+  <h2>Order is the whole idea</h2>
+  <p>
+    The list runs from top to bottom and the engine never reorders it. A CSV yields text in every column,
+    so a step that compares numbers belongs after the step that produces them — which is why the example
+    starts with <code>cast</code>. Note that <code>hdrctl validate</code> checks the shape of the
+    manifest, not the types flowing through it.
+  </p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 104" role="img" aria-labelledby="txTitle txDesc" class="cnx">
+      <title id="txTitle">Each step receives the output of the previous one</title>
+      <desc id="txDesc">The source produces text, cast turns it into numbers, filter compares numbers, and six rows reach the destination.</desc>
+
+      <rect class="d-box" x="12" y="26" width="140" height="48" rx="9"/>
+      <text class="d-txt" x="28" y="48">source</text>
+      <text class="d-sub" x="28" y="64">text in every column</text>
+
+      <path class="d-arrow lit" d="M156 50 H 196" marker-end="url(#ar4lit)"/>
+
+      <rect class="d-box lit" x="204" y="26" width="140" height="48" rx="9"/>
+      <text class="d-key lit" x="220" y="48">cast</text>
+      <text class="d-sub" x="220" y="64">text becomes numbers</text>
+
+      <path class="d-arrow lit" d="M348 50 H 388" marker-end="url(#ar4lit)"/>
+
+      <rect class="d-box lit" x="396" y="26" width="140" height="48" rx="9"/>
+      <text class="d-key lit" x="412" y="48">filter</text>
+      <text class="d-sub" x="412" y="64">numbers above 50</text>
+
+      <path class="d-arrow lit" d="M540 50 H 580" marker-end="url(#ar4lit)"/>
+
+      <rect class="d-box" x="588" y="26" width="116" height="48" rx="9"/>
+      <text class="d-txt" x="604" y="48">6 rows</text>
+      <text class="d-sub" x="604" y="64">written</text>
+
+      <defs>
+        <marker id="ar4lit" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="d-head lit"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Each step sees what the previous one produced, never the source.</figcaption>
+  </figure>
+
+  <h2>Two shapes, one file</h2>
+  <p>
+    The engine accepts two shapes for this file — the same manifest written two ways. Both are complete
+    below: copy either one and it works.
+  </p>
+
+  <p><b>Long form</b> — the <code>transformations</code> key wraps <code>steps</code>. Used throughout this documentation.</p>
+  <pre class="cmd">transformations:
+  steps:
+    - cast:
+        mapping:
+          amount: float
+    - filter:
+        expr: "amount &gt; 50"</pre>
+
+  <p><b>Short form</b> — <code>steps</code> sits at the root. Used by the templates of <code>hdrctl init</code>.</p>
+  <pre class="cmd">steps:
+  - cast:
+      mapping:
+        amount: float
+  - filter:
+      expr: "amount &gt; 50"</pre>
+
+  <h3>Run both, and compare</h3>
+  <p>
+    The tutorial project carries the long form. Save the short one as <code>short-form.yaml</code> and
+    point <code>hdrctl run</code> at it with <code>-t</code>: no file is modified.
+  </p>
+  <pre class="cmd">hdrctl run examples/tutorial/01-first-job
+hdrctl run examples/tutorial/01-first-job -t short-form.yaml</pre>
+  <p>Both print the same three lines:</p>
+  <pre class="cmd out">  ✅ Pipeline completed successfully
+  Rows read   : 30
+  Rows written: 6</pre>
+
+  <p>The full syntax of the command, with the options that matter here:</p>
+  <pre class="cmd">hdrctl run &lt;job-directory&gt;
+    -t, --transformations FILE   read the steps from this file instead
+    --dry-run                    validate the manifest, write nothing
+    -v, -vv, -vvv                more detail, up to full logs</pre>
+
+  <p>
+    Pick a shape per project and hold it. Nothing in the engine will tell you that you drifted, since
+    both are equally valid.
+  </p>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl">Rows — filter, sort, deduplicate</a></li>
+    <li><a href="/dsl/sources-yaml">sources.yaml — where the rows come from</a></li>
+    <li><a href="/dsl/pipeline">pipeline — which source feeds which destination</a></li>
+    <li><a href="/dsl/tutorial/01-first-job">Lesson 1 — cast before filter, in a job that runs</a></li>
+    <li><a href="/dsl/reference">Reference — the eighteen operations</a></li>
+  </ul>
+</section>

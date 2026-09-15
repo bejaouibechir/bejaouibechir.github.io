@@ -1,0 +1,226 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 3</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 3 of 14 · Read the canvas</div><h1>Recognize nodes, ports and edges</h1><p class="lead">Take a guided tour of <code>first-workflow</code>: two jobs, two actions, three containers, and the YAML each of them produces.</p></div>
+<div class="lesson-meta"><span class="mono">Jobs configuration</span><span>about 20 minutes</span><span>API online</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Open <code>first-workflow</code> and read everything it holds without changing anything. Tell <b>Jobs configuration</b>, where a job runs source to destination, from <b>Workflow configuration</b>, where jobs and actions form a graph. Recognize the three containers and what each writes into the manifest.</p>
+  <h3>Why this matters</h3><p>One screen hosts two different graphs. Confusing them is the most common beginner mistake: connector nodes belong inside a job, Job and Action nodes belong to orchestration. Reading before editing is what makes the next nine lessons quick.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>What you are looking at</h3>
+  <table><thead><tr><th>Piece</th><th>Where it lives</th><th>What it does</th></tr></thead><tbody>
+    <tr><td><code>first-job</code></td><td>Jobs configuration</td><td>Reads a CSV, keeps some rows, writes a CSV</td></tr>
+    <tr><td><code>second-job</code></td><td>Jobs configuration</td><td>Reads the first job's output, keeps some columns, writes a CSV</td></tr>
+    <tr><td><b>Log</b> action</td><td>Workflow configuration</td><td>Writes a message to the run log</td></tr>
+    <tr><td><b>PowerShell</b> action</td><td>Workflow configuration</td><td>Runs a shell command on the host</td></tr>
+    <tr><td>Three containers</td><td>Both scenes</td><td>Group nodes, and two of them apply a policy</td></tr>
+  </tbody></table>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A project holding <code>first-workflow</code> with its two jobs — or the bundle below.</li></ul>
+
+  <div class="download">
+    <div class="txt">
+      <b>Follow along with the real workflow</b>
+      <small>The workflow read in this lesson, with both jobs and their sample data. Unzip it, then use <b>Import workflow</b> and pick the <code>import_bundle</code> folder. <code>hdrctl workflow run</code> works on it too.</small>
+    </div>
+    <a href="/examples/import_bundle.zip" download>Download the bundle <span class="size">4 KB</span></a>
+  </div>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the workflow</h3>
+    <h4>Objective</h4><p>Read what the card announces before entering the editor.</p>
+    <h4>Actions</h4><ol><li>Open the project from <b>Overview</b>.</li><li>Read the line under the workflow name.</li><li>Select <b>Open in editor</b>.</li></ol>
+    <pre class="cmd">Overview → project → first-workflow → Open in editor</pre>
+    <div class="expect"><b>What you should see</b><p>The card summarises the workflow in one line: its trigger and how many jobs it orchestrates. <b>Draft</b> and <b>never run</b> describe the file and its history, not its validity.</p><pre class="out">first-workflow
+Manual · 2 jobs
+Draft   never run</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen1.png" width="1913" height="985" loading="lazy" decoding="async" alt="The project page showing the first-workflow card, marked Manual with two jobs, Draft and never run, with a Trigger selector and an Open in editor link." /><figcaption>Counting <b>2 jobs</b> is not the same as counting nodes — actions and containers are not jobs.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the workflow graph</h3>
+    <h4>Objective</h4><p>Identify the four executable nodes and the direction of the edges between them.</p>
+    <h4>Actions</h4><ol><li>Stay on the <b>Workflow configuration</b> tab.</li><li>Read the counters beside the workflow name.</li><li>Follow the arrows from left to right, then select the PowerShell node.</li></ol>
+    <pre class="cmd">Workflow configuration → select a node</pre>
+    <div class="expect"><b>What you should see</b><p>Five nodes for four steps: the fifth is the container, which never executes. Each node carries a blue <b>handle</b> on the left and on the right — an edge always leaves a right handle and enters a left one, so the graph reads in one direction only.</p><pre class="out">first-workflow   5 nodes · 3 edges   Valid
+first-job → second-job → action_log_1
+                      → action_powershell_2</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen2.png" width="1914" height="1031" loading="lazy" decoding="async" alt="The workflow canvas showing an Error Scope container around first-job and second-job, with a Log action and a PowerShell action to the right, and the inspector panel open on the PowerShell node." /><figcaption>Selecting a node opens the inspector: <b>step name</b>, <b>node type</b>, <b>on failure</b> and the read-only <b>node ID</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read the containers</h3>
+    <h4>Objective</h4><p>Understand what a container is, and what it is not.</p>
+    <h4>Actions</h4><ol><li>Look at the header of the red container around the two jobs.</li><li>Open its <b>On child failure</b> list.</li><li>Close it again without changing the value.</li></ol>
+    <pre class="cmd">Error Scope → On child failure</pre>
+    <p>A container never executes. Hydra's runner never sees one. What it does is copy a policy onto the nodes it encloses when the YAML is written — so you set the rule once, in one place, instead of on every step.</p>
+    <table><thead><tr><th>Container</th><th>Option on its header</th><th>What each child receives</th></tr></thead><tbody>
+      <tr><td><b>Sequence</b></td><td>none</td><td>nothing — it only groups the canvas</td></tr>
+      <tr><td><b>Error Scope</b></td><td><b>On child failure:</b> <code>skip</code> · <code>continue</code> · <code>fail</code></td><td><code>on_failure</code></td></tr>
+      <tr><td><b>Retry Scope</b></td><td><b>Retries</b> N × · <b>delay</b> N s</td><td><code>retry</code></td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Three values, and only three. <code>fail</code> stops the workflow, <code>skip</code> marks the step skipped, <code>continue</code> carries on. A child that sets its own value keeps it — the container fills in the blanks, it does not overrule.</p><pre class="out">On child failure:
+  skip
+  continue
+  fail</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen3.png" width="1909" height="1029" loading="lazy" decoding="async" alt="The Error Scope container header with the On child failure list open, showing the three values skip, continue and fail." /><figcaption>Deleting the container does not delete its children — but the policy it was applying goes with it.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Open the first job</h3>
+    <h4>Objective</h4><p>Switch scenes and read a job as a straight line from source to destination.</p>
+    <h4>Actions</h4><ol><li>Select the <b>Jobs configuration</b> tab.</li><li>Pick <b>first-job</b> in the tab bar at the bottom.</li><li>Read the header of the container around the first two nodes.</li></ol>
+    <pre class="cmd">Jobs configuration → first-job</pre>
+    <div class="expect"><b>What you should see</b><p>Three executable nodes in a row — <b>source</b>, <b>transformation</b>, <b>destination</b> — plus the container. The palette also changes: Sources, Transformations and Destinations replace Actions and Jobs, because those have no meaning inside a job.</p><pre class="out">first-workflow / first-job   4 nodes · 2 edges   Valid
+orders.csv → transform_filter_3 → firtered_orders.csv
+Retry Scope   Retries 4 ×, delay 5 s</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen4.png" width="1909" height="986" loading="lazy" decoding="async" alt="The first-job canvas with a Retry Scope container set to four retries and five seconds delay, holding a CSV source and a Filter transformation, with the CSV destination outside the container." /><figcaption>The destination sits outside the Retry Scope: only what the container encloses receives the policy.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Open the second job</h3>
+    <h4>Objective</h4><p>Confirm the shape repeats, and meet the container that changes nothing.</p>
+    <h4>Actions</h4><ol><li>Select <b>second-job</b> in the tab bar.</li><li>Read the three nodes and the two edges.</li><li>Look at the container header — it has no option.</li></ol>
+    <pre class="cmd">Jobs configuration → second-job</pre>
+    <div class="expect"><b>What you should see</b><p>The same source-transformation-destination line, this time reading the file the first job wrote. The <b>Sequence</b> container carries no setting because it applies no policy: it is there to make a long chain readable.</p><pre class="out">first-workflow / second-job   4 nodes · 2 edges   Valid
+src_orders_clean → transform_select_4 → dst_sales_by_region
+Sequence   (no option)</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen5.png" width="1915" height="989" loading="lazy" decoding="async" alt="The second-job canvas with an orange Sequence container holding a CSV source, a Select transformation and a CSV destination." /><figcaption>Two jobs, one shape. Every Hydra job is one source, N transformations, one destination.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read what a node is configured with</h3>
+    <h4>Objective</h4><p>Open the four connector nodes and see that each holds only what its role needs.</p>
+    <h4>Actions</h4><ol><li>Double-click the source of <b>first-job</b>.</li><li>Close it, then open the Filter node, then the destination.</li><li>Switch to <b>second-job</b> and open its source.</li></ol>
+    <pre class="cmd">double-click a node → read → Cancel</pre>
+    <p>Every dialog shows the same three parts: a <b>step name</b> you choose, the fields required by that node type, and a read-only <b>node ID</b>. The name is what appears in the YAML; the ID is what the canvas uses internally and never changes.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen6.png" width="1913" height="988" loading="lazy" decoding="async" alt="The CSV source dialog, showing a step name, a required file path with a Browse button, and a read-only node identifier." /><figcaption><b>Source.</b> A CSV needs one thing: a file path. <b>Browse</b> avoids typing it.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen7.png" width="1913" height="993" loading="lazy" decoding="async" alt="The Filter transformation dialog, with a step name and a required expression field holding amount greater than 100." /><figcaption><b>Transformation.</b> Filter keeps the rows for which the expression is true.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen8.png" width="1915" height="982" loading="lazy" decoding="async" alt="The CSV destination dialog, with a step name and a required output file path." /><figcaption><b>Destination.</b> Same dialog as the source, opposite direction.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen9.png" width="1913" height="989" loading="lazy" decoding="async" alt="The CSV source dialog of the second job, whose file path points at the output written by the first job." /><figcaption><b>The link between the two jobs.</b> This source reads what the first job wrote — nothing else connects them.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>No dialog asks for anything it does not need. That is the whole idea of the node types: the form is the contract.</p><pre class="out">CSV  SOURCE        step name · file path · node ID
+Filter  TRANSFORMATION   step name · expression · node ID
+CSV  DESTINATION   step name · file path · node ID</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>07</i>Read the two actions</h3>
+    <h4>Objective</h4><p>See what an action is, and why one of them is tied to the operating system.</p>
+    <h4>Actions</h4><ol><li>Return to <b>Workflow configuration</b>.</li><li>Open the <b>Log</b> node, read its message, cancel.</li><li>Open the <b>PowerShell</b> node and read its command, working directory and timeout.</li></ol>
+    <pre class="cmd">Workflow configuration → double-click an action</pre>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen10.png" width="1910" height="989" loading="lazy" decoding="async" alt="The Log action dialog with a step name, an on-failure list, an optional run condition and a message field." /><figcaption><b>Log</b> always succeeds. Useful to mark a milestone in the run log.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen11.png" width="1911" height="947" loading="lazy" decoding="async" alt="The PowerShell action dialog with a step name, an on-failure list, a run condition, the required command field, a working directory and a timeout in seconds." /><figcaption><b>PowerShell</b> runs on the host. The <b>timeout</b> is what stops a command that never returns.</figcaption></figure>
+    </div>
+    <p>Both dialogs carry a <b>Run condition (when)</b>. Left empty, the step always runs; filled in, it runs only when the expression is true. That is how a Condition node upstream steers the rest of the graph.</p>
+    <div class="callout"><b>Trap — the shell action does not adapt to the host</b><p>Hydra does <b>not</b> swap PowerShell for Bash when it runs on Linux. Each action refuses the wrong platform outright: a <b>PowerShell</b> step fails on Linux and macOS, a <b>Bash</b> step fails on Windows. If a workflow has to run on both, replace the node yourself, or guard each one with a <b>Run condition</b>. A workflow that is portable everywhere is a workflow with no shell action in it.</p></div>
+    <div class="expect"><b>What you should see</b><p>The same frame around a different payload: a message for Log, a command for PowerShell. Only <b>on failure</b> and <b>run condition</b> are shared by every action.</p><pre class="out">Log         ACTION   message
+PowerShell  ACTION   command · working directory · timeout (60 s)</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Read the DSL the canvas produces</h3>
+    <h4>Objective</h4><p>Connect what you have been reading on screen to the four files on disk.</p>
+    <h4>Actions</h4><ol><li>With a job open, select <b>Hydra DSL</b> in the top bar.</li><li>Walk through the four tabs in order.</li><li>Close the panel.</li></ol>
+    <pre class="cmd">Jobs configuration → Hydra DSL</pre>
+    <p>A job is not one file but four, and the panel gives one tab to each. Read them in this order and the job explains itself: where the data comes from, what happens to it, where it goes, and how the three are wired together.</p>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen13.png" width="1914" height="984" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Sources tab, showing a csv source with its connection and extract table and batch size." /><figcaption><b>sources.yaml</b> — the source node, with the file path under <code>extract.table</code>.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen14.png" width="1913" height="988" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Transformations tab, showing a steps list with a select operation and its columns." /><figcaption><b>transformations.yaml</b> — an ordered list. The order on the canvas is the order here.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen15.png" width="1907" height="982" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Destinations tab, showing a csv destination with its load table and replace mode." /><figcaption><b>destinations.yaml</b> — note <code>mode: replace</code>, which empties the target before writing.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/screen16.png" width="1916" height="988" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Pipeline tab, showing from and to fields referring to the declared source and destination." /><figcaption><b>pipeline.yaml</b> — <code>from</code> and <code>to</code> hold the identifiers, never the file paths.</figcaption></figure>
+    </div>
+    <div class="expect"><b>What you should see</b><p>Identifiers, not paths, in <code>pipeline.yaml</code>. That indirection is why a source can be repointed at another file without touching the wiring.</p><pre class="out">sources:          source id  → type, connection, extract
+transformations:  steps      → one operation per entry
+destinations:     dest id    → type, connection, load
+pipeline:         from: &lt;source id&gt;   to: &lt;dest id&gt;</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Read the workflow the canvas describes</h3>
+    <h4>Objective</h4><p>See the whole orchestration as one file, and find each thing you read on screen inside it.</p>
+    <h4>Actions</h4><ol><li>Compare each <code>name</code> below with a node on the canvas.</li><li>Compare each <code>depends_on</code> with an edge.</li><li>Look for the containers — and notice they are absent.</li></ol>
+    <pre class="cmd">hdrctl workflow validate ./workflow.yaml</pre>
+    <p>Four steps, in the order the graph imposes. <code>first-job</code> starts alone, <code>second-job</code> waits for it, and the two actions both wait for <code>second-job</code> — so they run in parallel, because nothing links them to each other.</p>
+    <pre class="out">version: "1.0"
+workflow:
+  name: first-workflow
+  trigger:
+    type: manual
+  steps:
+    - name: first-job
+      type: job
+      job: ./jobs/first-job
+      depends_on: []
+      on_failure: skip
+
+    - name: second-job
+      type: job
+      job: ./jobs/second-job
+      depends_on: ["first-job"]
+      on_failure: skip
+
+    - name: action_log_1
+      type: action
+      action: log
+      params:
+        message: "test the log"
+      depends_on: ["second-job"]
+
+    - name: action_powershell_2
+      type: action
+      action: powershell
+      params:
+        command: Get-Process
+        timeout: 60
+      depends_on: ["second-job"]</pre>
+    <p>The <b>Error Scope</b> is nowhere in this file, and neither are the other two containers. All that survives is the <code>on_failure: skip</code> it wrote on each of its children. That is the whole contract: you draw a container, Hydra writes a policy.</p>
+    <table><thead><tr><th>On the canvas</th><th>In the file</th></tr></thead><tbody>
+      <tr><td>A node</td><td>an entry under <code>steps</code></td></tr>
+      <tr><td>An edge</td><td>a name inside <code>depends_on</code></td></tr>
+      <tr><td>A Job node</td><td><code>type: job</code> and a <code>job</code> path</td></tr>
+      <tr><td>An Action node</td><td><code>type: action</code>, its <code>action</code> and its <code>params</code></td></tr>
+      <tr><td>An Error Scope</td><td><code>on_failure</code> on each child</td></tr>
+      <tr><td>A Retry Scope</td><td><code>retry</code> on each child</td></tr>
+      <tr><td>A Sequence Container</td><td>nothing at all</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Two jobs, two actions, no container. The step count matches the four executable nodes, not the five drawn on screen.</p><pre class="out">✅ Workflow valid — no errors detected.</pre></div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">Sources and transformations live in <b>Jobs configuration</b>. Jobs and actions live in <b>Workflow configuration</b>.</p>
+  <p data-kind="TRAP">A <b>container never runs</b>. Five nodes on screen can mean <b>four steps</b> in the YAML.</p>
+  <p data-kind="TIP">An edge leaves a <b>right handle</b> and enters a <b>left handle</b>. Direction is never ambiguous.</p>
+  <p data-kind="TRAP">The <b>Valid</b> badge means the manifest parses. Only a <b>run</b> proves the job works.</p>
+  <p data-kind="TIP">A policy reaches only what sits <b>inside</b> the container. A node beside it gets <b>nothing</b>.</p>
+  <p data-kind="TRAP">Studio can be <b>ahead of the disk</b>. Open the file to be sure.</p>
+  <p data-kind="TIP">Counts and durations are <b>live values</b>. Never quote them as thresholds.</p>
+  <p data-kind="TRAP">An animation is <b>not an outcome</b>. Wait for a <b>terminal state</b> on the Runs page.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Workflow counters</td><td><code>5 nodes · 3 edges</code> for four executable steps</td></tr><tr><td>Scene switch</td><td>The palette changes with the tab</td></tr><tr><td>Containers</td><td>Sequence, Error Scope and Retry Scope identified</td></tr><tr><td>Error Scope options</td><td><code>skip</code>, <code>continue</code>, <code>fail</code> — three values</td></tr><tr><td>Job shape</td><td>Source, transformation, destination in both jobs</td></tr><tr><td>Hydra DSL</td><td>Four tabs: sources, transformations, destinations, pipeline</td></tr><tr><td>Nothing changed</td><td>The workflow is still marked <b>Valid</b></td></tr></tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>The palette has no Sources</td><td>You are on <b>Workflow configuration</b></td><td>Switch to <b>Jobs configuration</b></td></tr>
+    <tr><td>No Actions in the palette</td><td>You are inside a job</td><td>Actions belong to orchestration; switch scenes</td></tr>
+    <tr><td>A node ignores its container</td><td>It sits beside the container, not inside it</td><td>Drag it into the frame until the header highlights</td></tr>
+    <tr><td>Node count exceeds step count</td><td>Containers are counted as nodes</td><td>Expected — they are not steps</td></tr>
+    <tr><td>A PowerShell step fails on Linux</td><td>The action is bound to Windows</td><td>Replace it with a Bash action, or guard it with a run condition</td></tr>
+    <tr><td>An edge refuses to connect</td><td>You started from a left handle</td><td>Drag from a right handle to a left one</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>You can now read a workflow without touching it. The next lesson opens the node palette properly — what each category holds, what the counts mean, and how to find the node you need.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/04-use-the-palette">Use the palette <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/dsl/transformations-yaml">transformations.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

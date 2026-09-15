@@ -1,0 +1,31 @@
+.firstjob-wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,54px) 80px}
+.firstjob-wrap .crumbs{padding-top:22px}
+.firstjob-wrap .lesson-head{padding-top:18px}
+.firstjob-wrap .doc{max-width:none}
+.firstjob-hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 0}
+.firstjob-hero-actions a{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:700}
+.firstjob-hero-actions a.primary{border-color:var(--accent);background:var(--accent);color:#fff}
+.download-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 22px}
+.download-card{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:11px;padding:13px 14px;border:1px solid var(--border);border-radius:11px;background:var(--panel);text-decoration:none!important}
+.download-card:hover{border-color:var(--accent);background:var(--bg-soft)}
+.download-card .file-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);font:800 10px var(--mono)}
+.download-card b{display:block;color:var(--text);font-size:13.5px}
+.download-card small{display:block;margin-top:2px;color:var(--muted);font-size:11.5px;line-height:1.35}
+.download-card i{color:var(--accent);font-style:normal;font-size:16px}
+.download-card.bundle{grid-column:1/-1;border-left:3px solid var(--accent);background:var(--bg-soft)}
+.download-card.bundle .file-icon{background:var(--accent);color:#fff}
+.file-map td:first-child{white-space:nowrap}
+.file-map td:last-child{width:46%}
+.screen-slot{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:13px 15px;border:1px dashed var(--strong);border-radius:10px;background:var(--bg-soft);color:var(--muted);font-size:12.5px}
+.screen-slot span{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--panel);font:800 10px var(--mono);color:var(--accent-text)}
+.result-line{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 16px}
+.result-line div{padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg-soft)}
+.result-line small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.result-line b{display:block;margin-top:4px;font:700 13px var(--mono)}
+@media(max-width:700px){.download-grid{grid-template-columns:1fr}.download-card.bundle{grid-column:auto}.result-line{grid-template-columns:1fr}.file-map td:first-child{white-space:normal}}
+
+/* Fix: get-started.css definit .shots comme lightbox plein ecran (position:fixed).
+   Sur cette page .shots est une grille de captures dans le flux du tutoriel. */
+.firstjob-wrap .shots{position:static;inset:auto;z-index:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));place-items:stretch;gap:10px;margin-top:12px;padding:0;background:none;backdrop-filter:none;animation:none}
+.firstjob-wrap .shots .shot{margin:0}
+@media(max-width:620px){.firstjob-wrap .shots{grid-template-columns:1fr}}

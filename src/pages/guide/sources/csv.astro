@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import GuideShell from '../../../components/GuideShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/guide-csv.head.html?raw';
+import tail from '../../../_mock/guide-csv.tail.html?raw';
+import js from '../../../_mock/guide-csv.js?raw';
+
+/* Sujets voisins déjà publiés. Une entrée n'apparaît que si sa page existe. */
+const related = [
+  { label: 'The connection block', href: '/dsl/sources', note: 'the nine source types' },
+  { label: 'sources.yaml', href: '/dsl/sources-yaml', note: 'declaring several inputs' },
+  { label: 'extract', href: '/dsl/sources/extract', note: 'what to read once connected' },
+  { label: 'transformations.yaml', href: '/dsl/transformations-yaml', note: 'the ordered list of steps' },
+  { label: 'Columns and rows', href: '/dsl/transformations/columns', note: 'cast, select, rename' },
+  { label: 'destinations.yaml', href: '/dsl/destinations-yaml', note: 'writing the result' },
+  { label: 'load', href: '/dsl/destinations/load', note: 'append, replace, upsert' },
+  { label: 'pipeline.yaml', href: '/dsl/pipeline-yaml', note: 'wiring the two ends' },
+  { label: 'Tutorial — your first job', href: '/dsl/tutorial/01-first-job', note: 'the same four files, line by line' },
+  { label: 'Playground', href: '/playground', note: 'a full job on real data' },
+];
+---
+
+<BaseLayout title="Read a CSV file — Hydra Guide" description="Workshop: automate the daily sales export. Nine steps from an empty folder to rows on disk.">
+  <style is:global set:html={css}></style>
+  <GuideShell current="csv-source" related={related}>
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </GuideShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

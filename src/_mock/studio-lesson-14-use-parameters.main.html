@@ -1,0 +1,213 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 14</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 14 of 14 · Use parameters</div><h1>One placeholder, two values, two results</h1><p class="lead">Two jobs contain the <b>same</b> line. They produce different files, because the workflow changed a value between them.</p></div>
+<div class="lesson-meta"><span class="mono">Set Param · Assign Param</span><span>about 25 minutes</span><span>a workflow that runs</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Stop hard-coding values into manifests. Write <code>{{ param:region }}</code> once, let the workflow decide what it means, and change that meaning halfway through a run.</p>
+  <div class="callout"><b>A ready-made workflow</b><p>This lesson uses <code>parameters_demo</code>, a project that ships with the engine under <code>test_scenarios</code>. Open it with <b>Open a project</b> — everything below is already wired, so you can read rather than type. Rebuild it any time with <code>python build_demo.py</code>.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A workflow you have already run once.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Read the shape of the workflow</h3>
+    <h4>Objective</h4><p>See where the parameter actions sit among the jobs.</p>
+    <h4>Actions</h4><ol><li>Open <b>Workflow configuration</b>.</li><li>Read the seven nodes from left to right.</li><li>Check the counters and the validity badge.</li></ol>
+    <pre class="cmd">Workflow configuration → parameters-workflow</pre>
+    <p>Seven steps, one line. Two of them are jobs; the other five are actions, and three of those exist only to handle a parameter. A parameter action is an ordinary step: it takes its turn in the graph like any other.</p>
+    <div class="expect"><b>What you should see</b><p>A single chain, no branches, and the workflow reading <b>Valid</b>.</p><pre class="out">parameters-workflow   7 nodes · 6 edges   Valid
+
+set_label → set_region → announce → filter-orders
+          → switch_region → summarize-orders → report</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen1.png" width="1912" height="983" loading="lazy" decoding="async" alt="The workflow canvas showing seven nodes in one chain: set_label, set_region, announce, filter-orders, switch_region, summarize-orders and report." /><figcaption>Seven nodes, six edges. The order is the whole point — a parameter only exists for the steps that follow it.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Separate the jobs from the actions</h3>
+    <h4>Objective</h4><p>Know which nodes do the work and which only set the stage.</p>
+    <h4>Actions</h4><ol><li>Expand <b>Jobs</b> in the palette.</li><li>Count the entries.</li><li>Match them against the nodes on the canvas.</li></ol>
+    <pre class="cmd">Node palette → Jobs (2)</pre>
+    <p>Only <b>two</b> of the seven nodes are jobs. Everything else is an action, and actions never move data — they announce, they wait, they decide. Here, three of them do nothing but manage one value.</p>
+    <table><thead><tr><th>Node</th><th>Kind</th><th>What it contributes</th></tr></thead><tbody>
+      <tr><td><code>set_label</code>, <code>set_region</code></td><td>Set Param</td><td>Creates a value</td></tr>
+      <tr><td><code>switch_region</code></td><td>Assign Param</td><td>Changes a value</td></tr>
+      <tr><td><code>announce</code>, <code>report</code></td><td>Log</td><td>Prints the values back</td></tr>
+      <tr><td><code>filter-orders</code>, <code>summarize-orders</code></td><td>Job</td><td>Reads the values and moves data</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Two jobs in the palette, five actions on the canvas.</p><pre class="out">Jobs (2)
+  filter-orders
+  summarize-orders</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen2.png" width="427" height="462" loading="lazy" decoding="async" alt="The node palette with the Jobs category expanded, listing filter-orders and summarize-orders." /><figcaption>Two jobs among seven nodes. The rest are actions.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Create the first parameter</h3>
+    <h4>Objective</h4><p>Fill in a Set Param and understand its three fields.</p>
+    <h4>Actions</h4><ol><li>Double-click <code>set_label</code>.</li><li>Read <b>Parameter name</b>, <b>Value</b> and <b>Type</b>.</li><li>Close the dialog.</li></ol>
+    <pre class="cmd">Set Param → run_label = demo-run</pre>
+    <p>A name, a value, a type. <b>Set Param creates</b>: it fails if the name is already in the run, which makes it safe to place at the top of a graph and nowhere else. The value lands in a store that lives for the length of one run, and disappears with it.</p>
+    <div class="expect"><b>What you should see</b><p>The dialog header states the rule, and the two required fields carry a red asterisk.</p><pre class="out">Set Param   ACTION
+  Creates a runtime parameter (fails if it already exists)
+  STEP NAME        set_label
+  PARAMETER NAME * run_label
+  VALUE *          demo-run</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen3.png" width="1902" height="944" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_label, with parameter name run_label and value demo-run." /><figcaption>Three fields, and a sentence in the header that tells you exactly when this action fails.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Create the parameter the jobs will read</h3>
+    <h4>Objective</h4><p>Add the second value, the one this whole lesson turns on.</p>
+    <h4>Actions</h4><ol><li>Double-click <code>set_region</code>.</li><li>Read the name and the value.</li><li>Note the <b>Type</b> menu below the value.</li></ol>
+    <pre class="cmd">Set Param → region = north  (type: str)</pre>
+    <p>Same dialog, different name. <b>Type</b> matters more than it looks: <code>str</code>, <code>int</code>, <code>float</code>, <code>bool</code> and <code>json</code> decide what the value <i>is</i>, not just how it prints. A parameter typed <code>int</code> can be compared with a number; the same value typed <code>str</code> cannot.</p>
+    <div class="expect"><b>What you should see</b><p>A second Set Param, identical in shape, holding the value the first job will use.</p><pre class="out">Set Param   ACTION
+  STEP NAME        set_region
+  PARAMETER NAME * region
+  VALUE *          north
+  TYPE             str</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen4.png" width="1912" height="944" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_region, with parameter name region and value north." /><figcaption>The value that <code>filter-orders</code> is about to read, written on the canvas rather than in a manifest.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read a parameter back</h3>
+    <h4>Objective</h4><p>Learn the one syntax you need, and where it works.</p>
+    <h4>Actions</h4><ol><li>Double-click <code>announce</code>.</li><li>Read the <b>Message</b> field.</li><li>Find the two placeholders.</li></ol>
+    <pre class="cmd">{{ param:run_label }}   {{ param:region }}</pre>
+    <p>One syntax, everywhere: <code>{{ param:NAME }}</code>. It works in a message, in a file path, in a filter expression, in a connection string. Its sibling <code>{{ env:NAME }}</code> reads an environment variable instead — same braces, different source.</p>
+    <div class="callout"><b>A placeholder alone keeps its type</b><p>When a field holds <b>nothing but</b> a placeholder, the value arrives with its declared type intact — a number stays a number. Surround it with text and the result is a string, because you asked for a sentence.</p></div>
+    <div class="expect"><b>What you should see</b><p>Two placeholders inside one sentence, unresolved on screen and resolved at run time.</p><pre class="out">Log   ACTION
+  Writes a message to the run logs (always succeeds)
+  MESSAGE   Starting {{ param:run_label }} on region {{ param:region }}</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen5.png" width="1911" height="948" loading="lazy" decoding="async" alt="The Log dialog for the step announce, whose message contains the placeholders param run_label and param region." /><figcaption>The editor shows the placeholder. The log will show the value.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Change a value mid-run</h3>
+    <h4>Objective</h4><p>Use the second parameter action, and learn how it differs from the first.</p>
+    <h4>Actions</h4><ol><li>Double-click <code>switch_region</code>.</li><li>Compare the header with the one from step 03.</li><li>Read the new value.</li></ol>
+    <pre class="cmd">Assign Param → region = south</pre>
+    <p>The dialog is identical; the rule is the opposite. <b>Assign Param changes</b>: it fails if the parameter does not exist yet. Together the two actions cover the whole lifecycle, and neither can silently do the other's job — the failure is the feature.</p>
+    <table><thead><tr><th>Action</th><th>Does</th><th>Fails when</th></tr></thead><tbody>
+      <tr><td><b>Set Param</b></td><td>Creates the parameter</td><td>The name already exists in this run</td></tr>
+      <tr><td><b>Assign Param</b></td><td>Replaces its value</td><td>The name does not exist yet</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>The same three fields, under a header that announces a different contract.</p><pre class="out">Assign Param   ACTION
+  Assigns a value to an existing runtime parameter
+  STEP NAME        switch_region
+  PARAMETER NAME * region
+  VALUE *          south</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen6.png" width="1912" height="947" loading="lazy" decoding="async" alt="The Assign Param dialog for the step switch_region, changing region to south." /><figcaption>Same fields as Set Param. Read the second line of the header — that is the whole difference.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>07</i>Read it back after the change</h3>
+    <h4>Objective</h4><p>Confirm that the placeholder is resolved late, not once.</p>
+    <h4>Actions</h4><ol><li>Double-click <code>report</code>.</li><li>Compare its message with the one in <code>announce</code>.</li><li>Note that the placeholder is written identically.</li></ol>
+    <pre class="cmd">Finished {{ param:run_label }} - last region was {{ param:region }}</pre>
+    <p>The two Log steps contain the <b>same</b> placeholder, and will print different regions. A placeholder is resolved when its step runs, against the store as it stands at that moment — not when the workflow is saved.</p>
+    <div class="expect"><b>What you should see</b><p>An identical placeholder in a step that sits after the change.</p><pre class="out">Log   ACTION
+  STEP NAME   report
+  MESSAGE     Finished {{ param:run_label }} - last region was {{ param:region }}</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen7.png" width="1907" height="943" loading="lazy" decoding="async" alt="The Log dialog for the step report, containing the same two placeholders as the announce step." /><figcaption>Same text as <code>announce</code>. Position in the graph is what makes the answer differ.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Run it and read the timeline</h3>
+    <h4>Objective</h4><p>Watch the seven steps take their turn.</p>
+    <h4>Actions</h4><ol><li>Select <b>Run Workflow</b>.</li><li>Open the run from <b>Runs</b>.</li><li>Read the execution timeline top to bottom.</li></ol>
+    <pre class="cmd">Run Workflow → Runs → parameters-workflow</pre>
+    <p>Three parameter actions cost about <b>three milliseconds</b> together, against roughly fifty for each job. Managing a value is free; the work is elsewhere. The timeline also proves the order was respected, which is what makes the whole thing predictable.</p>
+    <div class="expect"><b>What you should see</b><p>Seven steps, all green, and two visibly longer bars.</p><pre class="out">parameters-workflow   #91fca442   Success
+Duration 0.102s        Steps 7 ok / 7
+
+set_label      0.001s
+set_region     0.002s
+announce       0.001s
+job_…_0        0.048s
+switch_region  0.000s
+job_…_1        0.048s
+report         0.000s</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen8.png" width="1907" height="952" loading="lazy" decoding="async" alt="The run detail page showing a successful workflow with seven steps and an execution timeline." /><figcaption>Seven bars. The two long ones are the jobs; everything else is bookkeeping.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Watch the value change in the log</h3>
+    <h4>Objective</h4><p>Find the two lines that prove the whole lesson.</p>
+    <h4>Actions</h4><ol><li>Expand step <b>#2 set_region</b>.</li><li>Expand step <b>#5 switch_region</b>.</li><li>Read one line in each.</li></ol>
+    <pre class="cmd">region: 'north' -> 'south'</pre>
+    <p>Every write to the store is logged, with the old value and the new one. That single arrow is where you debug a parameter: if a job behaves unexpectedly, read the last write before it and you have your answer.</p>
+    <div class="expect"><b>What you should see</b><p>One creation, one replacement, both named and timestamped.</p><pre class="out">#2 set_region
+   INFO [set_region] START type=action
+   INFO [set_region] set_param region='north' (type=str)
+
+#5 switch_region
+   INFO [switch_region] START type=action
+   INFO [switch_region] assign_param region: 'north' -> 'south'</pre>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen9.png" width="1899" height="985" loading="lazy" decoding="async" alt="The run log with the set_region and switch_region steps expanded, showing the parameter being created as north and then reassigned to south." /><figcaption>The two lines the whole lesson turns on. <code>filter-orders</code> ran between them.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>10</i>Look at what the jobs wrote</h3>
+    <h4>Objective</h4><p>See the consequence outside Studio.</p>
+    <h4>Actions</h4><ol><li>Open the <code>output</code> folder of the project.</li><li>Read the two file names.</li><li>Open <code>transformations.yaml</code> of either job.</li></ol>
+    <pre class="cmd">output/demo-run_orders_north.csv
+output/demo-run_summary_south.csv</pre>
+    <p>Neither job knows the word <code>north</code> or <code>south</code>. Both contain <code>region == '{{ param:region }}'</code> and a destination path built from the same two placeholders. The names differ because the value did — and a parameter that builds a path is as useful as one that filters rows.</p>
+    <div class="callout"><b>Two layers, one syntax</b><p>Values also come from <code>parameters.yaml</code> and <code>environments/&lt;env&gt;.yaml</code>, edited in the <b>Parameters</b> tab. Those are the <b>project layer</b>: declared once, fixed for the whole run. What <b>Set Param</b> writes is the <b>runtime layer</b>, and it wins. In this workflow <code>min_amount</code> comes from the project layer and is never touched.</p></div>
+    <div class="expect"><b>What you should see</b><p>Two files, two names, one manifest each.</p><pre class="out">demo-run_orders_north.csv
+  id,order_date,region,customer,amount
+  1006,2026-01-08,north,Farid,220.4
+  1001,2026-01-04,north,Alice,120.5
+
+demo-run_summary_south.csv
+  region,orders,revenue,average_order
+  south,4,597.2,149.3</pre>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">One syntax everywhere: <b>{{ param:NAME }}</b> in a message, a path, a filter or a connection.</p>
+  <p data-kind="TRAP">A Set Param <b>creates</b> and refuses to overwrite. Use Assign Param to change a value.</p>
+  <p data-kind="TIP">An Assign Param needs the parameter to <b>already exist</b>. Place a Set Param upstream of it.</p>
+  <p data-kind="TRAP">A project parameter must be <b>Set Param</b>-ed once before it can be assigned. Declaring it is not creating it.</p>
+  <p data-kind="TIP">A placeholder is resolved <b>when its step runs</b>. Two identical steps can print different values.</p>
+  <p data-kind="TRAP">Only the steps <b>downstream</b> see a value. A parameter action off the chain changes nothing.</p>
+  <p data-kind="TIP">A field holding <b>only</b> a placeholder keeps the declared type. Wrap it in text and you get a string.</p>
+  <p data-kind="TRAP">The runtime store lives for <b>one run</b>. Nothing survives to the next one — that is what the project layer is for.</p>
+  <p data-kind="TIP">Every write is logged with its <b>old and new value</b>. Read the last one before a surprising step.</p>
+  <p data-kind="TRAP">The runtime layer <b>overrides</b> the project layer. A Set Param on a declared name silently wins.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Canvas</td><td>Seven nodes, six edges, <b>Valid</b></td></tr>
+    <tr><td>Palette</td><td>Two jobs among seven nodes</td></tr>
+    <tr><td>Set Param</td><td>Name, value and type filled in</td></tr>
+    <tr><td>Assign Param</td><td>The same fields, a different header</td></tr>
+    <tr><td>Run</td><td>7 ok / 7</td></tr>
+    <tr><td>Log</td><td>A <code>set_param</code> line and an <code>assign_param</code> line</td></tr>
+    <tr><td>Output</td><td>Two files whose names carry the parameter values</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>The parameter already exists</td><td>Two Set Param on the same name</td><td>Keep one, turn the other into an Assign Param</td></tr>
+    <tr><td>The parameter does not exist</td><td>Assign Param with no Set Param upstream</td><td>Add a Set Param and connect it before</td></tr>
+    <tr><td>The placeholder prints as written</td><td>The syntax is not exactly <code>{{ param:NAME }}</code></td><td>Check the braces, the colon and the spelling</td></tr>
+    <tr><td>A job ignores the value</td><td>The parameter action runs after it</td><td>Move it upstream and redraw the edge</td></tr>
+    <tr><td>A numeric comparison misbehaves</td><td>The value is typed <code>str</code></td><td>Set the <b>Type</b> menu to <code>int</code> or <code>float</code></td></tr>
+    <tr><td>The value is not what the log said</td><td>A later Assign Param changed it</td><td>Read the writes in order and find the last one</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>The Studio track is complete. You opened a workspace, built and ran a job, reviewed its execution, composed a workflow, organized it with containers, and made it react to values decided at run time. Return to the course map or open the DSL reference.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio">Return to the course map <span aria-hidden="true">→</span></a><a href="/studio/13-handle-failure">Back to the previous lesson</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/transformations-yaml">transformations.yaml reference</a></li><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

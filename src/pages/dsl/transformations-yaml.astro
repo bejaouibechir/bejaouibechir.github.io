@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import head from '../../_mock/dsl-transformations-yaml.head.html?raw';
+import tail from '../../_mock/dsl-transformations-yaml.tail.html?raw';
+import js from '../../_mock/dsl-transformations-yaml.js?raw';
+---
+
+<BaseLayout title="transformations.yaml — Hydra DSL" description="An ordered list of operations, and the only file of a job you may omit.">
+  <style is:global set:html={css}></style>
+  <DslShell current="manifest-transformations-yaml">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

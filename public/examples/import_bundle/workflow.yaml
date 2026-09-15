@@ -1,0 +1,36 @@
+version: "1.0"
+workflow:
+  name: first-workflow
+  trigger:
+    type: manual
+  steps:
+    # Les deux jobs sont enfermes dans un Error Scope regle sur `skip`.
+    # C'est lui qui ecrit le `on_failure` ci-dessous : on ne le tape pas.
+    - name: first-job
+      type: job
+      job: ./jobs/first-job
+      depends_on: []
+      on_failure: skip
+
+    - name: second-job
+      type: job
+      job: ./jobs/second-job
+      depends_on: ["first-job"]
+      on_failure: skip
+
+    # Les deux actions dependent du meme step, donc elles s'executent
+    # en parallele : rien ne les relie l'une a l'autre.
+    - name: action_log_1
+      type: action
+      action: log
+      params:
+        message: "test the log"
+      depends_on: ["second-job"]
+
+    - name: action_powershell_2
+      type: action
+      action: powershell
+      params:
+        command: Get-Process
+        timeout: 60
+      depends_on: ["second-job"]

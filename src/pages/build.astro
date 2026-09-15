@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/build.css?raw';
+import body from '../_mock/build.body.html?raw';
+import js from '../_mock/build.js?raw';
+---
+
+<BaseLayout title="Build" description={"Watch a Hydra manifest take shape. Pick a project, change a setting, see which lines appear."}>
+  <style is:global set:html={css}></style>
+  <Fragment set:html={body} />
+  <script is:inline set:html={js}></script>
+</BaseLayout>

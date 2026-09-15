@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import main from '../../_mock/dsl-pipeline.main.html?raw';
+import js from '../../_mock/dsl-pipeline.js?raw';
+---
+
+<BaseLayout title="pipeline — Hydra DSL" description="The pipeline block: wire one source to one destination.">
+  <style is:global set:html={css}></style>
+  <DslShell current="pipeline">
+    <Fragment set:html={main} />
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

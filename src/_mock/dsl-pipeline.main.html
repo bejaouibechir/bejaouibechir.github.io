@@ -1,0 +1,78 @@
+    <div class="main-inner">
+      <div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>4 · Pipeline</span><span>›</span><span>from and to</span></div>
+      <div class="lesson-head">
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Grammar element · pipeline</div>
+          <h1>Wire one source to one destination</h1>
+          <p class="lead">A job reads from exactly one source and writes to exactly one destination. <code>pipeline.yaml</code> names them.</p>
+        </div>
+      </div>
+
+      <section class="workbench" aria-labelledby="goalTitle">
+        <div class="editor-pane">
+          <div class="pane-head"><span class="file-dot"></span><strong>pipeline.yaml</strong><span class="edit-label">pick the two ends</span></div>
+          <div class="codewrap" aria-label="Hydra DSL manifest">
+            <div class="lines" aria-hidden="true">1<br>2<br>3</div>
+            <pre class="yaml"><span class="c-key">pipeline:</span>
+  <span class="c-key">from:</span> <span class="c-str" id="codeFrom">src_input</span>
+  <span class="c-key">to:</span> <span class="c-str" id="codeTo">dest_output</span></pre>
+          </div>
+          <div class="control">
+            <label for="selFrom"><span>from</span></label>
+            <select id="selFrom">
+              <option value="src_input">src_input</option>
+              <option value="src_orders">src_orders</option>
+              <option value="src_typo">src_typo &mdash; not declared</option>
+            </select>
+            <label for="selTo" style="margin-top:12px"><span>to</span></label>
+            <select id="selTo">
+              <option value="dest_output">dest_output</option>
+              <option value="dest_archive">dest_archive</option>
+              <option value="src_input">src_input &mdash; a source</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="result-pane">
+          <div class="goal"><div class="goal-icon" aria-hidden="true">4</div><div><b id="goalTitle">What the runner sees</b><p>Both names must resolve to something declared, and in the right direction.</p></div></div>
+
+          <div class="graphwrap" aria-label="Resolved pipeline">
+            <div class="graph" id="graph">
+              <div class="gnode" id="nFrom"><b>src_input</b><span>sources.yaml</span></div>
+              <div class="gedge" aria-hidden="true">→</div>
+              <div class="gnode mid"><b>transformations</b><span>steps[]</span></div>
+              <div class="gedge" aria-hidden="true">→</div>
+              <div class="gnode" id="nTo"><b>dest_output</b><span>destinations.yaml</span></div>
+            </div>
+          </div>
+
+          <div class="verdict" id="verdict" aria-live="polite">
+            <div class="vrow"><span class="vdot ok" aria-hidden="true"></span><span>from resolves to a declared source</span></div>
+            <div class="vrow"><span class="vdot ok" aria-hidden="true"></span><span>to resolves to a declared destination</span></div>
+            <div class="vrow"><span class="vdot ok" aria-hidden="true"></span><span>direction is source → destination</span></div>
+          </div>
+
+          <div class="runbar">
+            <span class="status ok" id="status" role="status" aria-live="polite">✓ Manifest resolves</span>
+            <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="spec" aria-labelledby="specTitle">
+        <div class="section-head"><div><h2 id="specTitle">pipeline</h2><p>Written by hand: this block has no Pydantic model in the engine, it is parsed directly by the runner.</p></div><span class="rows">2 keys</span></div>
+        <table class="spectable">
+          <thead><tr><th>key</th><th>type</th><th>required</th><th>default</th><th>constraint</th></tr></thead>
+          <tbody>
+            <tr><td>from</td><td>string</td><td>yes</td><td>&mdash;</td><td>an id declared in <code>sources</code></td></tr>
+            <tr><td>to</td><td>string</td><td>yes</td><td>&mdash;</td><td>an id declared in <code>destinations</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="why">
+        <article class="info"><h2>One in, one out</h2><p>A job is atomic. Several sources or several destinations is the role of a <a href="/dsl">workflow</a>, not of <code>pipeline</code>.</p></article>
+        <article class="info"><h2>Names, not paths</h2><p><code>from</code> and <code>to</code> hold declared identifiers. The file path lives in <code>extract.table</code> and <code>load.table</code>.</p></article>
+      </div>
+    </div>
+  

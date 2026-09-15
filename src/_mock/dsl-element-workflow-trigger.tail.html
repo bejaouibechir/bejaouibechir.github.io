@@ -1,0 +1,70 @@
+<section class="doc">
+  <h2>What <code>workflow.trigger</code> is</h2>
+  <p><code>trigger</code> declares <b>the intended entry policy for a workflow graph</b>: manual, schedule, or webhook.</p>
+  <p>It is not the scheduler or HTTP endpoint itself. Those platform concerns live outside the DSL; this block records the contract the platform should use.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>type</b> — Manual by default, or schedule/webhook when declared.</li>
+    <li><b>cron</b> — Required for a schedule trigger.</li>
+    <li><b>No graph logic</b> — Dependencies and failure policies remain on steps.</li>
+  </ul>
+
+  <h2>Entry policy is not execution order</h2>
+  <p>Trigger answers when or how the graph becomes eligible to start. Once started, <code>depends_on</code> still decides which nodes can run.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="workflow-triggerTitle workflow-triggerDesc" class="cnx">
+      <title id="workflow-triggerTitle">Trigger feeds one unchanged workflow graph</title>
+      <desc id="workflow-triggerDesc">Manual, scheduled, or webhook entry passes through trigger into the same dependency graph.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">manual · cron · hook</text><text class="d-sub" x="28" y="70">entry event</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#workflow-triggerArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">trigger</text><text class="d-sub" x="282" y="68">start policy</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#workflow-triggerArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">workflow graph</text><text class="d-sub" x="540" y="70">same dependencies</text>
+      <text class="d-foot" x="12" y="116">Changing the entry policy does not rewrite the graph.</text>
+      <defs><marker id="workflow-triggerArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>One graph can have one declared way in.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">workflow:
+  version: "1.0"
+  name: docs_workflow
+  description: Two actions used by the DSL documentation.
+  trigger: {type: manual}
+  steps:
+    - name: prepare
+      type: action
+      action: log
+      params: {message: "Preparation complete."}
+      retry: {max: 2, delay: 0, backoff: fixed}
+    - name: publish
+      type: action
+      action: log
+      params: {message: "Publication complete."}
+      depends_on: [prepare]
+      when: "1 == 1"
+      on_failure: fail</pre>
+  <pre class="cmd">hdrctl workflow run examples/tutorial/dsl-elements/workflow.yaml</pre>
+  <pre class="cmd out">  ✓  Step 'prepare' OK (0.0s)
+  ✓  Step 'publish' OK (0.0s)
+
+  ✅ Workflow 'docs_workflow' completed in 0.0s — 2/2 steps OK</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl workflow run --help</code>:</p>
+  <pre class="cmd">hdrctl workflow run PATH
+  PATH          path to workflow.yaml
+  --lang LANG   interface language
+  -h, --help    show command help</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/workflow/name-version">name and version — graph identity</a></li>
+    <li><a href="/dsl/workflow/steps">steps — graph nodes</a></li>
+    <li><a href="/dsl/workflow/retry">retry — failure attempts</a></li>
+    <li><a href="/dsl/workflow-yaml">workflow.yaml — complete manifest</a></li>
+    <li><a href="/dsl/reference">Reference — trigger fields</a></li>
+  </ul>
+</section>

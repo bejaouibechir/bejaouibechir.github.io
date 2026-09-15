@@ -1,0 +1,26 @@
+version: "1.0"
+steps:
+  # Seules les commandes reglees entrent dans l'entrepot.
+  - filter:
+      expr: "status == 'paid'"
+
+  # Le CSV ne porte aucun type : on les fixe avant tout calcul.
+  - cast:
+      mapping:
+        id: int
+        amount: float
+
+  # Une ligne a 0.00 est une commande annulee cote metier, pas une vente.
+  - filter:
+      expr: "amount > 0"
+
+  - clean:
+      columns: [region]
+      case: lower
+
+  - select:
+      columns: [id, order_date, region, customer, amount]
+
+  - sort:
+      by: [order_date]
+      ascending: true

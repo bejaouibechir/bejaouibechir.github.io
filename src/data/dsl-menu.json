@@ -1,0 +1,221 @@
+{
+  "total": 31,
+  "published": 31,
+  "links": [
+    {
+      "key": "tutorial",
+      "label": "Tutorial",
+      "href": "/dsl/tutorial/01-first-job"
+    },
+    {
+      "key": "reference",
+      "label": "Reference",
+      "href": "/dsl/reference"
+    }
+  ],
+  "chapters": [
+    {
+      "num": 1,
+      "name": "Manifest",
+      "items": [
+        {
+          "key": "manifest-version",
+          "label": "version",
+          "href": "/dsl/version"
+        },
+        {
+          "key": "manifest-sources-yaml",
+          "label": "sources.yaml",
+          "href": "/dsl/sources-yaml"
+        },
+        {
+          "key": "manifest-transformations-yaml",
+          "label": "transformations.yaml",
+          "href": "/dsl/transformations-yaml"
+        },
+        {
+          "key": "manifest-destinations-yaml",
+          "label": "destinations.yaml",
+          "href": "/dsl/destinations-yaml"
+        },
+        {
+          "key": "manifest-pipeline-yaml",
+          "label": "pipeline.yaml",
+          "href": "/dsl/pipeline-yaml"
+        },
+        {
+          "key": "manifest-workflow-yaml",
+          "label": "workflow.yaml",
+          "href": "/dsl/workflow-yaml"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "name": "Sources",
+      "items": [
+        {
+          "key": "sources-type",
+          "label": "type",
+          "href": "/dsl/sources/type"
+        },
+        {
+          "key": "sources",
+          "label": "connection",
+          "href": "/dsl/sources"
+        },
+        {
+          "key": "sources-extract",
+          "label": "extract",
+          "href": "/dsl/sources/extract"
+        },
+        {
+          "key": "sources-schema",
+          "label": "schema",
+          "href": "/dsl/sources/schema"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "name": "Destinations",
+      "items": [
+        {
+          "key": "destinations-type",
+          "label": "type",
+          "href": "/dsl/destinations/type"
+        },
+        {
+          "key": "destinations-connection",
+          "label": "connection",
+          "href": "/dsl/destinations/connection"
+        },
+        {
+          "key": "destinations-load",
+          "label": "load",
+          "href": "/dsl/destinations/load"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "name": "Pipeline",
+      "items": [
+        {
+          "key": "pipeline",
+          "label": "from and to",
+          "href": "/dsl/pipeline"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "name": "Transformations",
+      "items": [
+        {
+          "key": "transformations-steps",
+          "label": "steps",
+          "href": "/dsl/transformations/steps"
+        },
+        {
+          "key": "transformations-columns",
+          "label": "Columns",
+          "href": "/dsl/transformations/columns"
+        },
+        {
+          "key": "rows",
+          "label": "Rows",
+          "href": "/dsl"
+        },
+        {
+          "key": "transformations-compute",
+          "label": "Compute",
+          "href": "/dsl/transformations/compute"
+        },
+        {
+          "key": "transformations-aggregate",
+          "label": "Aggregate",
+          "href": "/dsl/transformations/aggregate"
+        },
+        {
+          "key": "transformations-combine",
+          "label": "Combine",
+          "href": "/dsl/transformations/combine"
+        },
+        {
+          "key": "transformations-reshape",
+          "label": "Reshape",
+          "href": "/dsl/transformations/reshape"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "name": "Workflow",
+      "items": [
+        {
+          "key": "workflow-name-and-version",
+          "label": "name and version",
+          "href": "/dsl/workflow/name-version"
+        },
+        {
+          "key": "workflow-trigger",
+          "label": "trigger",
+          "href": "/dsl/workflow/trigger"
+        },
+        {
+          "key": "workflow-steps",
+          "label": "steps",
+          "href": "/dsl/workflow/steps"
+        },
+        {
+          "key": "workflow-retry",
+          "label": "retry",
+          "href": "/dsl/workflow/retry"
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "name": "Expressions",
+      "items": [
+        {
+          "key": "expressions-filter-expr",
+          "label": "filter.expr",
+          "href": "/dsl/expressions/filter"
+        },
+        {
+          "key": "expressions-calculate-expr",
+          "label": "calculate.expr",
+          "href": "/dsl/expressions/calculate"
+        },
+        {
+          "key": "expressions-step-when",
+          "label": "step.when",
+          "href": "/dsl/expressions/when"
+        },
+        {
+          "key": "expressions-script-code",
+          "label": "script.code",
+          "href": "/dsl/expressions/script"
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "name": "Interpolation",
+      "items": [
+        {
+          "key": "interpolation",
+          "label": "${ENV} and ${SECRET}",
+          "href": "/dsl/interpolation"
+        },
+        {
+          "key": "interpolation-param-and-env",
+          "label": "{{ param }} and {{ env }}",
+          "href": "/dsl/interpolation/param-env"
+        }
+      ]
+    }
+  ]
+}

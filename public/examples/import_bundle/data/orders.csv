@@ -1,0 +1,13 @@
+id,order_date,region,customer,amount,status
+1001,2026-01-04,North,Alice,120.50,paid
+1002,2026-01-05,South,Bob,89.00,paid
+1003,2026-01-05,North,Carla,45.25,pending
+1004,2026-01-06,East,Daniel,310.00,paid
+1005,2026-01-07,South,Emma,15.75,cancelled
+1006,2026-01-08,North,Farid,220.40,paid
+1007,2026-01-09,East,Gina,73.10,paid
+1008,2026-01-10,West,Hugo,0.00,paid
+1009,2026-01-11,South,Ines,142.90,paid
+1010,2026-01-12,North,Jonas,58.60,pending
+1011,2026-01-13,East,Karim,199.99,paid
+1012,2026-01-14,West,Lea,64.30,paid

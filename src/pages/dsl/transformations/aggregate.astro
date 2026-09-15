@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-transformations-aggregate.head.html?raw';
+import tail from '../../../_mock/dsl-element-transformations-aggregate.tail.html?raw';
+import js from '../../../_mock/dsl-element-transformations-aggregate.js?raw';
+---
+
+<BaseLayout title="Aggregate — Hydra DSL" description="Group rows and compute named aggregate outputs.">
+  <style is:global set:html={css}></style>
+  <DslShell current="transformations-aggregate">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

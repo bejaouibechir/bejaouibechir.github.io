@@ -1,0 +1,150 @@
+{
+ "op": "unpivot",
+ "params": {
+  "id_vars": [
+   "region"
+  ],
+  "var_name": "quarter",
+  "value_name": "revenue"
+ },
+ "input": [
+  {
+   "region": "FR",
+   "q1": "1420.00",
+   "q2": "1685.50",
+   "q3": "1290.00",
+   "q4": "1810.75"
+  },
+  {
+   "region": "ES",
+   "q1": "980.40",
+   "q2": "1105.00",
+   "q3": "1240.60",
+   "q4": "1002.30"
+  },
+  {
+   "region": "DE",
+   "q1": "760.00",
+   "q2": "845.20",
+   "q3": "910.00",
+   "q4": "1120.40"
+  },
+  {
+   "region": "IT",
+   "q1": "512.00",
+   "q2": "498.75",
+   "q3": "603.10",
+   "q4": "655.00"
+  },
+  {
+   "region": "BE",
+   "q1": "331.20",
+   "q2": "402.90",
+   "q3": "377.45",
+   "q4": "458.00"
+  }
+ ],
+ "right": null,
+ "expected": [
+  {
+   "region": "FR",
+   "quarter": "q1",
+   "revenue": "1420.00"
+  },
+  {
+   "region": "ES",
+   "quarter": "q1",
+   "revenue": "980.40"
+  },
+  {
+   "region": "DE",
+   "quarter": "q1",
+   "revenue": "760.00"
+  },
+  {
+   "region": "IT",
+   "quarter": "q1",
+   "revenue": "512.00"
+  },
+  {
+   "region": "BE",
+   "quarter": "q1",
+   "revenue": "331.20"
+  },
+  {
+   "region": "FR",
+   "quarter": "q2",
+   "revenue": "1685.50"
+  },
+  {
+   "region": "ES",
+   "quarter": "q2",
+   "revenue": "1105.00"
+  },
+  {
+   "region": "DE",
+   "quarter": "q2",
+   "revenue": "845.20"
+  },
+  {
+   "region": "IT",
+   "quarter": "q2",
+   "revenue": "498.75"
+  },
+  {
+   "region": "BE",
+   "quarter": "q2",
+   "revenue": "402.90"
+  },
+  {
+   "region": "FR",
+   "quarter": "q3",
+   "revenue": "1290.00"
+  },
+  {
+   "region": "ES",
+   "quarter": "q3",
+   "revenue": "1240.60"
+  },
+  {
+   "region": "DE",
+   "quarter": "q3",
+   "revenue": "910.00"
+  },
+  {
+   "region": "IT",
+   "quarter": "q3",
+   "revenue": "603.10"
+  },
+  {
+   "region": "BE",
+   "quarter": "q3",
+   "revenue": "377.45"
+  },
+  {
+   "region": "FR",
+   "quarter": "q4",
+   "revenue": "1810.75"
+  },
+  {
+   "region": "ES",
+   "quarter": "q4",
+   "revenue": "1002.30"
+  },
+  {
+   "region": "DE",
+   "quarter": "q4",
+   "revenue": "1120.40"
+  },
+  {
+   "region": "IT",
+   "quarter": "q4",
+   "revenue": "655.00"
+  },
+  {
+   "region": "BE",
+   "quarter": "q4",
+   "revenue": "458.00"
+  }
+ ]
+}

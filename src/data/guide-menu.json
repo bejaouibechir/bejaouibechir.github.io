@@ -1,0 +1,129 @@
+{
+  "total": 16,
+  "published": 1,
+  "links": [
+    {
+      "key": "guide-home",
+      "label": "Guide",
+      "href": "/guide"
+    }
+  ],
+  "chapters": [
+    {
+      "num": 1,
+      "name": "Connections",
+      "items": [
+        {
+          "key": "csv-source",
+          "label": "Read a CSV file",
+          "href": "/guide/sources/csv"
+        },
+        {
+          "key": "json-parquet",
+          "label": "Read JSON and Parquet",
+          "href": null
+        },
+        {
+          "key": "database",
+          "label": "Connect to a database",
+          "href": null
+        },
+        {
+          "key": "webapi",
+          "label": "Call a web API",
+          "href": null
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "name": "Secrets",
+      "items": [
+        {
+          "key": "secrets",
+          "label": "Provide a secret",
+          "href": null
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "name": "CLI",
+      "items": [
+        {
+          "key": "cli-commands",
+          "label": "hdrctl commands",
+          "href": null
+        },
+        {
+          "key": "cli-workflow",
+          "label": "hdrctl workflow",
+          "href": null
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "name": "API",
+      "items": [
+        {
+          "key": "api-serve",
+          "label": "Start the server",
+          "href": null
+        },
+        {
+          "key": "api-endpoints",
+          "label": "Endpoints",
+          "href": null
+        },
+        {
+          "key": "api-monitoring",
+          "label": "Follow a run",
+          "href": null
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "name": "Studio",
+      "items": [
+        {
+          "key": "studio-overview",
+          "label": "What Studio does",
+          "href": null
+        },
+        {
+          "key": "studio-canvas",
+          "label": "The canvas",
+          "href": null
+        },
+        {
+          "key": "studio-run",
+          "label": "Run and watch",
+          "href": null
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "name": "Operations",
+      "items": [
+        {
+          "key": "ops-scheduling",
+          "label": "Scheduling",
+          "href": null
+        },
+        {
+          "key": "ops-monitoring",
+          "label": "Logs and runs",
+          "href": null
+        },
+        {
+          "key": "ops-plugins",
+          "label": "Plugins",
+          "href": null
+        }
+      ]
+    }
+  ]
+}

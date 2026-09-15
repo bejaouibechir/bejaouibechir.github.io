@@ -1,0 +1,48 @@
+      <div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>2 · Sources</span><span>›</span><span>connection</span></div>
+      <div class="lesson-head">
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Grammar element · sources.&lt;id&gt;.connection</div>
+          <h1>The connection block changes shape with the type</h1>
+          <p class="lead">Walk the manifest line by line with <b>Next</b>, then switch the type and watch the block change shape.</p>
+        </div>
+      </div>
+
+      <section class="workbench" aria-labelledby="goalTitle">
+        <div class="editor-pane">
+          <div class="pane-head"><span class="file-dot"></span><strong>sources.yaml</strong><span class="edit-label">7 steps</span></div>
+          <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+            <pre class="yaml" id="yaml"></pre>
+            <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+          </div>
+          <div class="tourbar" role="group" aria-label="Guided walkthrough">
+            <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+            <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+            <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+          </div>
+          <div class="control">
+            <label for="selType"><span>type</span></label>
+            <select id="selType">
+              <option value="csv">csv</option>
+              <option value="json">json</option>
+              <option value="parquet">parquet</option>
+              <option value="mysql">mysql</option>
+              <option value="mariadb">mariadb</option>
+              <option value="postgresql">postgresql</option>
+              <option value="postgres">postgres</option>
+              <option value="mongodb">mongodb</option>
+              <option value="web_api">web_api</option>
+            </select>
+            <label class="chk" for="chkUnknown" style="margin-top:12px"><input id="chkUnknown" type="checkbox"> <span>add a key this type does not accept</span></label>
+          </div>
+        </div>
+
+        <div class="result-pane">
+          <div class="goal"><div class="goal-icon" aria-hidden="true">2</div><div><b id="goalTitle">Manifest verdict</b><p>No data is read. The parser answers one question: is this block well formed?</p></div></div>
+          <div class="tourctx" id="tourContext"></div>
+          <div class="verdict" id="verdict" aria-live="polite"></div>
+          <div class="runbar">
+            <span class="status ok" id="status" role="status" aria-live="polite">✓ Block is valid</span>
+            <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+          </div>
+        </div>
+      </section>

@@ -1,0 +1,8 @@
+version: "1.0"
+destinations:
+  dst_sales_by_region:
+    type: csv
+    connection: {}
+    load:
+      table: ../../output/sales_by_region.csv
+      mode: replace

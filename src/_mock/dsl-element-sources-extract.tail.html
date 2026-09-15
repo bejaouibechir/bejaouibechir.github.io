@@ -1,0 +1,79 @@
+<section class="doc">
+  <h2>What <code>sources.&lt;id&gt;.extract</code> is</h2>
+  <p><code>extract</code> is <b>the read request handed to the selected source connector</b>.</p>
+  <p>It does not identify the connector or describe credentials. Those belong to <code>type</code> and <code>connection</code>; extraction begins only after both are resolved.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>A target</b> — Use <code>table</code>, <code>query</code>, or <code>collection</code> according to the connector.</li>
+    <li><b>Optional narrowing</b> — <code>filter</code> and <code>limit</code> constrain supported reads.</li>
+    <li><b>Delivery size</b> — <code>batch_size</code> defaults to 10,000 and must be at least 10 in the current parser.</li>
+  </ul>
+
+  <h2>Connection reaches; extract chooses</h2>
+  <p>A connection can reach an entire system. <code>extract</code> makes one concrete request inside it: this file, table, query, or collection, delivered in these batches.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="sources-extractTitle sources-extractDesc" class="cnx">
+      <title id="sources-extractTitle">Extract turns a connection into a read request</title>
+      <desc id="sources-extractDesc">A reachable system is narrowed to one target and delivered as batches of rows.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">connection</text><text class="d-sub" x="28" y="70">system reachable</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#sources-extractArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">extract</text><text class="d-sub" x="282" y="68">target + limits</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#sources-extractArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">30 rows</text><text class="d-sub" x="540" y="70">batches delivered</text>
+      <text class="d-foot" x="12" y="116">The connector is already known; extract tells it what to fetch.</text>
+      <defs><marker id="sources-extractArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>Reachability comes first; selection comes second.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+sources:
+  src_orders:
+    type: csv
+    connection:
+      base_path: "data/canonical"
+    extract:
+      table: orders.csv
+      batch_size: 10000
+    schema:
+      mode: manual
+      fields:
+        - name: order_id
+          type: string
+          required: true
+        - name: amount
+          type: float
+      drift_policy: warn
+      validation_policy: best_effort
+      sample_size: 100
+  src_orders_extra:
+    type: csv
+    connection:
+      base_path: "data/canonical"
+    extract:
+      table: orders_extra.csv
+      batch_size: 10000</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.6s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/sources/type">type — choosing the connector</a></li>
+    <li><a href="/dsl/sources">connection — reaching the system</a></li>
+    <li><a href="/dsl/sources/schema">schema — describing expected fields</a></li>
+    <li><a href="/dsl/pipeline-yaml">pipeline.yaml — selecting this source</a></li>
+    <li><a href="/dsl/reference">Reference — all extract keys</a></li>
+  </ul>
+</section>

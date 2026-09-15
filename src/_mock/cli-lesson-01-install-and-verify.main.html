@@ -1,0 +1,288 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/cli">Hydra CLI</a><span>›</span><span>Lesson 1</span></div>
+
+<div class="lesson-head">
+  <div class="eyebrow"><span></span>Lesson 1 of 11 · Explore CLI</div>
+  <h1>Explore the hdrctl command surface</h1>
+  <p class="lead">Start with global help, read the command grammar, and build a map of every action available from the Hydra CLI.</p>
+</div>
+
+<div class="lesson-meta">
+  <span class="mono">hdrctl --help</span><span>about 10 minutes</span><span>hdrctl available</span>
+</div>
+
+<section class="doc">
+
+  <h2>1. Objective</h2>
+
+  <h3>Goal</h3>
+  <p>Run <code>hdrctl --help</code>, understand the <code>[OPTIONS] COMMAND [ARGS]...</code> grammar, distinguish global options from commands, and learn how to request focused help before executing an unfamiliar action.</p>
+
+  <h3>Prerequisites</h3>
+  <ul>
+    <li><code>hdrctl</code> is available in your terminal.</li>
+    <li>No Hydra project is required for the global help command.</li>
+    <li>Use a terminal wide enough to read the command descriptions comfortably.</li>
+  </ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the global help</h3>
+
+    <h4>Objective</h4>
+    <p>Ask Hydra to describe its complete top-level command surface.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Open a terminal.</li>
+      <li>Run the global help command.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl --help</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <p>The usage line appears first, followed by a short description, the main commands, global options, and the complete command list.</p>
+      <pre class="out">Usage: hdrctl [OPTIONS] COMMAND [ARGS]...
+
+hdrctl — Hydra ETL Control CLI
+
+Manage your declarative ETL pipelines with ease.</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the command grammar</h3>
+
+    <h4>Objective</h4>
+    <p>Understand which parts of the usage line are optional and which part selects the action.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Read the usage line from left to right.</li>
+      <li>Separate global <code>[OPTIONS]</code> from the <code>COMMAND</code>.</li>
+      <li>Treat <code>[ARGS]...</code> as values owned by the selected command.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl [OPTIONS] COMMAND [ARGS]...</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <p>A valid invocation starts with <code>hdrctl</code>, may add a global option, selects one command, then passes that command its own arguments.</p>
+      <pre class="out">hdrctl --lang en list jobs/
+       └ option ┘ └ command arguments</pre>
+    </div>
+
+    <div class="callout">
+      <b>Read brackets as notation</b>
+      <p><code>[OPTIONS]</code> and <code>[ARGS]...</code> describe optional input. Do not type the square brackets themselves.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read the global options</h3>
+
+    <h4>Objective</h4>
+    <p>Recognize the options that belong to <code>hdrctl</code> itself and therefore appear before a command.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Find the <b>Options</b> section.</li>
+      <li>Use <code>--version</code> when you need the active CLI version.</li>
+      <li>Use <code>--lang en</code> or <code>--lang es</code> to choose the interface language.</li>
+      <li>Use <code>-h</code> as the short form of <code>--help</code>.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl --version
+hdrctl --lang en --help
+hdrctl -h</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <pre class="out">Options:
+  --version    Show the version and exit.
+  --lang LANG  Interface language (en, es)
+  -h, --help   Show this message and exit.</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Map the five main commands</h3>
+
+    <h4>Objective</h4>
+    <p>Connect the core job lifecycle to the commands highlighted by global help.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Read the <b>Main commands</b> section.</li>
+      <li>Follow the lifecycle from creation to execution.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl --help</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <pre class="out">Main commands:
+  run       Execute an ETL pipeline
+  init      Create a new job from a template
+  test      Validate a job configuration
+  validate  Strict YAML DSL validation
+  list      List jobs in current directory</pre>
+    </div>
+
+    <p>Use each command for one distinct question:</p>
+    <ul>
+      <li><code>init</code> — what should Hydra create?</li>
+      <li><code>list</code> — what jobs are present here?</li>
+      <li><code>validate</code> — does the YAML obey the DSL?</li>
+      <li><code>test</code> — can the declared job configuration be used?</li>
+      <li><code>run</code> — execute the pipeline.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Tour the complete command list</h3>
+
+    <h4>Objective</h4>
+    <p>Discover the operational commands that sit beside the five core job commands.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Find the complete <b>Commands</b> section below the options.</li>
+      <li>Identify commands for cleanup, the API backend, and multi-job workflows.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl --help</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <p>The complete help surface contains nine commands:</p>
+      <pre class="out">Usage: hdrctl [OPTIONS] COMMAND [ARGS]...
+
+  hdrctl — Hydra ETL Control CLI
+
+  Manage your declarative ETL pipelines with ease.
+
+  Main commands:
+    run       Execute an ETL pipeline
+    init      Create a new job from a template
+    test      Validate a job configuration
+    validate  Strict YAML DSL validation
+    list      List jobs in current directory
+
+Options:
+  --version    Show the version and exit.
+  --lang LANG  Interface language (en, es)
+  -h, --help   Show this message and exit.
+
+Commands:
+  clear     Examples: hydra clear
+  init      Available templates: basic — Simple CSV (default) csv — CSV...
+  list      Examples: hydra list hydra list jobs/
+  run       PATH Job directory (default: current directory)
+  serve     Démarre l'API FastAPI Hydra (Studio backend).
+  test      Examples: hydra test .
+  validate  Examples: hydra validate .
+  workflow  Manage and execute Hydra workflows (multi-job DAG).</pre>
+    </div>
+
+    <p>Group the commands by intent:</p>
+    <ul>
+      <li><b>Create and inspect:</b> <code>init</code>, <code>list</code>.</li>
+      <li><b>Check and execute:</b> <code>validate</code>, <code>test</code>, <code>run</code>.</li>
+      <li><b>Operate:</b> <code>clear</code>, <code>serve</code>.</li>
+      <li><b>Orchestrate:</b> <code>workflow</code>.</li>
+    </ul>
+
+    <div class="callout">
+      <b>Descriptions are orientation, not full syntax</b>
+      <p>The global list tells you which command to choose. The command's own help tells you its paths, options, and examples.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Open focused command help</h3>
+
+    <h4>Objective</h4>
+    <p>Move from the global map to the exact contract of one command without executing it.</p>
+
+    <h4>Actions</h4>
+    <ol>
+      <li>Choose a command from the global list.</li>
+      <li>Append <code>--help</code> or <code>-h</code>.</li>
+      <li>Try the same pattern with <code>init</code>, <code>run</code>, and <code>workflow</code>.</li>
+    </ol>
+
+    <pre class="cmd">hdrctl init --help
+hdrctl run --help
+hdrctl workflow --help</pre>
+
+    <div class="expect">
+      <b>What you should see</b>
+      <p>Each command prints its own usage line, arguments, options, and examples, then exits without creating or running anything.</p>
+      <pre class="out">Usage: hdrctl COMMAND [OPTIONS] [ARGS]...
+
+Options:
+  -h, --help  Show this message and exit.</pre>
+    </div>
+
+    <p>Keep this pattern throughout the track: when a command is unfamiliar, inspect its focused help before supplying a path or option.</p>
+  </div>
+
+  <div class="rules">
+    <h5>Tips and traps</h5>
+    <p data-kind="TIP">Start broad with <code>hdrctl --help</code>, then narrow with <code>hdrctl COMMAND --help</code>.</p>
+    <p data-kind="TRAP">Global options such as <code>--lang</code> belong <b>before</b> the command name.</p>
+    <p data-kind="TIP"><code>-h</code> and <code>--help</code> are inspection tools. Use them before supplying paths or executing jobs.</p>
+    <p data-kind="TRAP">The one-line command description is only a summary. Read focused help before assuming defaults.</p>
+    <p data-kind="TIP">The usage line is a grammar: brackets mean optional input and the ellipsis allows more arguments.</p>
+    <p data-kind="TRAP">Do not type the documentation brackets in <code>[OPTIONS]</code> or <code>[ARGS]...</code>.</p>
+  </div>
+
+  <h2>3. Checklist</h2>
+
+  <table>
+    <thead><tr><th>Verification</th><th>Expected result</th></tr></thead>
+    <tbody>
+      <tr><td><code>hdrctl --help</code></td><td>Usage, description, options, and commands are visible</td></tr>
+      <tr><td>Usage grammar</td><td><code>[OPTIONS] COMMAND [ARGS]...</code> is understood</td></tr>
+      <tr><td>Global options</td><td><code>--version</code>, <code>--lang</code>, and <code>--help</code> are identified</td></tr>
+      <tr><td>Main commands</td><td><code>run</code>, <code>init</code>, <code>test</code>, <code>validate</code>, and <code>list</code></td></tr>
+      <tr><td>Complete command list</td><td><code>clear</code>, <code>serve</code>, and <code>workflow</code> are also identified</td></tr>
+      <tr><td>Focused help</td><td><code>hdrctl COMMAND --help</code> prints details without executing the command</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Troubleshooting</h2>
+
+  <table>
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>hdrctl: command not found</code></td><td>The CLI is not available in the active shell</td><td>Activate the environment where Hydra is installed, then reopen the terminal if needed</td></tr>
+      <tr><td><code>No such command</code></td><td>The command name is misspelled or placed before a global option</td><td>Return to <code>hdrctl --help</code> and copy the command name exactly</td></tr>
+      <tr><td><code>--lang</code> is rejected after a command</td><td>It is a global option</td><td>Place it before the command: <code>hdrctl --lang en list</code></td></tr>
+      <tr><td>A subcommand starts doing work</td><td><code>--help</code> was omitted</td><td>Stop the command if safe, then rerun it as <code>hdrctl COMMAND --help</code></td></tr>
+      <tr><td>The help output is truncated</td><td>The terminal viewport is too small</td><td>Scroll up or enlarge the terminal before choosing a command</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Next lesson</h2>
+  <p>
+    You now know how to navigate the CLI without guessing. The next lesson uses <code>hdrctl init</code>
+    to create the first job and inspect the files produced by its template.
+  </p>
+
+  <div class="lesson-nav">
+    <a class="primary" href="/cli/02-scaffold-your-first-job">Create a job <span aria-hidden="true">→</span></a>
+    <a href="/cli">Back to the course map</a>
+  </div>
+
+  <h4>Close by</h4>
+  <ul class="linklist">
+    <li><a href="/dsl/sources-yaml">sources.yaml</a></li>
+    <li><a href="/dsl/pipeline-yaml">pipeline.yaml</a></li>
+    <li><a href="/guide/sources/csv">Guided CSV workshop</a></li>
+    <li><a href="/studio">Hydra Studio track</a></li>
+  </ul>
+
+</section>

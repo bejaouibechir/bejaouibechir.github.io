@@ -1,0 +1,152 @@
+/* Page d'atelier CLI — typographie du panneau de droite.
+   S'ajoute a learning-hub.css : le chassis (topbar, sommaire, grille) reste inchange. */
+
+/* ── Sommaire : distinguer une lecon ecrite d'une lecon encore a l'etat de plan ── */
+a.outline-item.written b{font-weight:650}
+a.outline-item:not(.written){opacity:.62}
+a.outline-item:not(.written):hover{opacity:.85}
+.course-outline>a.overview-link:not(.current):hover{background:var(--panel);color:var(--text)}
+
+/* ── Carte cliquable sur la page d'ensemble ────────────────────────────────── */
+a.lesson-card.open{cursor:pointer}
+a.lesson-card.open:hover{border-color:var(--accent);background:var(--bg-soft)}
+a.lesson-card.open:hover h3{color:var(--accent-text)}
+.lesson-go{display:inline-flex;align-items:center;gap:4px;color:var(--accent-text)!important;font-weight:800;white-space:nowrap}
+
+/* ── En-tete de lecon ──────────────────────────────────────────────────────── */
+.lesson-head{padding:22px 0 6px;border-bottom:1px solid var(--border)}
+.lesson-head .eyebrow{margin-bottom:9px}
+.lesson-head h1{margin:0 0 10px;font-size:clamp(28px,3.6vw,40px);line-height:1.08;letter-spacing:-.035em}
+.lesson-head .lead{max-width:760px;margin:0;color:var(--soft);font-size:15.5px}
+.lesson-meta{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 20px}
+.lesson-meta span{padding:4px 9px;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:10.5px}
+.lesson-meta span.mono{font-family:var(--mono);background:var(--code);border-color:transparent;color:#9fe6d5}
+
+/* ── Corps de la lecon ─────────────────────────────────────────────────────── */
+.doc{max-width:860px;padding-top:6px}
+.doc h2{margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--border);font-size:20px;letter-spacing:-.02em}
+.doc h2:first-child{margin-top:22px;padding-top:0;border-top:0}
+.doc h3{margin:24px 0 7px;font-size:14.5px;letter-spacing:-.01em}
+.doc h4{margin:16px 0 5px;color:var(--accent-text);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.doc p{margin:0 0 11px;color:var(--soft);font-size:14px;line-height:1.62}
+.doc b,.doc strong{color:var(--text);font-weight:680}
+.doc ul,.doc ol{margin:0 0 13px;padding-left:21px;color:var(--soft);font-size:14px;line-height:1.62}
+.doc li{margin-bottom:5px}
+.doc li::marker{color:var(--muted);font-weight:700}
+.doc a{color:var(--accent-text);text-decoration:underline;text-underline-offset:2px}
+.doc code{padding:1px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg-soft);color:var(--text);font:12.5px var(--mono)}
+
+/* ── Blocs de commande et de sortie ────────────────────────────────────────── */
+.doc pre.cmd,.doc pre.out{margin:0 0 13px;padding:12px 14px;overflow:auto;border-radius:9px;background:var(--code);color:#cfe9e1;font:12.5px/1.6 var(--mono);white-space:pre}
+.doc pre.cmd{border-left:3px solid var(--accent)}
+.doc pre.cmd::before,.doc pre.out::before{display:block;margin-bottom:7px;color:#6f8f88;font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.doc pre.cmd::before{content:'Command'}
+.doc pre.out::before{content:'Terminal output'}
+.doc pre.out{color:#9fe6d5}
+
+/* ── Tableaux ──────────────────────────────────────────────────────────────── */
+.doc table{width:100%;margin:0 0 15px;border:1px solid var(--border);border-radius:10px;border-collapse:separate;border-spacing:0;overflow:hidden;font-size:12.5px}
+.doc th,.doc td{padding:8px 11px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.doc thead th{background:var(--bg-soft);color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.doc tbody tr:last-child td{border-bottom:0}
+.doc td{color:var(--soft)}
+.doc td code{font-size:11.5px}
+
+/* ── Encarts ───────────────────────────────────────────────────────────────── */
+.callout{margin:0 0 14px;padding:12px 14px;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:9px;background:var(--bg-soft)}
+.callout b{display:block;margin-bottom:4px;color:var(--accent-text);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.callout p{margin:0;font-size:13px}
+.callout p+p{margin-top:7px}
+
+/* ── Bloc « Ce que vous devez voir » ───────────────────────────────────────── */
+.expect{margin:0 0 15px;padding:12px 14px;border:1px solid var(--ok);border-radius:9px;background:var(--ok-soft)}
+.expect b{display:block;margin-bottom:5px;color:var(--ok);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.expect p{margin:0 0 8px;color:var(--text);font-size:13px}
+.expect p:last-child{margin-bottom:0}
+.expect pre{margin-bottom:0}
+
+/* ── Etapes numerotees ─────────────────────────────────────────────────────── */
+.step{margin-top:26px;padding-top:20px;border-top:1px solid var(--border)}
+.step:first-of-type{border-top:0}
+.step>h3{display:flex;align-items:center;gap:9px;margin-top:0;font-size:16px}
+.step>h3 i{display:grid;place-items:center;flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--accent-soft);color:var(--accent-text);font:800 10px var(--mono);font-style:normal}
+
+/* ── Telechargement d'un paquet d'exemple ───────────────────────────────────
+   Fichier statique servi depuis public/ : aucun appel reseau au chargement. */
+.download{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:20px 0;padding:15px 17px;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 13px 13px 0;background:var(--bg-soft)}
+.download .txt{flex:1 1 300px;min-width:0}
+.download b{display:block;margin-bottom:3px;font-size:14px;color:var(--text)}
+.download small{display:block;color:var(--soft);font-size:12.5px;line-height:1.55}
+.download small code{padding:1px 5px;border-radius:5px;background:var(--panel);font-family:var(--mono);font-size:11.5px;color:var(--accent-text)}
+.download a{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border-radius:9px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;white-space:nowrap}
+.download a:hover{filter:brightness(1.07)}
+.download a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.download .size{color:var(--muted);font:600 11px var(--mono)}
+
+/* ── Astuces et pieges ──────────────────────────────────────────────────────
+   Remplace l'ancien pave « Evidence rule » : une ligne par regle, le mot-cle en
+   gras, le registre annonce dans la colonne de gauche. Se balaie des yeux. */
+.rules{--tip:var(--accent);--trap:#b45309;margin:24px 0;padding:2px 0;border-top:1px solid var(--strong,var(--border));border-bottom:1px solid var(--strong,var(--border))}
+html[data-theme="dark"] .rules{--trap:#fbbf24}
+.rules>h5{margin:0;padding:9px 2px 7px;font:800 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* Le paragraphe reste en flux normal : une grille ferait de chaque <b> une
+   cellule et casserait la phrase. Le registre est pose en absolu dans la marge. */
+.rules p{position:relative;margin:0;padding:10px 2px 10px 62px;border-top:1px dashed var(--border);font-size:13.5px;line-height:1.6;color:var(--soft)}
+.rules p::before{content:attr(data-kind);position:absolute;left:0;top:12px;width:46px;text-align:right;font:800 9px var(--mono);letter-spacing:.09em;color:var(--tip)}
+.rules p[data-kind="TRAP"]::before{color:var(--trap)}
+.rules p b{color:var(--text);font-weight:700}
+.rules p code{padding:1px 5px;border-radius:5px;background:var(--bg-soft);font-family:var(--mono);font-size:12px;color:var(--accent-text)}
+@media(max-width:620px){
+  .rules p{padding:22px 2px 10px}
+  .rules p::before{top:8px;left:2px;width:auto;text-align:left}
+}
+
+/* ── Captures d'ecran ──────────────────────────────────────────────────────
+   Images locales servies depuis public/tutorials/. Dimensions portees dans le
+   balisage pour eviter tout decalage au chargement. */
+.shot{margin:12px 0 0}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:10px;background:var(--bg-soft)}
+.shot img[role="button"]{cursor:zoom-in;transition:border-color .12s}
+.shot img[role="button"]:hover{border-color:var(--accent)}
+.shot img[role="button"]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.shot figcaption{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5}
+.shot figcaption b{color:var(--soft);font-weight:650}
+.expect .shot:first-child{margin-top:0}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.shots .shot{margin:0}
+
+/* ── Vue agrandie d'une capture ─────────────────────────────────────────────
+   Un seul <dialog> par page, cree par learning-hub.js. */
+dialog.lightbox{max-width:min(96vw,1600px);max-height:92vh;padding:0;border:0;border-radius:14px;background:transparent;overflow:visible}
+dialog.lightbox::backdrop{background:rgba(8,18,15,.78)}
+dialog.lightbox img{display:block;max-width:100%;max-height:82vh;width:auto;height:auto;margin:auto;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+dialog.lightbox .lightbox-cap{margin:9px 2px 0;color:#e7efec;font-size:12.5px;line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+dialog.lightbox .lightbox-cap:empty{display:none}
+.lightbox-close{position:absolute;top:-13px;right:-13px;z-index:2;padding:7px 13px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font:650 12px var(--mono);cursor:pointer}
+.lightbox-close:hover{border-color:var(--accent);color:var(--accent-text)}
+.lightbox-close:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:620px){.lightbox-close{top:-11px;right:0}}
+
+/* ── Une commande par interpreteur ──────────────────────────────────────────
+   Meme verification, trois shells. Chaque bloc porte sa sortie reelle, qui
+   differe d'un interpreteur a l'autre. */
+.shells{margin:10px 0 0;display:flex;flex-direction:column;gap:12px}
+.shell{padding:12px 13px;border:1px solid var(--border);border-radius:11px;background:var(--bg-soft)}
+.shell>h5{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.02em}
+.shell>h5 span{padding:2px 7px;border-radius:20px;background:var(--accent-soft);color:var(--accent-text);font:800 9px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.shell pre{margin:0}
+.shell pre.cmd{margin-bottom:7px}
+.shell p{margin:7px 0 0;color:var(--soft);font-size:12.5px;line-height:1.5}
+
+/* ── Tableau des declencheurs ──────────────────────────────────────────────── */
+.doc table.triggers td:first-child{white-space:nowrap;font-family:var(--mono);font-size:12px;color:var(--accent-text)}
+
+/* ── Pied de lecon ─────────────────────────────────────────────────────────── */
+.lesson-nav{display:flex;gap:9px;flex-wrap:wrap;margin-top:30px;padding-top:20px;border-top:1px solid var(--border)}
+.lesson-nav a{padding:10px 13px;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:650}
+.lesson-nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.lesson-nav a:hover{filter:brightness(1.06)}
+.linklist{display:flex;gap:9px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.linklist a{color:var(--accent-text);font-size:12.5px;text-decoration:underline;text-underline-offset:2px}
+
+@media(max-width:620px){.doc pre.cmd,.doc pre.out{font-size:11.5px}.lesson-nav{flex-direction:column}.shots{grid-template-columns:1fr}}

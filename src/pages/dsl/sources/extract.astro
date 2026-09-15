@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import head from '../../../_mock/dsl-element-sources-extract.head.html?raw';
+import tail from '../../../_mock/dsl-element-sources-extract.tail.html?raw';
+import js from '../../../_mock/dsl-element-sources-extract.js?raw';
+---
+
+<BaseLayout title="extract — Hydra DSL" description="Declare the object, query or collection a source connector must read.">
+  <style is:global set:html={css}></style>
+  <DslShell current="sources-extract">
+    <div class="main-inner"><Fragment set:html={head} /><Fragment set:html={tail} /></div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

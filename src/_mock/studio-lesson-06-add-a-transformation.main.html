@@ -1,0 +1,125 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 6</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 6 of 14 · Add a transformation</div><h1>Reshape the data between source and destination</h1><p class="lead">Eighteen operations sit between where data comes from and where it goes. Place them in order — the canvas will not let you do otherwise.</p></div>
+<div class="lesson-meta"><span class="mono">Transformations</span><span>about 20 minutes</span><span>a source in place</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Place a transformation after your source, learn the eighteen the palette offers, and understand the two rules the canvas enforces without asking: the order nodes may take, and how many streams may meet.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A job holding at least one configured source.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Read the eighteen operations</h3>
+    <h4>Objective</h4><p>See the whole catalogue once, so you stop writing by hand what already exists.</p>
+    <h4>Actions</h4><ol><li>Open <b>Jobs configuration</b> and expand <b>Transformations</b>.</li><li>Read the list from <b>Filter</b> to <b>Script</b>.</li><li>Note that <b>Script</b> closes the list, and why.</li></ol>
+    <pre class="cmd">Jobs configuration → Transformations (18)</pre>
+    <p>Seventeen named operations, then one escape hatch. Grouping them by intent is faster than memorising eighteen names — when you know which family you need, the name follows.</p>
+    <table><thead><tr><th>Family</th><th>Operations</th><th>What it does to the table</th></tr></thead><tbody>
+      <tr><td><b>Choose</b></td><td>Filter · Select · Deduplicate</td><td>Keeps fewer rows, or fewer columns. Nothing is invented.</td></tr>
+      <tr><td><b>Change</b></td><td>Rename · Cast · Derive · Fill Null · Trim · Clean</td><td>Same rows, same count — the values or the headers change.</td></tr>
+      <tr><td><b>Reshape</b></td><td>Sort · Aggregate · Pivot · Unpivot · Transpose</td><td>The shape itself moves: order, grouping, rows becoming columns.</td></tr>
+      <tr><td><b>Combine</b></td><td>Join · Merge · Union</td><td>Two streams enter, one comes out.</td></tr>
+      <tr><td><b>Escape</b></td><td>Script</td><td>Your own Python, when none of the seventeen fits.</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>The full list under the source category, and the destination category below it. The palette reads in the order a job runs.</p><pre class="out">Filter  Select  Rename  Cast  Aggregate  Sort  Deduplicate  Derive  Join
+Fill Null  Trim  Clean  Pivot  Unpivot  Transpose  Merge  Union  Script</pre>
+      <figure class="shot"><img src="/tutorials/studio-06-add-a-transformation/screen1.png" width="522" height="1113" loading="lazy" decoding="async" alt="The job palette with Transformations expanded, listing the eighteen operations from Filter to Script, between the Sources and Destinations categories." /><figcaption>The palette itself tells the story: <b>Sources</b>, then <b>Transformations</b>, then <b>Destinations</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Place one, and connect it</h3>
+    <h4>Objective</h4><p>Insert a transformation between the source and whatever comes next.</p>
+    <h4>Actions</h4><ol><li>Drag <b>Filter</b> onto the canvas, to the right of your source.</li><li>Drag from the source's <b>right handle</b> to the transformation's <b>left handle</b>.</li><li>Double-click the node and give it an expression.</li></ol>
+    <pre class="cmd">Transformations → Filter → connect → configure</pre>
+    <p>A transformation reads what enters its left handle and passes the result out of its right one. Like a source, it wears a red badge until its required field is answered — for <b>Filter</b>, that is the expression.</p>
+    <div class="expect"><b>What you should see</b><p>Two nodes, one edge, and the counter rising. The badge clears when the expression is saved.</p><pre class="out">wf1 / job1   2 nodes · 1 edges   Valid
+source_csv_1 → transform_filter_2</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Chain as many as the work needs</h3>
+    <h4>Objective</h4><p>Build a sequence, and learn that its order is its meaning.</p>
+    <h4>Actions</h4><ol><li>Add a second transformation after the first.</li><li>Connect them in the order you want them applied.</li><li>Open the <b>Hydra DSL</b> panel and read the <b>Transformations</b> tab.</li></ol>
+    <pre class="cmd">Hydra DSL → Transformations</pre>
+    <p>The chain on the canvas becomes an ordered list in the manifest, and the engine runs it top to bottom. That order is not cosmetic: filtering before casting is not the same job as casting before filtering. The first may compare text where the second compares numbers.</p>
+    <div class="expect"><b>What you should see</b><p>One entry per node, in exactly the order the edges describe.</p><pre class="out">transformations:
+  steps:
+    - filter:
+        expr: "amount &gt; 100"
+    - select:
+        columns: [id, order_date, amount]</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>The canvas imposes an order</h3>
+    <h4>Objective</h4><p>Discover the rule you cannot break, and stop fighting it.</p>
+    <h4>Actions</h4><ol><li>Try to draw an edge from a transformation back into a source.</li><li>Try to place a destination before a transformation.</li><li>Watch the connection be refused.</li></ol>
+    <pre class="cmd">source → transformation → destination</pre>
+    <p>A job flows one way, and the canvas enforces it. A source has no input, so nothing can feed it. A destination has no output, so nothing can follow it. Everything else sits between the two, in the order you draw.</p>
+    <table><thead><tr><th>Node</th><th>Accepts input</th><th>Produces output</th></tr></thead><tbody>
+      <tr><td><b>Source</b></td><td>no — it is the beginning</td><td>yes</td></tr>
+      <tr><td><b>Transformation</b></td><td>yes</td><td>yes</td></tr>
+      <tr><td><b>Destination</b></td><td>yes</td><td>no — it is the end</td></tr>
+    </tbody></table>
+    <div class="callout"><b>Trap</b><p>An edge that refuses to connect is almost never a bug. Check three things, in this order: you started from a <b>right handle</b>, you ended on a <b>left handle</b>, and the direction respects source to destination. A transformation cannot feed a source, and nothing can follow a destination.</p></div>
+    <div class="expect"><b>What you should see</b><p>The refused edge simply does not appear. No dialog, no error — the gesture is undone.</p><pre class="out">source        →  no left handle
+destination   →  no right handle</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Several sources, one node</h3>
+    <h4>Objective</h4><p>Bring two streams together, and see where branching is allowed.</p>
+    <h4>Actions</h4><ol><li>Add a second source to the job — a different format is fine.</li><li>Drag a <b>Join</b>, <b>Merge</b> or <b>Union</b> onto the canvas.</li><li>Connect both sources to that single transformation.</li></ol>
+    <pre class="cmd">two sources → Join → destination</pre>
+    <p>A job may read from several places at once. Two sources of different formats — a CSV and a Parquet file, say — can meet in one node and leave as a single stream. That is the whole purpose of the <b>Combine</b> family.</p>
+    <table><thead><tr><th>Operation</th><th>Brings the two streams together by</th></tr></thead><tbody>
+      <tr><td><b>Join</b></td><td>a shared key, keeping the columns of both sides</td></tr>
+      <tr><td><b>Merge</b></td><td>a key, updating rows rather than widening them</td></tr>
+      <tr><td><b>Union</b></td><td>stacking, when both sides already share their columns</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Two source nodes, two edges reaching the same transformation, and a single stream leaving it. The job stays <b>Valid</b> throughout.</p><pre class="out">wf1 / job1   4 nodes · 3 edges   Valid
+source_csv_8      ↘
+                    transform_join_7 → dest_json_10
+source_parquet_9  ↗</pre>
+      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/screen2.png" width="1584" height="906" loading="lazy" decoding="async" alt="A job canvas with a CSV source and a Parquet source both connected to a single Join transformation, which feeds one JSON destination." /><figcaption>Branching is allowed <b>upstream</b>: two sources converge on one node. Downstream, the job narrows to a single destination.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">Pick the <b>family</b> first — choose, change, reshape or combine. The operation name follows on its own.</p>
+  <p data-kind="TRAP">The order of the chain <b>is</b> the job. Filter before cast and cast before filter give different results.</p>
+  <p data-kind="TIP">A source has <b>no input</b>, a destination <b>no output</b>. That is why some edges refuse to connect.</p>
+  <p data-kind="TRAP">A red badge on a transformation means a <b>required field</b> is empty, not that the chain is wrong.</p>
+  <p data-kind="TIP">Several sources may <b>converge</b> on one Join, Merge or Union. Reading from two places is normal.</p>
+  <p data-kind="TRAP">Reach for <b>Script</b> last. Seventeen named operations are read by everyone; your Python is read by you.</p>
+  <p data-kind="TIP">Filter early. Rows dropped at the start are rows every later step no longer carries.</p>
+  <p data-kind="TRAP">A <b>Union</b> expects the same columns on both sides. Align them with Select or Rename first.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Palette</td><td>Eighteen transformations, <b>Script</b> last</td></tr>
+    <tr><td>Placement</td><td>The node connects between source and destination</td></tr>
+    <tr><td>Chain</td><td>Node order matches the list in <code>transformations.yaml</code></td></tr>
+    <tr><td>Direction</td><td>No edge can reach a source or leave a destination</td></tr>
+    <tr><td>Convergence</td><td>Two sources may feed one Join, Merge or Union</td></tr>
+    <tr><td>Status</td><td>The job reads <b>Valid</b> once every badge has cleared</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>The edge will not connect</td><td>Wrong handle, or wrong direction</td><td>Drag from a <b>right</b> handle to a <b>left</b> one, source towards destination</td></tr>
+    <tr><td>A transformation keeps its badge</td><td>Its required field is empty</td><td>Double-click it and fill the field marked with a red asterisk</td></tr>
+    <tr><td>The result is not what you expected</td><td>The steps run in the order of the chain</td><td>Read the <b>Transformations</b> tab of <b>Hydra DSL</b> and reorder the nodes</td></tr>
+    <tr><td>A Union produces empty columns</td><td>The two sides do not share their columns</td><td>Add <b>Select</b> or <b>Rename</b> before it to align them</td></tr>
+    <tr><td>No Transformations in the palette</td><td>You are in the workflow scene</td><td>Switch to <b>Jobs configuration</b></td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>The data now enters and is reshaped. One node is still missing, and it is the one that makes the job runnable: the destination.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/07-add-a-destination">Add a destination <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/transformations-yaml">transformations.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

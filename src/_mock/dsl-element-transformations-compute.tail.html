@@ -1,0 +1,60 @@
+<section class="doc">
+  <h2>What <code>operations.compute</code> is</h2>
+  <p>Compute operations create <b>new values from columns in the current transformation frame</b>.</p>
+  <p>They do not reach external systems. <code>calculate</code> evaluates one pandas expression; <code>script</code> executes declared Python code in a restricted environment.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>calculate</b> — One output column and one expression.</li>
+    <li><b>script inputs</b> — An optional list of columns made available to code.</li>
+    <li><b>script outputs and code</b> — A typed output mapping, execution mode, and required code block.</li>
+  </ul>
+
+  <h2>Outputs are part of the declaration</h2>
+  <p>Computation is easier to trust when every produced column is named up front. Calculate names one output; script declares an output mapping before any code runs.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="transformations-computeTitle transformations-computeDesc" class="cnx">
+      <title id="transformations-computeTitle">Compute maps current values to named outputs</title>
+      <desc id="transformations-computeDesc">The amount column is multiplied by 1.2 and stored in amount_with_tax.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">amount</text><text class="d-sub" x="28" y="70">current column</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#transformations-computeArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">amount * 1.2</text><text class="d-sub" x="282" y="68">declared computation</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#transformations-computeArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">amount_with_tax</text><text class="d-sub" x="540" y="70">named output</text>
+      <text class="d-foot" x="12" y="116">The output name is visible in YAML before the expression executes.</text>
+      <defs><marker id="transformations-computeArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>A computation is a contract from inputs to named outputs.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+transformations:
+  steps:
+    - cast:
+        mapping: {amount: float}
+    - calculate:
+        column: amount_with_tax
+        expr: "amount * 1.2"</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements -t compute.yaml</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.9s
+  Rows read   : 30
+  Rows written: 30</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/expressions/calculate">calculate.expr — expression rules</a></li>
+    <li><a href="/dsl/expressions/script">script.code — restricted Python</a></li>
+    <li><a href="/dsl/transformations/columns">Columns — type preparation</a></li>
+    <li><a href="/dsl/transformations/steps">steps — execution order</a></li>
+    <li><a href="/dsl/reference">Reference — calculate and script</a></li>
+  </ul>
+</section>

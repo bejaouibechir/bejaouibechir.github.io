@@ -1,0 +1,18 @@
+﻿---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../_mock/playground.css?raw';
+import body from '../_mock/playground.body.html?raw';
+import js from '../_mock/playground.js?raw';
+---
+
+<BaseLayout title="Playground" description={"Edit and run Hydra DSL in your browser."}>
+  <style is:global set:html={css}></style>
+  <Fragment set:html={body} />
+  <script is:inline src="/assets/hydra-chatbot-engine.js?v=20260804-5"></script>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+
+
+
+
+

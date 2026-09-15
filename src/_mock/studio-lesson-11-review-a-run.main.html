@@ -1,0 +1,53 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 11</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 11 of 14 · Review a run</div><h1>Find a past execution and its result</h1><p class="lead">Move from the live canvas to durable run history, filter the list, and inspect the execution one step at a time.</p></div>
+<div class="lesson-meta"><span class="mono">Runs</span><span>about 9 minutes</span><span>completed Studio run</span></div>
+<section class="doc">
+  <h2>1. Objective</h2><h3>Goal</h3><p>Open <b>Runs</b> from the sidebar, locate a completed execution, and open its detail page. Read the Started, Finished, Duration, and Steps cards, then inspect the captured logs for the executed step.</p>
+  <div class="callout"><b>Course project</b><p>Continue with <code>studio-course</code>, the manual <code>first-workflow</code>, and the <code>first-job</code> canvas saved by the preceding lesson. Do not create a parallel replacement project.</p></div>
+  <h3>Prerequisites</h3><ul><li>The top bar shows <b>API online</b>.</li><li>The run started in the preceding lesson has reached a terminal state.</li><li>The cumulative project and workflow are still available in Studio.</li></ul>
+  <h2>2. Steps</h2>
+  <div class="step">
+    <h3><i>01</i>Open run history</h3>
+    <h4>Objective</h4><p>Move from the workflow editor to the history of executions saved by the API.</p>
+    <h4>Actions</h4><ol><li>Wait until the terminal state of the current run is visible.</li><li>Find <b>Runs</b> in the left sidebar.</li><li>Select <b>Runs</b>.</li></ol>
+    <pre class="cmd">Sidebar → Runs</pre>
+    <div class="expect"><b>What you should see</b><p>The <b>Runs</b> entry is available from the editor and opens the execution history without changing the saved canvas.</p></div>
+    <figure class="shot"><img src="/tutorials/studio-11-review-a-run/screen1.png" width="1912" height="951" loading="lazy" decoding="async" alt="Hydra Studio workflow editor with the Runs entry highlighted in the left sidebar" /><figcaption><b>Open the history.</b> Select <b>Runs</b> in the left sidebar after the execution reaches a terminal state.</figcaption></figure>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the run history</h3>
+    <h4>Objective</h4><p>Identify the execution you want to review from its workflow, status, step count, start time, and duration.</p>
+    <h4>Actions</h4><ol><li>Read the totals in the upper-right corner.</li><li>Use <b>All</b>, <b>Running</b>, <b>Success</b>, <b>Failed</b>, or <b>Pending</b> to narrow the list when needed.</li><li>Find the successful <code>first-workflow</code> row created by the preceding lesson.</li><li>Select its workflow name to open the run.</li></ol>
+    <pre class="cmd">Runs → Success → first-workflow</pre>
+    <div class="expect"><b>What you should see</b><p>Each row exposes the workflow, short run identifier, status, completed steps, start time, and observed duration.</p><pre class="out">Workflow         Status    Steps    Started              Duration
+first-workflow   Success   1/1      &lt;observed time&gt;      &lt;observed&gt;</pre></div>
+    <figure class="shot"><img src="/tutorials/studio-11-review-a-run/screen2.png" width="1888" height="986" loading="lazy" decoding="async" alt="Hydra Studio Runs page listing successful first-workflow and first-job executions" /><figcaption><b>Read before opening.</b> The history table gives enough evidence to choose the correct execution; identifiers and durations vary between runs.</figcaption></figure>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Inspect one execution</h3>
+    <h4>Objective</h4><p>Connect the run-level result to the exact engine step and the rows it processed.</p>
+    <h4>Actions</h4><ol><li>Confirm the workflow name, short run identifier, and terminal status at the top of the page.</li><li>Read <b>Started</b>, <b>Finished</b>, <b>Duration</b>, and <b>Steps</b>.</li><li>Expand the step card if it is collapsed.</li><li>Read the step status, duration, log count, job path, and row counters.</li></ol>
+    <pre class="cmd">Run detail → Steps → job log</pre>
+    <div class="expect"><b>What you should see</b><p>The run is successful, its single step is marked <code>ok</code>, and the log confirms that <code>first-job</code> wrote four rows.</p><pre class="out">Success
+Steps: 1 ok / 1
+Job 'first-job' completed successfully: 12 rows in, 4 rows out
+OK rows_out=4 duration=&lt;observed&gt;</pre></div>
+    <figure class="shot"><img src="/tutorials/studio-11-review-a-run/screen3.png" width="1909" height="945" loading="lazy" decoding="async" alt="Hydra Studio run detail page showing a successful first-workflow execution, summary cards, and expanded job logs" /><figcaption><b>Inspect the evidence.</b> The summary describes the whole run; the expanded step shows the engine log and row counts for the job.</figcaption></figure>
+  </div>
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">Use the <b>status filters</b> when the history contains many executions.</p>
+  <p data-kind="TRAP">A workflow name is <b>not a unique run</b>. Confirm the short identifier and start time before opening it.</p>
+  <p data-kind="TIP">Read the <b>summary and the step log together</b>: one describes the run, the other explains what executed.</p>
+  <p data-kind="TRAP">Durations, timestamps, and run identifiers are <b>observed values</b>. They will not match the screenshots exactly.</p>
+  <p data-kind="TIP">The row counters are execution evidence: compare <b>rows in</b> with <b>rows out</b> to confirm the transformation result.</p>
+  <p data-kind="TRAP">Do not confuse <b>first-workflow</b> with the earlier direct <b>first-job</b> run in the history.</p>
+</div>
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Runs page</td><td>Status filters and execution rows are visible</td></tr><tr><td>Selected entry</td><td>Matches <code>first-workflow</code> and shows Success</td></tr><tr><td>Summary cards</td><td>Started, Finished, Duration, and Steps are readable</td></tr><tr><td>Step detail</td><td>One successful step and its four log lines are visible</td></tr><tr><td>Row evidence</td><td>The log reports four rows written</td></tr></tbody></table>
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The run is still Running</td><td>Polling has not reached a terminal state</td><td>Wait and refresh the API-backed list</td></tr><tr><td>No run is listed</td><td>The job submission did not succeed or another workspace is active</td><td>Return to the editor and confirm the completed run</td></tr><tr><td>Logs are empty</td><td>The engine captured no lines for that step</td><td>Use status, duration, and output artifact as the remaining evidence</td></tr></tbody></table>
+  <h2>5. Next lesson</h2><p>You can now trace a job beyond the editor. The next lesson adds a second job tab, places both saved jobs on Workflow configuration, and connects them into an ordered dependency graph.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/12-compose-jobs">Compose jobs <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/cli/11-serve-the-api">Serve the Hydra API</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

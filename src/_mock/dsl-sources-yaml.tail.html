@@ -1,0 +1,91 @@
+<section class="doc">
+  <h2>What <code>sources.yaml</code> is</h2>
+  <p>
+    <code>sources.yaml</code> is the file that <b>declares every input the job may read</b>. One root key,
+    <code>sources</code>, holding a mapping: each key is an identifier you invent, each value is a
+    declaration of one system to read from.
+  </p>
+  <p>
+    It is one of the three required files of a job, next to <code>destinations.yaml</code> and
+    <code>pipeline.yaml</code>. Only <code>transformations.yaml</code> may be omitted.
+  </p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Identifiers</b> — names local to the job. <code>pipeline.from</code> points to one of them;
+      <code>join.right</code>, <code>merge.right</code> and <code>union.right</code> may point to others.</li>
+    <li><b>Declarations</b> — four keys each: <code>type</code> names the connector,
+      <code>connection</code> says how to reach the system, <code>extract</code> what to read,
+      <code>schema</code> how to type it. Their shape is the subject of
+      <a href="/dsl/sources">the connectors page</a>.</li>
+  </ul>
+
+  <h2>Declared is not opened</h2>
+  <p>
+    This is the idea worth keeping. The file is a <b>catalogue</b>, not a build list. The engine
+    instantiates a connector only when something references its identifier — so a second source sitting
+    in the file untouched is never built, its type never checked, its file never looked for.
+  </p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 224" role="img" aria-labelledby="syTitle syDesc" class="cnx">
+      <title id="syTitle">Only the referenced entries of the catalogue are opened</title>
+      <desc id="syDesc">Three sources are declared. pipeline.from opens the first, join.right opens the second, the third is never instantiated.</desc>
+
+      <text class="d-cap" x="18" y="20">sources.yaml — the catalogue</text>
+      <text class="d-cap" x="470" y="20">what references it</text>
+
+      <rect class="d-panel" x="12" y="32" width="300" height="172" rx="12"/>
+
+      <rect class="d-box lit" x="26" y="46" width="272" height="42" rx="9"/>
+      <text class="d-key lit" x="42" y="72">src_orders</text>
+
+      <rect class="d-box lit" x="26" y="98" width="272" height="42" rx="9"/>
+      <text class="d-key lit" x="42" y="124">src_customers</text>
+
+      <rect class="d-box" x="26" y="150" width="272" height="42" rx="9"/>
+      <text class="d-key" x="42" y="170">src_never_used</text>
+      <text class="d-sub" x="42" y="186">never instantiated</text>
+
+      <path class="d-arrow lit" d="M462 66 H 306" marker-end="url(#ar3lit)"/>
+      <path class="d-arrow lit" d="M462 118 H 306" marker-end="url(#ar3lit)"/>
+
+      <rect class="d-box lit" x="470" y="46" width="234" height="42" rx="9"/>
+      <text class="d-txt lit" x="486" y="72">pipeline.from</text>
+
+      <rect class="d-box lit" x="470" y="98" width="234" height="42" rx="9"/>
+      <text class="d-txt lit" x="486" y="124">join.right</text>
+
+      <rect class="d-box" x="470" y="150" width="234" height="42" rx="9"/>
+      <text class="d-txt" x="486" y="176">nothing</text>
+
+      <text class="d-foot" x="12" y="218">An unreferenced entry costs nothing at run time — it is simply not built.</text>
+
+      <defs>
+        <marker id="ar3lit" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="d-head lit"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Declared on the left, referenced on the right. Only what is referenced is built.</figcaption>
+  </figure>
+
+  <h2>What the engine requires</h2>
+  <ul>
+    <li><b>The file must exist</b> and declare at least one entry. It is one of the three required files
+      of a job, next to <code>destinations.yaml</code> and <code>pipeline.yaml</code>.</li>
+    <li><b>Every referenced identifier must exist.</b> That link is checked from
+      <a href="/dsl/pipeline">pipeline</a>, which names the two ends of the job.</li>
+    <li><b>Unreferenced entries are not checked at all.</b> Convenient while you draft, worth a second
+      look before you commit.</li>
+  </ul>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/sources">sources.&lt;id&gt;.connection — reaching the system</a></li>
+    <li><a href="/dsl/pipeline">pipeline — which source feeds which destination</a></li>
+    <li><a href="/dsl/version">version — the first line of the file</a></li>
+    <li><a href="/dsl/tutorial/01-first-job">Lesson 1 — the four files of a job</a></li>
+    <li><a href="/dsl/reference">Reference — every key of every block</a></li>
+  </ul>
+</section>

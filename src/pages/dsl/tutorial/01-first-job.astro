@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DslShell from '../../../components/DslShell.astro';
+import css from '../../../_mock/dsl.css?raw';
+import main from '../../../_mock/tutorial-01-first-job.main.html?raw';
+import js from '../../../_mock/tutorial-01-first-job.js?raw';
+---
+
+<BaseLayout title="Lesson 1 — Your first job" description="Read a CSV, keep the large orders, write the result. The four files of a Hydra job.">
+  <style is:global set:html={css}></style>
+  <DslShell current="tutorial">
+    <div class="main-inner">
+      <Fragment set:html={main} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

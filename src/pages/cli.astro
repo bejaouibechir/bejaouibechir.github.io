@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductLearningShell from '../components/ProductLearningShell.astro';
+import { cliLessons } from '../data/cli-lessons.js';
+import css from '../_mock/learning-hub.css?raw';
+import js from '../_mock/learning-hub.js?raw';
+
+/* Les ateliers vivent dans src/data/cli-lessons.js — source unique partagee
+   avec les pages de lecon servies sous /cli/. */
+const lessons = cliLessons;
+---
+
+<BaseLayout title="Hydra CLI tutorials" description="A structured learning track for creating, validating, running and operating Hydra from the command line.">
+  <style is:global set:html={css}></style>
+  <ProductLearningShell product="CLI" title="Hydra CLI tutorials" lead="Learn the command-line path from an empty folder to a validated job, an observable run and an orchestrated workflow." duration="about 90 minutes" lessons={lessons} referenceHref="/guide/sources/csv" referenceLabel="Run the first guided job" />
+  <script is:inline set:html={js}></script>
+</BaseLayout>

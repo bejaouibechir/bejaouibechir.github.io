@@ -1,0 +1,45 @@
+<div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>1 · Manifest</span><span>›</span><span>destinations.yaml</span></div>
+
+<div class="lesson-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span>Grammar element · destinations.yaml</div>
+    <h1>destinations.yaml decides how rows land</h1>
+    <p class="lead">Three correct declarations. Walk them, then see where the writing policy lives.</p>
+  </div>
+</div>
+
+<section class="workbench" aria-labelledby="goalTitle">
+  <div class="editor-pane">
+    <div class="pane-head"><span class="file-dot"></span><strong>destinations.yaml</strong><span class="edit-label">4 steps</span></div>
+    <div class="codewrap" id="codewrap" aria-label="Hydra DSL manifest">
+      <pre class="yaml" id="yaml"></pre>
+      <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    </div>
+    <div class="tourbar" role="group" aria-label="Guided walkthrough">
+      <button class="tourbtn" id="tourPrev" type="button">‹ Back</button>
+      <span class="tourpos"><b id="tourCount"></b><span id="tourTitle"></span></span>
+      <button class="tourbtn primary" id="tourNext" type="button">Next ›</button>
+    </div>
+    <div class="control">
+      <label for="selCase"><span>the catalogue contains</span></label>
+      <select id="selCase">
+        <option value="replace">one CSV target — replace its contents</option>
+        <option value="append">one CSV target — append this run</option>
+        <option value="two">two targets — only one is selected</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-pane">
+    <div class="goal">
+      <div class="goal-icon" aria-hidden="true">1</div>
+      <div><b id="goalTitle">What the engine prepares</b><p>The selected declaration supplies both the connector and its writing policy.</p></div>
+    </div>
+    <div class="tourctx" id="tourContext"></div>
+    <div class="verdict tall" id="verdict" aria-live="polite"></div>
+    <div class="runbar">
+      <span class="status ok" id="status" role="status" aria-live="polite">✓ 30 rows read · 6 written</span>
+      <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+    </div>
+  </div>
+</section>

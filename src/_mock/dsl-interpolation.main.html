@@ -1,0 +1,60 @@
+    <div class="main-inner">
+      <div class="crumbs"><a href="/dsl">Hydra DSL</a><span>›</span><span>8 · Interpolation</span><span>›</span><span>${ENV} and ${SECRET}</span></div>
+      <div class="lesson-head">
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Grammar element · interpolation</div>
+          <h1>Four placeholders, resolved before the manifest is read</h1>
+          <p class="lead">Hydra substitutes two syntaxes: <code>${'{'}...{'}'}</code> for environment and secrets, <code>{{ ... }}</code> for job parameters.</p>
+        </div>
+      </div>
+
+      <section class="workbench" aria-labelledby="goalTitle">
+        <div class="editor-pane">
+          <div class="pane-head"><span class="file-dot"></span><strong>sources.yaml</strong><span class="edit-label">type a value for password</span></div>
+          <div class="codewrap" aria-label="Hydra DSL manifest">
+            <pre class="yaml" id="yaml"></pre>
+          </div>
+          <div class="control">
+            <label for="pwd"><span>password:</span></label>
+            <input id="pwd" type="text" class="txt" value="${SECRET:DB_PASSWORD}" spellcheck="false" autocomplete="off">
+            <label for="selEnv" style="margin-top:12px"><span>environment</span></label>
+            <select id="selEnv"><option value="dev">dev</option><option value="prod">prod</option></select>
+          </div>
+        </div>
+
+        <div class="result-pane">
+          <div class="goal"><div class="goal-icon" aria-hidden="true">8</div><div><b id="goalTitle">Before and after</b><p>Substitution happens before parsing. What the parser sees is the right column.</p></div></div>
+          <div class="tablewrap">
+            <div class="tabletop"><strong>Resolution</strong><span class="rows" id="resCount">4 placeholders</span></div>
+            <table class="subst">
+              <thead><tr><th>in the manifest</th><th>source</th><th>what the parser sees</th></tr></thead>
+              <tbody id="substRows"></tbody>
+            </table>
+          </div>
+          <div class="verdict" id="verdict" aria-live="polite"></div>
+          <div class="runbar">
+            <span class="status ok" id="status" role="status" aria-live="polite">✓ No value in clear</span>
+            <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="spec" aria-labelledby="specTitle">
+        <div class="section-head"><div><h2 id="specTitle">interpolation</h2><p>Written by hand: interpolation is handled by two regular expressions, not by a model.</p></div><span class="rows">4 forms</span></div>
+        <table class="spectable">
+          <thead><tr><th>form</th><th>resolved from</th><th>missing value</th><th>note</th></tr></thead>
+          <tbody>
+            <tr><td><code>${ENV:NAME}</code></td><td>process environment</td><td>error</td><td>same resolver as SECRET</td></tr>
+            <tr><td><code>${SECRET:NAME}</code></td><td>secret store</td><td>error</td><td>never echoed in logs</td></tr>
+            <tr><td><code>{{ param:NAME }}</code></td><td>job parameters</td><td>error, strict</td><td>a whole value can be replaced</td></tr>
+            <tr><td><code>{{ env:NAME }}</code></td><td>process environment</td><td>tolerated</td><td>non-strict resolver</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="why">
+        <article class="info"><h2>Two syntaxes, not one</h2><p><code>${'{'}...{'}'}</code> and <code>{{ ... }}</code> are handled by two different resolvers. They are not interchangeable.</p></article>
+        <article class="info"><h2>A literal secret is a blocking error</h2><p>Typing a password directly is refused here, as it is refused everywhere on this site.</p></article>
+      </div>
+    </div>
+  

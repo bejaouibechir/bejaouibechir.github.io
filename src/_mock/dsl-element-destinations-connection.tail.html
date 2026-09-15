@@ -1,0 +1,62 @@
+<section class="doc">
+  <h2>What <code>destinations.&lt;id&gt;.connection</code> is</h2>
+  <p>Destination <code>connection</code> is the mapping used to <b>reach the system that will receive rows</b>.</p>
+  <p>It does not name the table or decide append, replace, or upsert. Those are loading concerns and remain in <code>load</code>.</p>
+
+  <h2>What it contains</h2>
+  <ul>
+    <li><b>Connector-specific settings</b> — CSV uses a base path; databases use network and database settings.</li>
+    <li><b>References, not embedded policy</b> — Secrets belong in placeholders and load behavior belongs elsewhere.</li>
+    <li><b>A reusable boundary</b> — One reachable system can host several target objects.</li>
+  </ul>
+
+  <h2>Reach the system before naming the object</h2>
+  <p>Connection answers “where can this writer connect?” Load answers “what should it write there, and how?” Keeping those questions apart makes declarations portable.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 720 126" role="img" aria-labelledby="destinations-connectionTitle destinations-connectionDesc" class="cnx">
+      <title id="destinations-connectionTitle">Connection and load divide reachability from target choice</title>
+      <desc id="destinations-connectionDesc">The connection reaches a directory, load selects result.csv, and rows are written there.</desc>
+      <rect class="d-box" x="12" y="28" width="184" height="54" rx="9"/><text class="d-txt" x="28" y="52">connection</text><text class="d-sub" x="28" y="70">reachable directory</text>
+      <path class="d-arrow lit" d="M200 55 H 258" marker-end="url(#destinations-connectionArrow)"/>
+      <rect class="d-box lit" x="266" y="20" width="188" height="70" rx="9"/><text class="d-key lit" x="282" y="48">load.table</text><text class="d-sub" x="282" y="68">one target object</text>
+      <path class="d-arrow lit" d="M458 55 H 516" marker-end="url(#destinations-connectionArrow)"/>
+      <rect class="d-box" x="524" y="28" width="180" height="54" rx="9"/><text class="d-txt" x="540" y="52">result.csv</text><text class="d-sub" x="540" y="70">rows written</text>
+      <text class="d-foot" x="12" y="116">A connection locates the system; load locates the object inside it.</text>
+      <defs><marker id="destinations-connectionArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-head lit"/></marker></defs>
+    </svg>
+    <figcaption>Reachability is shared context, not a writing policy.</figcaption>
+  </figure>
+
+  <h2>Run the complete example</h2>
+  <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
+  <pre class="yaml">version: "1.0"
+destinations:
+  dest_output:
+    type: csv
+    connection:
+      base_path: "examples/tutorial/dsl-elements/out"
+    load:
+      table: result.csv
+      mode: replace
+      batch_size: 10000</pre>
+  <pre class="cmd">hdrctl run examples/tutorial/dsl-elements</pre>
+  <pre class="cmd out">  ✅ Pipeline completed successfully in 2.6s
+  Rows read   : 30
+  Rows written: 6</pre>
+  <p>The relevant command syntax, copied from <code>hdrctl run --help</code>:</p>
+  <pre class="cmd">hdrctl run [PATH]
+  -s, --sources FILE          explicit path to sources.yaml
+  -d, --destinations FILE     explicit path to destinations.yaml
+  -t, --transformations FILE  explicit path to transformations.yaml
+  -P, --param KEY=VALUE       override a parameter, repeatable</pre>
+
+  <h3>Close by</h3>
+  <ul class="linklist">
+    <li><a href="/dsl/destinations/type">type — choosing the writer</a></li>
+    <li><a href="/dsl/destinations/load">load — target and policy</a></li>
+    <li><a href="/dsl/destinations-yaml">destinations.yaml — complete declaration</a></li>
+    <li><a href="/dsl/sources">source connection — the read side</a></li>
+    <li><a href="/dsl/reference">Reference — connector settings</a></li>
+  </ul>
+</section>

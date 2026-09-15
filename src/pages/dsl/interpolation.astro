@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import main from '../../_mock/dsl-interpolation.main.html?raw';
+import js from '../../_mock/dsl-interpolation.js?raw';
+---
+
+<BaseLayout title="interpolation — Hydra DSL" description="The four placeholders resolved before the manifest is parsed.">
+  <style is:global set:html={css}></style>
+  <DslShell current="interpolation">
+    <Fragment set:html={main} />
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

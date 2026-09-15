@@ -1,0 +1,128 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 12</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 12 of 14 · Compose jobs</div><h1>Turn your jobs into an ordered workflow</h1><p class="lead">Two jobs, one arrow. The workflow decides <b>when</b> each runs — never what data passes between them.</p></div>
+<div class="lesson-meta"><span class="mono">Workflow configuration</span><span>about 15 minutes</span><span>a job that runs</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Bring a second job into the workflow, order the two with an edge, run the pair, and read the log closely enough to learn what an arrow does — and what it does not.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A first job that already runs.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Bring in a second job</h3>
+    <h4>Objective</h4><p>Add a job to a workflow that already holds one.</p>
+    <h4>Actions</h4><ol><li>Open <b>Workflow configuration</b>.</li><li>Select <b>Import</b>, then <b>Import a job</b>.</li><li>Pick the folder of the job you want to add.</li></ol>
+    <pre class="cmd">Workflow configuration → Import → Import a job</pre>
+    <p>Nothing distinguishes the second job from the first: same gesture, same four manifests, same result. A workflow does not care how many jobs it holds, only how they are ordered.</p>
+    <div class="expect"><b>What you should see</b><p>The canvas still shows one node and the palette still counts one job — until the import completes.</p><pre class="out">first-workflow   1 nodes · 0 edges   Valid
+Jobs (1)
+  first-job</pre>
+      <figure class="shot"><img src="/tutorials/studio-12-compose-jobs/screen1.png" width="1911" height="983" loading="lazy" decoding="async" alt="The workflow canvas holding a single first-job node, with the Import menu open on the Import a job entry." /><figcaption>One job on the canvas, and the menu that will bring the second.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Order the two with an edge</h3>
+    <h4>Objective</h4><p>Say which job waits for which.</p>
+    <h4>Actions</h4><ol><li>Place the second node to the right of the first.</li><li>Drag from the <b>right handle</b> of <code>first-job</code> to the <b>left handle</b> of <code>second-job</code>.</li><li>Read the counters in the header.</li></ol>
+    <pre class="cmd">first-job → second-job</pre>
+    <p>That single arrow is the whole composition. It becomes a <code>depends_on</code> in the manifest, and it means one thing only: <b>second-job starts after first-job has finished</b>. Without it, the two would be independent and could run at the same time.</p>
+    <div class="expect"><b>What you should see</b><p>Two nodes, one edge, and the workflow still reading <b>Valid</b>.</p><pre class="out">first-workflow   2 nodes · 1 edges   Valid
+first-job → second-job</pre>
+      <figure class="shot"><img src="/tutorials/studio-12-compose-jobs/screen2.png" width="1911" height="984" loading="lazy" decoding="async" alt="The workflow canvas with first-job and second-job connected by a single edge, and both Run Workflow buttons highlighted in red." /><figcaption>Two jobs, one arrow. <b>Run Workflow</b> now covers both.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Run the pair</h3>
+    <h4>Objective</h4><p>Execute the whole graph and confirm the order was respected.</p>
+    <h4>Actions</h4><ol><li>Select <b>Run Workflow</b>.</li><li>Open the <b>Logs</b> tab.</li><li>Read the two step blocks from top to bottom.</li></ol>
+    <pre class="cmd">Workflow configuration → Run Workflow</pre>
+    <p>One run, two steps, in the order the edge imposed. Each step reports its own counters and its own <code>job_path</code> — a workflow log is a stack of job logs with a summary on top.</p>
+    <div class="expect"><b>What you should see</b><p>Two blocks, each ending on <code>OK</code>, and a total duration greater than either step alone.</p><pre class="out">Run 7fda07c1 — first-workflow [SUCCESS]
+Total duration: 0.32s
+- step job_1786264545421 : ✓ success (0.21s)
+    rows_in=12  rows_out=4
+- step job_1786267636186 : ✓ success (0.11s)
+    rows_in=12  rows_out=12</pre>
+      <figure class="shot"><img src="/tutorials/studio-12-compose-jobs/screen3.png" width="1888" height="987" loading="lazy" decoding="async" alt="The run log of the workflow, showing two successful job steps with their row counts and job paths." /><figcaption>Fourteen lines, two steps. Look closely at the second pair of counters.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read what the arrow did not do</h3>
+    <h4>Objective</h4><p>Learn the single most important thing about composing jobs.</p>
+    <h4>Actions</h4><ol><li>Compare <code>rows_out</code> of the first step with <code>rows_in</code> of the second.</li><li>Read the <code>job_path</code> line of each step.</li><li>Open <code>sources.yaml</code> of the second job.</li></ol>
+    <pre class="cmd">rows_out=4  →  rows_in=12</pre>
+    <p>The first job wrote <b>4</b> rows. The second read <b>12</b>. Nothing was lost — the second job simply never looked at what the first produced. It read its own source, exactly as declared in its own <code>sources.yaml</code>.</p>
+    <div class="callout"><b>An edge orders, it does not connect</b><p>A workflow edge is a <b>dependency</b>, not a pipe. It says <i>run this one after that one</i> and nothing more. No data travels along it, and no column is passed. To chain two jobs on data, the second must <b>read the file the first wrote</b> — you declare that in its source, not on the canvas.</p></div>
+    <table><thead><tr><th>What you want</th><th>Where you declare it</th></tr></thead><tbody>
+      <tr><td>Run B after A</td><td>An edge on the workflow canvas</td></tr>
+      <tr><td>B reads what A wrote</td><td>The source of B, pointing at the destination of A</td></tr>
+      <tr><td>Both at once</td><td>Both — they are independent decisions</td></tr>
+    </tbody></table>
+    <div class="expect"><b>What you should see</b><p>Two <code>job_path</code> lines naming two different folders, and two sets of counters that owe each other nothing.</p><pre class="out">job_path=…\studio-course\jobs\first-job    rows_in=12  rows_out=4
+job_path=…\studio-course\jobs\second-job   rows_in=12  rows_out=12</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the composition as YAML</h3>
+    <h4>Objective</h4><p>Find the arrow in the file, and confirm it is the only trace of it.</p>
+    <h4>Actions</h4><ol><li>Select <b>Hydra DSL</b> in the top bar.</li><li>Read the two entries under <code>steps</code>.</li><li>Find <code>depends_on</code> on the second one.</li></ol>
+    <pre class="cmd">Workflow configuration → Hydra DSL</pre>
+    <p>Two steps, and one <code>depends_on</code>. The first has none, so it starts immediately; the second names the first, so it waits. Add a third job with the same dependency and the two would run in parallel — order comes from the names, never from the positions on the canvas.</p>
+    <pre class="out">version: "1.0"
+workflow:
+  name: first-workflow
+  trigger:
+    type: manual
+  steps:
+    - name: job_1786264545421
+      type: action
+      action: webhook
+    - name: job_1786267636186
+      type: action
+      action: webhook
+      depends_on:
+        - job_1786264545421</pre>
+    <div class="callout"><b>Known defect — the job steps</b><p>Both steps here read <code>type: action</code> with <code>action: webhook</code>, although the canvas holds two jobs. That is the <b>serialization defect</b> already described in lesson 8, not a rule to learn. A job step should read <code>type: job</code> with a <code>job</code> path. The <code>depends_on</code> line, however, is correct — the composition you drew is faithfully recorded.</p></div>
+    <div class="expect"><b>What you should see</b><p>One <code>depends_on</code> for one arrow. Nothing else in the file describes the relationship.</p>
+      <figure class="shot"><img src="/tutorials/studio-12-compose-jobs/screen4.png" width="1915" height="944" loading="lazy" decoding="async" alt="The workflow scene with the Hydra DSL panel open, showing two steps and a depends_on linking the second to the first." /><figcaption>The panel is marked <b>synced</b>: the arrow you drew is the <code>depends_on</code> you read.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">An edge becomes a <b>depends_on</b>. That single line is the whole composition.</p>
+  <p data-kind="TRAP">An arrow <b>orders</b>, it does not connect. No data travels along it.</p>
+  <p data-kind="TIP">To chain on data, point the <b>source of B</b> at the <b>destination of A</b>. That lives in the job, not the canvas.</p>
+  <p data-kind="TRAP">Two steps sharing a dependency run <b>in parallel</b>. Position on the canvas decides nothing.</p>
+  <p data-kind="TIP">A workflow log is a <b>stack of job logs</b>. Each step keeps its own counters and its own path.</p>
+  <p data-kind="TRAP">Comparing <code>rows_out</code> and the next <code>rows_in</code> only means something if <b>B reads what A wrote</b>.</p>
+  <p data-kind="TIP">Importing the second job is the <b>same gesture</b> as the first. A workflow does not count.</p>
+  <p data-kind="TRAP">A step with <b>no depends_on</b> starts immediately, whatever it sits beside.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Import</td><td>The second job appears as a node and in the palette</td></tr>
+    <tr><td>Edge</td><td>The header reads <code>2 nodes · 1 edges</code></td></tr>
+    <tr><td>Run</td><td>Two steps, in the order of the arrow</td></tr>
+    <tr><td>Counters</td><td>Each step reports its own <code>rows_in</code> and <code>rows_out</code></td></tr>
+    <tr><td>Paths</td><td>Two different <code>job_path</code> lines</td></tr>
+    <tr><td>YAML</td><td>One <code>depends_on</code> for one arrow</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td>The second step ignores the first's output</td><td>An edge orders, it does not pass data</td><td>Point the source of the second job at the destination of the first</td></tr>
+    <tr><td>Both steps start together</td><td>No edge between them</td><td>Draw one from the right handle to the left handle</td></tr>
+    <tr><td>The edge refuses to connect</td><td>Wrong handle, or wrong direction</td><td>Always leave a <b>right</b> handle and enter a <b>left</b> one</td></tr>
+    <tr><td>The second job reads nothing</td><td>The first has not written yet, or wrote elsewhere</td><td>Check the destination path of the first against the source of the second</td></tr>
+    <tr><td>Job steps serialized as <code>action: webhook</code></td><td>Known serialization defect</td><td>Expected for now; <code>depends_on</code> is still correct</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>Two jobs now run in order. The last lesson asks what happens when one of them fails — and how a container decides whether the rest carries on.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/13-handle-failure">Use containers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/cli/10-run-a-workflow">Run a workflow from the CLI</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>

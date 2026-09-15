@@ -1,0 +1,127 @@
+---
+/*
+  Page d'accueil de la section — même forme que la page d'accueil de la doc Flowman :
+  présentation, usages, traits notables, puis une carte de liens vers les thématiques.
+
+  Les liens et les compteurs viennent de src/data/dsl-menu.json et dsl-specs.json.
+  Une entrée non publiée est affichée comme telle, jamais masquée ni transformée
+  en lien mort.
+*/
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import menu from '../../data/dsl-menu.json';
+import specs from '../../data/dsl-specs.json';
+
+const opCount = Object.keys(specs.blocks).filter((b) => b.startsWith('op.')).length;
+const chapter = (n: number) => menu.chapters.find((c) => c.num === n)!;
+---
+
+<BaseLayout title="Hydra DSL" description="What the Hydra DSL is, what it is used for, and where to go next.">
+  <style is:global set:html={css}></style>
+  <DslShell current="reference">
+    <div class="main-inner">
+
+      <div class="lesson-head">
+        <div>
+          <div class="eyebrow"><span class="dot"></span>Hydra DSL</div>
+          <h1>Hydra DSL</h1>
+          <p class="lead">A job is declared in YAML. No code, no API calls — the engine reads the manifest and runs it.</p>
+        </div>
+      </div>
+
+      <section class="doc">
+        <h2>What is the Hydra DSL</h2>
+        <p>
+          The language in which a Hydra job is written. Four files declare where the data comes from,
+          what happens to it, and where it goes. The engine reads them; nothing else is needed.
+        </p>
+
+        <h2>What it is used for</h2>
+        <ul>
+          <li>Move data between files, databases and HTTP APIs.</li>
+          <li>Clean, reshape and aggregate tables along the way.</li>
+          <li>Order several jobs by dependency, on a schedule or on a webhook.</li>
+        </ul>
+
+        <h2>Notable features</h2>
+        <ul>
+          <li><b>{opCount} operations</b>, one YAML key each. No expression language to learn first.</li>
+          <li><b>Nine connector types</b>, same block shape — changing the source touches four lines.</li>
+          <li><b>Secrets by reference.</b> <code>${'{'}SECRET:NAME{'}'}</code>, never a literal value.</li>
+          <li><b>Explicit dependencies</b> between jobs. <code>depends_on</code> is always a list.</li>
+          <li><b>Validation before execution</b> — <code>hdrctl validate</code> reads the manifest without touching data.</li>
+          <li><b>Extendable</b> through plugins: auth, cache, retry, pagination, circuit breaker.</li>
+        </ul>
+
+        <h2>Where to go from here</h2>
+
+        <h3>Follow the tutorial</h3>
+        <p>One project, built lesson by lesson. Every block is copied from a job that runs.</p>
+        <ul class="linklist">
+          <li><a href="/dsl/tutorial/01-first-job">Lesson 1 — Your first job</a></li>
+          <li><span>Lesson 2 — Transformations<em class="soonmark">soon</em></span></li>
+          <li><span>Lesson 3 — Connectors<em class="soonmark">soon</em></span></li>
+          <li><span>Lesson 4 — Joins<em class="soonmark">soon</em></span></li>
+          <li><span>Lesson 5 — Aggregates<em class="soonmark">soon</em></span></li>
+          <li><span>Lesson 6 — Workflows<em class="soonmark">soon</em></span></li>
+          <li><span>Lesson 7 — Parameters and secrets<em class="soonmark">soon</em></span></li>
+        </ul>
+
+        <h3>Start with a job</h3>
+        <p>One source, a few operations, one destination. That is the whole unit.</p>
+        <ul class="linklist">
+          {chapter(1).items.concat(chapter(4).items).map((i) => (
+            <li>{i.href ? <a href={i.href}>{i.label}</a> : <span>{i.label}<em class="soonmark">soon</em></span>}</li>
+          ))}
+        </ul>
+
+        <h3>Transform the data</h3>
+        <p>The {opCount} operations, grouped by what they change.</p>
+        <ul class="linklist">
+          {chapter(5).items.map((i) => (
+            <li>{i.href ? <a href={i.href}>{i.label}</a> : <span>{i.label}<em class="soonmark">soon</em></span>}</li>
+          ))}
+        </ul>
+
+        <h3>Connect to real data</h3>
+        <p>The shape of a source and of a destination block.</p>
+        <ul class="linklist">
+          {chapter(2).items.concat(chapter(3).items).map((i) => (
+            <li>{i.href ? <a href={i.href}>{i.label}</a> : <span>{i.label}<em class="soonmark">soon</em></span>}</li>
+          ))}
+        </ul>
+
+        <h3>Order several jobs</h3>
+        <p>Dependencies, triggers, failures.</p>
+        <ul class="linklist">
+          {chapter(6).items.map((i) => (
+            <li>{i.href ? <a href={i.href}>{i.label}</a> : <span>{i.label}<em class="soonmark">soon</em></span>}</li>
+          ))}
+        </ul>
+
+        <h3>The fine print</h3>
+        <p>Expressions, and what is substituted before parsing.</p>
+        <ul class="linklist">
+          {chapter(7).items.concat(chapter(8).items).map((i) => (
+            <li>{i.href ? <a href={i.href}>{i.label}</a> : <span>{i.label}<em class="soonmark">soon</em></span>}</li>
+          ))}
+        </ul>
+
+        <h3>Beyond the language</h3>
+        <p>Installing, connecting, running and watching belong to the platform.</p>
+        <ul class="linklist">
+          <li><a href="/guide">Guide</a> — install, connect, run</li>
+          <li><a href="/playground">Playground</a> — a full job on real data</li>
+          <li><a href="/build">Build</a> — the DSL written for you as you choose</li>
+          <li><a href="/migrate">Migrate</a><a href="/vscode">VS Code extension</a> — coming from Airflow, dbt, Dagster, Prefect, Databricks or Airbyte</li>
+        </ul>
+
+        <p class="note">
+          {menu.published} of {menu.total} pages are published. The rest are marked <em>soon</em> rather than hidden.
+        </p>
+      </section>
+
+    </div>
+  </DslShell>
+</BaseLayout>

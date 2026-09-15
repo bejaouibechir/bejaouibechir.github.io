@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import head from '../../_mock/dsl-version.head.html?raw';
+import tail from '../../_mock/dsl-version.tail.html?raw';
+import js from '../../_mock/dsl-version.js?raw';
+---
+
+<BaseLayout title="version — Hydra DSL" description="version declares which shape of the language a manifest was written for. The engine does not branch on it.">
+  <style is:global set:html={css}></style>
+  <DslShell current="manifest-version">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

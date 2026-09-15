@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DslShell from '../../components/DslShell.astro';
+import css from '../../_mock/dsl.css?raw';
+import head from '../../_mock/dsl-workflow-yaml.head.html?raw';
+import tail from '../../_mock/dsl-workflow-yaml.tail.html?raw';
+import js from '../../_mock/dsl-workflow-yaml.js?raw';
+---
+
+<BaseLayout title="workflow.yaml — Hydra DSL" description="Coordinate jobs and actions as a dependency graph with triggers, retries and failure policies.">
+  <style is:global set:html={css}></style>
+  <DslShell current="manifest-workflow-yaml">
+    <div class="main-inner">
+      <Fragment set:html={head} />
+      <Fragment set:html={tail} />
+    </div>
+  </DslShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>

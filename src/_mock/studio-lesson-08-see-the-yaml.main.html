@@ -1,0 +1,163 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 8</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 8 of 14 · See the YAML</div><h1>Read the manifests Studio generates</h1><p class="lead">The canvas shows what you drew. The YAML shows what will run. This lesson is about reading the second one, because that is where you find what the first one leaves out.</p></div>
+<div class="lesson-meta"><span class="mono">Hydra DSL</span><span>about 15 minutes</span><span>a job with source and destination</span></div>
+<section class="doc">
+  <h2>1. Objective</h2>
+  <h3>Goal</h3><p>Open the <b>Hydra DSL</b> panel in both scenes, walk through the four job tabs, and learn to read them critically. A node drawn is not a node configured, and the YAML is where the difference shows.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A job holding at least a source.</li></ul>
+
+  <h2>2. Steps</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the panel</h3>
+    <h4>Objective</h4><p>Find the DSL view, and notice that it follows the scene.</p>
+    <h4>Actions</h4><ol><li>Select <b>Hydra DSL</b> in the top bar.</li><li>Read the label at the top left of the panel.</li><li>Switch scenes and watch the label change.</li></ol>
+    <pre class="cmd">Top bar → Hydra DSL</pre>
+    <p>One button, two views. In <b>Workflow configuration</b> the panel shows a single file, <code>workflow.yaml</code>, marked <b>synced</b> when it matches the canvas. In <b>Jobs configuration</b> it shows the job, marked <b>multi-section</b> because a job is four files, not one.</p>
+    <div class="expect"><b>What you should see</b><p>The panel opens beside the canvas, and both stay visible. You can select a node and read its YAML at the same time.</p><pre class="out">YAML   synced          ← workflow scene
+JOB    multi-section   ← job scene</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the workflow file</h3>
+    <h4>Objective</h4><p>Match every node on the canvas with an entry under <code>steps</code>.</p>
+    <h4>Actions</h4><ol><li>Stay in <b>Workflow configuration</b>.</li><li>Read <code>name</code>, <code>trigger</code>, then each step.</li><li>Compare each <code>depends_on</code> with an arrow on the canvas.</li></ol>
+    <pre class="cmd">Workflow configuration → Hydra DSL</pre>
+    <p>The file opens with what the workflow is — its name and its trigger — then lists the steps in the order the graph imposes. Each <code>depends_on</code> is an edge, written as a name rather than drawn as an arrow.</p>
+    <pre class="out">version: "1.0"
+workflow:
+  name: first-workflow
+  trigger:
+    type: manual
+  steps:
+    - name: job_1786220352457_0
+      type: action
+      action: webhook
+    - name: job_1786220352458_1
+      type: action
+      action: webhook
+      depends_on:
+        - job_1786220352457_0
+    - name: action_log_4
+      type: action
+      action: log
+      params:
+        message: "Workflow test "
+      depends_on:
+        - job_1786220352458_1</pre>
+    <p>Three steps for three nodes, and the chain reads correctly: the second waits for the first, the log waits for the second. The <b>Log</b> step is exactly what you configured — its <code>action</code> and its <code>message</code> are there.</p>
+    <div class="callout"><b>Known defect — the two job steps</b><p>On the canvas these are <code>first-job</code> and <code>second-job</code>, yet the file writes them as <code>type: action</code> with <code>action: webhook</code>. That is wrong, and it is a <b>serialization defect</b> being fixed, not a rule to learn. A job step should read:</p><pre class="out">    - name: first-job
+      type: job
+      job: ./jobs/first-job</pre><p>Until the fix lands, a workflow saved this way runs no job. It is also why the step names show internal identifiers instead of the names on the canvas. Reading the YAML is what makes such a defect visible at all — which is the point of this lesson.</p></div>
+    <div class="expect"><b>What you should see</b><p>One entry per node, in dependency order, and a <code>depends_on</code> for every arrow.</p>
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/screen1.png" width="1916" height="948" loading="lazy" decoding="async" alt="The workflow scene with the Hydra DSL panel open on the right, showing workflow.yaml with its name, manual trigger and three steps." /><figcaption>The panel is marked <b>synced</b>: what you read is what the canvas currently holds.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read a job, section by section</h3>
+    <h4>Objective</h4><p>Walk the four tabs in the order a job runs.</p>
+    <h4>Actions</h4><ol><li>Switch to <b>Jobs configuration</b> and open <b>Hydra DSL</b>.</li><li>Select <b>Sources</b>, and read the connector block.</li><li>Note the identifier on the first indented line.</li></ol>
+    <pre class="cmd">Jobs configuration → Hydra DSL → Sources</pre>
+    <p>A job is four files, and the panel gives one tab to each. Read them in order and the job explains itself: where the data comes from, what happens to it, where it goes, and how the three are wired.</p>
+    <pre class="out">version: '1.0'
+sources:
+  source_csv_lean:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../output/orders_clean.csv
+      batch_size: 1000</pre>
+    <p><code>source_csv_lean</code> is the <b>identifier</b>, not the file. It is what <code>pipeline.yaml</code> will point at. <code>connection: {}</code> is empty because a CSV needs no connection — the path alone is enough. <code>batch_size</code> was never typed by hand; it is a default Studio writes for you.</p>
+    <div class="expect"><b>What you should see</b><p>Four tabs, and the source block matching the node you configured.</p><pre class="out">Sources  Transformations  Destinations  Pipeline</pre>
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/screen2.png" width="1911" height="986" loading="lazy" decoding="async" alt="The job scene with the Hydra DSL panel open on the Sources tab, showing a csv source with its extract table and batch size." /><figcaption>Panel and inspector coexist: the node's fields on the left, the YAML they produce on the right.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read what is missing</h3>
+    <h4>Objective</h4><p>Use the panel for what it is best at — showing absence.</p>
+    <h4>Actions</h4><ol><li>Select the <b>Transformations</b> tab.</li><li>Select the <b>Destinations</b> tab.</li><li>Compare both with what you intended to build.</li></ol>
+    <pre class="cmd">Hydra DSL → Transformations · Destinations</pre>
+    <p>This is where the panel earns its place. The canvas draws a node whether or not it is complete; the YAML writes exactly what that node holds, and nothing more.</p>
+    <pre class="out">version: '1.0'
+transformations:
+  steps: []</pre>
+    <pre class="out">version: '1.0'
+destinations:
+  dest_csv_gion:
+    type: csv
+    connection: {}
+    load:
+      table: ''
+      mode: replace</pre>
+    <div class="shots">
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/screen3.png" width="1915" height="947" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Transformations tab, showing a steps list that is empty." /><figcaption><b>Transformations.</b> An empty list — this job reshapes nothing.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/screen4.png" width="1916" height="948" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Destinations tab, showing a csv destination whose load table is an empty string." /><figcaption><b>Destinations.</b> The <code>table</code> is an empty string — no output path was ever set.</figcaption></figure>
+    </div>
+    <table><thead><tr><th>What you read</th><th>What it means</th><th>What to do</th></tr></thead><tbody>
+      <tr><td><code>steps: []</code></td><td>No transformation was placed, or none was connected.</td><td>Add one, or accept a job that only copies.</td></tr>
+      <tr><td><code>table: ''</code></td><td>The destination exists but has no output path.</td><td>Open the node and fill the field marked with a red asterisk.</td></tr>
+      <tr><td><code>connection: {}</code></td><td>Normal for a file connector.</td><td>Nothing — a path is all a CSV needs.</td></tr>
+    </tbody></table>
+    <div class="callout"><b>The engine is stricter than the canvas</b><p>Both lines above are refused by <code>hdrctl validate</code>: a destination table must hold at least one character, and a transformation list at least one entry. So a job can look finished on screen and still not run. The panel shows you why before the run does.</p><pre class="out">destinations.dest_csv_gion.load.table
+  String should have at least 1 character
+steps
+  List should have at least 1 item after validation, not 0</pre></div>
+    <div class="expect"><b>What you should see</b><p>Two blocks that are syntactically fine and semantically empty. That combination is exactly what a canvas cannot show you.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the wiring</h3>
+    <h4>Objective</h4><p>Confirm the two ends of the job refer to the identifiers you just read.</p>
+    <h4>Actions</h4><ol><li>Select the <b>Pipeline</b> tab.</li><li>Compare <code>from</code> with the identifier in <b>Sources</b>.</li><li>Compare <code>to</code> with the identifier in <b>Destinations</b>.</li></ol>
+    <pre class="cmd">Hydra DSL → Pipeline</pre>
+    <p>The shortest file of the four, and the one that ties the others together. It holds <b>identifiers, never paths</b> — which is what lets you repoint a source at another file without touching the wiring.</p>
+    <pre class="out">version: '1.0'
+pipeline:
+  name: first-workflow
+  from: source_csv_lean
+  to: dest_csv_gion</pre>
+    <p>One <code>from</code>, one <code>to</code> — a job reads from one place and writes to one place. The <code>name</code> line is written by Studio for readability; the engine reads <code>from</code> and <code>to</code> and ignores the rest.</p>
+    <div class="expect"><b>What you should see</b><p>Both identifiers resolving to blocks you have already read. If one does not, the job will fail before reading a single row.</p><pre class="out">from: source_csv_lean   → sources.source_csv_lean
+to:   dest_csv_gion     → destinations.dest_csv_gion</pre>
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/screen5.png" width="1911" height="984" loading="lazy" decoding="async" alt="The Hydra DSL panel on the Pipeline tab, showing a name, a from and a to referring to the declared source and destination." /><figcaption>Five lines. Everything else about the job lives in the other three files.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and traps</h5>
+  <p data-kind="TIP">The panel follows the <b>scene</b>: one file in a workflow, <b>four tabs</b> in a job.</p>
+  <p data-kind="TRAP">A node <b>drawn</b> is not a node <b>configured</b>. The canvas hides that; the YAML does not.</p>
+  <p data-kind="TIP">Read a job in tab order — <b>sources, transformations, destinations, pipeline</b>. It tells its own story.</p>
+  <p data-kind="TRAP">An empty <code>table: ''</code> or <code>steps: []</code> is valid YAML and an <b>invalid job</b>. Syntax is not meaning.</p>
+  <p data-kind="TIP"><code>pipeline.yaml</code> holds <b>identifiers</b>, never paths. That indirection is what makes a source replaceable.</p>
+  <p data-kind="TRAP">The <b>synced</b> marker says the panel matches the canvas — not that the file on disk is saved.</p>
+  <p data-kind="TIP">An empty <code>connection: {}</code> is normal for a file connector. A path is all it needs.</p>
+  <p data-kind="TRAP">Trust <code>hdrctl validate</code> over any badge. The engine is <b>stricter</b> than the editor.</p>
+</div>
+
+  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Workflow panel</td><td>One file, marked <b>synced</b></td></tr>
+    <tr><td>Job panel</td><td>Four tabs, marked <b>multi-section</b></td></tr>
+    <tr><td>Steps</td><td>One entry per node, in dependency order</td></tr>
+    <tr><td>Source block</td><td>Its identifier matches <code>pipeline.from</code></td></tr>
+    <tr><td>Destination block</td><td>Its identifier matches <code>pipeline.to</code>, and <code>table</code> is not empty</td></tr>
+    <tr><td>Transformations</td><td>One entry per node on the chain</td></tr>
+  </tbody></table>
+
+  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+    <tr><td><code>steps: []</code> although nodes exist</td><td>The transformations are not connected to the chain</td><td>Draw the edges from the source through to the destination</td></tr>
+    <tr><td><code>table: ''</code></td><td>The destination has no output path</td><td>Open the node and fill the required field</td></tr>
+    <tr><td><code>from</code> resolves to nothing</td><td>The source was renamed after the wiring</td><td>Reopen the source and align the identifiers</td></tr>
+    <tr><td>Job steps written as <code>action: webhook</code></td><td>Known serialization defect</td><td>Expected for now; a job step should read <code>type: job</code></td></tr>
+    <tr><td>The panel disagrees with the disk</td><td>The workflow was not saved</td><td>Press <b>Save</b>, then read the file itself</td></tr>
+  </tbody></table>
+
+  <h2>5. Next lesson</h2><p>You can now read what Studio writes, and spot what it leaves empty. The next lesson turns that reading into a verdict: what <b>Valid</b> covers, what it does not, and how to reach a job that actually runs.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/09-reach-valid">Reach a valid design <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+</section>
