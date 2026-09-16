@@ -1,5 +1,7 @@
 .firstjob-wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,54px) 80px}
-.firstjob-wrap .crumbs{padding-top:22px}
+.firstjob-wrap .crumbs{padding-top:22px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--text-mut)}
+.firstjob-wrap .crumbs a{color:var(--text-soft);text-decoration:none}
+.firstjob-wrap .crumbs a:hover{color:var(--accent-text);text-decoration:underline}
 .firstjob-wrap .lesson-head{padding-top:18px}
 .firstjob-wrap .doc{max-width:none}
 .firstjob-hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 0}

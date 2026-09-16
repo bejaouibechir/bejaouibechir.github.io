@@ -150,8 +150,10 @@ check('aucun secret en clair', !/(password|token|api[_-]?key)\s*:\s*["']?(?!\$\{
 check('chaque bouton icone a un aria-label',
   [...PAGE.matchAll(/<button\b[^>]*>/g)].filter((m) => /iconbtn|burger|class="copy"/.test(m[0]) && !/aria-label=/.test(m[0])).length === 0,
   'bouton sans aria-label');
+/* La nav vit desormais dans SiteHeader.astro (barre commune a tout le site). */
+const HEADER = fs.readFileSync(path.join(ROOT, 'src', 'components', 'SiteHeader.astro'), 'utf8');
 check('lien VS Code apres Migrate dans la nav',
-  /href="\/migrate">Migrate<\/a><a class="active" href="\/vscode"/.test(PAGE), 'ordre de navigation');
+  /href: '\/migrate'[^\n]*\n\s*\{ href: '\/vscode'/.test(HEADER), 'ordre de navigation');
 check('autant de panneaux que d onglets', (PAGE.match(/data-panel/g) || []).length === 1, 'le panneau est rendu par map');
 check('chaque commande est copiable', (PAGE.match(/class="cmd"/g) || []).length === (PAGE.match(/class="copy"/g) || []).length,
   (PAGE.match(/class="cmd"/g) || []).length + ' cmd / ' + (PAGE.match(/class="copy"/g) || []).length + ' copy');

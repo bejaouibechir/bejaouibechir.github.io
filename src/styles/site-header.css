@@ -1,0 +1,263 @@
+/*
+  Barre de navigation unique (SiteHeader.astro).
+  Classes `sh-` uniquement : les CSS de page stylent .topbar/.nav/.iconbtn
+  et ne doivent pas l'atteindre. Hauteur fixe 56px : plusieurs pages
+  positionnent leurs menus sticky a top:56px.
+*/
+.sh-top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 56px;
+  padding: 0 clamp(12px, 2.4vw, 28px);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--sans);
+  box-sizing: border-box;
+}
+
+.sh-top *,
+.sh-drawer * {
+  box-sizing: border-box;
+}
+
+.sh-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.sh-brand img {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.sh-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sh-nav a,
+.sh-drawer a {
+  border-radius: 8px;
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.sh-nav a {
+  padding: 9px 10px;
+}
+
+.sh-nav a:hover,
+.sh-drawer a:hover {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
+.sh-nav a.sh-on,
+.sh-drawer a.sh-on {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.sh-tools {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sh-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 8px 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-soft);
+  color: var(--text-mut);
+  font: 500 13.5px var(--sans);
+  cursor: pointer;
+}
+
+.sh-search:hover {
+  border-color: var(--border-strong);
+  color: var(--text-soft);
+}
+
+.sh-search-label {
+  padding-right: 18px;
+}
+
+.sh-kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text-mut);
+  font: 11px var(--sans);
+}
+
+.sh-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+html[data-theme="dark"] .sh-cta {
+  color: #06201c;
+}
+
+.sh-cta:hover {
+  filter: brightness(1.08);
+}
+
+.sh-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.sh-icon:hover {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
+.sh-burger {
+  display: none;
+}
+
+.sh-top :focus-visible,
+.sh-drawer :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tiroir mobile */
+.sh-drawer {
+  display: none;
+}
+
+.sh-drawer.open {
+  position: sticky;
+  top: 56px;
+  z-index: 49;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: calc(100dvh - 56px);
+  overflow-y: auto;
+  padding: 10px 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.35);
+  font-family: var(--sans);
+}
+
+.sh-drawer a {
+  padding: 12px 12px;
+  font-size: 15px;
+}
+
+.sh-drawer .sh-cta,
+.sh-drawer .sh-cta:hover {
+  justify-content: center;
+  height: 44px;
+  margin-top: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .sh-drawer .sh-cta,
+html[data-theme="dark"] .sh-drawer .sh-cta:hover {
+  color: #06201c;
+}
+
+/* Paliers : on retire d'abord le bouton d'appel, puis les liens passent
+   dans le tiroir. */
+@media (max-width: 1400px) {
+  .sh-top > .sh-tools > .sh-cta {
+    display: none;
+  }
+}
+
+@media (max-width: 1240px) {
+  .sh-nav a {
+    padding: 9px 8px;
+    font-size: 13.5px;
+  }
+
+  .sh-search-label {
+    padding-right: 4px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .sh-nav {
+    display: none;
+  }
+
+  .sh-burger {
+    display: grid;
+  }
+}
+
+@media (max-width: 560px) {
+  .sh-search {
+    justify-content: center;
+    width: 36px;
+    padding: 0;
+    background: var(--bg);
+  }
+
+  .sh-search-label,
+  .sh-kbd {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-nav a,
+  .sh-drawer a {
+    transition: none;
+  }
+}

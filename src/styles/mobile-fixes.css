@@ -1,0 +1,131 @@
+/*
+  Correctifs mobiles transverses, charges APRES les styles de chaque page
+  (voir BaseLayout). Uniquement sous 720px : le rendu desktop ne change pas.
+  Cause commune : `grid-template-columns:1fr` vaut minmax(auto,1fr), donc un
+  bloc de code long elargit toute la colonne. minmax(0,1fr) la contient.
+*/
+@media (max-width: 720px) {
+  .paths,
+  .routes,
+  .shots,
+  .module-grid,
+  .lesson-grid,
+  .stage,
+  .stage.guided,
+  .files {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .path,
+  .route,
+  .lesson-card,
+  .panel,
+  .files > *,
+  .expect > div {
+    min-width: 0;
+  }
+
+  /* Les longues commandes en ligne (chemins, options) passent a la ligne. */
+  p code,
+  li code {
+    overflow-wrap: anywhere;
+  }
+
+  /* Les blocs de code defilent dans leur cadre au lieu d'elargir la page. */
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  table.file-map {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/*
+  Sommaire repliable des menus lateraux (DslShell, ProductLearningShell).
+  Sur mobile, le menu complet poussait le contenu sous la ligne de flottaison :
+  il est replie derriere un bouton qui rappelle ou l'on se trouve.
+*/
+.side-toggle {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side-toggle span {
+  color: var(--text-mut);
+  font-size: 13px;
+}
+
+.side-toggle b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.side-toggle i {
+  font-style: normal;
+  color: var(--text-soft);
+  transition: transform 0.16s ease;
+}
+
+.side-open > .side-toggle i {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 760px) {
+  .side > .side-toggle {
+    display: flex;
+  }
+
+  .side:not(.side-open) > .chapters {
+    display: none;
+  }
+
+  .side.side-open > .chapters {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .course-side > .side-toggle {
+    display: flex;
+  }
+
+  .course-side:not(.side-open) > .course-outline,
+  .course-side:not(.side-open) > .track-name {
+    display: none;
+  }
+
+  .course-side.side-open > .track-name {
+    margin-top: 10px;
+  }
+
+  .course-side.side-open > .course-outline {
+    flex-direction: column;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-toggle i {
+    transition: none;
+  }
+}

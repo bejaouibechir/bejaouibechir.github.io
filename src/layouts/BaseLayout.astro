@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
 import SiteSearch from '../components/SiteSearch.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import mobileFixes from '../styles/mobile-fixes.css?raw';
+import sideToggleJs from '../scripts/side-toggle.js?raw';
 
 interface Props {
   title: string;
@@ -30,7 +33,10 @@ const { title, description } = Astro.props;
     </script>
   </head>
   <body>
+    <SiteHeader />
     <slot />
+    <style is:global set:html={mobileFixes}></style>
     <SiteSearch />
+    <script is:inline set:html={sideToggleJs}></script>
   </body>
 </html>
