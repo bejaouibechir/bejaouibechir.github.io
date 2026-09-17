@@ -8,9 +8,53 @@ import sideToggleJs from '../scripts/side-toggle.js?raw';
 interface Props {
   title: string;
   description?: string;
+  /** Absolute or root-relative social image (1200x630). */
+  image?: string;
+  /** Keep the page out of search engines. */
+  noindex?: boolean;
+  /** Add SoftwareApplication structured data (product pages). */
+  software?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false } = Astro.props;
+const site = Astro.site ?? new URL('https://hydraetl.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+const fullTitle = `${title} — Hydra ETL`;
+const githubUrl = 'https://github.com/bejaouibechir/Hydra';
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'Organization',
+    '@id': `${site.origin}/#organization`,
+    name: 'Hydra ETL',
+    url: `${site.origin}/`,
+    logo: `${site.origin}/Hydra.png`,
+    sameAs: [githubUrl, 'https://pypi.org/project/hydra-etl/'],
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${site.origin}/#website`,
+    name: 'Hydra ETL',
+    url: `${site.origin}/`,
+    publisher: { '@id': `${site.origin}/#organization` },
+  },
+];
+if (software) {
+  graph.push({
+    '@type': 'SoftwareApplication',
+    name: 'Hydra ETL',
+    description: 'Open-source declarative ETL engine: YAML pipelines validated before they run, with a CLI, a REST API and a visual Studio.',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Linux, macOS, Windows',
+    url: `${site.origin}/`,
+    downloadUrl: 'https://pypi.org/project/hydra-etl/',
+    codeRepository: githubUrl,
+    license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: { '@id': `${site.origin}/#organization` },
+  });
+}
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 ---
 
 <!doctype html>
@@ -19,7 +63,23 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title} — Hydra</title>
+    <title>{fullTitle}</title>
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Hydra ETL" />
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={jsonLd} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/hydra.ico" sizes="any" />
     <script is:inline>

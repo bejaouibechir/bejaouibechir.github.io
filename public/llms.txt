@@ -1,0 +1,29 @@
+# Hydra ETL
+
+> Hydra ETL is an open-source (AGPL-3.0) declarative ETL engine for Python 3.9+. Pipelines are described in YAML manifests, validated before any data is read or written, and run from a CLI (`hdrctl`), a REST API or a visual editor (Hydra Studio), all installed with `pip install hydra-etl`.
+
+Key facts:
+- One job = one source, an ordered list of transformations, one destination (four YAML files).
+- Connectors: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, MongoDB, Web API. Engines: pandas and DuckDB, optional Rust acceleration.
+- Workflows: DAG of jobs with dependencies, parallel branches, retries, cron/webhook triggers and actions.
+- Ships an MCP server so AI assistants can write pipelines that Hydra validates.
+
+## Docs
+
+- [Get started](https://hydraetl.com/get-started/): what Hydra is and your first job
+- [Install](https://hydraetl.com/install/): `pip install hydra-etl`, extras and troubleshooting
+- [Hydra DSL reference](https://hydraetl.com/dsl/reference/): the YAML manifest language
+- [Guide](https://hydraetl.com/guide/): every source, destination, transformation and workflow element
+- [CLI tutorials](https://hydraetl.com/cli/): create, validate and run jobs with `hdrctl`
+- [Studio tutorials](https://hydraetl.com/studio/): build jobs visually
+- [VS Code extension](https://hydraetl.com/vscode/): completion and validation for manifests
+
+## Comparisons
+
+- [Hydra vs Airflow, dbt, Dagster, Prefect, Databricks, Airbyte](https://hydraetl.com/migrate/)
+
+## Optional
+
+- [Source code on GitHub](https://github.com/bejaouibechir/Hydra)
+- [Package on PyPI](https://pypi.org/project/hydra-etl/)
+- [Playground](https://hydraetl.com/playground/)
