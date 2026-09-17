@@ -52,7 +52,10 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>');
     <section class="hp-hero">
       <div class="hp-wrap hp-hero-grid">
         <div>
-          <p class="hp-eyebrow">Open source · AGPL-3.0 · Python 3.9+</p>
+          <div class="hp-brandline">
+            <img class="hp-logo" src="/hydra-logo-96.png" srcset="/hydra-logo-96.png 1x, /hydra-logo-256.png 2x" width="48" height="47" alt="Hydra ETL logo" decoding="async" />
+            <p class="hp-eyebrow">Open source · AGPL-3.0 · Python 3.9+</p>
+          </div>
           <h1>Declarative ETL pipelines, <span>validated before they run</span></h1>
           <p class="hp-lead">
             Hydra ETL turns data pipelines into readable YAML. Check them with one command, then run them from the
@@ -187,6 +190,7 @@ hdrctl run my_job         # execute`}</code></pre>
     <!-- Final CTA -->
     <section class="hp-section hp-final">
       <div class="hp-wrap">
+        <img class="hp-final-logo" src="/hydra-logo-256.png" width="120" height="116" alt="" loading="lazy" decoding="async" />
         <h2>Describe your first pipeline in minutes</h2>
         <div class="hp-cta hp-cta-center">
           <a class="hp-btn hp-btn-primary" href="/install/">Install Hydra</a>
@@ -228,7 +232,10 @@ hdrctl run my_job         # execute`}</code></pre>
     .hp-hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); }
     .hp-hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; }
     .hp-hero-grid > *, .hp-split > * { min-width: 0; }
-    .hp-eyebrow { color: var(--accent-text); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 14px; }
+    .hp-brandline { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+    .hp-logo { width: 48px; height: auto; flex: none; }
+    .hp-eyebrow { color: var(--accent-text); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0; }
+    .hp-final-logo { display: block; width: 120px; height: auto; margin: 0 auto 18px; }
     .hp h1 { font-size: clamp(2rem, 4.2vw, 3.1rem); font-weight: 800; }
     .hp h1 span { color: var(--accent); }
     .hp-lead { font-size: 1.15rem; color: var(--text-soft); margin: 20px 0 26px; max-width: 34em; }
