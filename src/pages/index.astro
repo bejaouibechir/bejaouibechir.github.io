@@ -1,3 +1,320 @@
 ---
-return Astro.redirect('/get-started');
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const GITHUB = 'https://github.com/bejaouibechir/Hydra';
+const PYPI = 'https://pypi.org/project/hydra-etl/';
+
+const pillars = [
+  {
+    title: 'Readable',
+    text: 'A pipeline is a set of short YAML manifests that anyone on the team can review in a pull request. No Python glue to maintain.',
+  },
+  {
+    title: 'Validated before it runs',
+    text: '`hdrctl validate` checks sources, steps, types and destinations before a single row is read or written.',
+  },
+  {
+    title: 'One job, three interfaces',
+    text: 'The same manifests run from the terminal, a REST API or the visual Studio. Build with the mouse, get YAML out.',
+  },
+];
+
+const features = [
+  { title: 'Hydra CLI', text: 'Scaffold, validate, test and run jobs from a terminal or a CI pipeline.', href: '/cli/' },
+  { title: 'Hydra Studio', text: 'Design jobs and workflows on a canvas, served by the same process.', href: '/studio/' },
+  { title: 'Workflows', text: 'DAGs with dependencies, parallel branches, retries, cron triggers and actions.', href: '/guide/' },
+  { title: 'Hydra DSL', text: 'One small YAML language for sources, transformations and destinations.', href: '/dsl/reference/' },
+  { title: 'Playground', text: 'Edit and run Hydra pipelines in your browser, nothing to install.', href: '/playground/' },
+  { title: 'VS Code extension', text: 'Completion and live validation for manifests inside the editor.', href: '/vscode/' },
+];
+
+const connectors = ['CSV', 'JSON', 'Parquet', 'MySQL / MariaDB', 'PostgreSQL', 'MongoDB', 'Web API'];
+const engines = ['pandas', 'DuckDB', 'Rust acceleration (optional)'];
+
+const compare = [
+  { name: 'Airflow', defined: 'Python', scope: 'Orchestration', start: 'Scheduler, webserver, metadata DB', href: '/migrate/airflow/' },
+  { name: 'dbt', defined: 'SQL + YAML', scope: 'Transform in the warehouse', start: 'A data warehouse', href: '/migrate/dbt/' },
+  { name: 'Airbyte', defined: 'UI / config', scope: 'Extract & load', start: 'Docker / Kubernetes', href: '/migrate/airbyte/' },
+  { name: 'Dagster', defined: 'Python', scope: 'Orchestration', start: 'Python code + daemon', href: '/migrate/dagster/' },
+  { name: 'Prefect', defined: 'Python', scope: 'Orchestration', start: 'Python code + server or cloud', href: '/migrate/prefect/' },
+];
+
+const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>');
 ---
+
+<BaseLayout
+  software
+  title="Declarative YAML ETL, validated before it runs"
+  description="Hydra ETL is an open-source declarative ETL engine: describe pipelines in YAML, validate them before they run, and execute them from a CLI, a REST API or a visual Studio. pip install hydra-etl."
+>
+  <main class="hp">
+    <!-- Hero -->
+    <section class="hp-hero">
+      <div class="hp-wrap hp-hero-grid">
+        <div>
+          <p class="hp-eyebrow">Open source · AGPL-3.0 · Python 3.9+</p>
+          <h1>Declarative ETL pipelines, <span>validated before they run</span></h1>
+          <p class="hp-lead">
+            Hydra ETL turns data pipelines into readable YAML. Check them with one command, then run them from the
+            terminal, a REST API or a visual editor, with a single <code>pip install</code> and nothing else to deploy.
+          </p>
+          <div class="hp-cta">
+            <a class="hp-btn hp-btn-primary" href="/get-started/">Get started</a>
+            <a class="hp-btn hp-btn-ghost" href={GITHUB} target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 .2Z"/></svg>
+              Star on GitHub
+            </a>
+          </div>
+          <div class="hp-install">
+            <code id="hp-install-cmd">pip install "hydra-etl[server]"</code>
+            <button type="button" class="hp-copy" data-copy="#hp-install-cmd" aria-label="Copy the install command">Copy</button>
+          </div>
+          <p class="hp-note">Then run <code>hdrctl serve</code>: Studio and API open on <code>localhost:5678</code>. No Node, no database, no broker.</p>
+        </div>
+        <figure class="hp-shot">
+          <img src="/studio/screen3.png" width="1888" height="796" alt="Hydra Studio showing a job with three CSV sources joined and written to one destination" loading="eager" decoding="async" />
+          <figcaption>Hydra Studio: build a job on the canvas, get YAML out.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Pillars -->
+    <section class="hp-section">
+      <div class="hp-wrap">
+        <h2>Why Hydra ETL</h2>
+        <div class="hp-grid3">
+          {pillars.map((p) => (
+            <article class="hp-card">
+              <h3>{p.title}</h3>
+              <p set:html={md(p.text)} />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Example -->
+    <section class="hp-section hp-soft">
+      <div class="hp-wrap hp-split">
+        <div>
+          <h2>A job in four small files</h2>
+          <p>
+            A job connects <strong>one source</strong> to <strong>one destination</strong> through an ordered list of
+            transformations. Each manifest answers a single question: where the data comes from, how it is reshaped,
+            where it goes, and which source feeds which destination.
+          </p>
+          <ul class="hp-list">
+            <li><code>sources.yaml</code>: where the data comes from</li>
+            <li><code>transformations.yaml</code>: how it is reshaped</li>
+            <li><code>destinations.yaml</code>: where it goes</li>
+            <li><code>pipeline.yaml</code>: which source feeds which destination</li>
+          </ul>
+          <a class="hp-link" href="/firstjob/">Build your first job →</a>
+        </div>
+        <div class="hp-code">
+          <div class="hp-code-title">transformations.yaml</div>
+          <pre><code>{`version: "1.0"
+steps:
+  - cast:
+      mapping:
+        amount: float
+  - filter:
+      expr: "amount > 0"
+  - aggregate:
+      by: [name]
+      agg:
+        total: { func: sum, col: amount }`}</code></pre>
+          <div class="hp-code-title">terminal</div>
+          <pre><code>{`hdrctl init my_job        # scaffold from a template
+hdrctl validate my_job    # strict checks, no data touched
+hdrctl run my_job         # execute`}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="hp-section">
+      <div class="hp-wrap">
+        <h2>Everything in one install</h2>
+        <div class="hp-grid3">
+          {features.map((f) => (
+            <a class="hp-card hp-card-link" href={f.href}>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </a>
+          ))}
+        </div>
+        <div class="hp-chips-block">
+          <p class="hp-chips-label">Connectors</p>
+          <ul class="hp-chips">{connectors.map((c) => <li>{c}</li>)}</ul>
+          <p class="hp-chips-label">Engines</p>
+          <ul class="hp-chips">{engines.map((e) => <li>{e}</li>)}</ul>
+        </div>
+        <p class="hp-mcp">
+          <strong>AI-ready:</strong> Hydra ships an MCP server. Claude, Cursor or VS Code can write pipelines,
+          and Hydra validates them before anything runs.
+        </p>
+      </div>
+    </section>
+
+    <!-- Compare -->
+    <section class="hp-section hp-soft">
+      <div class="hp-wrap">
+        <h2>How Hydra compares</h2>
+        <p class="hp-sub">
+          Hydra targets file-and-database pipelines that should stay readable and run without extra infrastructure.
+          It is not a replacement for every tool below.
+        </p>
+        <div class="hp-table-wrap">
+          <table class="hp-table">
+            <thead>
+              <tr><th scope="col">Tool</th><th scope="col">Pipelines defined in</th><th scope="col">Scope</th><th scope="col">To get started</th><th scope="col"><span class="hp-sr">Comparison</span></th></tr>
+            </thead>
+            <tbody>
+              <tr class="hp-us"><th scope="row">Hydra ETL</th><td>YAML</td><td>Extract, transform, load + workflows</td><td><code>pip install hydra-etl</code></td><td></td></tr>
+              {compare.map((c) => (
+                <tr>
+                  <th scope="row">{c.name}</th><td>{c.defined}</td><td>{c.scope}</td><td>{c.start}</td>
+                  <td><a href={c.href}>{c.name} vs Hydra</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="hp-section hp-final">
+      <div class="hp-wrap">
+        <h2>Describe your first pipeline in minutes</h2>
+        <div class="hp-cta hp-cta-center">
+          <a class="hp-btn hp-btn-primary" href="/install/">Install Hydra</a>
+          <a class="hp-btn hp-btn-ghost" href="/playground/">Try the playground</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hp-footer">
+    <div class="hp-wrap hp-footer-grid">
+      <div>
+        <p class="hp-footer-brand"><img src="/hydra-mark.png" width="20" height="20" alt="" /> Hydra ETL</p>
+        <p>Open-source declarative ETL engine, released under the
+          <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener">AGPL-3.0</a>.
+          Commercial licence available on request.</p>
+      </div>
+      <nav aria-label="Project links">
+        <a href={GITHUB} target="_blank" rel="noopener">GitHub</a>
+        <a href={PYPI} target="_blank" rel="noopener">PyPI</a>
+        <a href={`${GITHUB}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener">Changelog</a>
+        <a href={`${GITHUB}/issues`} target="_blank" rel="noopener">Issues &amp; contact</a>
+      </nav>
+      <nav aria-label="Documentation">
+        <a href="/get-started/">Get started</a>
+        <a href="/install/">Install</a>
+        <a href="/guide/">Guide</a>
+        <a href="/migrate/">Migrate</a>
+      </nav>
+    </div>
+  </footer>
+
+  <style>
+    .hp { --hp-max: 1120px; }
+    .hp-wrap { max-width: var(--hp-max, 1120px); margin: 0 auto; padding: 0 20px; }
+    .hp h1, .hp h2, .hp h3 { line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
+    .hp code { font-family: var(--mono); font-size: 0.9em; background: var(--bg-code); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.35em; }
+
+    .hp-hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); }
+    .hp-hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; }
+    .hp-hero-grid > *, .hp-split > * { min-width: 0; }
+    .hp-eyebrow { color: var(--accent-text); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 14px; }
+    .hp h1 { font-size: clamp(2rem, 4.2vw, 3.1rem); font-weight: 800; }
+    .hp h1 span { color: var(--accent); }
+    .hp-lead { font-size: 1.15rem; color: var(--text-soft); margin: 20px 0 26px; max-width: 34em; }
+    .hp-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hp-cta-center { justify-content: center; }
+    .hp-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 9px; font-weight: 600; text-decoration: none; border: 1px solid transparent; }
+    .hp-btn-primary { background: var(--accent); color: #fff; }
+    html[data-theme="dark"] .hp-btn-primary { color: #04201c; }
+    .hp-btn-primary:hover { filter: brightness(1.08); }
+    .hp-btn-ghost { border-color: var(--border-strong); color: var(--text); background: var(--bg-panel); }
+    .hp-btn-ghost:hover { border-color: var(--accent); color: var(--accent-text); }
+    .hp-install { display: flex; align-items: center; gap: 8px; margin-top: 24px; padding: 10px 10px 10px 14px; background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; max-width: 34em; }
+    .hp-install code { border: 0; background: none; padding: 0; flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-size: 0.92rem; }
+    .hp-copy { font: inherit; font-size: 0.8rem; font-weight: 600; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-panel); color: var(--text); cursor: pointer; }
+    .hp-note { color: var(--text-mut); font-size: 0.88rem; margin: 10px 0 0; }
+    .hp-shot { margin: 0; }
+    .hp-shot img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 18px 40px -20px rgba(15, 40, 35, 0.35); }
+    .hp-shot figcaption { color: var(--text-mut); font-size: 0.85rem; margin-top: 10px; text-align: center; }
+
+    .hp-section { padding: 64px 0; }
+    .hp-soft { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .hp h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 750; margin-bottom: 24px; }
+    .hp-sub { color: var(--text-soft); margin: -10px 0 24px; max-width: 46em; }
+    .hp-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .hp-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+    .hp-card h3 { font-size: 1.08rem; margin-bottom: 8px; }
+    .hp-card p { margin: 0; color: var(--text-soft); font-size: 0.98rem; }
+    .hp-card-link { text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+    .hp-card-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .hp-card-link h3::after { content: " →"; color: var(--accent); }
+
+    .hp-split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .hp-split p { color: var(--text-soft); }
+    .hp-list { padding-left: 1.1em; color: var(--text-soft); margin: 0 0 20px; }
+    .hp-list li { margin: 6px 0; }
+    .hp-link { color: var(--accent-text); font-weight: 600; text-decoration: none; }
+    .hp-link:hover { text-decoration: underline; }
+    .hp-code { background: var(--bg-code); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .hp-code-title { font-family: var(--mono); font-size: 0.78rem; color: var(--text-mut); padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--bg-panel); }
+    .hp-code pre { margin: 0; padding: 14px 16px; overflow-x: auto; }
+    .hp-code pre code { border: 0; background: none; padding: 0; font-size: 0.88rem; line-height: 1.55; }
+
+    .hp-chips-block { margin-top: 32px; }
+    .hp-chips-label { font-weight: 600; margin: 16px 0 8px; font-size: 0.9rem; }
+    .hp-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; }
+    .hp-chips li { padding: 5px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); font-size: 0.88rem; font-weight: 500; }
+    .hp-mcp { margin: 28px 0 0; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--bg-soft); border-radius: 0 8px 8px 0; color: var(--text-soft); }
+
+    .hp-table-wrap { position: relative; overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel); }
+    .hp-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    .hp-table th, .hp-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .hp-table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-mut); }
+    .hp-table tbody tr:last-child > * { border-bottom: 0; }
+    .hp-table td a { color: var(--accent-text); white-space: nowrap; }
+    .hp-us { background: var(--accent-soft); }
+    .hp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+    .hp-final { text-align: center; }
+    .hp-footer { border-top: 1px solid var(--border); padding: 36px 0; font-size: 0.92rem; color: var(--text-soft); }
+    .hp-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 28px; }
+    .hp-footer p { margin: 0 0 8px; }
+    .hp-footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
+    .hp-footer nav { display: flex; flex-direction: column; gap: 8px; }
+    .hp-footer a { color: var(--text-soft); }
+    .hp-footer a:hover { color: var(--accent-text); }
+
+    @media (max-width: 900px) {
+      .hp-hero { padding: 40px 0 32px; }
+      .hp-hero-grid, .hp-split { grid-template-columns: 1fr; gap: 32px; }
+      .hp-grid3 { grid-template-columns: 1fr; }
+      .hp-section { padding: 44px 0; }
+      .hp-footer-grid { grid-template-columns: 1fr 1fr; }
+      .hp-footer-grid > div { grid-column: 1 / -1; }
+    }
+  </style>
+
+  <script is:inline>
+    document.querySelectorAll('.hp-copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var el = document.querySelector(btn.getAttribute('data-copy'));
+        if (!el || !navigator.clipboard) return;
+        navigator.clipboard.writeText(el.textContent.trim()).then(function () {
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+        });
+      });
+    });
+  </script>
+</BaseLayout>

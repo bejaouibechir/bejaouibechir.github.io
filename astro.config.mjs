@@ -5,9 +5,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   integrations: [
     react(),
-    sitemap({
-      filter: (page) => page !== 'https://hydraetl.com/',
-    }),
+    sitemap(),
   ],
 
   site: 'https://hydraetl.com',

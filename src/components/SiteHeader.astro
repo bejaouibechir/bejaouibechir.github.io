@@ -23,7 +23,7 @@ const links = [
   { href: '/vscode', label: 'VS Code extension', match: ['vscode'] },
 ];
 
-const segment = Astro.url.pathname.split('/').filter(Boolean)[0] ?? 'get-started';
+const segment = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
 const isActive = (l: (typeof links)[number]) => l.match.includes(segment);
 const isExact = (href: string) => Astro.url.pathname.replace(/\/$/, '') === href;
 ---
@@ -31,9 +31,9 @@ const isExact = (href: string) => Astro.url.pathname.replace(/\/$/, '') === href
 <style is:global set:html={css}></style>
 
 <header class="sh-top">
-  <a class="sh-brand" href="/get-started">
+  <a class="sh-brand" href="/" aria-label="Hydra ETL home">
     <img src="/hydra-mark.png" width="22" height="22" alt="" decoding="async" />
-    <span>Hydra Guide</span>
+    <span>Hydra ETL</span>
   </a>
 
   <nav class="sh-nav" aria-label="Main navigation">
