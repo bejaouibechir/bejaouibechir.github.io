@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* Page licence : ce que l'AGPL autorise, la seule obligation, et le canal
+   pour une licence commerciale. Texte informatif, pas un avis juridique. */
+const contactEmail = 'CONTACT_EMAIL_TODO';
+---
+
+<BaseLayout
+  title="License"
+  description="Hydra ETL is open source under the AGPL-3.0. What you can do for free, the one obligation when you modify Hydra ETL itself, and how to ask for a commercial license."
+>
+  <style is:global>
+    .lic-wrap { max-width: 44rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .lic-wrap h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .lic-lead { color: var(--text-soft); font-size: 1.05rem; margin: 0 0 2.5rem; }
+    .lic-wrap h2 { font-size: 1.3rem; margin: 2.5rem 0 .75rem; }
+    .lic-wrap p, .lic-wrap li { color: var(--text); line-height: 1.65; }
+    .lic-wrap ul { padding-left: 1.1rem; }
+    .lic-wrap li { margin: .35rem 0; }
+    .lic-wrap a { color: var(--accent-text); }
+    .lic-card { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel); padding: 1.25rem 1.4rem; margin: 1.25rem 0; }
+    .lic-card.accent { border-color: var(--accent); background: var(--accent-soft); }
+    .lic-card.accent p, .lic-card.accent h2 { color: var(--accent-text); }
+    .lic-card h2 { margin-top: 0; }
+    .lic-note { color: var(--text-mut); font-size: .92rem; border-top: 1px solid var(--border); margin-top: 3rem; padding-top: 1rem; }
+    .lic-wrap code { font-family: var(--mono); background: var(--bg-code); padding: .1rem .35rem; border-radius: 4px; }
+  </style>
+
+  <main class="lic-wrap">
+    <h1>License</h1>
+    <p class="lic-lead">
+      Hydra ETL is open source under the
+      <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener">GNU Affero General Public License v3.0 or later</a>
+      (AGPL-3.0-or-later).
+    </p>
+
+    <h2>You can, for free</h2>
+    <ul>
+      <li>Use Hydra ETL for any purpose, including inside a company and for commercial work.</li>
+      <li>Run your own pipelines with it, internally or for clients.</li>
+      <li>Modify it and redistribute it.</li>
+    </ul>
+    <p>
+      Using Hydra ETL to move <em>your</em> data does not place your data, your YAML pipelines or your other
+      applications under the AGPL.
+    </p>
+
+    <div class="lic-card">
+      <h2>The one obligation</h2>
+      <p>
+        If you <strong>modify Hydra ETL itself</strong> and make it available to others — including over a network,
+        for example as a hosted service — you must publish your modified source code under the same license.
+      </p>
+    </div>
+
+    <div class="lic-card accent">
+      <h2>Commercial license</h2>
+      <p>
+        If that obligation does not fit your case — typically, you embed a modified Hydra ETL in a proprietary
+        product, or offer it as a service without publishing your changes — a commercial license is available.
+      </p>
+      <p>Contact: <a href={`mailto:${contactEmail}`}>{contactEmail}</a> — reply within two business days.</p>
+    </div>
+
+    <h2>Questions we are often asked</h2>
+    <ul>
+      <li><strong>We run Hydra ETL on our own servers to load our own warehouse.</strong> Nothing to publish. The AGPL applies to Hydra ETL's source code, not to the data it moves.</li>
+      <li><strong>We wrote our own connector for internal use only.</strong> Nothing to publish, as long as it is not distributed or exposed to third parties over a network.</li>
+      <li><strong>We ship a product that bundles a modified Hydra ETL.</strong> Either publish your changes under the AGPL, or take a commercial license.</li>
+    </ul>
+
+    <p class="lic-note">
+      This page summarises the license in plain language; the
+      <a href="https://github.com/bejaouibechir/Hydra/blob/main/LICENSE" target="_blank" rel="noopener">LICENSE file</a>
+      is what applies. It is not legal advice.
+    </p>
+  </main>
+</BaseLayout>
