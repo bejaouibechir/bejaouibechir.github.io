@@ -1,0 +1,48 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+/* Mise en page des articles du blog. Le Markdown de src/pages/blog/*.md
+   passe par ici via `layout:` dans son frontmatter. */
+const { frontmatter } = Astro.props;
+const { title, description, date, readingTime, image } = frontmatter;
+const published = date
+  ? new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })
+  : null;
+---
+
+<BaseLayout title={title} description={description} image={image}>
+  <style is:global>
+    .post-wrap { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .post-crumbs { font-size: .9rem; color: var(--text-mut); margin-bottom: 1.5rem; }
+    .post-crumbs a { color: var(--accent-text); text-decoration: none; }
+    .post-wrap h1 { font-size: clamp(1.9rem, 4.2vw, 2.7rem); line-height: 1.12; margin: 0 0 .6rem; }
+    .post-meta { color: var(--text-mut); font-size: .92rem; margin: 0 0 2.5rem; }
+    .post-body h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; scroll-margin-top: 5rem; }
+    .post-body h3 { font-size: 1.15rem; margin: 2rem 0 .6rem; }
+    .post-body p, .post-body li { line-height: 1.68; color: var(--text); }
+    .post-body ul, .post-body ol { padding-left: 1.2rem; }
+    .post-body li { margin: .35rem 0; }
+    .post-body a { color: var(--accent-text); }
+    .post-body img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 10px; margin: 1.5rem 0; }
+    .post-body pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px;
+                     padding: 1rem 1.1rem; overflow-x: auto; font-size: .88rem; line-height: 1.55; }
+    .post-body code { font-family: var(--mono); font-size: .9em; }
+    .post-body :not(pre) > code { background: var(--bg-code); padding: .12rem .35rem; border-radius: 4px; }
+    .post-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: .93rem; display: block; overflow-x: auto; }
+    .post-body th, .post-body td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left; }
+    .post-body th { background: var(--bg-soft); }
+    .post-body blockquote { border-left: 3px solid var(--accent); margin: 1.5rem 0; padding: .2rem 0 .2rem 1rem; color: var(--text-soft); }
+    .post-body hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  </style>
+
+  <main class="post-wrap">
+    <p class="post-crumbs"><a href="/blog">Blog</a> <span>›</span> {title}</p>
+    <h1>{title}</h1>
+    <p class="post-meta">
+      {published}{published && readingTime ? ' · ' : ''}{readingTime}
+    </p>
+    <div class="post-body">
+      <slot />
+    </div>
+  </main>
+</BaseLayout>
