@@ -1,0 +1,40 @@
+# Fins de ligne : LF partout, dans le depot comme dans le dossier de travail.
+#
+# Sans cette regle, un editeur Windows enregistre en CRLF, git a stocke du LF,
+# et les deux divergent definitivement : 23 fichiers de ce depot etaient dans
+# ce cas le 22/09/2026, sans aucune modification reelle de contenu. Le depot
+# Hydra portait deja la meme regle et n'a jamais connu le probleme.
+* text=auto eol=lf
+
+# Binaires : aucune normalisation, sous peine de corruption.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.avif binary
+*.pdf binary
+*.mp4 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+*.gz binary
+
+# Sources du site : LF explicite.
+*.astro text eol=lf
+*.js    text eol=lf
+*.cjs   text eol=lf
+*.mjs   text eol=lf
+*.ts    text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.svg   text eol=lf
+*.xml   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.txt   text eol=lf
