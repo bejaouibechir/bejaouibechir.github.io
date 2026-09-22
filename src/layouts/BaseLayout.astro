@@ -14,13 +14,16 @@ interface Props {
   noindex?: boolean;
   /** Add SoftwareApplication structured data (product pages). */
   software?: boolean;
+  /** Use this exact <title>, bypassing the "— Hydra ETL" suffix.
+   *  The home page leads with the brand, so it ranks for the brand query. */
+  exactTitle?: string;
 }
 
-const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false } = Astro.props;
+const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false, exactTitle } = Astro.props;
 const site = Astro.site ?? new URL('https://hydraetl.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
-const fullTitle = `${title} — Hydra ETL`;
+const fullTitle = exactTitle ?? `${title} — Hydra ETL`;
 const githubUrl = 'https://github.com/bejaouibechir/Hydra';
 const graph: Record<string, unknown>[] = [
   {
@@ -28,8 +31,16 @@ const graph: Record<string, unknown>[] = [
     '@id': `${site.origin}/#organization`,
     name: 'Hydra ETL',
     url: `${site.origin}/`,
-    logo: `${site.origin}/Hydra.png`,
-    sameAs: [githubUrl, 'https://pypi.org/project/hydra-etl/'],
+    logo: `${site.origin}/hydra-mark-512.png`,
+    sameAs: [
+      githubUrl,
+      'https://pypi.org/project/hydra-etl/',
+      'https://glama.ai/mcp/servers/bejaouibechir/Hydra',
+      'https://sourceforge.net/projects/hydra-etl/',
+      'https://alternativeto.net/software/hydra-etl/',
+      'https://python.libhunt.com/bejaouibechir-hydra-alternatives',
+      'https://dev.to/bejaouibechir',
+    ],
   },
   {
     '@type': 'WebSite',
@@ -42,6 +53,7 @@ const graph: Record<string, unknown>[] = [
 if (software) {
   graph.push({
     '@type': 'SoftwareApplication',
+    '@id': `${site.origin}/#software`,
     name: 'Hydra ETL',
     description: 'Open-source declarative ETL engine: YAML pipelines validated before they run, with a CLI, a REST API and a visual Studio.',
     applicationCategory: 'DeveloperApplication',
@@ -81,8 +93,10 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     <meta name="twitter:image" content={ogImage} />
     <script type="application/ld+json" set:html={jsonLd} />
     <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="32e25563-c8f5-439f-9503-324694899add" data-domains="hydraetl.com"></script>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/hydra-mark-192.png" sizes="192x192" type="image/png" />
+    <link rel="icon" href="/hydra-mark.png" sizes="96x96" type="image/png" />
     <link rel="alternate icon" href="/hydra.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/hydra-mark-192.png" />
     <script is:inline>
       // Applique le thème sauvegardé avant le rendu pour éviter le flash.
       (function () {
