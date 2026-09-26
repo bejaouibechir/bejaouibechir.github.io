@@ -4,13 +4,18 @@ import BaseLayout from './BaseLayout.astro';
 /* Mise en page des articles du blog. Le Markdown de src/pages/blog/*.md
    passe par ici via `layout:` dans son frontmatter. */
 const { frontmatter } = Astro.props;
-const { title, description, date, readingTime, image } = frontmatter;
-const published = date
-  ? new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })
-  : null;
+const { title, seoTitle, description, date, updated, author = 'Bechir Bejaoui', readingTime, image } = frontmatter;
+const fmt = (d) => new Date(d).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+const iso = (d) => new Date(d).toISOString().slice(0, 10);
+const published = date ? fmt(date) : null;
+// « Last verified » n'apparait que s'il differe de la date de publication.
+const verified = updated && (!date || iso(updated) !== iso(date)) ? fmt(updated) : null;
+const article = date
+  ? { headline: title, description, datePublished: iso(date), dateModified: iso(updated ?? date), author }
+  : undefined;
 ---
 
-<BaseLayout title={title} description={description} image={image}>
+<BaseLayout title={title} exactTitle={seoTitle} description={description} image={image} article={article}>
   <style is:global>
     .post-wrap { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
     .post-crumbs { font-size: .9rem; color: var(--text-mut); margin-bottom: 1.5rem; }
@@ -39,7 +44,7 @@ const published = date
     <p class="post-crumbs"><a href="/blog">Blog</a> <span>›</span> {title}</p>
     <h1>{title}</h1>
     <p class="post-meta">
-      {published}{published && readingTime ? ' · ' : ''}{readingTime}
+      By {author}{published ? ` · ${published}` : ''}{verified ? ` · Last verified ${verified}` : ''}{readingTime ? ` · ${readingTime}` : ''}
     </p>
     <div class="post-body">
       <slot />

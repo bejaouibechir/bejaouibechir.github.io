@@ -17,9 +17,17 @@ interface Props {
   /** Use this exact <title>, bypassing the "— Hydra ETL" suffix.
    *  The home page leads with the brand, so it ranks for the brand query. */
   exactTitle?: string;
+  /** Blog post: adds TechArticle structured data. Dates are ISO strings. */
+  article?: {
+    headline: string;
+    description?: string;
+    datePublished: string;
+    dateModified?: string;
+    author: string;
+  };
 }
 
-const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false, exactTitle } = Astro.props;
+const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false, exactTitle, article } = Astro.props;
 const site = Astro.site ?? new URL('https://hydraetl.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
@@ -64,6 +72,23 @@ if (software) {
     license: 'https://www.gnu.org/licenses/agpl-3.0.html',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     publisher: { '@id': `${site.origin}/#organization` },
+  });
+}
+if (article) {
+  // Refletent exactement ce qui est affiche : titre, auteur et dates visibles
+  // dans l'en-tete de l'article. Rien d'invente (pas de note, pas d'avis).
+  graph.push({
+    '@type': 'TechArticle',
+    '@id': `${canonical}#article`,
+    headline: article.headline,
+    description: article.description,
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+    author: { '@type': 'Person', name: article.author, url: 'https://github.com/bejaouibechir' },
+    publisher: { '@id': `${site.origin}/#organization` },
+    mainEntityOfPage: canonical,
+    image: ogImage,
+    inLanguage: 'en',
   });
 }
 const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
