@@ -284,6 +284,18 @@ const renderCode = (lines) => lines.map((l) =>
         </article>
       </div>
 
+      <div class="docker-os">
+        <b>Or build it yourself</b>
+        <div>
+          <p>The repository builds Hydra Core, the CLI, the API and the Studio into one image on your own machine, with no registry involved. The steps are the same on the three systems &mdash; only the shell syntax differs, so each guide gives the commands for that shell.</p>
+          <ul>
+            <li><a href="https://github.com/bejaouibechir/Hydra/blob/main/GHCR/README.md#linux">Install on Linux</a><small>Docker Engine, your user in the <code>docker</code> group, then <code>bash GHCR/build-local.sh</code></small></li>
+            <li><a href="https://github.com/bejaouibechir/Hydra/blob/main/GHCR/README.md#windows">Install on Windows</a><small>Docker Desktop with the Linux container engine, driven from PowerShell</small></li>
+            <li><a href="https://github.com/bejaouibechir/Hydra/blob/main/GHCR/README.md#macos">Install on macOS</a><small>Docker Desktop; on Apple Silicon the image builds natively for arm64, with no emulation</small></li>
+          </ul>
+        </div>
+      </div>
+
       <p class="docker-note"><b>Image tags.</b> Use <code>0.9.6</code> in production or CI so every pull resolves to the intended release. Use <code>latest</code> only when you explicitly want the newest published version.</p>
     </section>
 

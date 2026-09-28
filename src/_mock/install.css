@@ -132,3 +132,15 @@ html[data-theme="dark"]{--bg:#0d1412;--bg-soft:#111b18;--panel:#131f1b;--text:#e
 .path-warn{margin:0 0 12px;padding:11px 13px;border:1px dashed var(--strong);border-radius:10px;background:var(--bg-soft);color:var(--soft);font-size:13px;line-height:1.6}
 .path-warn b{color:var(--text)}
 .path-warn code{padding:1px 5px;border-radius:5px;background:var(--panel);font-family:var(--mono);font-size:12px;color:var(--accent-text)}
+
+/* Build-it-yourself: the three per-OS guides. Same shell as .docker-prereq. */
+.docker-os{display:grid;grid-template-columns:minmax(130px,.35fr) 1fr;gap:14px;margin-top:16px;padding:13px 15px;border:1px solid var(--border);border-radius:11px;background:var(--panel);font-size:13.5px}
+.docker-os p{margin:0 0 11px;color:var(--soft)}
+.docker-os ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.docker-os li{display:grid;gap:3px}
+.docker-os li a{color:var(--accent-text);font-weight:600;text-decoration:none}
+.docker-os li a:hover{text-decoration:underline}
+.docker-os small{color:var(--soft);font-size:12.5px;line-height:1.45}
+.docker-os code{padding:1px 5px;border-radius:5px;background:var(--bg);color:var(--accent-text);font-family:var(--mono);font-size:12px}
+@media (max-width:760px){.docker-os{grid-template-columns:1fr;gap:8px}}
+
