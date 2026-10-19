@@ -1,0 +1,19 @@
+{
+  "name": "brand-motion-design",
+  "version": "2.1.0",
+  "description": "Showreel-grade motion films for any brand or small business (launch, feature, promo, teaser, social proof, event, before/after, product showcase) in code with HyperFrames and Three.js, from a brand book, a website URL or a few questions, with your own assets; remembers your brand for the next film.",
+  "author": {
+    "name": "Raed Ouerfelli"
+  },
+  "license": "MIT",
+  "keywords": [
+    "hyperframes",
+    "video",
+    "motion-design",
+    "brand-motion",
+    "reels",
+    "design-system",
+    "gsap",
+    "threejs"
+  ]
+}
