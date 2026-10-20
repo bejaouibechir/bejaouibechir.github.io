@@ -1,0 +1,67 @@
+---
+/*
+  Lecteur YouTube charge au clic seulement.
+  Avant le clic : une vignette servie par le site, aucune requete vers YouTube.
+  Au clic : iframe youtube-nocookie.com (pas de cookie publicitaire), lecture
+  immediate. Evenement Umami « video-play » avec l'identifiant de la video.
+*/
+interface Props {
+  id: string;
+  title: string;
+  thumb: string;
+  duration?: string;
+  location?: string;
+  eager?: boolean;
+}
+const { id, title, thumb, duration, location = 'page', eager = false } = Astro.props;
+---
+
+<div class="vf" data-vf={id}>
+  <button
+    type="button"
+    class="vf-btn"
+    aria-label={`Play video: ${title}`}
+    data-umami-event="video-play"
+    data-umami-event-video={id}
+    data-umami-event-location={location}
+  >
+    <img src={thumb} width="1280" height="625" alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    <span class="vf-play" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+    </span>
+    {duration && <span class="vf-time">{duration}</span>}
+  </button>
+</div>
+
+<style is:global>
+  .vf { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #081612; box-shadow: 0 18px 40px -20px rgba(15, 40, 35, 0.35); }
+  .vf-btn { all: unset; position: absolute; inset: 0; cursor: pointer; display: block; }
+  .vf-btn img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .25s ease, filter .25s ease; }
+  .vf-btn:hover img { transform: scale(1.015); filter: brightness(.92); }
+  .vf-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .vf-play { position: absolute; left: 50%; top: 50%; width: 68px; height: 68px; margin: -34px 0 0 -34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.35); transition: transform .2s ease; }
+  .vf-btn:hover .vf-play { transform: scale(1.07); }
+  .vf-play svg { margin-left: 4px; }
+  .vf-time { position: absolute; right: 10px; bottom: 10px; padding: 2px 7px; border-radius: 6px; background: rgba(0,0,0,.72); color: #fff; font: 600 12px var(--mono); }
+  .vf iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+</style>
+
+<script is:inline>
+  (function () {
+    if (window.__hydraVideoFacade) return;
+    window.__hydraVideoFacade = true;
+    document.addEventListener('click', function (e) {
+      var btn = e.target instanceof Element ? e.target.closest('.vf-btn') : null;
+      if (!btn) return;
+      var box = btn.closest('.vf');
+      var id = box.getAttribute('data-vf');
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+      f.title = btn.getAttribute('aria-label').replace(/^Play video: /, '');
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      box.replaceChildren(f);
+    });
+  })();
+</script>

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import VideoFacade from '../components/VideoFacade.astro';
+import { teaser } from '../data/academy.js';
 
 const GITHUB = 'https://github.com/bejaouibechir/Hydra';
 const PYPI = 'https://pypi.org/project/hydra-etl/';
@@ -85,8 +87,11 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>');
           <p class="hp-note">Then run <code>hdrctl serve</code>: Studio and API open on <code>localhost:5678</code>. No Node, no database, no broker.</p>
         </div>
         <figure class="hp-shot">
-          <img src="/studio/screen3.png" width="1888" height="796" alt="Hydra Studio showing a job with three CSV sources joined and written to one destination" loading="eager" decoding="async" />
-          <figcaption>Hydra Studio: build a job on the canvas, get YAML out.</figcaption>
+          <VideoFacade id={teaser.youtube} title={teaser.title} thumb={teaser.thumb} duration={teaser.duration} location="home-hero" eager />
+          <figcaption>
+            Watch: {teaser.title.charAt(0).toLowerCase() + teaser.title.slice(1)}.
+            <a href="/academy/" data-umami-event="academy-click" data-umami-event-location="home-hero">More videos in Hydra Academy →</a>
+          </figcaption>
         </figure>
       </div>
     </section>
@@ -284,7 +289,6 @@ hdrctl run my_job         # execute`}</code></pre>
     /* Sans cela, flex comprime les boutons et le libelle passe sur deux lignes. */
     .hp-cta .hp-btn { flex: 0 0 auto; white-space: nowrap; }
     /* Assez large pour les quatre boutons : on les garde sur une seule ligne. */
-    @media (min-width: 1180px) { .hp-cta { flex-wrap: nowrap; } }
     .hp-cta-center { justify-content: center; }
     .hp-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 9px; font-weight: 600; text-decoration: none; border: 1px solid transparent; }
     .hp-btn-primary { background: var(--accent); color: #fff; }
@@ -301,6 +305,7 @@ hdrctl run my_job         # execute`}</code></pre>
     .hp-shot { margin: 0; }
     .hp-shot img { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 18px 40px -20px rgba(15, 40, 35, 0.35); }
     .hp-shot figcaption { color: var(--text-mut); font-size: 0.85rem; margin-top: 10px; text-align: center; }
+    .hp-shot figcaption a { color: var(--accent-text); font-weight: 600; white-space: nowrap; }
 
     .hp-section { padding: 64px 0; }
     .hp-soft { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
