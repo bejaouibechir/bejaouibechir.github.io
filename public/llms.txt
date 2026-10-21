@@ -4,7 +4,7 @@
 
 Key facts:
 - One job = one source, an ordered list of transformations, one destination (four YAML files).
-- Connectors: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, MongoDB, Web API. Engines: pandas and DuckDB, optional Rust acceleration.
+- Connectors: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, SQL Server, MongoDB, Web API. Engines: pandas and DuckDB, optional Rust acceleration.
 - Workflows: DAG of jobs with dependencies, parallel branches, retries, cron/webhook triggers and actions.
 - Ships an MCP server so AI assistants can write pipelines that Hydra validates.
 
