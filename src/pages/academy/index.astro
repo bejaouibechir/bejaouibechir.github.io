@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TrackNav from '../../components/academy/TrackNav.astro';
+import { tracks, trackMinutes } from '../../data/academy.js';
+---
+
+<BaseLayout
+  title="Hydra Academy — video tracks"
+  description="Hydra Academy: short videos on Hydra ETL, grouped by track (CLI, Studio, Workflows, Actions). Each video is paired with a Killercoda lab you can run in your browser."
+>
+  <main class="aci">
+    <section class="aci-hero">
+      <div class="aci-wrap">
+        <p class="aci-eyebrow">Hydra Academy</p>
+        <h1>Watch it, then try it in your browser</h1>
+        <p class="aci-lead">
+          Short videos on Hydra ETL, grouped by track. Every video follows a free Killercoda lab:
+          watch how it works, then run the same commands yourself, with nothing to install.
+        </p>
+      </div>
+    </section>
+
+    <TrackNav />
+
+    <section class="aci-tracks">
+      <div class="aci-wrap">
+        <ol class="aci-grid">
+          {tracks.map((t, i) => (
+            <li>
+              {t.status === 'live' ? (
+                <a class="aci-card" href={`/academy/${t.id}/`}>
+                  <span class="aci-step">Track {i + 1}</span>
+                  <h2>{t.title}</h2>
+                  <p>{t.tagline}</p>
+                  <span class="aci-meta">{t.videos.length} videos · {trackMinutes(t)} min · Killercoda labs</span>
+                  <span class="aci-go">Start the track →</span>
+                </a>
+              ) : (
+                <div class="aci-card aci-soon" aria-disabled="true">
+                  <span class="aci-step">Track {i + 1}</span>
+                  <h2>{t.title}</h2>
+                  <p>{t.tagline}</p>
+                  <span class="aci-meta">Coming soon</span>
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+        <p class="aci-note">Prefer reading? The <a href="/cli/">Hydra CLI tutorials</a> and the <a href="/guide/">guide</a> cover the same ground in text.</p>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .aci-wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
+    .aci-hero { padding: 56px 0 36px; }
+    .aci-eyebrow { margin: 0 0 8px; color: var(--accent-text); font: 800 12px var(--mono); text-transform: uppercase; letter-spacing: .09em; }
+    .aci-hero h1 { margin: 0 0 12px; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.08; letter-spacing: -.03em; }
+    .aci-lead { max-width: 46em; margin: 0; color: var(--text-soft); font-size: 1.05rem; }
+    .aci-tracks { padding: 36px 0 64px; }
+    .aci-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .aci-card { height: 100%; display: flex; flex-direction: column; gap: 6px; padding: 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg); color: inherit; text-decoration: none; transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+    a.aci-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 14px 30px -22px rgba(15, 40, 35, .45); }
+    .aci-step { color: var(--accent-text); font: 800 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+    .aci-card h2 { margin: 2px 0 0; font-size: 1.35rem; }
+    .aci-card p { margin: 0; color: var(--text-soft); }
+    .aci-meta { margin-top: auto; padding-top: 10px; color: var(--text-mut); font-size: .85rem; }
+    .aci-go { color: var(--accent-text); font-weight: 700; font-size: .95rem; }
+    .aci-soon { background: var(--bg-soft); }
+    .aci-soon h2, .aci-soon p { opacity: .7; }
+    .aci-note { margin: 28px 0 0; color: var(--text-soft); }
+    .aci-note a { color: var(--accent-text); font-weight: 600; }
+    @media (max-width: 720px) { .aci-grid { grid-template-columns: 1fr; } }
+  </style>
+</BaseLayout>

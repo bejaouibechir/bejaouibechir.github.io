@@ -14,6 +14,8 @@ export const tracks = [
   {
     id: 'cli',
     title: 'Hydra CLI',
+    status: 'live',
+    tagline: 'Scaffold, validate, test and serve jobs from the terminal.',
     lead: 'From an empty folder to a tested job and an HTTP API, with hdrctl. Each video follows a Killercoda lab you can run in your browser.',
     playlist: 'https://www.youtube.com/playlist?list=PLOVsdMXCxpho',
     videos: [
@@ -80,8 +82,28 @@ export const tracks = [
   },
 ];
 
-/* Parcours prevus : une ligne sur la page, pas de cartes vides. */
-export const upcoming = ['Hydra Studio', 'Workflows', 'Actions'];
+/* Parcours a venir : visibles dans la navigation (« Soon »), sans page tant
+   qu'ils n'ont pas de video. Pour en ouvrir un : status 'live', lead,
+   playlist et videos. L'ordre du tableau est l'ordre d'apprentissage. */
+tracks.push(
+  { id: 'studio', title: 'Hydra Studio', status: 'soon',
+    tagline: 'Design jobs and workflows on a canvas, get YAML out.' },
+  { id: 'workflows', title: 'Workflows', status: 'soon',
+    tagline: 'Chain jobs in a DAG: dependencies, parallel branches, retries, schedules.' },
+  { id: 'actions', title: 'Actions', status: 'soon',
+    tagline: 'Shell, Python, webhooks, email and conditions between your jobs.' },
+);
+
+export const liveTracks = tracks.filter((t) => t.status === 'live');
+
+/* Duree totale d'un parcours, a partir des durees « m:ss ». */
+export function trackMinutes(track) {
+  const secs = (track.videos ?? []).reduce((sum, v) => {
+    const [m, s] = v.duration.split(':').map(Number);
+    return sum + m * 60 + s;
+  }, 0);
+  return Math.round(secs / 60);
+}
 
 /* Video d'appel de l'accueil. */
 export const teaser = tracks[0].videos.find((v) => v.youtube === '9cCMWptQEgE');

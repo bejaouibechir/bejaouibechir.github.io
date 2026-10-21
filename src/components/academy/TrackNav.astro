@@ -1,0 +1,35 @@
+---
+/* Navigation entre parcours, identique sur la vue d'ensemble et sur chaque
+   parcours : on passe d'un theme a l'autre sans revenir en arriere.
+   Les parcours « soon » sont visibles mais inertes. */
+import { tracks } from '../../data/academy.js';
+
+interface Props { current?: string }
+const { current = '' } = Astro.props;
+---
+
+<nav class="atn" aria-label="Hydra Academy tracks">
+  <div class="atn-inner">
+    <a class:list={['atn-item', { 'atn-on': current === '' }]} href="/academy/" aria-current={current === '' ? 'page' : undefined}>All tracks</a>
+    {tracks.map((t) => t.status === 'live' ? (
+      <a class:list={['atn-item', { 'atn-on': current === t.id }]} href={`/academy/${t.id}/`} aria-current={current === t.id ? 'page' : undefined}>
+        {t.title}<span class="atn-count">{t.videos.length}</span>
+      </a>
+    ) : (
+      <span class="atn-item atn-soon" aria-disabled="true" title="Coming soon">{t.title}<span class="atn-tag">Soon</span></span>
+    ))}
+  </div>
+</nav>
+
+<style is:global>
+  .atn { position: sticky; top: 56px; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .atn-inner { max-width: 1120px; margin: 0 auto; padding: 10px clamp(16px, 4vw, 32px); display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .atn-inner::-webkit-scrollbar { display: none; }
+  .atn-item { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-soft); font-size: .9rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: border-color .15s ease, color .15s ease, background .15s ease; }
+  a.atn-item:hover { border-color: var(--accent); color: var(--text); }
+  .atn-on { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); }
+  .atn-count { min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--bg-soft); color: var(--text-mut); font: 700 11px/18px var(--mono); text-align: center; }
+  .atn-on .atn-count { background: var(--bg); color: var(--accent-text); }
+  .atn-soon { opacity: .6; cursor: default; }
+  .atn-tag { color: var(--text-mut); font: 700 10px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+</style>
