@@ -143,6 +143,18 @@ html[data-theme="dark"] .sh-cta {
   filter: brightness(1.08);
 }
 
+.sh-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+}
+
+.sh-badge img {
+  display: block;
+  width: auto;
+  height: 36px;
+}
+
 .sh-icon {
   display: grid;
   place-items: center;
@@ -215,7 +227,8 @@ html[data-theme="dark"] .sh-drawer .sh-cta:hover {
 /* Paliers : on retire d'abord le bouton d'appel, puis les liens passent
    dans le tiroir. */
 @media (max-width: 1400px) {
-  .sh-top > .sh-tools > .sh-cta {
+  .sh-top > .sh-tools > .sh-cta,
+  .sh-top > .sh-tools > .sh-badge {
     display: none;
   }
 }
