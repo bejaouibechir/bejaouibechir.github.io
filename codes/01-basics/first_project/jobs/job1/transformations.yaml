@@ -1,0 +1,14 @@
+version: "1.0"
+transformations:
+  steps:
+    - cast:
+        mapping:
+          id: int
+          customer_id: int
+          price: float
+          qty: int
+    - filter:
+        expr: "price > {{ param:min_price }}"
+    - calculate:
+        column: total
+        expr: "price * qty"

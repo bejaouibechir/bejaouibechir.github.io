@@ -1,0 +1,10 @@
+version: "1.0"
+parameters:
+  min_price:
+    type: float
+    default: 0
+    description: Keep orders whose unit price is strictly greater than this value.
+  output_file:
+    type: string
+    default: orders.csv
+    description: Output filename under outputs/.

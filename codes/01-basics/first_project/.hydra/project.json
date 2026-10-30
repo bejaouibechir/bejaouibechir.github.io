@@ -1,0 +1,11 @@
+{
+  "id": "whitebook-first-project",
+  "name": "first_project",
+  "description": "Chapter 01: a job inside a workflow",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

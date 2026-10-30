@@ -1,0 +1,17 @@
+version: "1.0"
+workflow:
+  name: daily
+  description: Load the orders, then log a message
+  trigger:
+    type: manual
+  steps:
+    - name: load_orders
+      type: job
+      job: ../jobs/job1
+
+    - name: notify
+      type: action
+      action: log
+      params:
+        message: "Orders loaded."
+      depends_on: [load_orders]

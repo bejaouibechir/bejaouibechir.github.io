@@ -1,0 +1,7 @@
+version: "1.0"
+sources:
+  source_csv:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../Data/orders.csv
