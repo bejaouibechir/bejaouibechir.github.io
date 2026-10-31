@@ -1,0 +1,35 @@
+version: "1.0"
+sources:
+  paid_orders:
+    type: mongodb
+    connection:
+      uri: "mongodb://127.0.0.1:27019/?serverSelectionTimeoutMS=5000"
+      database: hydra_whitebook_02
+    extract:
+      collection: orders
+      filter:
+        status: paid
+      limit: 1000
+      batch_size: 100
+    schema:
+      mode: manual
+      drift_policy: warn
+      validation_policy: best_effort
+      fields:
+        - name: order_id
+          path: _id
+          type: string
+          required: true
+        - name: customer_name
+          path: customer.name
+          type: string
+          required: true
+        - name: city
+          path: customer.city
+          type: string
+        - name: amount
+          path: total
+          type: float
+        - name: tags
+          type: array
+          array_handling: json

@@ -1,0 +1,1 @@
+hydra-etl[mongodb]==0.16.0

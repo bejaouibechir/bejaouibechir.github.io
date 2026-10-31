@@ -1,0 +1,6 @@
+version: "1.0"
+transformations:
+  steps:
+    - sort:
+        by: [order_id]
+        ascending: true

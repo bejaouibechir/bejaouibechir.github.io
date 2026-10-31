@@ -1,0 +1,4 @@
+order_id,customer_name,city,amount,tags
+ORD-001,Alice,Paris,49.9,"[""priority"", ""gift""]"
+ORD-002,Bob,London,20.0,[]
+ORD-003,Carol,Lyon,0.0,"[""pickup""]"

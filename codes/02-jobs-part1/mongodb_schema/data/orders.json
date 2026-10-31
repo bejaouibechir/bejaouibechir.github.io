@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "ORD-001",
+    "status": "paid",
+    "customer": {
+      "name": "Alice",
+      "city": "Paris"
+    },
+    "total": 49.9,
+    "tags": [
+      "priority",
+      "gift"
+    ],
+    "internal_note": "Not part of the declared output"
+  },
+  {
+    "_id": "ORD-002",
+    "status": "paid",
+    "customer": {
+      "name": "Bob",
+      "city": "London"
+    },
+    "total": 20,
+    "tags": []
+  },
+  {
+    "_id": "ORD-003",
+    "status": "paid",
+    "customer": {
+      "name": "Carol",
+      "city": "Lyon"
+    },
+    "total": 0,
+    "tags": [
+      "pickup"
+    ]
+  },
+  {
+    "_id": "ORD-004",
+    "status": "pending",
+    "customer": {
+      "name": "David",
+      "city": "Berlin"
+    },
+    "total": 120,
+    "tags": [
+      "review"
+    ]
+  }
+]

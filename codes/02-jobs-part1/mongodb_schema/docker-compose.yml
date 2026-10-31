@@ -1,0 +1,16 @@
+name: hydra-whitebook-mongodb-schema
+services:
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "127.0.0.1:27019:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand({ping: 1}).ok ? 0 : 1)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+volumes:
+  mongodb-data:

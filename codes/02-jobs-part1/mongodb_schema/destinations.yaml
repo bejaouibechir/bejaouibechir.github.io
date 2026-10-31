@@ -1,0 +1,8 @@
+version: "1.0"
+destinations:
+  orders_csv:
+    type: csv
+    connection: {}
+    load:
+      table: outputs/paid_orders.csv
+      mode: replace
