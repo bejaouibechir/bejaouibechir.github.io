@@ -2,6 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import VideoFacade from '../components/VideoFacade.astro';
 import { teaser } from '../data/academy.js';
+import { getReleases } from '../lib/releases';
+
+// Derniere version publiee (releases GitHub, lues au build).
+const { releases } = await getReleases();
+const latestRelease = releases.find((r) => !r.prerelease) ?? releases[0];
+const latestVersion = latestRelease?.tag.replace(/^v/, '');
+const latestDate = latestRelease
+  ? new Date(latestRelease.published).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  : '';
 
 const GITHUB = 'https://github.com/bejaouibechir/Hydra';
 const PYPI = 'https://pypi.org/project/hydra-etl/';
@@ -85,6 +94,9 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>');
             <button type="button" class="hp-copy" data-umami-event="install-copy" data-copy="#hp-install-cmd" aria-label="Copy the install command">Copy</button>
           </div>
           <p class="hp-note">Then run <code>hdrctl serve</code>: Studio and API open on <code>localhost:5678</code>. No Node, no database, no broker.</p>
+          {latestRelease && (
+            <p class="hp-release"><a href="/changelog/" data-umami-event="changelog-click" data-umami-event-location="home-hero"><span class="hp-release-tag">v{latestVersion}</span> Latest release, {latestDate} — see what's new in every version →</a></p>
+          )}
         </div>
         <figure class="hp-shot">
           <VideoFacade id={teaser.youtube} title={teaser.title} thumb={teaser.thumb} duration={teaser.duration} location="home-hero" eager />
@@ -301,6 +313,10 @@ hdrctl run my_job         # execute`}</code></pre>
     .hp-install code { border: 0; background: none; padding: 0; flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-size: 0.92rem; }
     .hp-copy { font: inherit; font-size: 0.8rem; font-weight: 600; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-panel); color: var(--text); cursor: pointer; }
     .hp-note { color: var(--text-mut); font-size: 0.88rem; margin: 10px 0 0; }
+    .hp-release { margin: 16px 0 0; font-size: 0.92rem; }
+    .hp-release a { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--accent-text); font-weight: 600; text-decoration: none; }
+    .hp-release a:hover { text-decoration: underline; }
+    .hp-release-tag { font-family: var(--mono); font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); border: 1px solid var(--accent); }
     .hp-install-label { margin-top: 26px; }
     .hp-install-label + .hp-install { margin-top: 6px; }
     .hp-shot { margin: 0; }
