@@ -67,9 +67,15 @@ body.zoom-open{overflow:hidden}
 .start-layout>.next-path h2{margin:8px 0 0;font-size:19px;line-height:1.25}
 .start-layout>.next-path ol{grid-template-columns:1fr;margin-top:14px}
 .start-layout>.next-path li a{padding:12px}
+/* Les cartes .next-path (essayer dans le navigateur, 30 premieres minutes) restent
+   dans la colonne de gauche ; la grille principale occupe la colonne de droite. */
+.start-layout{grid-template-rows:auto 1fr}
+.start-layout>.next-path{grid-column:1}
+.start-layout>.overview-grid{grid-column:2;grid-row:1/span 2}
 /* Sous 1180px la carte reprend sa forme large, au-dessus de la grille. */
 @media(max-width:1180px){
-  .start-layout{grid-template-columns:1fr;gap:14px}
+  .start-layout{grid-template-columns:1fr;grid-template-rows:none;gap:14px}
+  .start-layout>.next-path,.start-layout>.overview-grid{grid-column:auto;grid-row:auto}
   .start-layout>.next-path{display:grid;grid-template-columns:minmax(230px,.7fr) 1.6fr;gap:26px;align-items:end;padding:24px}
   .start-layout>.next-path h2{font-size:21px}
   .start-layout>.next-path ol{grid-template-columns:repeat(3,1fr);margin-top:0}
