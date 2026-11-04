@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getReleases, demoteHeadings, anchorOf } from '../lib/releases';
+
+/* Changelog : toutes les releases GitHub de Hydra ETL, lues au build.
+   Le contenu est rendu en HTML statique, lisible par les moteurs de recherche
+   et les assistants IA sans exécuter de JavaScript. */
+const { releases } = await getReleases();
+const stable = releases.filter((r) => !r.prerelease);
+const latest = stable[0] ?? releases[0];
+const GITHUB = 'https://github.com/bejaouibechir/Hydra';
+const PYPI = 'https://pypi.org/project/hydra-etl';
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const isoDay = (iso: string) => iso.slice(0, 10);
+const version = (tag: string) => tag.replace(/^v/, '');
+const description = latest
+  ? `Every release of Hydra ETL, newest first, with new features and fixes. Latest version: ${version(latest.tag)} (${fmt(latest.published)}).`
+  : 'Every release of Hydra ETL, newest first, with new features and fixes.';
+---
+
+<BaseLayout title="Changelog" description={description}>
+  <style is:global>
+    .cl-wrap { max-width: 50rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .cl-wrap h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .cl-lead { color: var(--text-soft); font-size: 1.05rem; margin: 0 0 1.5rem; }
+    .cl-latest { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent-text); border-radius: 12px; padding: 1rem 1.25rem; margin: 0 0 2rem; }
+    .cl-latest p { margin: .2rem 0; }
+    .cl-latest code { font-family: var(--mono); }
+    .cl-toc { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 2.5rem; padding: 0; list-style: none; }
+    .cl-toc a { display: inline-block; font-family: var(--mono); font-size: .85rem; padding: .2rem .55rem; border: 1px solid var(--border); border-radius: 999px; color: var(--text-soft); text-decoration: none; }
+    .cl-toc a:hover { border-color: var(--accent); color: var(--accent-text); }
+    .cl-rel { border-top: 1px solid var(--border); padding: 2rem 0 1rem; scroll-margin-top: 5rem; }
+    .cl-rel > header h2 { font-size: 1.35rem; line-height: 1.3; margin: 0 0 .35rem; }
+    .cl-rel > header h2 a { color: var(--text); text-decoration: none; }
+    .cl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .9rem; color: var(--text-mut); font-size: .9rem; margin: 0 0 1rem; }
+    .cl-meta a { color: var(--accent-text); }
+    .cl-tag { font-family: var(--mono); font-size: .8rem; padding: .1rem .5rem; border-radius: 999px; background: var(--bg-code); color: var(--text-soft); }
+    .cl-tag.ok { background: var(--ok-soft); color: var(--ok); }
+    .cl-body { color: var(--text); line-height: 1.65; overflow-wrap: break-word; }
+    .cl-body h3 { font-size: 1.05rem; margin: 1.5rem 0 .5rem; }
+    .cl-body h4 { font-size: 1rem; margin: 1.25rem 0 .4rem; }
+    .cl-body ul { padding-left: 1.2rem; }
+    .cl-body li { margin: .3rem 0; }
+    .cl-body li > p { margin: .2rem 0; }
+    .cl-body a { color: var(--accent-text); }
+    .cl-body code { font-family: var(--mono); font-size: .9em; background: var(--bg-code); padding: .08rem .3rem; border-radius: 4px; }
+    .cl-body pre { font-family: var(--mono); font-size: .88rem; background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; overflow-x: auto; }
+    .cl-body pre code { background: none; padding: 0; }
+    .cl-body table { display: block; overflow-x: auto; border-collapse: collapse; margin: .75rem 0; font-size: .92rem; }
+    .cl-body th, .cl-body td { border: 1px solid var(--border); padding: .4rem .6rem; text-align: left; vertical-align: top; }
+    .cl-body th { background: var(--bg-soft); }
+    .cl-body table, .cl-body th, .cl-body td { overflow-wrap: normal; }
+    .cl-body td code, .cl-body th code { white-space: nowrap; }
+    .cl-note { color: var(--text-mut); font-size: .92rem; border-top: 1px solid var(--border); margin-top: 3rem; padding-top: 1rem; }
+    .cl-note a { color: var(--accent-text); }
+  </style>
+
+  <main class="cl-wrap">
+    <h1>Hydra ETL changelog</h1>
+    <p class="cl-lead">Every release of Hydra ETL, newest first. Each one lists its new features, then its patches and fixes.</p>
+
+    {latest && (
+      <div class="cl-latest">
+        <p><strong>Latest version: {version(latest.tag)}</strong> — released {fmt(latest.published)}.</p>
+        <p>Install or upgrade: <code>pip install -U hydra-etl</code></p>
+      </div>
+    )}
+
+    <nav aria-label="Versions">
+      <ul class="cl-toc">
+        {releases.map((r) => <li><a href={`#${anchorOf(r.tag)}`}>{r.tag}</a></li>)}
+      </ul>
+    </nav>
+
+    {releases.map((r) => (
+      <article class="cl-rel" id={anchorOf(r.tag)}>
+        <header>
+          <h2><a href={`#${anchorOf(r.tag)}`}>{r.name}</a></h2>
+          <p class="cl-meta">
+            <time datetime={isoDay(r.published)}>{fmt(r.published)}</time>
+            {r === latest && <span class="cl-tag ok">latest</span>}
+            {r.prerelease && <span class="cl-tag">pre-release</span>}
+            <a href={r.url} target="_blank" rel="noopener">GitHub release</a>
+            <a href={`${PYPI}/${version(r.tag)}/`} target="_blank" rel="noopener">PyPI</a>
+          </p>
+        </header>
+        <div class="cl-body" set:html={demoteHeadings(r.html)} />
+      </article>
+    ))}
+
+    <p class="cl-note">
+      This page is built from the <a href={`${GITHUB}/releases`} target="_blank" rel="noopener">GitHub releases</a>.
+      The detailed history, including unreleased changes, is in
+      <a href={`${GITHUB}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener">CHANGELOG.md</a>.
+    </p>
+  </main>
+</BaseLayout>
