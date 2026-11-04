@@ -1,29 +1,36 @@
 # Hydra ETL
 
-> Hydra ETL is an open-source (AGPL-3.0) declarative ETL engine for Python 3.9+. Pipelines are described in YAML manifests, validated before any data is read or written, and run from a CLI (`hdrctl`), a REST API or a visual editor (Hydra Studio), all installed with `pip install hydra-etl`.
+> Hydra ETL is an open-source (AGPL-3.0, commercial license available) declarative ETL engine for Python 3.9+. Pipelines are described in YAML, validated before any data is read or written, and run from a CLI (`hdrctl`), a REST API or a visual editor (Hydra Studio), all installed with `pip install hydra-etl`. Latest version: 0.19.0 (November 4, 2026), beta.
 
 Key facts:
-- One job = one source, an ordered list of transformations, one destination (four YAML files).
-- Connectors: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, SQL Server, MongoDB, Web API. Engines: pandas and DuckDB, optional Rust acceleration.
-- Workflows: DAG of jobs with dependencies, parallel branches, retries, cron/webhook triggers and actions.
-- Ships an MCP server so AI assistants can write pipelines that Hydra validates.
+- A project holds jobs (one source, an ordered list of transformations, one destination: four YAML files), workflows that chain jobs and actions, and `workflows/thread.yaml`, the order in which workflows run (sequential or parallel stages, delays, loops). `hdrctl run <project>` checks the whole project before running anything.
+- Connectors: CSV, JSON, Parquet, PostgreSQL, MySQL/MariaDB, SQL Server, MongoDB, Web API. 20 transformations, including join (inner, left, right, outer, cross), aggregate, window functions and text_to_rows.
+- Engines: pandas by default; DuckDB + pyarrow for large volumes (20 million rows aggregated in 34 s instead of 113 s, same results as pandas), chosen per job with `engine:`; optional Rust acceleration.
+- Reliability: all-or-nothing load per job, workflow rollback (`rollback: true`, `undo:` on actions), fallback workflows (before the start or after a failure, only if nothing was published), timeouts per workflow.
+- Triggers (`triggers.yaml`, since 0.19): cron, interval, file arrival, marker file, source change, webhook with token, end of another project. Run by `hdrctl watch` or `hdrctl serve`.
+- Sub-projects (since 0.19): a workflow step `type: project` runs another project, with cycle checks and results readable by the next steps.
+- Parameters, environments and secrets: `parameters.yaml`, `environments/<env>.yaml`, global variables in `~/.hydra/env`, secrets in `.hydra/secrets` or encrypted with SOPS, masked in every log.
+- Ships an MCP server so AI assistants can write and check pipelines, and a VS Code extension with schemas and snippets.
 
 ## Docs
 
-- [Get started](https://hydraetl.com/get-started/): what Hydra is and your first job
+- [Get started](https://hydraetl.com/get-started/): what Hydra ETL is and your first job
 - [Install](https://hydraetl.com/install/): `pip install hydra-etl`, extras and troubleshooting
 - [Hydra DSL reference](https://hydraetl.com/dsl/reference/): the YAML manifest language
 - [Guide](https://hydraetl.com/guide/): every source, destination, transformation and workflow element
 - [CLI tutorials](https://hydraetl.com/cli/): create, validate and run jobs with `hdrctl`
 - [Studio tutorials](https://hydraetl.com/studio/): build jobs visually
 - [VS Code extension](https://hydraetl.com/vscode/): completion and validation for manifests
+- [Changelog](https://hydraetl.com/changelog/): every release, dated, with its new features and fixes
 
 ## Comparisons
 
-- [Hydra vs Airflow, dbt, Dagster, Prefect, Databricks, Airbyte](https://hydraetl.com/migrate/)
+- [Hydra ETL vs Airflow, dbt, Dagster, Prefect, Databricks, Airbyte](https://hydraetl.com/migrate/)
 
 ## Optional
 
 - [Source code on GitHub](https://github.com/bejaouibechir/Hydra)
+- [Releases on GitHub](https://github.com/bejaouibechir/Hydra/releases)
 - [Package on PyPI](https://pypi.org/project/hydra-etl/)
 - [Playground](https://hydraetl.com/playground/)
+- [License](https://hydraetl.com/license/)
