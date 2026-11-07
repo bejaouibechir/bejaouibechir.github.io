@@ -1,0 +1,26 @@
+[
+  {
+    "sku": "SKU-001",
+    "name": "Notebook",
+    "unit_price": "12.50",
+    "quantity": 4
+  },
+  {
+    "sku": "SKU-002",
+    "name": "Keyboard",
+    "unit_price": "29.95",
+    "quantity": 3
+  },
+  {
+    "sku": "SKU-003",
+    "name": "Mouse",
+    "unit_price": "8.75",
+    "quantity": 6
+  },
+  {
+    "sku": "SKU-099",
+    "name": "Legacy product",
+    "unit_price": "5.00",
+    "quantity": 1
+  }
+]

@@ -44,10 +44,10 @@
         <table class="spectable">
           <thead><tr><th>form</th><th>resolved from</th><th>missing value</th><th>note</th></tr></thead>
           <tbody>
-            <tr><td><code>${ENV:NAME}</code></td><td>process environment</td><td>error</td><td>same resolver as SECRET</td></tr>
-            <tr><td><code>${SECRET:NAME}</code></td><td>secret store</td><td>error</td><td>never echoed in logs</td></tr>
-            <tr><td><code>{{ param:NAME }}</code></td><td>job parameters</td><td>error, strict</td><td>a whole value can be replaced</td></tr>
-            <tr><td><code>{{ env:NAME }}</code></td><td>process environment</td><td>tolerated</td><td>non-strict resolver</td></tr>
+            <tr><td><code>${ENV:NAME}</code></td><td>environment variables: <code>~/.hydra/env</code>, <code>~/.hydra/env.&lt;env&gt;</code>, project and job <code>.env</code>, <code>--env-file</code>, system</td><td>error</td><td>same resolver as SECRET</td></tr>
+            <tr><td><code>${SECRET:NAME}</code></td><td>environment (<code>DB_PASSWORD</code>), <code>.hydra/secrets.&lt;env&gt;</code>, <code>.hydra/secrets</code>, SOPS provider</td><td>error</td><td>masked in logs, errors and action output (<code>visibility</code>)</td></tr>
+            <tr><td><code>{{ param:NAME }}</code></td><td><code>-P</code>, <code>environments/&lt;env&gt;.yaml</code>, <code>parameters.yaml</code> default</td><td>error, strict</td><td>a whole value can be replaced</td></tr>
+            <tr><td><code>{{ env:NAME }}</code></td><td>environment variables (as <code>${ENV}</code>)</td><td>tolerated</td><td>non-strict resolver</td></tr>
           </tbody>
         </table>
       </section>
@@ -55,6 +55,8 @@
       <div class="why">
         <article class="info"><h2>Two syntaxes, not one</h2><p><code>${'{'}...{'}'}</code> and <code>{{ ... }}</code> are handled by two different resolvers. They are not interchangeable.</p></article>
         <article class="info"><h2>A literal secret is a blocking error</h2><p>Typing a password directly is refused here, as it is refused everywhere on this site.</p></article>
+        <article class="info"><h2>One environment, three kinds of values</h2><p><code>--env prod</code> (or <code>HYDRA_ENV</code>, or the Studio selector) picks <code>environments/prod.yaml</code> for parameters, <code>~/.hydra/env.prod</code> for global variables shared by every project, and <code>.hydra/secrets.prod</code> for secrets. Manage them with <code>hdrctl param</code>, <code>hdrctl env</code> and <code>hdrctl secret</code>. <em>Hydra 0.18.0+</em></p></article>
+        <article class="info"><h2>Variables: the last layer wins</h2><p><code>~/.hydra/env</code> &lt; <code>~/.hydra/env.&lt;env&gt;</code> &lt; project <code>.env</code> &lt; job <code>.env</code> &lt; <code>--env-file</code>. A file wins over a variable already set in the system.</p></article>
       </div>
     </div>
   

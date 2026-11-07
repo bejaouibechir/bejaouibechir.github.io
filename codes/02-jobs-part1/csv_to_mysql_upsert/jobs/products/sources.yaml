@@ -1,0 +1,7 @@
+version: "1.0"
+sources:
+  src_products:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/products.csv

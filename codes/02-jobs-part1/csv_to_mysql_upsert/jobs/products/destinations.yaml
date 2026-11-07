@@ -1,0 +1,14 @@
+version: "1.0"
+destinations:
+  db_products:
+    type: mysql
+    connection:
+      host: 127.0.0.1
+      port: 3312
+      user: etl
+      password: ${SECRET:MYSQL_PASSWORD}
+      database: shop
+    load:
+      table: products
+      mode: upsert
+      key: [sku]

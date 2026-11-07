@@ -6,7 +6,7 @@
   <h2>What it contains</h2>
   <ul>
     <li><b>Parameter lookup</b> — Resolved from declarations and layered values, with CLI overrides strongest.</li>
-    <li><b>Environment lookup</b> — Read from the current process environment.</li>
+    <li><b>Environment lookup</b> — Read from the environment variables of the run: <code>~/.hydra/env</code>, <code>~/.hydra/env.&lt;env&gt;</code>, the <code>.env</code> files, <code>--env-file</code>, then the system.</li>
     <li><b>Two substitution modes</b> — A full placeholder preserves type; an embedded placeholder produces text.</li>
   </ul>
 

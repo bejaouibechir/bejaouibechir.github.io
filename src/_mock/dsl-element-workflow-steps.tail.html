@@ -5,8 +5,8 @@
 
   <h2>What it contains</h2>
   <ul>
-    <li><b>Identity and kind</b> — Unique name plus <code>job</code> or <code>action</code> type.</li>
-    <li><b>Work target</b> — A job directory or action name with parameters.</li>
+    <li><b>Identity and kind</b> — Unique name plus <code>job</code>, <code>action</code> or <code>project</code> type.</li>
+    <li><b>Work target</b> — A job directory, an action name with parameters, or another project.</li>
     <li><b>Control</b> — Dependencies, condition, enabled flag, failure policy, and optional retry.</li>
   </ul>
 
@@ -27,6 +27,28 @@
     </svg>
     <figcaption>Names create nodes; depends_on creates order.</figcaption>
   </figure>
+
+  <h2>Project nodes <small>(Hydra 0.19+)</small></h2>
+  <p>A step of <code>type: project</code> runs another Hydra project — its <code>thread.yaml</code>, or only the <code>workflows</code> listed. The calling project is the master.</p>
+  <pre class="yaml">    - name: crm_sync
+      type: project
+      project: ../crm_sync        # folder relative to the master (ref: path, default) — or ref: name
+      env: inherit                # inherit | none | &lt;environment&gt;
+      params: {batch_date: "{{ param:run_date }}"}
+      variables: {EXPORT_DIR: out/crm}
+      workflows: [ingest, report]
+      outputs: [last_batch]
+      isolation: inprocess        # inprocess | subprocess
+      timeout: 10m
+      overlap: wait               # wait | skip | fail</pre>
+  <ul>
+    <li><b>What passes</b> — the environment name; <code>params</code> and <code>variables</code> only when listed. Secrets never: <code>${SECRET:…}</code> there is refused.</li>
+    <li><b>Results</b> — <code>{{ project:STEP.status }}</code>, <code>.rows</code>, <code>.duration</code> and <code>.param.NAME</code> for each name in <code>outputs</code>.</li>
+    <li><b>Cycles</b> — <code>master → crm_sync → master</code> and more than 5 levels are refused by <code>hdrctl workflow validate</code>, <code>hdrctl run</code>, Studio and the MCP tool <code>hydra_project_calls</code>.</li>
+    <li><b>One at a time</b> — a project already running makes the step wait, skip or fail (<code>overlap</code>).</li>
+  </ul>
+  <pre class="cmd">hdrctl workflow validate nightly        # prints the tree of called projects
+hdrctl run ../crm_sync -w ingest -w report --env prod</pre>
 
   <h2>Run the complete example</h2>
   <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>

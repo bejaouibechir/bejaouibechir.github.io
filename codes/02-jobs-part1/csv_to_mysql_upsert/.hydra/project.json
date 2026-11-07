@@ -1,0 +1,5 @@
+{
+  "id": "whitebook-csv-mysql-upsert",
+  "name": "csv_to_mysql_upsert",
+  "description": "Chapter 02: CSV to MySQL with an upsert keyed by sku"
+}

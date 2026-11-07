@@ -1,0 +1,4 @@
+.hydra/secrets
+.venv/
+__pycache__/
+*.pyc

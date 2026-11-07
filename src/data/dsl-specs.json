@@ -810,10 +810,10 @@
     },
     {
      "key": "type",
-     "type": "job · action",
+     "type": "job · action · project",
      "required": true,
      "default": null,
-     "constraint": "valeurs : job · action",
+     "constraint": "valeurs : job · action · project",
      "description": ""
     },
     {
@@ -879,6 +879,78 @@
      "default": null,
      "constraint": "",
      "description": ""
+    },
+    {
+     "key": "project",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "type: project uniquement",
+     "description": "Called project: folder relative to the project root (ref: path) or Studio workspace name (ref: name). Hydra 0.19+"
+    },
+    {
+     "key": "ref",
+     "type": "path · name",
+     "required": false,
+     "default": "path",
+     "constraint": "valeurs : path · name",
+     "description": ""
+    },
+    {
+     "key": "env",
+     "type": "string",
+     "required": false,
+     "default": "inherit",
+     "constraint": "inherit · none · <environnement>",
+     "description": ""
+    },
+    {
+     "key": "variables",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "pas de ${SECRET:…}",
+     "description": ""
+    },
+    {
+     "key": "workflows",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "outputs",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "isolation",
+     "type": "inprocess · subprocess",
+     "required": false,
+     "default": "inprocess",
+     "constraint": "valeurs : inprocess · subprocess",
+     "description": ""
+    },
+    {
+     "key": "timeout",
+     "type": "duration",
+     "required": false,
+     "default": null,
+     "constraint": "30s · 5m · 1h ou secondes, > 0",
+     "description": ""
+    },
+    {
+     "key": "overlap",
+     "type": "wait · skip · fail",
+     "required": false,
+     "default": "wait",
+     "constraint": "valeurs : wait · skip · fail",
+     "description": ""
     }
    ]
   },
@@ -907,6 +979,181 @@
      "required": false,
      "default": "fixed",
      "constraint": "valeurs : fixed · exponential",
+     "description": ""
+    }
+   ]
+  },
+  "triggers": {
+   "model": "ProjectTrigger",
+   "keys": [
+    {
+     "key": "name",
+     "type": "string",
+     "required": true,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "type",
+     "type": "cron · interval · file · marker · source_change · webhook · after_project",
+     "required": true,
+     "default": null,
+     "constraint": "valeurs : cron · interval · file · marker · source_change · webhook · after_project",
+     "description": ""
+    },
+    {
+     "key": "enabled",
+     "type": "bool",
+     "required": false,
+     "default": true,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "env",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "workflows",
+     "type": "list[string]",
+     "required": false,
+     "default": null,
+     "constraint": "au moins 1 element(s)",
+     "description": ""
+    },
+    {
+     "key": "params",
+     "type": "mapping",
+     "required": false,
+     "default": null,
+     "constraint": "pas de ${SECRET:…}",
+     "description": ""
+    },
+    {
+     "key": "overlap",
+     "type": "skip · wait · fail",
+     "required": false,
+     "default": "skip",
+     "constraint": "valeurs : skip · wait · fail",
+     "description": ""
+    },
+    {
+     "key": "timeout",
+     "type": "duration",
+     "required": false,
+     "default": null,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "retry",
+     "type": "{max, delay}",
+     "required": false,
+     "default": null,
+     "constraint": "max 1 à 10",
+     "description": ""
+    },
+    {
+     "key": "cron",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "type: cron — 5 champs",
+     "description": ""
+    },
+    {
+     "key": "timezone",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "type: cron — IANA",
+     "description": ""
+    },
+    {
+     "key": "every",
+     "type": "duration",
+     "required": false,
+     "default": null,
+     "constraint": "interval ; file/marker défaut 5s ; source_change défaut 1m",
+     "description": ""
+    },
+    {
+     "key": "path",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "file / marker — dans le projet",
+     "description": ""
+    },
+    {
+     "key": "events",
+     "type": "list[added · modified]",
+     "required": false,
+     "default": [
+      "added"
+     ],
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "debounce",
+     "type": "duration",
+     "required": false,
+     "default": "2s",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "consume",
+     "type": "bool",
+     "required": false,
+     "default": true,
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "source",
+     "type": "{job, id, check, column}",
+     "required": false,
+     "default": null,
+     "constraint": "type: source_change",
+     "description": ""
+    },
+    {
+     "key": "token",
+     "type": "${SECRET:…}",
+     "required": false,
+     "default": null,
+     "constraint": "type: webhook",
+     "description": ""
+    },
+    {
+     "key": "project",
+     "type": "string",
+     "required": false,
+     "default": null,
+     "constraint": "type: after_project",
+     "description": ""
+    },
+    {
+     "key": "ref",
+     "type": "path · name",
+     "required": false,
+     "default": "path",
+     "constraint": "",
+     "description": ""
+    },
+    {
+     "key": "on",
+     "type": "success · failure · any",
+     "required": false,
+     "default": "success",
+     "constraint": "",
      "description": ""
     }
    ]

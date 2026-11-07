@@ -1,0 +1,14 @@
+[
+  {
+    "sku": "SKU-001",
+    "name": "Notebook (old)",
+    "unit_price": "10.00",
+    "quantity": 2
+  },
+  {
+    "sku": "SKU-099",
+    "name": "Legacy product",
+    "unit_price": "5.00",
+    "quantity": 1
+  }
+]

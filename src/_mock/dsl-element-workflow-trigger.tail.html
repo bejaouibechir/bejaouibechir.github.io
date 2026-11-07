@@ -28,6 +28,35 @@
     <figcaption>One graph can have one declared way in.</figcaption>
   </figure>
 
+  <h2>Project triggers <small>(Hydra 0.19+)</small></h2>
+  <p><code>workflow.trigger</code> starts <b>one workflow</b>. <code>triggers.yaml</code>, at the root of a project, starts <b>the whole project</b> — its <code>thread.yaml</code>, or the <code>workflows</code> listed — and knows more events.</p>
+  <pre class="yaml">version: "1.0"
+triggers:
+  - name: nightly
+    type: cron                  # cron | interval | file | marker | source_change | webhook | after_project
+    cron: "0 2 * * *"
+    timezone: Europe/Paris
+    env: prod
+    retry: {max: 2, delay: 5m}
+  - name: new_orders
+    type: file                  # {{ param:trigger.file }} in the run
+    path: inbox/*.csv
+  - name: on_push
+    type: webhook               # hdrctl trigger token on_push
+    token: ${SECRET:trigger.on_push.token}
+  - name: after_crm
+    type: after_project         # on: success | failure | any
+    project: ../crm</pre>
+  <ul>
+    <li><b>Time</b> — <code>cron</code> (five fields, <code>timezone</code>) and <code>interval</code> (<code>every: 15m</code>).</li>
+    <li><b>Files</b> — <code>file</code> (added or modified, stable for <code>debounce</code>) and <code>marker</code> (a <code>READY</code> file, removed before the run).</li>
+    <li><b>Data</b> — <code>source_change</code>: <code>count</code>, <code>max</code> of a column or <code>checksum</code> of a job's source.</li>
+    <li><b>Calls</b> — <code>webhook</code> with a token kept as a project secret; <code>hdrctl trigger fire</code> by hand.</li>
+    <li><b>Chains</b> — <code>after_project</code>: the end of another project.</li>
+  </ul>
+  <pre class="cmd">hdrctl trigger validate
+hdrctl watch --env prod      # runs the triggers; hdrctl serve runs the same engine</pre>
+
   <h2>Run the complete example</h2>
   <p>Copy this manifest from the verified documentation project, then run it from the repository root.</p>
   <pre class="yaml">workflow:
