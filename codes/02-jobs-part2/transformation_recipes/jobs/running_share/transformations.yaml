@@ -1,0 +1,20 @@
+version: '1.0'
+transformations:
+  steps:
+  - cast:
+      mapping:
+        amount: float
+  - window:
+      partition_by: country
+      order_by:
+      - id
+      columns:
+        running:
+          func: cumsum
+          col: amount
+        country_total:
+          func: sum
+          col: amount
+  - calculate:
+      column: cumulative_pct
+      expr: running / country_total * 100

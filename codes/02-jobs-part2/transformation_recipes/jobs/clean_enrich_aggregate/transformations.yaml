@@ -1,0 +1,24 @@
+version: '1.0'
+transformations:
+  steps:
+  - clean:
+      columns:
+      - email
+      case: lower
+  - deduplicate:
+      columns:
+      - email
+  - join:
+      right: crm_accounts
+      key: email
+      how: left
+  - fill_null:
+      columns:
+        segment: unknown
+  - aggregate:
+      by:
+      - segment
+      agg:
+        nb_contacts:
+          func: count
+          col: email

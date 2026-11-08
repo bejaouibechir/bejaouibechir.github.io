@@ -1,0 +1,4 @@
+id,customer_id,amount,status
+3,C100,45,paid
+4,C102,30,cancelled
+5,C101,20,paid

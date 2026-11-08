@@ -1,0 +1,17 @@
+version: '1.0'
+transformations:
+  steps:
+  - cast:
+      mapping:
+        revenue: float
+  - window:
+      partition_by: store
+      order_by:
+      - month
+      columns:
+        prev_revenue:
+          func: lag
+          col: revenue
+  - calculate:
+      column: growth_pct
+      expr: (revenue - prev_revenue) / prev_revenue * 100

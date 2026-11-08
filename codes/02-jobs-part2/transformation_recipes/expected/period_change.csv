@@ -1,0 +1,6 @@
+store,month,revenue,prev_revenue,growth_pct
+North,2025-01,100.0,nan,nan
+South,2025-01,50.0,nan,nan
+North,2025-02,125.0,100.0,25.0
+South,2025-02,40.0,50.0,-20.0
+North,2025-03,150.0,125.0,20.0

@@ -1,0 +1,14 @@
+version: '1.0'
+sources:
+  contacts:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/contacts.csv
+      batch_size: 100
+  crm_accounts:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/crm_accounts.csv
+      batch_size: 100

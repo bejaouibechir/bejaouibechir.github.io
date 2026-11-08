@@ -1,0 +1,6 @@
+id,customer_id,country,amount,status
+1,C100,FR,120,paid
+2,C101,BE,80,paid
+3,C100,FR,45,paid
+4,C102,DE,30,cancelled
+5,C101,BE,20,paid

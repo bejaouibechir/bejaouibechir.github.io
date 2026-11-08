@@ -1,0 +1,20 @@
+version: '1.0'
+sources:
+  stores:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/stores.csv
+      batch_size: 100
+  calendar:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/calendar.csv
+      batch_size: 100
+  daily_sales:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/daily_sales.csv
+      batch_size: 100

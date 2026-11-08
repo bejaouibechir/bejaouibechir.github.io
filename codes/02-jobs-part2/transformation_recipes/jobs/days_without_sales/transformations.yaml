@@ -1,0 +1,14 @@
+version: '1.0'
+transformations:
+  steps:
+  - join:
+      right: calendar
+      how: cross
+  - join:
+      right: daily_sales
+      key:
+      - store_id
+      - day
+      how: left
+  - filter:
+      expr: amount != amount

@@ -1,0 +1,19 @@
+version: '1.0'
+transformations:
+  steps:
+  - window:
+      partition_by: customer_id
+      order_by:
+      - col: id
+        desc: true
+      columns:
+        rn:
+          func: row_number
+  - filter:
+      expr: rn == 1
+  - select:
+      columns:
+      - id
+      - customer_id
+      - amount
+      - status
