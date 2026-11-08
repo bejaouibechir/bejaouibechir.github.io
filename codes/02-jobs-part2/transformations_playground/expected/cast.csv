@@ -1,0 +1,5 @@
+id,customer_id,country,amount,status,created_at,tags,tax
+1,100, FR ,120.0,paid,2025-01-01 00:00:00, kitchen; gift ,12.0
+2,101,BE,80.0,cancelled,2025-01-02 00:00:00,office,8.0
+3,100,FR,45.5,paid,2025-01-03 00:00:00,sale;gift,4.55
+4,102,DE,nan,paid,2025-01-04 00:00:00,,0.0

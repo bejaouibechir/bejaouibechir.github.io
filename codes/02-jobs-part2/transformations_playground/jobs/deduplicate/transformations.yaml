@@ -1,0 +1,7 @@
+version: '1.0'
+transformations:
+  steps:
+  - deduplicate:
+      columns:
+      - customer_id
+      keep: last

@@ -1,0 +1,6 @@
+version: '1.0'
+transformations:
+  steps:
+  - merge:
+      right: order_updates
+      key: id

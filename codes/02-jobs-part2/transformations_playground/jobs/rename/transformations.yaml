@@ -1,0 +1,7 @@
+version: '1.0'
+transformations:
+  steps:
+  - rename:
+      mapping:
+        customer_id: client_id
+        amount: total_eur

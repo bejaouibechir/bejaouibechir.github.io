@@ -1,0 +1,15 @@
+version: '1.0'
+transformations:
+  steps:
+  - trim:
+      columns:
+      - country
+  - cast:
+      mapping:
+        amount: float
+  - pivot:
+      index:
+      - country
+      column: status
+      values: amount
+      aggfunc: sum

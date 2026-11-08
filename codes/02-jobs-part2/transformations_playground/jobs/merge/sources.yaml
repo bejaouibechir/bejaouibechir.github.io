@@ -1,0 +1,14 @@
+version: '1.0'
+sources:
+  orders:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/orders.csv
+      batch_size: 100
+  order_updates:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/order_updates.csv
+      batch_size: 100

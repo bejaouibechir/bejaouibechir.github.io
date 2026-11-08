@@ -1,0 +1,7 @@
+version: '1.0'
+transformations:
+  steps:
+  - join:
+      right: customers
+      key: customer_id
+      how: left

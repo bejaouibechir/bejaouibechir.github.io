@@ -1,0 +1,11 @@
+version: '1.0'
+transformations:
+  steps:
+  - unpivot:
+      id_vars:
+      - id
+      value_vars:
+      - amount
+      - tax
+      var_name: metric
+      value_name: value

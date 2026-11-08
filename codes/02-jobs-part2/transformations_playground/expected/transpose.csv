@@ -1,0 +1,8 @@
+field,1,2,3,4
+customer_id,100,101,100,102
+country, FR ,BE,FR,DE
+amount,120.0,80.0,45.5,
+status,paid,cancelled,paid,paid
+created_at,2025-01-01,2025-01-02,2025-01-03,2025-01-04
+tags, kitchen; gift ,office,sale;gift,
+tax,12.0,8.0,4.55,0.0

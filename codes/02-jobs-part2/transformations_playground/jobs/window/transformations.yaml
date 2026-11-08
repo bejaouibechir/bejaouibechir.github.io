@@ -1,0 +1,23 @@
+version: '1.0'
+transformations:
+  steps:
+  - cast:
+      mapping:
+        amount: float
+  - window:
+      partition_by: customer_id
+      order_by:
+      - id
+      columns:
+        order_no:
+          func: row_number
+        prev_amount:
+          func: lag
+          col: amount
+          default: 0
+        running_total:
+          func: cumsum
+          col: amount
+        customer_total:
+          func: sum
+          col: amount

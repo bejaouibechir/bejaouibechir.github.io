@@ -1,0 +1,10 @@
+version: '1.0'
+transformations:
+  steps:
+  - cast:
+      mapping:
+        amount: float
+  - sort:
+      by:
+      - amount
+      ascending: false

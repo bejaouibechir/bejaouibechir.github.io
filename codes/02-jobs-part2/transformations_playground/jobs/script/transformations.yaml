@@ -1,0 +1,19 @@
+version: '1.0'
+transformations:
+  steps:
+  - trim:
+      columns:
+      - country
+  - cast:
+      mapping:
+        amount: float
+  - script:
+      mode: row
+      inputs:
+      - amount
+      - country
+      outputs:
+        segment: str
+      code: "if amount is None:\n    segment = \"unknown\"\nelif country == \"FR\"\
+        \ and amount > 100:\n    segment = \"premium_fr\"\nelse:\n    segment = \"\
+        standard\"\n"

@@ -1,0 +1,8 @@
+version: '1.0'
+transformations:
+  steps:
+  - cast:
+      mapping:
+        id: int
+        amount: float
+        created_at: datetime

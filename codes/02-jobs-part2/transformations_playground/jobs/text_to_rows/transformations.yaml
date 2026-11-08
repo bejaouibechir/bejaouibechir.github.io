@@ -1,0 +1,7 @@
+version: '1.0'
+transformations:
+  steps:
+  - text_to_rows:
+      column: tags
+      sep: ;
+      index_column: tag_pos

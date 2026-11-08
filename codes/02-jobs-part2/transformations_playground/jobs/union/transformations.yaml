@@ -1,0 +1,6 @@
+version: '1.0'
+transformations:
+  steps:
+  - union:
+      right: orders_2025
+      distinct: true

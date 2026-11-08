@@ -1,0 +1,7 @@
+version: '1.0'
+transformations:
+  steps:
+  - clean:
+      columns:
+      - status
+      case: upper

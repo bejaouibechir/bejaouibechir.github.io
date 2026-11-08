@@ -1,0 +1,2 @@
+id,customer_id,country,amount,status,created_at,tags,tax
+5,103,FR,50.0,paid,2025-02-01,new,5.0
