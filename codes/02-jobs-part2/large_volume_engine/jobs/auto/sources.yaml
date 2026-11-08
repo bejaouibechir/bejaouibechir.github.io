@@ -1,0 +1,8 @@
+version: '1.0'
+sources:
+  sales:
+    type: csv
+    connection: {}
+    extract:
+      table: ../../data/sales.csv
+      batch_size: 100000

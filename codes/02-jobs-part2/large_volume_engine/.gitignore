@@ -1,0 +1,3 @@
+data/sales.csv
+jobs/*/output/*
+!jobs/*/output/.gitkeep

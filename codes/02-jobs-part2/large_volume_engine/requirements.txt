@@ -1,0 +1,1 @@
+hydra-etl[duckdb]==0.19.1

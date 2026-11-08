@@ -1,0 +1,17 @@
+version: '1.0'
+transformations:
+  engine: auto
+  steps:
+  - cast:
+      mapping:
+        amount: float
+  - aggregate:
+      by:
+      - country
+      agg:
+        total_amount:
+          func: sum
+          col: amount
+        orders:
+          func: count
+          col: amount
