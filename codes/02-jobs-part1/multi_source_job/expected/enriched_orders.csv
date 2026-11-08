@@ -1,0 +1,6 @@
+order_id,customer_id,amount,customer_name,city
+ORD-001,C001,49.90,Alice,Paris
+ORD-002,C002,20.00,Bob,London
+ORD-003,C001,15.50,Alice,Paris
+ORD-004,C999,8.00,,
+ORD-005,C003,0.00,Carol,Lyon

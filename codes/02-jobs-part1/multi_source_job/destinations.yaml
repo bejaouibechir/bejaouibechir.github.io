@@ -1,0 +1,8 @@
+version: "1.0"
+destinations:
+  dwh_orders:
+    type: csv
+    connection: {}
+    load:
+      table: outputs/enriched_orders.csv
+      mode: replace

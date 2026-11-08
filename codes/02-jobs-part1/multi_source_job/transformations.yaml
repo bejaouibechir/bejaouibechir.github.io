@@ -1,0 +1,16 @@
+version: "1.0"
+transformations:
+  steps:
+    - join:
+        right: customers
+        key: customer_id
+        how: left
+    - fill_null:
+        columns:
+          customer_name: ""
+          city: ""
+    - select:
+        columns: [order_id, customer_id, amount, customer_name, city]
+    - sort:
+        by: [order_id]
+        ascending: true
