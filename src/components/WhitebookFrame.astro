@@ -1,0 +1,50 @@
+---
+import { whitebookChapters, whitebookPdf } from '../data/whitebook-chapters';
+import styles from '../styles/whitebook.css?raw';
+
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+---
+
+<style is:global set:html={styles}></style>
+<div class="wb-shell">
+  <aside class="wb-sidebar" aria-label="White Book chapters">
+    <a class="wb-brand" href="/dsl/">
+      <span class="wb-brand-mark">H</span>
+      <span><strong>Hydra DSL</strong><small>White Book · version 1.0</small></span>
+    </a>
+    <p class="wb-nav-label">CONTENTS</p>
+    <nav aria-label="Chapters">
+      <a class:list={['wb-nav-link', { active: current === '' }]} href="/dsl/" aria-current={current === '' ? 'page' : undefined}>
+        <span class="wb-nav-num">⌂</span><span>Overview</span>
+      </a>
+      {whitebookChapters.map((chapter) => (
+        <a
+          class:list={['wb-nav-link', { active: current === chapter.slug }]}
+          href={'/dsl/' + chapter.slug + '/'}
+          aria-current={current === chapter.slug ? 'page' : undefined}
+        >
+          <span class="wb-nav-num">{chapter.number}</span><span>{chapter.title}</span>
+        </a>
+      ))}
+    </nav>
+    <p class="wb-sidebar-note">Six complete articles, diagrams, runnable labs and downloadable examples.</p>
+  </aside>
+
+  <main class="wb-main">
+    <div class="wb-topbar">
+      <span class="wb-breadcrumb"><a href="/dsl/">Hydra DSL</a>{current && <span> / {whitebookChapters.find((item) => item.slug === current)?.title}</span>}</span>
+      <a class="wb-pdf" href={whitebookPdf} download="Hydra_DSL_v_1.0_White_book.pdf" type="application/pdf" aria-label="Download the English White Book PDF">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2.75h8l4 4V21H6a2 2 0 0 1-2-2V4.75a2 2 0 0 1 2-2Z"/>
+          <path d="M14 2.75v4h4"/>
+          <path d="M8 12h8M8 16h6"/>
+        </svg>
+        <span>Download PDF <small>English · White Book</small></span>
+      </a>
+    </div>
+    <slot />
+  </main>
+</div>

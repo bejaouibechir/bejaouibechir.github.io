@@ -1,23 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DslShell from '../components/DslShell.astro';
-import SpecTable from '../components/SpecTable.astro';
-import css from '../_mock/dsl.css?raw';
-import head from '../_mock/dsl-rows.head.html?raw';
-import tail from '../_mock/dsl-rows.tail.html?raw';
-import engine from '../scripts/dsl-engine.js?raw';
-import js from '../_mock/dsl.js?raw';
+import WhitebookFrame from '../components/WhitebookFrame.astro';
+import { whitebookChapters } from '../data/whitebook-chapters';
 ---
 
-<BaseLayout title="Hydra DSL: filter, sort and deduplicate rows in YAML" description="Filter, sort, deduplicate: the operations that choose and clean rows in a Hydra YAML pipeline.">
-  <style is:global set:html={css}></style>
-  <DslShell current="rows">
-    <div class="main-inner">
-      <Fragment set:html={head} />
-      <SpecTable block="op.filter" title="filter" note="Generated from the engine models." />
-      <Fragment set:html={tail} />
+<BaseLayout title="Hydra DSL White Book" description="The complete Hydra DSL White Book: jobs, transformations, workflows, actions, parameters and secrets, with diagrams, labs and runnable examples.">
+  <WhitebookFrame>
+    <div class="wb-hero">
+      <p class="wb-kicker">THE COMPLETE GUIDE · HYDRA DSL 1.0</p>
+      <h1>Build data pipelines you can read.</h1>
+      <p>Learn the Hydra DSL from its first YAML file to complete projects. Follow six articles with diagrams, hands-on Killercoda labs, runnable GitHub examples and downloadable ZIP files.</p>
+      <div class="wb-hero-actions">
+        <a class="wb-primary" href="/dsl/01-basics/">Start reading →</a>
+        <a class="wb-secondary" href="/dsl/02-jobs-part1/">Explore jobs</a>
+      </div>
     </div>
-  </DslShell>
-  <script is:inline set:html={engine}></script>
-  <script is:inline set:html={js}></script>
+    <h2 class="wb-section-title">Read the White Book</h2>
+    <div class="wb-chapter-grid">
+      {whitebookChapters.map((chapter) => (
+        <a class="wb-chapter-card" href={'/dsl/' + chapter.slug + '/'}>
+          <span class="number">{chapter.number} / CHAPTER</span>
+          <h3>{chapter.title}</h3>
+          <p>{chapter.description}</p>
+        </a>
+      ))}
+    </div>
+  </WhitebookFrame>
 </BaseLayout>

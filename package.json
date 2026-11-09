@@ -9,7 +9,9 @@
     "lint:js": "eslint src --ext .js,.jsx,.astro --fix || true",
     "lint:html": "htmlhint dist || true",
     "test:lighthouse": "lighthouse https://hydraetl.com --output-path=./lighthouse.html || true",
-    "test": "playwright test || true"
+    "test": "playwright test || true",
+    "predev": "node scripts/prepare-whitebook.cjs",
+    "prebuild": "node scripts/prepare-whitebook.cjs"
   },
   "dependencies": {
     "@astrojs/react": "^3.0.0",

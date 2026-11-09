@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WhitebookFrame from '../../components/WhitebookFrame.astro';
+import { whitebookChapters } from '../../data/whitebook-chapters';
+import * as basics from '../../whitebook-pages/01-basics.md';
+import * as jobs1 from '../../whitebook-pages/02-jobs-part1.md';
+import * as jobs2 from '../../whitebook-pages/02-jobs-part2.md';
+import * as workflows from '../../whitebook-pages/03-workflows.md';
+import * as actions from '../../whitebook-pages/04-actions.md';
+import * as parameters from '../../whitebook-pages/05-parameters-secrets.md';
+
+const pages = {
+  '01-basics': basics,
+  '02-jobs-part1': jobs1,
+  '02-jobs-part2': jobs2,
+  '03-workflows': workflows,
+  '04-actions': actions,
+  '05-parameters-secrets': parameters,
+} as const;
+
+export function getStaticPaths() {
+  return whitebookChapters.map((chapter) => ({
+    params: { chapter: chapter.slug },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const index = whitebookChapters.findIndex((item) => item.slug === chapter.slug);
+const previous = whitebookChapters[index - 1];
+const next = whitebookChapters[index + 1];
+const Content = pages[chapter.slug as keyof typeof pages].Content;
+---
+
+<BaseLayout title={chapter.title + ' | Hydra DSL White Book'} description={chapter.description}>
+  <WhitebookFrame current={chapter.slug}>
+    <header class="wb-chapter-top">
+      <p class="wb-kicker">CHAPTER {chapter.number} / HYDRA DSL WHITE BOOK</p>
+      <h1>{chapter.title}</h1>
+      <p>{chapter.description}</p>
+    </header>
+    <article class="wb-prose">
+      <Content />
+    </article>
+    <nav class="wb-next-prev" aria-label="Chapter navigation">
+      <span>{previous && <a href={'/dsl/' + previous.slug + '/'}>← {previous.title}</a>}</span>
+      <span>{next && <a href={'/dsl/' + next.slug + '/'}>{next.title} →</a>}</span>
+    </nav>
+  </WhitebookFrame>
+</BaseLayout>
