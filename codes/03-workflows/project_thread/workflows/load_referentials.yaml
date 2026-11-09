@@ -1,0 +1,9 @@
+version: '1.0'
+workflow:
+  name: load_referentials
+  trigger: {type: manual}
+  steps:
+    - name: mark_referentials
+      type: action
+      action: log
+      params: {message: 'Referentials ready'}

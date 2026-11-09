@@ -1,0 +1,28 @@
+version: '1.0'
+workflow:
+  name: rollback_demo
+  rollback: true
+  trigger:
+    type: manual
+  steps:
+    - name: load_invoices
+      type: job
+      job: ../jobs/load_invoices
+    - name: notify
+      type: action
+      action: webhook
+      params:
+        url: http://127.0.0.1:8765/notify
+        method: POST
+        body: {event: invoices_loaded}
+      undo:
+        action: webhook
+        params:
+          url: http://127.0.0.1:8765/cancel
+          method: POST
+          body: {event: invoices_loaded}
+      depends_on: [load_invoices]
+    - name: load_payments
+      type: job
+      job: ../jobs/load_payments
+      depends_on: [notify]

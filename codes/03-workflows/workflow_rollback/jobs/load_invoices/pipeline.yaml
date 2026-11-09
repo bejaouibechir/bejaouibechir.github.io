@@ -1,0 +1,3 @@
+pipeline:
+  from: input
+  to: target

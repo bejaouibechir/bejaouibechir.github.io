@@ -1,0 +1,14 @@
+version: '1.0'
+workflow:
+  name: load_stock
+  trigger: {type: manual}
+  steps:
+    - name: wait_for_stock
+      type: action
+      action: delay
+      params: {seconds: 0.3}
+    - name: mark_stock
+      type: action
+      action: log
+      params: {message: 'Stock ready'}
+      depends_on: [wait_for_stock]

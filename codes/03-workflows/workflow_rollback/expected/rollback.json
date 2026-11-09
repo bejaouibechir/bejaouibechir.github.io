@@ -1,0 +1,1 @@
+{"workflow_success":false,"undo_order":["notify","load_invoices"],"webhook_calls":["/notify","/cancel"],"tables_after":{"invoices":[[1,100]],"payments":[[1,100]]},"undo_journal_exists":false}

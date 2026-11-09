@@ -1,0 +1,9 @@
+version: '1.0'
+workflow:
+  name: build_reports
+  trigger: {type: manual}
+  steps:
+    - name: mark_report
+      type: action
+      action: log
+      params: {message: 'Report built after parallel stage and delay'}

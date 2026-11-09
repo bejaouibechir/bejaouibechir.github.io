@@ -1,0 +1,9 @@
+version: '1.0'
+workflow:
+  name: load_sales_backup
+  trigger: {type: manual}
+  steps:
+    - name: use_backup
+      type: action
+      action: log
+      params: {message: 'Backup sales used after timeout'}

@@ -1,0 +1,6 @@
+.hydra/secrets
+.hydra/undo/
+.venv/
+__pycache__/
+*.pyc
+data/*.hidden
