@@ -1,0 +1,3 @@
+outputs/*.csv
+.hydra/history/
+__pycache__/

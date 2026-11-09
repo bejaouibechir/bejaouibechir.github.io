@@ -1,0 +1,8 @@
+version: '1.0'
+destinations:
+  filtered:
+    type: csv
+    connection: {}
+    load:
+      table: "../../outputs/filtered_{{ param:env_label }}.csv"
+      mode: replace

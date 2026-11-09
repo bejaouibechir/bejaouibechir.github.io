@@ -1,0 +1,5 @@
+parameters:
+  country: US
+  min_amount: 100
+  env_label: prod
+  publish_enabled: true

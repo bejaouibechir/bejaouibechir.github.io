@@ -1,0 +1,18 @@
+version: '1.0'
+parameters:
+  country:
+    type: str
+    default: FR
+    description: Selects the input CSV file.
+  min_amount:
+    type: int
+    default: 50
+    description: Minimum order amount to keep.
+  env_label:
+    type: str
+    default: local
+    description: Distinguishes output files from each run.
+  publish_enabled:
+    type: bool
+    default: false
+    description: Controls the publish step in the workflow.

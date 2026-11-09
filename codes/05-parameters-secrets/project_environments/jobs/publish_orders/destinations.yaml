@@ -1,0 +1,8 @@
+version: '1.0'
+destinations:
+  published:
+    type: csv
+    connection: {}
+    load:
+      table: "../../outputs/published_{{ param:env_label }}.csv"
+      mode: replace

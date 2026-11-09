@@ -1,0 +1,7 @@
+version: '1.0'
+sources:
+  filtered:
+    type: csv
+    connection: {}
+    extract:
+      table: "../../outputs/filtered_{{ param:env_label }}.csv"

@@ -1,0 +1,14 @@
+version: '1.0'
+workflow:
+  name: main
+  trigger:
+    type: manual
+  steps:
+    - name: filter_orders
+      type: job
+      job: ../jobs/filter_orders
+    - name: publish_orders
+      type: job
+      job: ../jobs/publish_orders
+      depends_on: [filter_orders]
+      when: "{{ param:publish_enabled }} == True"

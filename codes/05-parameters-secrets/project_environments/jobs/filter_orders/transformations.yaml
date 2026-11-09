@@ -1,0 +1,8 @@
+version: '1.0'
+transformations:
+  steps:
+    - cast:
+        mapping:
+          amount: int
+    - filter:
+        expr: "amount >= {{ param:min_amount }}"

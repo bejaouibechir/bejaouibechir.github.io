@@ -1,0 +1,5 @@
+parameters:
+  country: FR
+  min_amount: 50
+  env_label: dev
+  publish_enabled: false
