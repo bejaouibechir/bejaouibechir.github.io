@@ -1,0 +1,2 @@
+hydra-etl==0.19.1
+paramiko>=3.4,<5

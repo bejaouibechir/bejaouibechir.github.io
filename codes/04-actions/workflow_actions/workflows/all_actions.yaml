@@ -1,0 +1,93 @@
+workflow:
+  name: all_actions
+  trigger:
+    type: manual
+  steps:
+    - name: set_batch
+      type: action
+      action: set_param
+      params: {name: batch_tag, value: nightly, type: str}
+    - name: announce
+      type: action
+      action: log
+      params:
+        message: "Starting {{ param:batch_tag }}"
+      depends_on: [set_batch]
+    - name: check_batch
+      type: action
+      action: condition
+      params:
+        name: is_nightly
+        expr: "'{{ param:batch_tag }}' == 'nightly'"
+      depends_on: [announce]
+    - name: short_pause
+      type: action
+      action: delay
+      params: {seconds: 0.1}
+      depends_on: [check_batch]
+    - name: archive_bash
+      type: action
+      action: bash
+      params:
+        command: "mkdir -p output/archive && cp data/orders.csv output/archive/orders-nightly.csv"
+      depends_on: [short_pause]
+    - name: archive_powershell
+      type: action
+      action: powershell
+      enabled: false
+      params:
+        command: "New-Item -ItemType Directory -Force output/archive | Out-Null; Copy-Item data/orders.csv output/archive/orders-nightly.csv"
+      depends_on: [short_pause]
+    - name: copy_orders
+      type: job
+      job: ../jobs/copy_orders
+      depends_on: [archive_bash, archive_powershell]
+    - name: check_orders
+      type: action
+      action: python
+      params:
+        file_path: scripts/check_orders.py
+      depends_on: [copy_orders]
+    - name: post_summary
+      type: action
+      action: webhook
+      params:
+        url: http://127.0.0.1:8088/events
+        method: POST
+        body:
+          batch: "{{ param:batch_tag }}"
+          rows: 3
+      depends_on: [check_orders]
+    - name: send_email
+      type: action
+      action: email
+      params:
+        to: reader@example.test
+        from_addr: hydra@example.test
+        subject: "Hydra {{ param:batch_tag }} complete"
+        body: "Three orders were copied and checked."
+        smtp_host: 127.0.0.1
+        smtp_port: 1025
+        use_tls: false
+      depends_on: [post_summary]
+    - name: remote_receipt
+      type: action
+      action: ssh
+      params:
+        host: 127.0.0.1
+        port: 2224
+        username: demo
+        password: demo-only
+        command: "mkdir -p /config/receipts && printf 'batch=nightly\n' > /config/receipts/latest.txt"
+      depends_on: [send_email]
+    - name: update_batch
+      type: action
+      action: assign_param
+      params: {name: batch_tag, value: nightly-verified, type: str}
+      depends_on: [remote_receipt]
+    - name: finish
+      type: action
+      action: log
+      params:
+        message: "Finished {{ param:batch_tag }}"
+      depends_on: [update_batch]

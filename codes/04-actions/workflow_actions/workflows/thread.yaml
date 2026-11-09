@@ -1,0 +1,4 @@
+thread:
+  - mode: sequential
+    workflows:
+      - name: all_actions

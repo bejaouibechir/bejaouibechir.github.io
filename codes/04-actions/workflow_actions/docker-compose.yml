@@ -1,0 +1,28 @@
+name: hydra-whitebook-workflow-actions
+services:
+  mailpit:
+    image: axllent/mailpit:v1.27.4
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+  inspector:
+    image: python:3.12-alpine
+    command: ["python", "-u", "/app/inspector.py"]
+    volumes:
+      - ./scripts/inspector.py:/app/inspector.py:ro
+      - ./output/inspector:/data
+    ports:
+      - "127.0.0.1:8088:8080"
+  ssh:
+    image: lscr.io/linuxserver/openssh-server:latest
+    environment:
+      USER_NAME: demo
+      USER_PASSWORD: demo-only
+      PASSWORD_ACCESS: "true"
+      SUDO_ACCESS: "false"
+    ports:
+      - "127.0.0.1:2224:2222"
+    volumes:
+      - ssh-config:/config
+volumes:
+  ssh-config:
