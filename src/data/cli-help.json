@@ -1,0 +1,422 @@
+{
+  "version": "0.20.0",
+  "commands": [
+    {
+      "path": [
+        "clear"
+      ],
+      "usage": "hdrctl clear [OPTIONS]",
+      "help": "Usage: cli clear [OPTIONS]\n\n  Clear the terminal screen.\n  Examples:\n    hdrctl clear\n\nOptions:\n  -h, --help  Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env"
+      ],
+      "usage": "hdrctl env [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli env [OPTIONS] COMMAND [ARGS]...\n\n  Manage environments and the global environment variables.\n  Global variables are shared by every project on this machine:\n  ~/.hydra/env (all environments) and ~/.hydra/env.<name>. Inside a project,\n  an environment also has its parameter values (environments/<name>.yaml) and\n  its secrets (.hydra/secrets.<name>). Select one with --env or HYDRA_ENV.\n  \n  Examples:\n    hdrctl env list\n    hdrctl env create prod\n    hdrctl env set DB_HOST db.prod.local --env prod\n    hdrctl env show prod\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  create  Create an environment: ~/.hydra/env.<NAME>, and...\n  delete  Delete an environment.\n  list    List the environments: global variables, and in a project its...\n  rename  Rename an environment (global variables, parameter values and...\n  set     Set a global environment variable (KEY VALUE).\n  show    Show the global variables of an environment (without NAME: the...\n  unset   Remove a global environment variable.",
+      "children": [
+        "create",
+        "delete",
+        "list",
+        "rename",
+        "set",
+        "show",
+        "unset"
+      ]
+    },
+    {
+      "path": [
+        "env",
+        "create"
+      ],
+      "usage": "hdrctl env create [OPTIONS] NAME",
+      "help": "Usage: cli env create [OPTIONS] NAME\n\n  Create an environment: ~/.hydra/env.<NAME>, and environments/<NAME>.yaml in a project.\n  \n  Examples:\n    hdrctl env create dev\n    hdrctl env create prod --global-only\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --global-only   Only create the global file, not environments/<NAME>.yaml\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "delete"
+      ],
+      "usage": "hdrctl env delete [OPTIONS] NAME",
+      "help": "Usage: cli env delete [OPTIONS] NAME\n\n  Delete an environment. Its files are first copied to ~/.hydra/_backups/.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --keep-secrets  Keep .hydra/secrets.<NAME>\n  -y, --yes       Do not ask for confirmation\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "list"
+      ],
+      "usage": "hdrctl env list [OPTIONS]",
+      "help": "Usage: cli env list [OPTIONS]\n\n  List the environments: global variables, and in a project its parameters and\n  secrets.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "rename"
+      ],
+      "usage": "hdrctl env rename [OPTIONS] OLD NEW",
+      "help": "Usage: cli env rename [OPTIONS] OLD NEW\n\n  Rename an environment (global variables, parameter values and secrets).\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "set"
+      ],
+      "usage": "hdrctl env set [OPTIONS] KEY VALUE",
+      "help": "Usage: cli env set [OPTIONS] KEY VALUE\n\n  Set a global environment variable (KEY VALUE).\n  Without --env, the variable applies to every environment.\n  \n  Examples:\n    hdrctl env set LOG_DIR /var/log/hydra\n    hdrctl env set DB_HOST db.prod.local --env prod\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  --env NAME   Environment (default: common to all environments)\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "show"
+      ],
+      "usage": "hdrctl env show [OPTIONS] [NAME]",
+      "help": "Usage: cli env show [OPTIONS] [NAME]\n\n  Show the global variables of an environment (without NAME: the common ones).\n  \n  Examples:\n    hdrctl env show\n    hdrctl env show prod\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "env",
+        "unset"
+      ],
+      "usage": "hdrctl env unset [OPTIONS] KEY",
+      "help": "Usage: cli env unset [OPTIONS] KEY\n\n  Remove a global environment variable.\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  --env NAME   Environment (default: common to all environments)\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "init"
+      ],
+      "usage": "hdrctl init [OPTIONS] [PATH]",
+      "help": "Usage: cli init [OPTIONS] [PATH]\n\n  Create a Hydra project.\n  \n    hdrctl init <path>   create the project in <path> (name or full path)\n    hdrctl init .        create the project in the current folder\n  \n  Project structure:\n    .hydra/            project marker, Studio data, secrets file (git-ignored)\n    Data/              input data\n    environments/      parameter values per environment\n    jobs/job1/         first job: sources, destinations, pipeline, transformations\n    outputs/           files produced by the jobs\n    parameters.yaml    project parameters\n    README.md\n    scripts/           scripts called by workflow actions\n    workflows/         workflow1.yaml + thread.yaml (execution order)\n  \n  - Empty or missing folder: creates the full project.\n  - Folder holding a job (sources/destinations/pipeline YAML): only adds .hydra.\n  - Any other non-empty folder: stops with a warning.\n  \n  Templates for job1:\n    basic     — Simple CSV\n    csv       — CSV with sample data (default)\n    mysql     — MySQL/MariaDB with upsert\n    postgres  — PostgreSQL with ON CONFLICT\n    api       — REST Web API with pagination\n    mongodb   — MongoDB with schema auto-detection\n  \n  Examples:\n    hdrctl init my_project\n    hdrctl init C:\\data\\my_project\n    hdrctl init .\n    hdrctl init my_project --template mysql\n\nOptions:\n  --lang LANG                     Interface language (en, es)\n  -t, --template [api|basic|csv|mongodb|mysql|postgres]\n                                  Template to use  [default: csv]\n  -q, --quiet                     Quiet mode (fewer messages)\n  -h, --help                      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "job"
+      ],
+      "usage": "hdrctl job [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli job [OPTIONS] COMMAND [ARGS]...\n\n  Manage the jobs of a Hydra project and their place in workflows.\n  A job is a folder jobs/<name>/; a workflow runs it through a step of type job.\n  In a workflow, steps form a chain: each one runs after the previous one.\n  \n  Examples:\n    hdrctl job add load_orders\n    hdrctl job add load_orders daily_sales\n    hdrctl job attach clean_orders daily_sales -p 1\n    hdrctl job detach clean_orders daily_sales\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  add     Create a job and, optionally, attach it to a workflow.\n  attach  Attach an existing job to a workflow.\n  detach  Detach a job from a workflow, or from every workflow.\n  list    List the jobs of a project and the workflows that use them.",
+      "children": [
+        "add",
+        "attach",
+        "detach",
+        "list"
+      ]
+    },
+    {
+      "path": [
+        "job",
+        "add"
+      ],
+      "usage": "hdrctl job add [OPTIONS] NAME [WORKFLOW]",
+      "help": "Usage: cli job add [OPTIONS] NAME [WORKFLOW]\n\n  Create a job and, optionally, attach it to a workflow.\n  Creates jobs/<NAME>/ from a template (same templates as hdrctl init). With\n  WORKFLOW, the job is attached at the end of the workflow, or at position N\n  with -p N. Run it inside a Hydra project, or give the project with --project.\n  \n  Examples:\n    hdrctl job add load_orders\n    hdrctl job add load_orders daily_sales\n    hdrctl job add load_orders daily_sales -p 2 --template postgres\n\nOptions:\n  --lang LANG                     Interface language (en, es)\n  -p, --position N                Position in the workflow, 1 = first step\n                                  (default: at the end)\n  -t, --template [api|basic|csv|mongodb|mysql|postgres]\n                                  Template to use  [default: csv]\n  --project PATH                  Hydra project folder (default: the project\n                                  that contains the current folder)\n  -h, --help                      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "job",
+        "attach"
+      ],
+      "usage": "hdrctl job attach [OPTIONS] NAME WORKFLOW",
+      "help": "Usage: cli job attach [OPTIONS] NAME WORKFLOW\n\n  Attach an existing job to a workflow.\n  At the end by default: the job runs after the last step. With -p N it becomes\n  step N: it runs after step N-1, and the step that was at position N now runs\n  after it.\n  \n  Examples:\n    hdrctl job attach load_orders daily_sales\n    hdrctl job attach clean_orders daily_sales -p 1\n\nOptions:\n  --lang LANG       Interface language (en, es)\n  -p, --position N  Position in the workflow, 1 = first step (default: at the\n                    end)\n  --project PATH    Hydra project folder (default: the project that contains the\n                    current folder)\n  -h, --help        Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "job",
+        "detach"
+      ],
+      "usage": "hdrctl job detach [OPTIONS] NAME [WORKFLOW]",
+      "help": "Usage: cli job detach [OPTIONS] NAME [WORKFLOW]\n\n  Detach a job from a workflow, or from every workflow.\n  The steps that ran after it now run after its own predecessors, so the chain\n  stays connected. The job folder is kept in jobs/.\n  \n  Examples:\n    hdrctl job detach load_orders daily_sales\n    hdrctl job detach load_orders\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "job",
+        "list"
+      ],
+      "usage": "hdrctl job list [OPTIONS] [PROJECT]",
+      "help": "Usage: cli job list [OPTIONS] [PROJECT]\n\n  List the jobs of a project and the workflows that use them.\n  Shows each folder of jobs/ (free, or the workflows it is in, or the files it\n  lacks), and the job folders a workflow refers to but that do not exist.\n  \n  Examples:\n    hdrctl job list\n    hdrctl job list C:\\data\\my_project\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "list"
+      ],
+      "usage": "hdrctl list [OPTIONS] [PATH]",
+      "help": "Usage: cli list [OPTIONS] [PATH]\n\n  List the jobs found in a folder.\n  On a project folder, lists the project's jobs and the workflows that use them\n  (same as hdrctl job list).\n  \n  Examples:\n    hdrctl list\n    hdrctl list my_project\n    hdrctl list jobs/\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "mcp"
+      ],
+      "usage": "hdrctl mcp [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli mcp [OPTIONS] COMMAND [ARGS]...\n\n  Connect an AI assistant to the Hydra ETL MCP server of a project.\n\nOptions:\n  -h, --help  Show this message and exit.\n\nCommands:\n  setup  Connect Claude Code to this project: writes .mcp.json at the...",
+      "children": [
+        "setup"
+      ]
+    },
+    {
+      "path": [
+        "mcp",
+        "setup"
+      ],
+      "usage": "hdrctl mcp setup [OPTIONS] [[claude-code]]",
+      "help": "Usage: cli mcp setup [OPTIONS] [[claude-code]]\n\n  Connect Claude Code to this project: writes .mcp.json at the project root,\n  with the Python that runs hdrctl. Then start `claude` in the project and type\n  /mcp.\n\nOptions:\n  --path TEXT  A folder of the project (its root is found from there).\n               [default: .]\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "param"
+      ],
+      "usage": "hdrctl param [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli param [OPTIONS] COMMAND [ARGS]...\n\n  Manage the parameters of a project.\n  parameters.yaml declares them (type, default value); environments/<env>.yaml\n  gives their value per environment. Use them in the DSL as {{ param:NAME }}.\n  \n  Examples:\n    hdrctl param list\n    hdrctl param set batch_size 500 --type int\n    hdrctl param set batch_size 5000 --env prod\n    hdrctl param unset batch_size --env prod\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  list   List the parameters: type, default value and value per environment.\n  set    Declare a parameter or change its value.\n  unset  Remove a parameter value for an environment, or (without --env)...",
+      "children": [
+        "list",
+        "set",
+        "unset"
+      ]
+    },
+    {
+      "path": [
+        "param",
+        "list"
+      ],
+      "usage": "hdrctl param list [OPTIONS]",
+      "help": "Usage: cli param list [OPTIONS]\n\n  List the parameters: type, default value and value per environment.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Show only this environment\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "param",
+        "set"
+      ],
+      "usage": "hdrctl param set [OPTIONS] NAME [VALUE]",
+      "help": "Usage: cli param set [OPTIONS] NAME [VALUE]\n\n  Declare a parameter or change its value.\n  Without --env: the default value in parameters.yaml. With --env: the value for\n  that environment in environments/<env>.yaml.\n  \n  Examples:\n    hdrctl param set region eu-west --description \"Cloud region\"\n    hdrctl param set region us-east --env prod\n\nOptions:\n  --lang LANG                     Interface language (en, es)\n  --project PATH                  Hydra project folder (default: the project\n                                  that contains the current folder)\n  --env NAME                      Environment whose value is set (default: the\n                                  default value)\n  --type [string|int|float|bool|json|any]\n                                  Parameter type\n  --description TEXT              Description shown in Studio\n  --required / --optional         The parameter must have a value at run time\n  -h, --help                      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "param",
+        "unset"
+      ],
+      "usage": "hdrctl param unset [OPTIONS] NAME",
+      "help": "Usage: cli param unset [OPTIONS] NAME\n\n  Remove a parameter value for an environment, or (without --env) the parameter\n  everywhere.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Only remove the value of this environment\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "run"
+      ],
+      "usage": "hdrctl run [OPTIONS] [PATH]",
+      "help": "Usage: cli run [OPTIONS] [PATH]\n\n  Run a Hydra project, or a single job.\n  \n    hdrctl run <project>   run every workflow of the project, in the order of\n                           workflows/thread.yaml\n    hdrctl run .           same, from the project folder\n    hdrctl run <job>       run one job (folder holding sources/destinations/pipeline.yaml)\n  \n  thread.yaml: stages run one after the other; each stage is sequential or\n  parallel, with an optional delay_after; active: false skips a workflow.\n  Without thread.yaml, every workflows/*.yaml runs in alphabetical order.\n  The project's parameters.yaml and environments/<env>.yaml are read (--env).\n  ${SECRET:name} reads the environment, then .hydra/secrets (or --secrets-file).\n  Workflow triggers (schedule, webhook) are ignored: they apply under hdrctl serve.\n  loops (optional): from/to/times/delay replay a part of the thread.\n  fallback (optional, on a workflow): use/when/on_failure; 'when' is checked just\n  before the workflow starts (--use-fallback WORKFLOW forces it).\n  A failed workflow stops the project.\n  -s, -d, -p, -t and --profile apply to a single job only.\n  \n  Examples:\n    hdrctl run .\n    hdrctl run C:\\data\\my_project --env prod\n    hdrctl run . --dry-run\n    hdrctl run . -P min_amount=100\n    hdrctl run . --on-failure \"curl https://hooks.slack.com/...\"\n    hdrctl run my_project/jobs/job1 -vv\n\nOptions:\n  --lang LANG                     Interface language (en, es)\n  -v                              Verbosity level 1\n  -vv                             Verbosity level 2 (metrics)\n  -vvv                            Verbosity level 3 (full logs)\n  --dry-run                       Validate configuration without writing data\n  -s, --sources FILE              Explicit path to sources.yaml\n  -d, --destinations FILE         Explicit path to destinations.yaml\n  -p, --pipeline FILE             Explicit path to pipeline.yaml\n  -t, --transformations FILE      Explicit path to transformations.yaml\n  --on-success CMD                Command to execute on success\n  --on-failure CMD                Command to execute on failure\n  --on-finish CMD                 Command always executed at end of pipeline\n  --env NAME                      Active environment (loads\n                                  environments/<name>.yaml)\n  -P, --param KEY=VALUE           Override a parameter (KEY=VALUE), repeatable\n  --profile                       Show a per-step timing profile at the end of\n                                  the run\n  --secrets-file FILE             Secrets file to use instead of .hydra/secrets\n                                  (name=value per line)\n  --secrets-visibility [plain|masked|hidden]\n                                  How secret values appear in logs and messages:\n                                  plain (debugging), masked (default) or hidden;\n                                  overrides .hydra/secrets.yaml\n  --env-file FILE                 Extra environment variables for this run\n                                  (name=value per line); wins over every other\n                                  layer\n  --use-fallback WORKFLOW         Force the fallback of WORKFLOW (a workflow of\n                                  the thread that declares a fallback), to\n                                  rehearse a recovery scenario. Repeatable.\n  -w, --workflow WORKFLOW         Run only these workflows of the project, one\n                                  after the other (repeat -w)\n  -h, --help                      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "secret"
+      ],
+      "usage": "hdrctl secret [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli secret [OPTIONS] COMMAND [ARGS]...\n\n  Manage the secrets of a project. Values are never displayed.\n  .hydra/secrets holds the common secrets (ignored by git); .hydra/secrets.<env>\n  the secrets of one environment, which take precedence with --env.\n  Use them in the DSL as ${SECRET:NAME}.\n  \n  Examples:\n    hdrctl secret list --env prod\n    hdrctl secret set DB_PASSWORD --env prod\n    echo $PW | hdrctl secret set DB_PASSWORD --stdin\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  delete  Delete a secret.\n  list    List the secret names (never the values).\n  set     Set a secret.",
+      "children": [
+        "delete",
+        "list",
+        "set"
+      ]
+    },
+    {
+      "path": [
+        "secret",
+        "delete"
+      ],
+      "usage": "hdrctl secret delete [OPTIONS] NAME",
+      "help": "Usage: cli secret delete [OPTIONS] NAME\n\n  Delete a secret.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Environment (default: common secrets)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "secret",
+        "list"
+      ],
+      "usage": "hdrctl secret list [OPTIONS]",
+      "help": "Usage: cli secret list [OPTIONS]\n\n  List the secret names (never the values).\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Also show the secrets of this environment\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "secret",
+        "set"
+      ],
+      "usage": "hdrctl secret set [OPTIONS] NAME",
+      "help": "Usage: cli secret set [OPTIONS] NAME\n\n  Set a secret. The value is typed hidden, or read from stdin with --stdin; it\n  is never an argument.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Environment (default: common secrets)\n  --stdin         Read the value from the first line of stdin\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "serve"
+      ],
+      "usage": "hdrctl serve [OPTIONS]",
+      "help": "Usage: cli serve [OPTIONS]\n\n  Start the Hydra API and the Studio.\n\nOptions:\n  --lang LANG       Interface language (en, es)\n  --host TEXT       Listen address.  [default: 127.0.0.1]\n  --port INTEGER    Listen port.  [default: 5678]\n  --reload          Hot reload (development only).\n  --open            Open the Studio in your browser once the server is up.\n  --no-studio       Serve the API only, without the visual editor.\n  --workspace TEXT  Root folder for Studio projects (default: ~/hydra-\n                    workspace).\n  -h, --help        Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "test"
+      ],
+      "usage": "hdrctl test [OPTIONS] [PATH]",
+      "help": "Usage: cli test [OPTIONS] [PATH]\n\n  Check a job: files present, sources, destinations, transformations.\n  Examples:\n    hdrctl test .\n    hdrctl test jobs/daily_revenue\n    hdrctl test . --only-sources\n    hdrctl test . --only-transform\n    hdrctl test . -s sources_alt.yaml -d conf/destinations_prod.yaml\n\nOptions:\n  --lang LANG                 Interface language (en, es)\n  --only-sources              Validate sources only\n  --only-destinations         Validate destinations only\n  --only-transform            Validate transformations only\n  -s, --sources FILE          Explicit path to sources file\n  -d, --destinations FILE     Explicit path to destinations file\n  -p, --pipeline FILE         Explicit path to pipeline file\n  -t, --transformations FILE  Explicit path to transformations file\n  -h, --help                  Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "trigger"
+      ],
+      "usage": "hdrctl trigger [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli trigger [OPTIONS] COMMAND [ARGS]...\n\n  Project triggers (triggers.yaml at the project root): run the project\n  at a time, every N minutes, when a file arrives, when a source changes, on a\n  webhook call or after another project. They run inside `hdrctl watch` and\n  `hdrctl serve`; `fire` runs one now.\n  \n  Examples:\n    hdrctl trigger list\n    hdrctl trigger validate\n    hdrctl trigger fire nightly --env prod\n    hdrctl trigger history nightly\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  fire      Run the project now, as trigger NAME would (its environment,...\n  history   Show the last runs started by the triggers (all, or trigger NAME).\n  list      List the triggers of the project, with their last run.\n  token     Create the token of webhook trigger NAME: a random value saved...\n  validate  Check triggers.yaml: keys, cron expressions, workflows, called...",
+      "children": [
+        "fire",
+        "history",
+        "list",
+        "token",
+        "validate"
+      ]
+    },
+    {
+      "path": [
+        "trigger",
+        "fire"
+      ],
+      "usage": "hdrctl trigger fire [OPTIONS] NAME",
+      "help": "Usage: cli trigger fire [OPTIONS] NAME\n\n  Run the project now, as trigger NAME would (its environment, workflows,\n  parameters, overlap, timeout and retry). Recorded in the trigger history.\n  \n  Examples:\n    hdrctl trigger fire nightly\n    hdrctl trigger fire nightly --env prod --no-retry\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Environment when the trigger has no env: (default: HYDRA_ENV,\n                  else none)\n  --no-retry      Do not retry after a failure, even if the trigger has retry:\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "trigger",
+        "history"
+      ],
+      "usage": "hdrctl trigger history [OPTIONS] [NAME]",
+      "help": "Usage: cli trigger history [OPTIONS] [NAME]\n\n  Show the last runs started by the triggers (all, or trigger NAME).\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -n INTEGER      Number of runs shown  [default: 20]\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "trigger",
+        "list"
+      ],
+      "usage": "hdrctl trigger list [OPTIONS]",
+      "help": "Usage: cli trigger list [OPTIONS]\n\n  List the triggers of the project, with their last run.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "trigger",
+        "token"
+      ],
+      "usage": "hdrctl trigger token [OPTIONS] NAME",
+      "help": "Usage: cli trigger token [OPTIONS] NAME\n\n  Create the token of webhook trigger NAME: a random value saved as the secret\n  named by its token: (.hydra/secrets, or .hydra/secrets.<env> with --env).\n  The value is shown once, to give to the caller.\n  \n  Examples:\n    hdrctl trigger token on_push\n    hdrctl trigger token on_push --env prod --rotate\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  --env NAME      Save it in the secrets of this environment (default: the\n                  trigger's env, else common)\n  --rotate        Replace an existing token (the old one stops working)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "trigger",
+        "validate"
+      ],
+      "usage": "hdrctl trigger validate [OPTIONS]",
+      "help": "Usage: cli trigger validate [OPTIONS]\n\n  Check triggers.yaml: keys, cron expressions, workflows, called projects,\n  secrets, after_project loops.\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "validate"
+      ],
+      "usage": "hdrctl validate [OPTIONS] [PATH]",
+      "help": "Usage: cli validate [OPTIONS] [PATH]\n\n  Validate a job's YAML files without reading any data.\n  Examples:\n    hdrctl validate .\n    hdrctl validate jobs/daily_revenue --strict\n    hdrctl validate . -s sources_alt.yaml -p conf/pipeline_prod.yaml\n\nOptions:\n  --lang LANG                 Interface language (en, es)\n  --strict                    Strict validation: check columns, types,\n                              expressions\n  -s, --sources FILE          Explicit path to sources file\n  -d, --destinations FILE     Explicit path to destinations file\n  -p, --pipeline FILE         Explicit path to pipeline file\n  -t, --transformations FILE  Explicit path to transformations file\n  -h, --help                  Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "watch"
+      ],
+      "usage": "hdrctl watch [OPTIONS] [PROJECT]...",
+      "help": "Usage: cli watch [OPTIONS] [PROJECT]...\n\n  Run the triggers of one or more projects (triggers.yaml): the project is\n  started when its time comes (cron, interval) or when a file arrives (file,\n  marker) or when a source changes (source_change). Runs until Ctrl+C; a\n  first Ctrl+C waits for the running projects, a second one stops at once. Changes to triggers.yaml are picked up without\n  restarting.\n  \n  Examples:\n    hdrctl watch\n    hdrctl watch D:\\data\\shop D:\\data\\crm --env prod\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  --env NAME   Environment of the triggers without env: (default: HYDRA_ENV,\n               else none)\n  -h, --help   Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow"
+      ],
+      "usage": "hdrctl workflow [OPTIONS] COMMAND [ARGS]...",
+      "help": "Usage: cli workflow [OPTIONS] COMMAND [ARGS]...\n\n  Manage the workflows of a Hydra project.\n  A project is a set of workflows; a workflow is a set of jobs and actions.\n  The order in which hdrctl run starts them is in workflows/thread.yaml.\n  \n  Examples:\n    hdrctl workflow add daily_sales\n    hdrctl workflow list\n    hdrctl workflow run daily_sales\n    hdrctl workflow remove daily_sales\n    hdrctl workflow undo daily_sales\n\nOptions:\n  --lang LANG  Interface language (en, es)\n  -h, --help   Show this message and exit.\n\nCommands:\n  add       Create a workflow and add it to thread.yaml.\n  list      List the workflows in thread order.\n  remove    Delete a workflow (its jobs are kept).\n  run       Run one workflow, now (its trigger is ignored).\n  undo      Finish undoing a workflow (rollback: true).\n  validate  Check a workflow manifest without running it.",
+      "children": [
+        "add",
+        "list",
+        "remove",
+        "run",
+        "undo",
+        "validate"
+      ]
+    },
+    {
+      "path": [
+        "workflow",
+        "add"
+      ],
+      "usage": "hdrctl workflow add [OPTIONS] [NAME]",
+      "help": "Usage: cli workflow add [OPTIONS] [NAME]\n\n  Create a workflow and add it to thread.yaml.\n  Create workflows/<NAME>.yaml, with no step, and add it at the end of\n  workflows/thread.yaml (in the last stage if it is sequential, otherwise in a\n  new sequential stage). Without NAME, the name is workflow-<8 hex characters>.\n  Run it inside a Hydra project, or give the project with --project.\n  \n  Examples:\n    hdrctl workflow add daily_sales\n    hdrctl workflow add\n    hdrctl workflow add daily_sales --project C:\\data\\my_project\n    hdrctl workflow add daily_sales_backup --fallback-for daily_sales\n\nOptions:\n  --lang LANG              Interface language (en, es)\n  --project PATH           Hydra project folder (default: the project that\n                           contains the current folder)\n  --fallback-for WORKFLOW  Create the workflow as a fallback of WORKFLOW (a\n                           workflow of the thread): it is added to WORKFLOW's\n                           fallback in thread.yaml, not to the thread\n  -h, --help               Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow",
+        "list"
+      ],
+      "usage": "hdrctl workflow list [OPTIONS] [PROJECT]",
+      "help": "Usage: cli workflow list [OPTIONS] [PROJECT]\n\n  List the workflows in thread order.\n  List the workflows of a project in the order of workflows/thread.yaml:\n  stage and mode, active or inactive, number of steps. Workflows that are not\n  in thread.yaml, and thread entries without a file, are shown too.\n  \n  Examples:\n    hdrctl workflow list\n    hdrctl workflow list C:\\data\\my_project\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow",
+        "remove"
+      ],
+      "usage": "hdrctl workflow remove [OPTIONS] NAME",
+      "help": "Usage: cli workflow remove [OPTIONS] NAME\n\n  Delete a workflow (its jobs are kept).\n  Delete workflows/<NAME>.yaml and remove it from workflows/thread.yaml.\n  The jobs it used are kept in jobs/. Asks for confirmation unless -y is given.\n  \n  Examples:\n    hdrctl workflow remove daily_sales\n    hdrctl workflow remove daily_sales -y --project C:\\data\\my_project\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -y, --yes       Do not ask for confirmation\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow",
+        "run"
+      ],
+      "usage": "hdrctl workflow run [OPTIONS] NAME|PATH",
+      "help": "Usage: cli workflow run [OPTIONS] NAME|PATH\n\n  Run one workflow, now (its trigger is ignored).\n  NAME is a workflow of the current project (workflows/NAME.yaml); PATH is a file.\n  \n  Examples:\n    hdrctl workflow run daily_sales\n    hdrctl workflow run workflows/daily_sales.yaml\n    hdrctl run .   # every workflow of the project\n\nOptions:\n  --lang LANG                     Interface language (en, es)\n  --project PATH                  Hydra project folder (default: the project\n                                  that contains the current folder)\n  --secrets-file FILE             Secrets file to use instead of .hydra/secrets\n                                  (name=value per line)\n  --secrets-visibility [plain|masked|hidden]\n                                  How secret values appear in logs and messages:\n                                  plain (debugging), masked (default) or hidden;\n                                  overrides .hydra/secrets.yaml\n  --env NAME                      Active environment (loads\n                                  environments/<name>.yaml)\n  -P, --param KEY=VALUE           Override a parameter (KEY=VALUE), repeatable\n  --env-file FILE                 Extra environment variables for this run\n                                  (name=value per line); wins over every other\n                                  layer\n  -h, --help                      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow",
+        "undo"
+      ],
+      "usage": "hdrctl workflow undo [OPTIONS] NAME|PATH",
+      "help": "Usage: cli workflow undo [OPTIONS] NAME|PATH\n\n  Finish undoing a workflow (rollback: true).\n  A run of a workflow with rollback: true that stopped before undoing its\n  changes (crash, an undo that failed) leaves .hydra/undo/<NAME>.json; the\n  workflow refuses to run until it is finished. This command undoes the\n  remaining steps, the last one first.\n  \n  Examples:\n    hdrctl workflow undo daily_sales\n    hdrctl workflow undo daily_sales --project C:\\data\\my_project\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    },
+    {
+      "path": [
+        "workflow",
+        "validate"
+      ],
+      "usage": "hdrctl workflow validate [OPTIONS] NAME|PATH",
+      "help": "Usage: cli workflow validate [OPTIONS] NAME|PATH\n\n  Check a workflow manifest without running it.\n  NAME is a workflow of the current project (workflows/NAME.yaml); PATH is a file.\n  \n  Examples:\n    hdrctl workflow validate daily_sales\n    hdrctl workflow validate workflows/daily_sales.yaml\n\nOptions:\n  --lang LANG     Interface language (en, es)\n  --project PATH  Hydra project folder (default: the project that contains the\n                  current folder)\n  -h, --help      Show this message and exit.",
+      "children": []
+    }
+  ]
+}

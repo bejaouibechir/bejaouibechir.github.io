@@ -1,0 +1,31 @@
+---
+import { cliRoots, cliChildren, cliVersion } from '../data/cli-reference';
+import styles from '../styles/cli-reference.css?raw';
+
+interface Props { current?: string }
+const { current = '' } = Astro.props;
+---
+
+<style is:global set:html={styles}></style>
+<div class="cli-shell">
+  <aside class="cli-sidebar" aria-label="CLI command navigation">
+    <a class="cli-brand" href="/cli/"><span class="cli-mark">&gt;_</span><span><strong>Hydra CLI</strong><small>Command reference · {cliVersion}</small></span></a>
+    <nav aria-label="Commands and subcommands">
+      <a class:list={['cli-nav-home', {active: !current}]} href="/cli/" aria-current={!current ? 'page' : undefined}>All commands</a>
+      {cliRoots.map((root) => (
+        root.children.length ? (
+          <details class="cli-nav-group" open>
+            <summary><span class="cli-nav-chevron" aria-hidden="true">▾</span><a class:list={['cli-nav-root', {active: current === root.key}]} href={root.url} aria-current={current === root.key ? 'page' : undefined}>hdrctl {root.key}</a></summary>
+            <div class="cli-nav-children">
+              {cliChildren(root).map((child) => <a class:list={['cli-nav-child', {active: current === child.key}]} href={child.url} aria-current={current === child.key ? 'page' : undefined}>{child.path.at(-1)}</a>)}
+            </div>
+          </details>
+        ) : <a class:list={['cli-nav-root', 'cli-nav-standalone', {active: current === root.key}]} href={root.url} aria-current={current === root.key ? 'page' : undefined}>hdrctl {root.key}</a>
+      ))}
+    </nav>
+  </aside>
+  <main class="cli-main">
+    <div class="cli-topbar"><span><a href="/cli/">CLI reference</a>{current && <span> / hdrctl {current}</span>}</span><a href="/academy/">Watch Hydra Academy <span aria-hidden="true">↗</span></a></div>
+    <slot />
+  </main>
+</div>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../components/CliReferenceShell.astro';
+import { cliEntries, cliByKey, cliChildren, cliNext, cliVersion, type CliEntry } from '../../data/cli-reference';
+
+export function getStaticPaths() {
+  return cliEntries.map((entry) => ({ params: { command: entry.path.join('/') }, props: { entry } }));
+}
+interface Props { entry: CliEntry }
+const { entry } = Astro.props;
+const parent = entry.path.length > 1 ? cliByKey.get(entry.path[0]) : undefined;
+const next = cliNext(entry);
+---
+
+<BaseLayout title={`hdrctl ${entry.key} | CLI reference`} description={`${entry.objective} Syntax, example, tips and pitfalls for Hydra CLI ${cliVersion}.`}>
+  <CliReferenceShell current={entry.key}>
+    <article class="cli-article">
+      <header class="cli-page-head">
+        <p class="cli-eyebrow">COMMAND REFERENCE · HYDRA CLI {cliVersion}</p>
+        <h1><code>hdrctl {entry.key}</code></h1>
+        <p>{entry.objective}</p>
+        {parent && <a class="cli-parent-link" href={parent.url}>← All <code>hdrctl {parent.key}</code> subcommands</a>}
+      </header>
+
+      <section aria-labelledby="cli-objective"><h2 id="cli-objective"><span>01</span> Objective</h2><p>{entry.objective}</p></section>
+      <section aria-labelledby="cli-syntax"><h2 id="cli-syntax"><span>02</span> Syntax</h2><pre><code>{entry.usage}</code></pre><p class="cli-note"><code>[OPTIONS]</code> represents optional flags. Run <code>hdrctl {entry.key} --help</code> to see every flag and argument.</p><details class="cli-full-help"><summary>Show complete CLI help for version {cliVersion}</summary><pre><code>{entry.help}</code></pre></details></section>
+      <section aria-labelledby="cli-example"><h2 id="cli-example"><span>03</span> Explained example</h2><pre><code>{entry.example}</code></pre><p>{entry.explanation}</p></section>
+      <section aria-labelledby="cli-advice"><h2 id="cli-advice"><span>04</span> Tips and pitfalls</h2><div class="cli-advice-grid"><div class="cli-advice-tip"><strong>Tip</strong><p>{entry.tip}</p></div><div class="cli-advice-trap"><strong>Avoid this pitfall</strong><p>{entry.pitfall}</p></div></div></section>
+      {entry.children.length > 0 && <section aria-labelledby="cli-subcommands"><h2 id="cli-subcommands"><span>05</span> Related subcommands</h2><div class="cli-subcommands">{cliChildren(entry).map((child) => <a href={child.url}><code>hdrctl {child.key}</code><span>{child.objective}</span><b aria-hidden="true">→</b></a>)}</div></section>}
+      {next && <nav class="cli-next" aria-label="Next command"><span>Next in the reference</span><a href={next.url}><code>hdrctl {next.key}</code> →</a></nav>}
+    </article>
+  </CliReferenceShell>
+</BaseLayout>

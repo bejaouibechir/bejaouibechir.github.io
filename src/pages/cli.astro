@@ -1,17 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductLearningShell from '../components/ProductLearningShell.astro';
-import { cliLessons } from '../data/cli-lessons.js';
-import css from '../_mock/learning-hub.css?raw';
-import js from '../_mock/learning-hub.js?raw';
-
-/* Les ateliers vivent dans src/data/cli-lessons.js — source unique partagee
-   avec les pages de lecon servies sous /cli/. */
-const lessons = cliLessons;
+import CliReferenceShell from '../components/CliReferenceShell.astro';
+import { cliRoots, cliChildren, cliVersion } from '../data/cli-reference';
 ---
 
-<BaseLayout title="Hydra CLI tutorials" description="A structured learning track for creating, validating, running and operating Hydra from the command line.">
-  <style is:global set:html={css}></style>
-  <ProductLearningShell product="CLI" title="Hydra CLI tutorials" lead="Learn the command-line path from an empty folder to a validated job, an observable run and an orchestrated workflow." duration="about 90 minutes" lessons={lessons} referenceHref="/guide/sources/csv" referenceLabel="Run the first guided job" />
-  <script is:inline set:html={js}></script>
+<BaseLayout title="Hydra CLI command reference" description="Every hdrctl command and subcommand, with syntax, examples, tips and pitfalls for Hydra CLI.">
+  <CliReferenceShell>
+    <header class="cli-hero">
+      <p class="cli-eyebrow">HYDRA CLI · VERSION {cliVersion}</p>
+      <h1>The <code>hdrctl</code> command reference</h1>
+      <p>Find the purpose, exact syntax and a practical example for every command. All examples use a single project named <code>shop</code>.</p>
+      <div class="cli-hero-actions"><a href="/cli/init/">Start with <code>hdrctl init</code> →</a><a href="/academy/">Learn by video in Hydra Academy ↗</a></div>
+    </header>
+    <section class="cli-context" aria-labelledby="cli-example-context">
+      <h2 id="cli-example-context">Example context</h2>
+      <p>The command examples refer to a project named <code>shop</code>. Its <code>daily_sales</code> workflow uses a <code>load_orders</code> job. Pages about environments, parameters and triggers assume the corresponding names have been declared in this project.</p>
+      <pre><code>hdrctl init shop
+hdrctl workflow add daily_sales --project shop
+hdrctl job add load_orders daily_sales --project shop</code></pre>
+    </section>
+    <section class="cli-overview" aria-labelledby="cli-all-commands">
+      <div class="cli-section-heading"><div><p class="cli-eyebrow">COMMAND TREE</p><h2 id="cli-all-commands">All commands</h2></div><span>15 commands · 29 subcommands</span></div>
+      <div class="cli-command-grid">
+        {cliRoots.map((root) => <article class="cli-command-card">
+          <a href={root.url}><code>hdrctl {root.key}</code><span aria-hidden="true">→</span></a>
+          <p>{root.objective}</p>
+          {root.children.length > 0 && <div class="cli-card-children">{cliChildren(root).map((child) => <a href={child.url}>{child.path.at(-1)}</a>)}</div>}
+        </article>)}
+      </div>
+    </section>
+  </CliReferenceShell>
 </BaseLayout>

@@ -126,7 +126,7 @@ Both are caught statically. The second one — a cross-file reference that does 
 
 Two properties make this usable rather than merely nice:
 
-**The exit code is honest.** [`hdrctl validate`](/cli/03-validate-the-manifests) returns `0` on a valid job and `1` on an invalid one (verified on 0.11.4), so it drops into CI as a pre-merge gate with no wrapper:
+**The exit code is honest.** [`hdrctl validate`](/cli/validate/) returns `0` on a valid job and `1` on an invalid one (verified on 0.11.4), so it drops into CI as a pre-merge gate with no wrapper:
 
 ```yaml
 - run: hdrctl validate jobs/my_job
@@ -221,7 +221,7 @@ $ hdrctl run jobs/job_param --env prod
   Rows written: 1
 ```
 
-The row counts differ because the threshold differs — and the difference lives in a four-line environment file, not in the pipeline logic. A single value can be [overridden at the command line](/cli/07-pass-parameters), which is what you want for a backfill or a one-off rerun:
+The row counts differ because the threshold differs — and the difference lives in a four-line environment file, not in the pipeline logic. A single value can be [overridden at the command line](/cli/run/), which is what you want for a backfill or a one-off rerun:
 
 ```bash
 hdrctl run jobs/job_param --env prod -P min_value=99
@@ -244,7 +244,7 @@ sources:
       password: ${ENV:PG_PASS}
 ```
 
-A `.env` file in the job directory is picked up automatically, and [`hdrctl test`](/cli/04-test-the-connections) reports what it found:
+A `.env` file in the job directory is picked up automatically, and [`hdrctl test`](/cli/test/) reports what it found:
 
 ```
 $ hdrctl test jobs/job_db
