@@ -9,7 +9,13 @@ const { current = '' } = Astro.props;
 <style is:global set:html={styles}></style>
 <div class="cli-shell">
   <aside class="cli-sidebar" aria-label="CLI command navigation">
-    <a class="cli-brand" href="/cli/"><span class="cli-mark">&gt;_</span><span><strong>Hydra CLI</strong><small>Command reference · {cliVersion}</small></span></a>
+    <div class="cli-sidebar-fixed">
+      <a class="cli-brand" href="/cli/"><span class="cli-mark">&gt;_</span><span><strong>Hydra CLI</strong><small>Command reference · {cliVersion}</small></span></a>
+      <a class="cli-pinned-project" href="/cli/shop.zip" download="hydra-cli-shop.zip" aria-label="Download the complete shop example project as a ZIP file">
+        <span class="cli-pinned-icon" aria-hidden="true">↓</span>
+        <span><strong>Download the shop project</strong><small>Complete CLI example · ZIP</small></span>
+      </a>
+    </div>
     <nav aria-label="Commands and subcommands">
       <a class:list={['cli-nav-home', {active: !current}]} href="/cli/" aria-current={!current ? 'page' : undefined}>All commands</a>
       {cliRoots.map((root) => (
@@ -25,7 +31,7 @@ const { current = '' } = Astro.props;
     </nav>
   </aside>
   <main class="cli-main">
-    <div class="cli-topbar"><span><a href="/cli/">CLI reference</a>{current && <span> / hdrctl {current}</span>}</span><a href="/academy/">Watch Hydra Academy <span aria-hidden="true">↗</span></a></div>
+    <div class="cli-topbar"><span><a href="/cli/">CLI reference</a>{current && <span> / hdrctl {current}</span>}</span><span class="cli-top-actions"><a href="/cli/shop.zip" download="hydra-cli-shop.zip">Download shop project ↓</a><a href="/academy/">Watch Hydra Academy <span aria-hidden="true">↗</span></a></span></div>
     <slot />
   </main>
 </div>

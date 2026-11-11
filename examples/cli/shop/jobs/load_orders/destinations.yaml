@@ -1,0 +1,6 @@
+destinations:
+  filtered_orders:
+    type: csv
+    load:
+      table: data/filtered_orders.csv
+      mode: replace

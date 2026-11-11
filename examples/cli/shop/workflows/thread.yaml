@@ -1,0 +1,29 @@
+# Execution order of this project's workflows (read by `hdrctl run`).
+# Stages run one after the other.
+#   mode        : sequential (one workflow after the other) | parallel (all at once)
+#   delay_after : pause after the stage, in seconds or 30s / 5m / 1h (optional)
+#   delay_before: on a workflow, wait before starting it (sequential: after the
+#                 previous one; parallel: after the stage starts) (optional)
+#   timeout     : on a workflow, maximum duration; beyond it the workflow fails (optional)
+#   active      : false skips the workflow without removing it (debugging)
+# Each name refers to workflows/<name>.yaml.
+# Optional loops, to replay a part of the thread N times:
+#   loops:
+#     - from: workflow1   # last workflow of the part
+#       to: workflow1     # first workflow of the part
+#       times: 3          # total passes
+#       delay: 5m         # pause before each repeat (optional)
+# Optional fallback on a workflow (a backup workflow, outside the thread):
+#       - name: workflow1
+#         fallback:
+#           use: [workflow1_backup]                   # tried in order
+#           when: "not source_available('my_db')"   # checked just before the start
+#           on_failure: true                          # also after a failure (nothing published)
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: workflow1
+        active: true
+      - name: daily_sales
+        active: true

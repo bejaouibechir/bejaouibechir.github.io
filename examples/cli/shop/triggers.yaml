@@ -1,0 +1,11 @@
+version: "1.0"
+triggers:
+  - name: nightly
+    type: cron
+    cron: "0 6 * * *"
+    timezone: Europe/Paris
+    workflows: [daily_sales]
+  - name: on_push
+    type: webhook
+    token: ${SECRET:trigger.on_push.token}
+

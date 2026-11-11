@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: daily_sales
+  description: ""
+  trigger:
+    type: manual
+  steps:
+    - name: load_orders
+      type: job
+      job: ../jobs/load_orders
+      depends_on: []
+      on_failure: fail

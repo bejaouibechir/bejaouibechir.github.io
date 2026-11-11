@@ -1,0 +1,8 @@
+steps:
+  - select:
+      columns: [id, customer, amount]
+  - cast:
+      mapping:
+        amount: float
+  - filter:
+      expr: "amount >= {{ param:min_amount }}"

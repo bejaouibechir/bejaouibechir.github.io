@@ -55,12 +55,12 @@ export const cliEditorial: Record<string, Editorial> = {
   },
   'job add': {
     objective: 'Create a job and optionally place it in a workflow.',
-    example: 'hdrctl job add load_orders daily_sales --project shop', explanation: 'Creates load_orders inside shop and attaches it to the existing daily_sales workflow.',
+    example: 'hdrctl job add archive_orders daily_sales --project shop', explanation: 'Creates a new archive_orders job inside shop and attaches it to the existing daily_sales workflow.',
     tip: 'Omit the workflow name to create an independently runnable job.', pitfall: 'The workflow must exist before the job can be attached to it.'
   },
   'job attach': {
     objective: 'Add an existing job to a workflow.',
-    example: 'hdrctl job attach load_orders daily_sales --project shop', explanation: 'Adds load_orders to the daily_sales workflow without creating a second job.',
+    example: 'hdrctl job attach job1 daily_sales --project shop', explanation: 'Adds the existing job1 job to daily_sales without creating another job.',
     tip: 'Use -p to choose its position in the workflow.', pitfall: 'Attaching a job does not create or validate its YAML files.'
   },
   'job detach': {
@@ -80,7 +80,7 @@ export const cliEditorial: Record<string, Editorial> = {
   },
   'workflow add': {
     objective: 'Create a workflow and register it in thread.yaml.',
-    example: 'hdrctl workflow add daily_sales --project shop', explanation: 'Creates shop/workflows/daily_sales.yaml and adds it to the project thread.',
+    example: 'hdrctl workflow add weekly_report --project shop', explanation: 'Creates shop/workflows/weekly_report.yaml and adds it to the project thread.',
     tip: 'Use --fallback-for when creating a recovery workflow for another workflow.', pitfall: 'An empty workflow still needs jobs or actions before it produces useful work.'
   },
   'workflow list': {
@@ -115,7 +115,7 @@ export const cliEditorial: Record<string, Editorial> = {
   },
   'env create': {
     objective: 'Create a named environment for global values and project parameter overrides.',
-    example: 'hdrctl env create prod --project shop', explanation: 'Creates prod for shop and its corresponding global environment record.',
+    example: 'hdrctl env create staging --project shop', explanation: 'Creates staging for shop and its corresponding global environment record.',
     tip: 'Use --global-only when there is no project environment file to create.', pitfall: 'Creating an environment does not automatically fill in required parameters or secrets.'
   },
   'env delete': {
@@ -130,7 +130,7 @@ export const cliEditorial: Record<string, Editorial> = {
   },
   'env rename': {
     objective: 'Rename an environment and its associated values.',
-    example: 'hdrctl env rename staging test --project shop', explanation: 'Renames staging to test, including its variable, parameter and secret files.',
+    example: 'hdrctl env rename test qa --project shop', explanation: 'Renames the existing test environment to qa, including its variable, parameter and secret files.',
     tip: 'Search workflow and trigger references to the old name after renaming.', pitfall: 'A YAML file that still specifies staging does not automatically follow the rename.'
   },
   'env set': {
