@@ -1,0 +1,132 @@
+---
+import type { MigratePage } from '../data/migrate-pages';
+const { page } = Astro.props as { page: MigratePage };
+const hydraExample = `# sources.yaml
+sources:
+  orders:
+    type: csv
+    extract:
+      table: data/orders.csv
+
+# pipeline.yaml
+pipeline:
+  from: orders
+  to: report
+
+# transformations.yaml
+steps:
+  - cast:
+      mapping: { amount: float }
+  - filter:
+      expr: "amount > 50"
+  - aggregate:
+      by: [status]
+      agg:
+        total: { func: sum, col: amount }
+  - sort:
+      by: [total]
+      ascending: false
+
+# destinations.yaml
+destinations:
+  report:
+    type: csv
+    load:
+      table: data/by_status.csv
+      mode: replace`;
+---
+
+<div class="migration-simulator" data-migrate-simulator>
+  <div class="sim-intro">
+    <div>
+      <h2>Same small batch, two definitions</h2>
+      <p>Read 14 sample orders, keep amounts above 50, sum by status and sort by total. Edit either pane to inspect the examples; change Hydra’s filter threshold to recalculate the result. The browser models this fixture and does not run either product.</p>
+    </div>
+    <span class="sim-badge">Browser simulation</span>
+  </div>
+  <div class="sim-grid">
+    <div class="sim-code-card">
+      <div class="sim-card-head"><strong>{page.name}</strong><span>{page.category}</span></div>
+      <textarea class="sim-rival-code" aria-label={`${page.name} example code`} spellcheck="false">{page.example}</textarea>
+      <div class="sim-card-foot"><button type="button" data-copy="rival">Copy</button><button type="button" data-download="rival">Download</button><span>Illustrative example</span></div>
+    </div>
+    <div class="sim-code-card sim-hydra-card">
+      <div class="sim-card-head"><strong>Hydra ETL</strong><span>YAML job files</span></div>
+      <textarea class="sim-hydra-code" aria-label="Hydra DSL example" spellcheck="false">{hydraExample}</textarea>
+      <div class="sim-card-foot"><button type="button" data-run>Run sample</button><button type="button" data-reset>Reset</button><button type="button" data-copy="hydra">Copy</button><button type="button" data-download="hydra">Download text</button><a href="/migrate/orders-simulator.zip" download="hydra-orders-simulator.zip">Runnable ZIP</a></div>
+    </div>
+  </div>
+  <div class="sim-measures" aria-live="polite">
+    <div><span>Lines in these examples</span><strong><span data-rival-lines></span> {page.name} / <span data-hydra-lines></span> Hydra</strong></div>
+    <div><span>Files represented</span><strong>{page.slug === 'talend' || page.slug === 'airbyte' ? 'Configuration map' : 'Example'} / 4 Hydra files</strong></div>
+    <div><span>Run scope</span><strong>14 browser-local rows</strong></div>
+  </div>
+  <p class="sim-method">Line counts are live counts of the text shown above, not a product benchmark. The {page.name} pane is illustrative and is not executed. The Hydra pane shows four files in one editor for comparison; only the displayed <code>cast</code>, <code>filter</code>, <code>aggregate</code> and <code>sort</code> operations are simulated. “Download text” includes your edits; “Runnable ZIP” contains the original four files and input CSV, validated with Hydra 0.22.0.</p>
+  <div class="sim-results" data-results hidden>
+    <div class="sim-results-head"><h3>Simulated run result</h3><button type="button" data-close aria-label="Close result">×</button></div>
+    <p data-result-summary></p>
+    <div class="sim-result-grid"><pre data-log></pre><div class="sim-table-wrap"><table><thead><tr><th>Status</th><th>Total</th></tr></thead><tbody data-rows></tbody></table></div></div>
+  </div>
+</div>
+
+<script>
+  const sample = [
+    [45,'paid'],[120,'paid'],[300,'refunded'],[89,'paid'],[250,'pending'],[170,'paid'],[60,'paid'],
+    [420,'paid'],[15,'refunded'],[210,'pending'],[95,'paid'],[330,'paid'],[78,'refunded'],[145,'pending']
+  ];
+  document.querySelectorAll<HTMLElement>('[data-migrate-simulator]').forEach((root) => {
+    const rival = root.querySelector<HTMLTextAreaElement>('.sim-rival-code')!;
+    const hydra = root.querySelector<HTMLTextAreaElement>('.sim-hydra-code')!;
+    const initialRival = rival.value;
+    const initialHydra = hydra.value;
+    const lines = (value: string) => value.split('\n').filter(line => line.trim() && !line.trim().startsWith('#')).length;
+    const update = () => {
+      root.querySelector('[data-rival-lines]')!.textContent = String(lines(rival.value));
+      root.querySelector('[data-hydra-lines]')!.textContent = String(lines(hydra.value));
+    };
+    rival.addEventListener('input', update); hydra.addEventListener('input', update); update();
+    root.querySelector('[data-reset]')!.addEventListener('click', () => { rival.value = initialRival; hydra.value = initialHydra; update(); root.querySelector<HTMLElement>('[data-results]')!.hidden = true; });
+    root.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach(button => button.addEventListener('click', async () => {
+      const value = button.dataset.copy === 'rival' ? rival.value : hydra.value;
+      try { await navigator.clipboard.writeText(value); button.textContent = 'Copied'; setTimeout(() => button.textContent = 'Copy', 1500); } catch { button.textContent = 'Select and copy'; }
+    }));
+    root.querySelectorAll<HTMLButtonElement>('[data-download]').forEach(button => button.addEventListener('click', () => {
+      const value = button.dataset.download === 'rival' ? rival.value : hydra.value;
+      const name = button.dataset.download === 'rival' ? 'competitor-example.txt' : 'hydra-job-files.txt';
+      const url = URL.createObjectURL(new Blob([value], { type: 'text/plain;charset=utf-8' }));
+      const anchor = document.createElement('a'); anchor.href = url; anchor.download = name; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }));
+    root.querySelector('[data-close]')!.addEventListener('click', () => root.querySelector<HTMLElement>('[data-results]')!.hidden = true);
+    root.querySelector('[data-run]')!.addEventListener('click', () => {
+      const result = root.querySelector<HTMLElement>('[data-results]')!;
+      const summary = root.querySelector<HTMLElement>('[data-result-summary]')!;
+      const log = root.querySelector<HTMLElement>('[data-log]')!;
+      const body = root.querySelector<HTMLElement>('[data-rows]')!;
+      result.hidden = false; body.replaceChildren();
+      const code = hydra.value;
+      const thresholdMatch = code.match(/expr:\s*["']?amount\s*>\s*(\d+(?:\.\d+)?)/);
+      const expected = [
+        /mapping:\s*\{\s*amount:\s*float\s*\}/,
+        /by:\s*\[\s*status\s*\]/,
+        /total:\s*\{\s*func:\s*sum\s*,\s*col:\s*amount\s*\}/,
+        /by:\s*\[\s*total\s*\]/,
+        /ascending:\s*false/,
+      ];
+      const missing = ['cast:', 'filter:', 'aggregate:', 'sort:'].find(item => !code.includes(item));
+      if (missing || !thresholdMatch || !expected.every(rule => rule.test(code))) {
+        summary.textContent = 'Simulation stopped: this browser model supports the displayed four-step example with a numeric filter threshold.';
+        log.textContent = missing ? `Missing expected item: ${missing}` : 'Restore the cast, aggregate and sort steps; change only the filter threshold for a new result.';
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); return;
+      }
+      const threshold = Number(thresholdMatch[1]);
+      const filtered = sample.filter(([amount]) => Number(amount) > threshold);
+      const groups = new Map<string, number>();
+      filtered.forEach(([amount, status]) => groups.set(String(status), (groups.get(String(status)) || 0) + Number(amount)));
+      const rows = [...groups].sort((a,b) => b[1] - a[1]);
+      rows.forEach(([status, total]) => { const tr = document.createElement('tr'); [status, String(total)].forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.append(td); }); body.append(tr); });
+      summary.textContent = `${filtered.length} of ${sample.length} rows passed the filter; ${rows.length} output groups. Browser-local simulation only.`;
+      log.textContent = `source orders.csv: ${sample.length} rows\ncast amount → float\nfilter amount > ${threshold}: ${filtered.length} rows\naggregate by status: ${rows.length} groups\nsort by total descending\ndestination by_status.csv: simulated`; 
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+</script>
