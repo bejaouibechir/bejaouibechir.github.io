@@ -1,0 +1,186 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "settings-parameters-tab",
+      "path": "/projects/e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Parameters"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Parameters tab of Project settings."
+    },
+    {
+      "name": "settings-secrets-tab",
+      "path": "/projects/e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Secrets"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Secrets tab of Project settings."
+    },
+    {
+      "name": "settings-triggers-tab",
+      "path": "/projects/e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Triggers"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Triggers tab of Project settings."
+    },
+    {
+      "name": "set-param-dialog-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click_text": "Actions"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "drag": "Set Param",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "dblclick_last_node": 1
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Set Param dialog opened from a node dropped on the workflow canvas."
+    },
+    {
+      "name": "assign-param-dialog-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click_text": "Actions"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "drag": "Assign Param",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "dblclick_last_node": 1
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Assign Param dialog opened from a node dropped on the workflow canvas."
+    }
+  ]
+}

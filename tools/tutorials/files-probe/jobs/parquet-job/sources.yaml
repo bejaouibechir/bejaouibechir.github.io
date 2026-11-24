@@ -1,0 +1,5 @@
+sources:
+  src_parquet_job:
+    type: parquet
+    extract:
+      table: data/people.parquet

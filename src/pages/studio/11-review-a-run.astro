@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-11-review-a-run.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Review a past run in Hydra Studio: Runs page, filters and logs", description: "Find a past execution on the Hydra Studio Runs page, filter by status and read its Started, Finished, Duration, Steps and logs. Tested on Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/11-review-a-run/',
+  name: article.headline,
+  steps: ["Open run history", "Read the run history", "Inspect one execution"],
+  faq: [
+    ["Where are past runs in Hydra Studio?", "On the Runs page, opened from the sidebar or from the editor. It lists each execution with its workflow, status, step count, start time and duration."],
+    ["How do I filter runs by status?", "Use the All, Running, Success, Failed and Pending filters above the list."],
+    ["Where do I read the logs of one step?", "Open the run to reach its detail page, then inspect the captured logs of the executed step."],
+    ["Does the run history survive closing Studio?", "Yes. Runs are saved by the API, so the history is still there when you reopen Studio."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Review a run", '/studio/11-review-a-run/']],
+});
 ---
 
-<BaseLayout title="Lesson 11 — Find a past execution and its result" description="Locate the completed execution in Runs and read its stable status, timing, steps and logs.">
+<BaseLayout title="Review a past run in Hydra Studio: Runs page, filters and logs" exactTitle="Review a Hydra Studio Run: Runs Page and Logs | Hydra ETL" description="Find a past execution on the Hydra Studio Runs page, filter by status and read its Started, Finished, Duration, Steps and logs. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

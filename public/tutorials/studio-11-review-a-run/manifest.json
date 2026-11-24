@@ -1,0 +1,20 @@
+[
+  {
+    "file": "sidebar-runs-entry-highlighted-light.png",
+    "name": "sidebar-runs-entry-highlighted",
+    "theme": "light",
+    "alt": "Hydra Studio editor with the Runs entry highlighted in the left sidebar."
+  },
+  {
+    "file": "runs-page-list-dark.png",
+    "name": "runs-page-list",
+    "theme": "dark",
+    "alt": "The Runs page listing past executions with their status."
+  },
+  {
+    "file": "run-detail-timeline-light.png",
+    "name": "run-detail-timeline",
+    "theme": "light",
+    "alt": "A run detail page with the execution timeline, duration, step count and one row per step."
+  }
+]

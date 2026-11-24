@@ -1,0 +1,33 @@
+{
+  "base_url": "http://127.0.0.1:5680",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "x-trial-shot",
+      "path": "/",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        }
+      ],
+      "alt": "Trial page of the Hydra Studio overview to read project identifiers."
+    }
+  ]
+}

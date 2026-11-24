@@ -1,0 +1,162 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "resilience-demo": "orders-resilience-demo"
+  },
+  "shots": [
+    {
+      "name": "terminal-validate-undo-refused",
+      "path": "/workflows/33fb36f2?projectId=705e0e4d&scene=workflow",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd ~/hydra-workspace/resilience-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\project> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow validate wf_bad_rollback"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 8000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Studio terminal after hdrctl workflow validate wf_bad_rollback, showing the refusal for the step notify."
+    },
+    {
+      "name": "undo-editor-not-set-dialog",
+      "path": "/workflows/33fb36f2?projectId=705e0e4d&scene=workflow",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "dblclick_node": 1
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "scroll_into_view": "[data-testid=undo-editor]"
+        },
+        {
+          "wait_ms": 500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The dialog of the notify action with the Undo list showing Not set."
+    },
+    {
+      "name": "undo-editor-nothing-selected",
+      "path": "/workflows/33fb36f2?projectId=705e0e4d&scene=workflow",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "dblclick_node": 1
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "select_option": "[aria-label='Undo action']",
+          "value": "none"
+        },
+        {
+          "scroll_into_view": "[data-testid=undo-editor]"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The dialog of the notify action with the Undo list set to Nothing to undo."
+    }
+  ]
+}

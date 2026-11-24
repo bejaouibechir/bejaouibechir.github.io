@@ -1,0 +1,148 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "settings-project-choose-project",
+      "path": "/settings/project",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Project settings tab of Hydra Studio with no project open, offering a list to choose a project and a Projects button.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 300
+      }
+    },
+    {
+      "name": "settings-project-execution-order",
+      "path": "/settings/project/e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Project settings page of the studio-course project, Execution order tab selected, with the file note workflows/thread.yaml.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 520
+      }
+    },
+    {
+      "name": "settings-project-parameters-tab",
+      "path": "/settings/project/e84ae443?tab=parameters",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Parameters tab of the Project settings page, saved in parameters.yaml and environments files.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 520
+      }
+    },
+    {
+      "name": "settings-project-secrets-tab",
+      "path": "/settings/project/e84ae443?tab=secrets",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Secrets tab of the Project settings page, saved in .hydra/secrets and ignored by git.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 520
+      }
+    },
+    {
+      "name": "settings-project-triggers-tab",
+      "path": "/settings/project/e84ae443?tab=triggers",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Triggers tab of the Project settings page, empty, with the message that the project runs only when someone starts it.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 520
+      }
+    },
+    {
+      "name": "settings-global-new-environment-box",
+      "path": "/settings/global",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 2000
+        },
+        {
+          "click": "[data-testid=env-new]"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "alt": "The Environments card of Global settings with the New environment name box open, before saving anything.",
+      "clip": {
+        "x": 208,
+        "y": 200,
+        "width": 1232,
+        "height": 520
+      }
+    }
+  ]
+}

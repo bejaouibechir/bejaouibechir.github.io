@@ -1,0 +1,2 @@
+captures.json
+..\..\public\tutorials\studio-diagnose

@@ -1,0 +1,3 @@
+pipeline:
+  from: src_parquet_job
+  to: dest_csv

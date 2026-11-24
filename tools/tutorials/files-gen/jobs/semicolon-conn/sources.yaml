@@ -1,0 +1,7 @@
+sources:
+  src_semicolon_conn:
+    type: csv
+    connection:
+      delimiter: ";"
+    extract:
+      table: data/semi.csv

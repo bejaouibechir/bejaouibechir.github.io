@@ -1,0 +1,109 @@
+{
+  "base_url": "http://127.0.0.1:5680",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "execution-order-define-tab-trial",
+      "path": "/settings/project/29a38543",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "alt": "Trial full page of the Execution order define tab in Project settings of Hydra Studio."
+    },
+    {
+      "name": "execution-order-preview-tab-trial",
+      "path": "/settings/project/29a38543",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:text-is('Preview')"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "alt": "Trial full page of the Execution order preview tab in Project settings of Hydra Studio."
+    },
+    {
+      "name": "execution-order-check-result-trial",
+      "path": "/settings/project/29a38543",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:has-text('Check')"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "alt": "Trial full page of the Execution order check result in Project settings of Hydra Studio."
+    }
+  ]
+}

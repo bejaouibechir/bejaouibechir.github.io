@@ -1,0 +1,4 @@
+id,region,product,qty,price,tags,total
+1,  north ,  Apple ,10,2.5,a;b,25.0
+2,SOUTH,Pear,5,4.0,c,20.0
+3,north,apple,7,2.5,a;c,17.5

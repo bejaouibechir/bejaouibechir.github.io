@@ -1,0 +1,26 @@
+[
+  {
+    "file": "palette-transformations-expanded-light.png",
+    "name": "palette-transformations-expanded",
+    "theme": "light",
+    "alt": "The job palette with Sources collapsed and the twenty Transformations listed."
+  },
+  {
+    "file": "dialog-select-node-open-dark.png",
+    "name": "dialog-select-node-open",
+    "theme": "dark",
+    "alt": "The Select dialog of first-job, with the five columns that are kept."
+  },
+  {
+    "file": "dialog-filter-node-open-light.png",
+    "name": "dialog-filter-node-open",
+    "theme": "light",
+    "alt": "The Filter dialog of first-job, with the expression status == 'paid'."
+  },
+  {
+    "file": "canvas-first-job-chain-dark.png",
+    "name": "canvas-first-job-chain",
+    "theme": "dark",
+    "alt": "The canvas of first-job: source, select, filter and destination in one chain."
+  }
+]

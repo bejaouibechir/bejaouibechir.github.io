@@ -1,0 +1,37 @@
+version: "1.0"
+workflow:
+  name: wf_small
+  trigger:
+    type: manual
+  steps:
+    - name: set_count
+      type: action
+      action: set_param
+      params:
+        name: count
+        value: 5
+        type: int
+    - name: check
+      type: action
+      action: condition
+      params:
+        name: big
+        mode: structured
+        left: "{{ param:count }}"
+        op: ">"
+        right: "10"
+      depends_on: [set_count]
+    - name: big_batch
+      type: action
+      action: log
+      params:
+        message: "Big batch path"
+      when: "{{ param:big }}"
+      depends_on: [check]
+    - name: small_batch
+      type: action
+      action: log
+      params:
+        message: "Small batch path"
+      when: "not {{ param:big }}"
+      depends_on: [check]

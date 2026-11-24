@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-43-roll-back-a-failed-workflow.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Roll back a failed workflow in Hydra ETL Studio", description: "Turn on rollback so that a failed Hydra ETL workflow undoes its finished steps, last one first. Tested on Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/roll-back-a-failed-workflow/',
+  name: article.headline,
+  steps: ["Turn rollback on", "Give an action its undo", "Make the last step fail", "Check that everything is back", "Read rollback in the workflow file"],
+  faq: [["What does rollback do in Hydra ETL?", "When a step of the workflow fails, Hydra ETL undoes the steps already finished, the last one first. The workflow is then reported as failed with the mention that its changes were undone."], ["Are jobs undone automatically?", "Yes. In our test, build_report restored the previous report file. A job that writes a file keeps a backup of the previous version, and rollback puts it back."], ["What about actions?", "An action acts outside Hydra ETL, so Hydra ETL cannot guess how to reverse it. With rollback on, each action must declare an undo, or undo: none. The next lesson shows how."], ["Does rollback run when a step succeeds?", "No. It runs when a step fails, and it undoes the steps that had finished before."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Roll back a failed workflow", '/studio/roll-back-a-failed-workflow/']],
+});
+---
+
+<BaseLayout title="Roll back a failed workflow in Hydra ETL Studio" exactTitle="Roll Back a Failed Workflow in Hydra ETL | Hydra ETL" description="Turn on rollback so that a failed Hydra ETL workflow undoes its finished steps, last one first. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="roll-back-a-failed-workflow"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

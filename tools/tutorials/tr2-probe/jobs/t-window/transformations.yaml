@@ -1,0 +1,12 @@
+steps:
+  - cast:
+      mapping:
+        amount: int
+        month: int
+  - window:
+      partition_by: [region]
+      order_by: [month]
+      columns:
+        step: {func: row_number}
+        running: {func: cumsum, col: amount}
+        previous: {func: lag, col: amount, default: 0}

@@ -1,0 +1,5 @@
+sources:
+  src_t_unpivot:
+    type: csv
+    extract:
+      table: data/wide.csv

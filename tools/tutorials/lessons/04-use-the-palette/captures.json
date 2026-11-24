@@ -1,0 +1,858 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "palette-workflow-categories-collapsed",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Containers\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Jobs\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Projects\"))"
+        },
+        {
+          "wait_ms": 300
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The workflow palette with all categories collapsed: Actions, Control Flow, Containers and Jobs."
+    },
+    {
+      "name": "palette-job-categories-collapsed",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button:has(span:text-is(\"Sources\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Destinations\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Containers\"))"
+        },
+        {
+          "wait_ms": 400
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The job palette with all categories collapsed: Sources, Transformations, Destinations and Containers."
+    },
+    {
+      "name": "dialog-log-action-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Log",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Log action dialog, which writes a message to the run logs."
+    },
+    {
+      "name": "dialog-webhook-action-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Webhook",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Webhook action dialog with a required URL and a method list."
+    },
+    {
+      "name": "dialog-email-action-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Email",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Email action dialog with required recipient and subject fields and a body."
+    },
+    {
+      "name": "dialog-python-inline-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Python",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Python action dialog in Inline script mode with a code editor."
+    },
+    {
+      "name": "dialog-python-file-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Python",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click_text": ".py file"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Python action dialog in .py file mode, with a file path and a working directory."
+    },
+    {
+      "name": "dialog-ssh-action-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "SSH",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The SSH action dialog requiring a host, a port that defaults to 22 and a user."
+    },
+    {
+      "name": "dialog-set-param-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Set Param",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Set Param dialog, which creates a runtime parameter and fails if it already exists."
+    },
+    {
+      "name": "dialog-assign-param-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Actions\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Assign Param",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Assign Param dialog, which assigns a value to an existing runtime parameter."
+    },
+    {
+      "name": "palette-control-flow-expanded",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Containers\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Jobs\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Projects\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Control Flow\"))"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The Control Flow category expanded, showing Condition and Delay."
+    },
+    {
+      "name": "palette-containers-job-scene",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button:has(span:text-is(\"Sources\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Destinations\"))"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The three containers offered in the job scene, below the collapsed Sources and Destinations."
+    },
+    {
+      "name": "palette-jobs-listed-workflow",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Containers\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Projects\"))"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The Jobs category expanded in the workflow palette, listing first-job and second-job."
+    },
+    {
+      "name": "palette-transformations-end-of-list",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button:has(span:text-is(\"Sources\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Destinations\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Transformations\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "scroll_into_view": "text='Script'"
+        },
+        {
+          "wait_ms": 500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The end of the transformation list: Pivot, Unpivot, Transpose, Merge, Union, Text to Rows, Window and Script."
+    },
+    {
+      "name": "dialog-script-transformation-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button:has(span:text-is(\"Sources\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Destinations\"))"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click": "button:has(span:text-is(\"Transformations\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Script",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Script transformation dialog with the execution mode and a Python code editor."
+    },
+    {
+      "name": "canvas-toolbar-pan-select-undo",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 520,
+        "height": 420
+      },
+      "alt": "The vertical canvas toolbar beside the palette: pan, select, undo, redo, minimap and terminal."
+    }
+  ]
+}

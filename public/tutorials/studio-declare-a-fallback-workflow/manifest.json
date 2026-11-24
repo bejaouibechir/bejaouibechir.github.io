@@ -1,0 +1,8 @@
+[
+  {
+    "file": "run-project-fallback-badge-light.png",
+    "name": "run-project-fallback-badge",
+    "theme": "light",
+    "alt": "The run detail page where wf_load_backup ran in place of wf_load with a fallback badge."
+  }
+]

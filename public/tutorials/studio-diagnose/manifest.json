@@ -1,0 +1,14 @@
+[
+  {
+    "file": "diagnose-failed-run-detail-error-dark.png",
+    "name": "diagnose-failed-run-detail-error",
+    "theme": "dark",
+    "alt": "The detail page of a failed project run in Hydra Studio: a Failed badge, the run error, an execution timeline, and the failing step opened with its traceback while the next workflow is marked as skipped."
+  },
+  {
+    "file": "diagnose-runs-list-failed-filter-light.png",
+    "name": "diagnose-runs-list-failed-filter",
+    "theme": "light",
+    "alt": "The Runs page of Hydra Studio filtered on Failed: one failed project run with its steps count, start time, duration and the replay button at the end of the row."
+  }
+]

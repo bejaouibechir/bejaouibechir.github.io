@@ -1,87 +1,87 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 7</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 7 of 14 · Add a destination</div><h1>Close the job with a destination</h1><p class="lead">A short lesson, because you already know most of it: a destination is configured exactly like a source. One rule differs, and it is worth the five minutes.</p></div>
-<div class="lesson-meta"><span class="mono">Destinations</span><span>about 8 minutes</span><span>a transformation in place</span></div>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 25</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 25 of 65 · Add a destination</div><h1>Add a destination in Hydra Studio: one job, one place to write</h1><p class="lead">A destination ends the job. Read the ten Hydra can write to, open the one in your canvas, and learn the rule that sets it apart: a pipeline names exactly one.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 4 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Destinations</span><span>about 10 minutes</span><span>a job with a source and transformations</span></div>
 <section class="doc">
-  <h2>1. Objective</h2>
-  <h3>Goal</h3><p>Add the node that ends the job, recognise that its dialogs are the ones you already filled in for sources, and learn the single rule that sets destinations apart: a job writes to exactly one place.</p>
+  <div class="callout"><b>Quick answer</b><p>A destination ends a Hydra job. Drag one from <b>Destinations</b>, connect the last transformation to it and fill its path or connection. Hydra ETL 0.22 offers ten destinations. The pipeline names exactly one of them in <code>to</code>: to write elsewhere too, create a second job and orchestrate both in the workflow.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Read the ten destinations, open the CSV destination of <code>first-job</code>, and see how the pipeline manifest ties one source to one destination.</p>
   <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
-  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A job with a source and at least one transformation.</li></ul>
-
-  <h2>2. Steps</h2>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>The <code>first-job</code> of the previous lesson, with its select and filter nodes in place.</li></ul>
+  <h2>How do I add a destination to a job in Hydra Studio?</h2>
 
   <div class="step">
-    <h3><i>01</i>Read the six destinations</h3>
+    <h3><i>01</i>Read the ten destinations</h3>
     <h4>Objective</h4><p>See what Hydra can write to, and notice what is missing.</p>
-    <h4>Actions</h4><ol><li>Expand <b>Destinations</b> in the job palette.</li><li>Compare the list with <b>Sources</b> just above it.</li><li>Count the difference.</li></ol>
-    <pre class="cmd">Jobs configuration → Destinations (6)</pre>
-    <p>Six connectors, and you have met all six already — three file formats and three databases. The seventh source, <b>Web API</b>, has no counterpart here: Hydra reads from an HTTP endpoint but never writes to one. To send data out over HTTP, orchestrate a <b>Webhook</b> action in the workflow scene instead.</p>
-    <div class="expect"><b>What you should see</b><p>Seven entries on the way in, six on the way out. The difference is one, and it is deliberate.</p><pre class="out">Sources        CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB  Web API
-Destinations   CSV  JSON  Parquet  MySQL  PostgreSQL  MongoDB</pre>
-      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/screen1.png" width="404" height="815" loading="lazy" decoding="async" alt="The job palette with Destinations expanded, listing CSV, JSON, Parquet, MySQL, PostgreSQL and MongoDB." /><figcaption>The same six connectors as the sources, minus <b>Web API</b>.</figcaption></figure>
+    <h4>Actions</h4><ol><li>In the job palette, collapse <b>Sources</b>.</li><li>Read <b>Destinations</b>.</li><li>Compare with the thirteen sources.</li></ol>
+    <pre class="cmd">Jobs configuration → Destinations (10)</pre>
+    <p>Ten connectors: three file formats and seven databases or warehouses. Three of the thirteen sources have no counterpart: <b>PostgreSQL CDC</b>, <b>MySQL CDC</b> and <b>Web API</b>. Hydra reads from an HTTP endpoint but never writes to one.</p><table><thead><tr><th>Destination</th><th>What the catalog says</th></tr></thead><tbody><tr><td><b>CSV · JSON · Parquet</b></td><td>Writes a file.</td></tr><tr><td><b>MySQL · PostgreSQL · SQL Server · MongoDB</b></td><td>Inserts into the database.</td></tr><tr><td><b>SQLite</b></td><td>Writes a table, built in.</td></tr><tr><td><b>Snowflake · BigQuery</b></td><td>Writes a table: append, replace or upsert.</td></tr></tbody></table>
+    <div class="expect"><b>What you should see</b><p>Ten entries on the way out, thirteen on the way in. The three missing ones are deliberate.</p><pre class="out">Sources       CSV  JSON  Parquet  MySQL  PostgreSQL  SQL Server  SQLite  PostgreSQL CDC  MySQL CDC  Snowflake  BigQuery  MongoDB  Web API
+Destinations  CSV  JSON  Parquet  MySQL  PostgreSQL  SQL Server  SQLite  Snowflake  BigQuery  MongoDB</pre>
+      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/palette-destinations-expanded-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The job palette of Hydra Studio with Sources collapsed and Destinations expanded, listing CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, Snowflake, BigQuery and MongoDB." /><figcaption><b>Destinations (10)</b>, with <b>Sources</b> collapsed.</figcaption></figure>
     </div>
   </div>
 
   <div class="step">
-    <h3><i>02</i>Configure it — you already know how</h3>
-    <h4>Objective</h4><p>Fill in a destination, and recognise the dialog.</p>
-    <h4>Actions</h4><ol><li>Drag <b>CSV</b> from <b>Destinations</b> onto the canvas.</li><li>Connect the last transformation to it.</li><li>Double-click it and set the output path.</li></ol>
-    <pre class="cmd">Destinations → CSV → connect → File path → Save</pre>
-    <p>The dialogs are the ones from lesson 5, unchanged. A file destination asks for a path; a database destination asks for host, port, database, user and password — and the same rule applies to the password: write <code>${ENV:MY_SECRET}</code> and keep the value under <b>Environments</b>, never in the manifest.</p>
-    <table><thead><tr><th>Destination</th><th>What it asks for</th></tr></thead><tbody>
-      <tr><td><b>CSV · JSON · Parquet</b></td><td>An output path. <b>Browse</b> writes one that exists.</td></tr>
-      <tr><td><b>MySQL · PostgreSQL · MongoDB</b></td><td>A connection and a target table or collection.</td></tr>
-    </tbody></table>
-    <div class="expect"><b>What you should see</b><p>The red badge clears as soon as the required field is filled, exactly as it did for the source.</p><pre class="out">CSV  DESTINATION   Writes a CSV file
-  STEP NAME   dest_csv_1
-  FILE PATH * ./output/result.csv</pre>
+    <h3><i>02</i>Open the CSV destination</h3>
+    <h4>Objective</h4><p>Read a configured destination, and recognize its dialog.</p>
+    <h4>Actions</h4><ol><li>On the canvas, double-click the <b>dest_paid</b> node at the right end of the chain.</li><li>Read its fields.</li><li>Close the dialog.</li></ol>
+    <pre class="cmd">double-click dest_paid → dialog</pre>
+    <p>The dialog follows the shape of the source dialog: a <b>Step name</b>, the connector's own fields and a <b>Node ID</b>. A file destination asks for a path. A database destination asks for a connection and a target table; write <code>${ENV:MY_SECRET}</code> for a password and keep the value under <b>Environments</b>.</p>
+    <div class="expect"><b>What you should see</b><p>The same frame as a source, with a file path. Nothing here is a connection to a server.</p><pre class="out">CSV  DESTINATION   Writes a CSV file
+  STEP NAME   dest_csv
+  FILE PATH   ../../outputs/paid_orders.csv
+  LOCATION    local</pre>
+      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/dialog-csv-destination-open-dark.png" width="1232" height="844" loading="lazy" decoding="async" alt="The CSV destination dialog of Hydra Studio over the job canvas, showing the Step name, the File path, the Location set to local and the Node ID." /><figcaption>The <b>CSV</b> destination: a path, nothing more.</figcaption></figure>
     </div>
   </div>
 
   <div class="step">
-    <h3><i>03</i>One destination, and one only</h3>
+    <h3><i>03</i>One destination, and only one</h3>
     <h4>Objective</h4><p>Learn the rule that separates destinations from every other node.</p>
-    <h4>Actions</h4><ol><li>Look at the shape of the finished job, from left to right.</li><li>Count the sources, then the destinations.</li><li>Read the <b>Pipeline</b> tab of <b>Hydra DSL</b>.</li></ol>
+    <h4>Actions</h4><ol><li>Open <b>Hydra DSL</b> and select the <b>Pipeline</b> tab.</li><li>Read the <code>from</code> and <code>to</code> keys.</li><li>Select the <b>Destinations</b> tab and read the declared destination.</li></ol>
     <pre class="cmd">Hydra DSL → Pipeline</pre>
-    <p>A job may read from <b>several</b> sources and chain <b>several</b> transformations. It writes to <b>exactly one</b> destination. Branching is allowed upstream, where streams converge; it is not allowed downstream, where the job would have to split.</p>
-    <table><thead><tr><th>Node</th><th>How many</th><th>May branch</th></tr></thead><tbody>
-      <tr><td><b>Sources</b></td><td>one or more</td><td><b>Yes</b> — several may converge on one transformation</td></tr>
-      <tr><td><b>Transformations</b></td><td>none, one or many</td><td>Yes, as a chain</td></tr>
-      <tr><td><b>Destination</b></td><td><b>exactly one</b></td><td><b>No</b></td></tr>
-    </tbody></table>
-    <p>That is why <code>pipeline.yaml</code> holds a single <code>from</code> and a single <code>to</code>. If you need the same data in two places, write two jobs and orchestrate them in the workflow — which is what the next lessons build towards.</p>
+    <p>The pipeline ties a source to a destination by identifier. We tested three shapes on the course job with Hydra ETL 0.22.0:</p><table><thead><tr><th>What we wrote</th><th>Result</th></tr></thead><tbody><tr><td>One destination, <code>to: dest_paid</code></td><td>Valid; the run read 20 rows and wrote 14.</td></tr><tr><td>A second destination declared, but <code>to</code> still names one</td><td>Valid; the second one is ignored.</td></tr><tr><td><code>to: [dest_paid, dest_copy]</code></td><td>Refused: <code>Input should be a valid string</code>, then <code>pipeline.to is missing or empty</code>.</td></tr></tbody></table><p>If you need the same data in two places, write two jobs and orchestrate them in the workflow, which the next lessons build towards.</p>
     <div class="expect"><b>What you should see</b><p>One <code>from</code>, one <code>to</code>, and identifiers rather than paths.</p><pre class="out">pipeline:
-  from: source_csv_8
-  to:   dest_json_10</pre>
-      <figure class="shot"><img src="/tutorials/studio-07-add-a-destination/screen2.png" width="1584" height="906" loading="lazy" decoding="async" alt="A finished job canvas with two sources converging on a Join transformation, which feeds a single JSON destination, marked Valid." /><figcaption>Two sources converge, one destination closes. The counter reads <b>4 nodes · 3 edges</b>, and the job is <b>Valid</b>.</figcaption></figure>
+  from: src_orders
+  to: dest_paid
+
+destinations:
+  dest_paid:
+    type: csv
+    load:
+      table: ../../outputs/paid_orders.csv
+      mode: replace</pre>
+      <figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/job-dsl-pipeline-tab-dark.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Pipeline tab of the Hydra DSL panel showing from src_orders and to dest_paid." /><figcaption>The <b>Pipeline</b> tab: one <code>from</code>, one <code>to</code>.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-09-see-the-yaml/job-dsl-destinations-tab-dark.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Destinations tab of the Hydra DSL panel showing the dest_paid CSV destination with its load settings." /><figcaption>The <b>Destinations</b> tab: what <code>to</code> points at.</figcaption></figure>
     </div>
   </div>
 
 <div class="rules">
-  <h5>Tips and traps</h5>
-  <p data-kind="TIP">A destination is configured <b>exactly like a source</b>. Same dialogs, opposite direction.</p>
-  <p data-kind="TRAP">A job writes to <b>one destination</b>. Two outputs means two jobs, joined in the workflow.</p>
-  <p data-kind="TIP">Branching is allowed <b>upstream</b> only. Sources converge; destinations never split.</p>
-  <p data-kind="TRAP">There is <b>no HTTP destination</b>. To push over HTTP, use the <b>Webhook</b> action instead.</p>
-  <p data-kind="TIP">A password belongs in <b>Environments</b>, written as <b>${ENV:NAME}</b> — in a destination as in a source.</p>
-  <p data-kind="TRAP">Nothing can follow a destination. It has <b>no output handle</b>, and that is why the edge refuses.</p>
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">The destination dialogs follow the source dialogs: if you configured a source, you can configure its matching destination.</p>
+  <p data-kind="TRAP">For a database, never type a real password in the node: write a reference such as <code>${ENV:MY_SECRET}</code> and keep the value outside the manifest.</p>
+  <p data-kind="TRAP"><b>Web API</b>, <b>PostgreSQL CDC</b> and <b>MySQL CDC</b> have no destination. To send data out over HTTP, use the <b>Webhook</b> action in the workflow scene.</p>
+  <p data-kind="TRAP">Do not list two destinations in <code>to</code>: the engine expects a single identifier. Use two jobs.</p>
 </div>
 
-  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
-    <tr><td>Palette</td><td>Six destinations, no Web API</td></tr>
-    <tr><td>Dialog</td><td>The same fields as the matching source</td></tr>
-    <tr><td>Count</td><td>Exactly one destination on the canvas</td></tr>
-    <tr><td>Pipeline tab</td><td>One <code>from</code>, one <code>to</code></td></tr>
-    <tr><td>Status</td><td>The job reads <b>Valid</b></td></tr>
-  </tbody></table>
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Palette</td><td>Ten destinations, no Web API</td></tr><tr><td>Dialog</td><td><b>dest_paid</b> opens with a file path and a Node ID</td></tr><tr><td>Pipeline tab</td><td>One <code>from</code>, one <code>to</code></td></tr><tr><td>Validation</td><td><code>hdrctl validate jobs/first-job</code> reports <code>DSL valid</code></td></tr></tbody></table>
 
-  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
-    <tr><td>No HTTP destination in the list</td><td>Web API is a source only</td><td>Use the <b>Webhook</b> action in the workflow scene</td></tr>
-    <tr><td>A second destination is refused</td><td>A job writes to one place</td><td>Create a second job and orchestrate both</td></tr>
-    <tr><td>Nothing connects after the destination</td><td>It has no output handle</td><td>Expected — the destination ends the job</td></tr>
-    <tr><td>The badge stays after saving</td><td>The output path or table is empty</td><td>Reopen the node and fill the field marked with a red asterisk</td></tr>
-  </tbody></table>
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>No HTTP destination in the list</td><td>Web API is a source only</td><td>Use the <b>Webhook</b> action in the workflow scene</td></tr><tr><td><code>Input should be a valid string</code> on <code>pipeline.to</code></td><td><code>to</code> holds a list</td><td>Name one destination, and create a second job for the second place</td></tr><tr><td>Nothing connects after the destination</td><td>It has no output</td><td>Expected: the destination ends the job</td></tr><tr><td>The badge stays after saving</td><td>The output path or table is empty</td><td>Reopen the node and fill the field marked with a red asterisk</td></tr></tbody></table>
 
-  <h2>5. Next lesson</h2><p>The job is complete: it reads, reshapes and writes. The next lesson opens the manifests Studio has been writing all along, and checks that they say what you meant.</p>
+  <h2>Frequently asked questions</h2>
+  <h3>Which destinations does Hydra Studio offer?</h3>
+  <p>CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, Snowflake, BigQuery and MongoDB: ten in Hydra ETL 0.22.</p>
+  <h3>Can a Hydra job write to two destinations?</h3>
+  <p>No. The pipeline names a single destination in its to key. We declared a second destination without referencing it and it was ignored; we wrote to as a list and hdrctl validate rejected it. To write to two places, use two jobs in a workflow.</p>
+  <h3>Why is there no Web API destination?</h3>
+  <p>Web API is a source only in Hydra ETL 0.22, like PostgreSQL CDC and MySQL CDC. To send data out over HTTP, use the Webhook action in the workflow scene.</p>
+  <h3>How do I keep a password out of a destination?</h3>
+  <p>Write a reference such as ${ENV:MY_SECRET} in the field and keep the value under Environments, never in the manifest.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/06-add-a-transformation">Add a transformation</a></li><li><a href="/studio/08-see-the-yaml">Read the YAML Studio generates</a></li><li><a href="/dsl/destinations-yaml">Destinations YAML reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+
+  <h2>Next lesson</h2><p>The job is complete: it reads, reshapes and writes. The next lesson opens the manifests Studio has been writing all along, and checks that they say what you meant.</p>
   <div class="lesson-nav"><a class="primary" href="/studio/08-see-the-yaml">See the YAML <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
-  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/dsl/sources-yaml">sources.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

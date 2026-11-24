@@ -1,0 +1,119 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 19</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 19 of 65 · File sources</div><h1>Read CSV, JSON and Parquet files in a Hydra job</h1><p class="lead">CSV, JSON and Parquet sources are declared the same way: a type and a path. Build three jobs, run them, and read the error of a missing file.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">type: csv | json | parquet</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A file source is a <code>type</code> (<code>csv</code>, <code>json</code> or <code>parquet</code>) and a path in <code>extract.table</code>. The path is read from the job folder. A missing file stops the job with <code>source file not found</code>.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Prepare one small file in each format, declare three sources, run the jobs, and read what a missing file gives.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and a project folder such as the one built in <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>For Parquet: <code>pyarrow</code> (<code>pip install "hydra-etl[parquet]"</code>), which pandas needs to write the file.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I read a CSV, JSON or Parquet file?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Prepare one file per format</h3>
+    <h4>Objective</h4><p>The same three rows in three formats.</p>
+    <h4>Actions</h4><ol><li>Create the folders <code>jobs/csv-job/data</code>, <code>jobs/json-job/data</code> and <code>jobs/parquet-job/data</code>.</li><li>Save the CSV and the JSON content below in them.</li><li>Create the Parquet file with the command below.</li></ol>
+    <pre class="cmd">jobs/csv-job/data/people.csv
+jobs/json-job/data/people.json
+py -c "import pandas as pd; pd.DataFrame({'id':[1,2,3],'name':['Alice','Bob','Charlie'],'value':[100,200,-5]}).to_parquet('jobs/parquet-job/data/people.parquet')"</pre>
+    <p>The CSV has a header and commas. The JSON file is a list of objects.</p><pre class="cmd">id,name,value
+1,Alice,100
+2,Bob,200
+3,Charlie,-5</pre><pre class="cmd">[
+  {"id": 1, "name": "Alice", "value": 100},
+  {"id": 2, "name": "Bob", "value": 200},
+  {"id": 3, "name": "Charlie", "value": -5}
+]</pre>
+    <div class="expect"><b>What you should see</b><p>Three <code>people</code> files, one per job folder.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Declare the three sources</h3>
+    <h4>Objective</h4><p>Only the type and the path change.</p>
+    <h4>Actions</h4><ol><li>In each job folder, create <code>sources.yaml</code>, <code>destinations.yaml</code> and <code>pipeline.yaml</code> as below.</li><li>Change <code>type</code>, the source id and the file name for the JSON and Parquet jobs.</li></ol>
+    <pre class="cmd">jobs/csv-job/sources.yaml
+jobs/csv-job/destinations.yaml
+jobs/csv-job/pipeline.yaml</pre>
+    <p>The destination is a CSV file in every job, so the three results can be compared. The pipeline links the ids, as in <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>. These jobs have no <code>transformations.yaml</code>, which is allowed.</p><pre class="cmd">sources:
+  src_csv_job:
+    type: csv          # json, parquet
+    extract:
+      table: data/people.csv   # people.json, people.parquet
+
+destinations:
+  dest_csv:
+    type: csv
+    load:
+      table: data/out_csv-job.csv
+      mode: replace
+
+pipeline:
+  from: src_csv_job
+  to: dest_csv</pre>
+    <div class="expect"><b>What you should see</b><p>Three job folders with three manifests each.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Validate and run each job</h3>
+    <h4>Objective</h4><p>Same result from three formats.</p>
+    <h4>Actions</h4><ol><li>Run the two commands below for <code>csv-job</code>.</li><li>Repeat for <code>json-job</code> and <code>parquet-job</code>.</li></ol>
+    <pre class="cmd">hdrctl validate jobs\csv-job
+hdrctl run jobs\csv-job</pre>
+    <p>Each job reads three rows and writes three: nothing filters them. The output file is the same for the three formats.</p><pre class="cmd">id,name,value
+1,Alice,100
+2,Bob,200
+3,Charlie,-5</pre>
+    <div class="expect"><b>What you should see</b><p><code>Pipeline completed successfully</code> three times, with 3 rows read and 3 written.</p><pre class="out">Pipeline completed successfully in 1.6s
+Rows read   : 3
+Rows written: 3</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read the error of a missing file</h3>
+    <h4>Objective</h4><p>Know the message when the path is wrong.</p>
+    <h4>Actions</h4><ol><li>Copy <code>csv-job</code> to <code>missing-file</code> and set <code>table: data/nothing.csv</code>.</li><li>Run the job.</li></ol>
+    <pre class="cmd">hdrctl run jobs\missing-file</pre>
+    <p>Hydra does not mention the folder. It names the connector and the source id. Check the path against the job folder, as the path is read from there.</p>
+    <div class="expect"><b>What you should see</b><p>A failed run with <code>source file not found</code>.</p><pre class="out">Job 'missing-file' failed: ValueError: CSVConnector [src_missing_file]: source file not found.
+Pipeline FAILED in 1.7s</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Keep one small sample file next to each job. A three-row file makes every run take seconds.</p>
+  <p data-kind="TIP">Add a <code>select</code> step in <code>transformations.yaml</code> when you need to prove the columns were split: it fails with the list of the columns that Hydra found.</p>
+  <p data-kind="TRAP">On Hydra ETL 0.22 we could not read a semicolon-separated CSV into columns. The file loaded as one column named <code>id;name;value</code>, and a <code>select</code> of <code>name</code> failed. The run itself still reported success, so check the columns.</p>
+  <p data-kind="TRAP">A CSV has no types: every value is text until you cast it. Cast before you compare numbers.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Type</td><td>csv, json or parquet</td></tr><tr><td>Path</td><td>extract.table, read from the job folder</td></tr><tr><td>Parquet</td><td>needs pyarrow</td></tr><tr><td>Check</td><td>select a column to prove the split</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>source file not found</td><td>The path is wrong or the file is in another folder</td><td>Check extract.table against the job folder</td></tr><tr><td>select: unknown columns</td><td>The file was not split as you expect</td><td>Look at the Available columns list</td></tr><tr><td>Parquet cannot be read</td><td>pyarrow is missing</td><td>pip install "hydra-etl[parquet]"</td></tr><tr><td>Not a job folder</td><td>The command ran from the wrong place</td><td>Pass the job folder to the command</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I read a CSV, JSON or Parquet file in Hydra ETL?</h3>
+  <p>Declare a source in sources.yaml with type csv, json or parquet, and put the file path in extract.table. Nothing else changes between the three. In our test each job read 3 rows and wrote 3.</p>
+  <h3>Is the path relative to something?</h3>
+  <p>In our test, a path such as data/people.csv was read from the job folder, so the files sat in jobs/<job>/data.</p>
+  <h3>What shape must a JSON file have?</h3>
+  <p>We tested a file that holds a list of objects, one object per row, with the same keys in each. Other shapes were not tested.</p>
+  <h3>Does Parquet need an extra package?</h3>
+  <p>According to pyproject.toml, Parquet support comes with the optional parquet extra, which installs pyarrow. Install it with pip install "hydra-etl[parquet]" if Hydra ETL complains. We created our Parquet file with pandas.</p>
+  <h3>Can I read a CSV that uses semicolons?</h3>
+  <p>Not in our test on Hydra ETL 0.22. We set delimiter under connection and next to extract, and each time the file loaded as one column named id;name;value. Until this changes, convert the file to commas, or check the release notes of your version.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/anatomy-of-a-job">What a Hydra job is made of</a></li><li><a href="/studio/05-add-a-source">Create a job, then give it a source</a></li><li><a href="/studio/06-add-a-transformation">Reshape the data between source and destination</a></li></ul>
+
+  <h2>Next lesson</h2><p>A file source is a type and a path. Next, reshape the rows between source and destination.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/06-add-a-transformation">Transformations <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

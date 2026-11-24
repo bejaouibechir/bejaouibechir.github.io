@@ -1,0 +1,170 @@
+{
+ "base_url": "http://127.0.0.1:5678",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "scale": 2,
+ "theme_cycle": [
+  "light",
+  "dark"
+ ],
+ "replace_text": {
+  "C:\\Users\\DELL": "C:\\Users\\you",
+  "essai012": "orders-demo",
+  "fallbackproject": "backup-demo",
+  "env-project": "env-demo",
+  "hydra-cdc-mirror-demo": "cdc-demo",
+  "snwoflake": "warehouse-demo"
+ },
+ "shots": [
+  {
+   "name": "sequence-container-around-first-job",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "auto",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1200
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "drag": "Sequence Container",
+     "x": 330,
+     "y": 150
+    },
+    {
+     "drag_node_into_last": "first-job"
+    },
+    {
+     "click_last_node_header": 1
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "A Sequence container on the workflow canvas with first-job placed inside it."
+  },
+  {
+   "name": "remove-from-container-menu",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "auto",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1200
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "drag": "Sequence Container",
+     "x": 330,
+     "y": 150
+    },
+    {
+     "drag_node_into_last": "first-job"
+    },
+    {
+     "rightclick_node": "first-job"
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "The context menu of first-job inside its container."
+  },
+  {
+   "name": "error-scope-around-first-job",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "auto",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1200
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "drag": "Error Scope",
+     "x": 330,
+     "y": 150
+    },
+    {
+     "drag_node_into_last": "first-job"
+    },
+    {
+     "click_last_node_header": 1
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "An Error Scope around first-job with its settings panel open."
+  },
+  {
+   "name": "retry-scope-around-first-job",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "auto",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1200
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "drag": "Retry Scope",
+     "x": 330,
+     "y": 150
+    },
+    {
+     "drag_node_into_last": "first-job"
+    },
+    {
+     "click_last_node_header": 1
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "A Retry Scope around first-job with its settings panel open."
+  }
+ ]
+}

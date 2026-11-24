@@ -1,0 +1,133 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 26</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 26 of 65 · Actions 1</div><h1>Run Log, Python and shell actions in a Hydra Studio workflow</h1><p class="lead">Actions run work that is not a job: write a log line, run Python, or call PowerShell. Build a three step workflow and read each message in the run.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Actions</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A Hydra workflow runs an <b>action</b> as a step: <code>log</code> writes a message, <code>python</code> runs a script on any system, <code>powershell</code> runs a command on Windows and <code>bash</code> on Linux or macOS. In our test, a log, a Python and a PowerShell step ran in 0.6 seconds.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Read three action dialogs, write a workflow that chains a log, a Python and a PowerShell step, and run it.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>PowerShell on Windows. Bash steps need Linux or macOS and were not run in this lesson.</li></ul>
+  <h2>How do I run actions in a Hydra workflow?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the Log action</h3>
+    <h4>Objective</h4><p>Start with the simplest action.</p>
+    <h4>Actions</h4><ol><li>Open a workflow in <b>Workflow configuration</b>.</li><li>In the palette, expand <b>Actions</b>.</li><li>Drag <b>Log</b> onto the canvas and double-click it.</li></ol>
+    <pre class="cmd">Palette → Actions → Log</pre>
+    <p>The Log action writes one message to the run. Its dialog has a step name, an <b>On failure</b> list, a <b>Run condition (when)</b> and the <b>Message</b>. Every action shares this frame.</p>
+    <div class="expect"><b>What you should see</b><p>A dialog whose subtitle says it writes a message to the run logs.</p><pre class="out">Log   ACTION   Writes a message to the run logs</pre>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/dialog-log-action-open-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Log action dialog of Hydra Studio in the light theme, with a step name, an on-failure list, a run condition and a message field." /><figcaption>The <b>Log</b> dialog.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Open the Python action</h3>
+    <h4>Objective</h4><p>See the one action that runs on every system.</p>
+    <h4>Actions</h4><ol><li>Drag <b>Python</b> onto the canvas and double-click it.</li><li>Select <b>Inline script</b>, then <b>.py file</b>.</li></ol>
+    <pre class="cmd">Palette → Actions → Python</pre>
+    <p>Python takes an inline script or the path of a <code>.py</code> file, plus an optional working directory and a timeout of 60 seconds by default. It has no platform badge: it runs on Windows, Linux and macOS.</p>
+    <div class="expect"><b>What you should see</b><p>A code editor for the inline script, and a path field for the file.</p><pre class="out">Python   ACTION   Inline script · .py file</pre>
+      <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/dialog-python-inline-open-dark.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Python action dialog of Hydra Studio in the dark theme, in Inline script mode, with a code editor, a working directory and a timeout." /><figcaption>The <b>Python</b> dialog, inline mode.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Open the PowerShell action</h3>
+    <h4>Objective</h4><p>Know what a shell action asks for, and when it is dimmed.</p>
+    <h4>Actions</h4><ol><li>Drag <b>PowerShell</b> onto the canvas and double-click it.</li><li>Read the <b>PowerShell command</b>, <b>Working directory</b> and <b>Timeout</b> fields.</li></ol>
+    <pre class="cmd">Palette → Actions → PowerShell</pre>
+    <p>On Windows, PowerShell is active and <b>Bash</b> is dimmed in the palette; on Linux or macOS the pair is reversed. The dialog says <i>Runs a PowerShell script (Windows)</i>. The <b>Bash</b> action takes a Bash command in the same way but was not run here, because this lesson was tested on Windows.</p>
+    <div class="expect"><b>What you should see</b><p>A dialog with a required command field, a working directory with a Browse button, and a timeout.</p><pre class="out">PowerShell   ACTION   Runs a PowerShell script (Windows)</pre>
+      <figure class="shot"><img src="/tutorials/studio-actions1/powershell-action-dialog-command-field-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The PowerShell action dialog of Hydra Studio in the light theme: step name, on failure list, run condition, the required PowerShell command field, working directory with a Browse button, timeout, and the Undo section." /><figcaption>The <b>PowerShell</b> dialog.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Write a workflow with three actions</h3>
+    <h4>Objective</h4><p>See the three actions as YAML.</p>
+    <h4>Actions</h4><ol><li>Create a folder <code>actions-demo</code> with a <code>workflows</code> folder inside.</li><li>Save the YAML below as <code>workflows\wf_actions.yaml</code>.</li></ol>
+    <pre class="cmd">workflows\wf_actions.yaml</pre>
+    <p>Each step has <code>type: action</code>, an <code>action</code> name and a <code>params</code> block, and depends on the previous step. The Python script uses a YAML block (<code>|</code>) so that it can span lines.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: wf_actions
+  trigger:
+    type: manual
+  steps:
+    - name: say_hello
+      type: action
+      action: log
+      params:
+        message: "Hello from the log action"
+    - name: run_python
+      type: action
+      action: python
+      params:
+        script: |
+          import sys
+          print("Python", sys.version.split()[0])
+      depends_on: [say_hello]
+    - name: run_powershell
+      type: action
+      action: powershell
+      params:
+        command: Write-Output "Hello from PowerShell"
+      depends_on: [run_python]</pre>
+    <div class="expect"><b>What you should see</b><p>A file of 25 lines.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Validate and run</h3>
+    <h4>Objective</h4><p>See the three messages in the run.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>actions-demo</code> folder.</li><li>Run the two commands below, one after the other.</li></ol>
+    <pre class="cmd">hdrctl workflow validate workflows\wf_actions.yaml
+hdrctl workflow run workflows\wf_actions.yaml</pre>
+    <p>Validation prints a confirmation. The run then executes the three steps in order and shows each message under its step.</p>
+    <div class="expect"><b>What you should see</b><p>Three steps OK, each followed by its message, and a summary line.</p><pre class="out">Workflow valid — no errors detected.
+
+Workflow  wf_actions
+
+✓  Step 'say_hello' OK (0.0s)
+   | Hello from the log action
+✓  Step 'run_python' OK (0.1s)
+   | Python 3.13.7
+✓  Step 'run_powershell' OK (0.4s)
+   | Hello from PowerShell
+
+Workflow 'wf_actions' completed in 0.6s — 3/3 steps OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-actions1/actions-workflow-run-terminal-output-dark.png" width="1232" height="500" loading="lazy" decoding="async" alt="The Hydra Studio terminal in the dark theme after running wf_actions: the log, Python and PowerShell steps are OK, each followed by its message, and the workflow completed in 0.6s with 3 of 3 steps OK." /><figcaption>The same run, from the Studio terminal.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use <b>Python</b> when a workflow must run on several systems: it is the only script action that does not depend on the host.</p>
+  <p data-kind="TIP">Keep long scripts in a <code>.py</code> file and point <code>file_path</code> at it.</p>
+  <p data-kind="TRAP">A shell action fails on the wrong system: PowerShell needs Windows, Bash needs Linux or macOS.</p>
+  <p data-kind="TIP">Chain steps with <code>depends_on</code>, otherwise they may run side by side.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Dialogs</td><td>Log, Python and PowerShell share the same frame</td></tr><tr><td>Validation</td><td><code>hdrctl workflow validate</code> prints Workflow valid</td></tr><tr><td>Run</td><td>Three steps OK, each with its message</td></tr><tr><td>Total</td><td>The workflow completes with 3/3 steps OK</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The Bash action is dimmed</td><td>You are on Windows</td><td>Use PowerShell, or Python for a portable step</td></tr><tr><td>The Python step fails</td><td>The script raises an error or exceeds the timeout</td><td>Run the script alone, then raise <code>timeout</code> if needed</td></tr><tr><td>No message under a step</td><td>The step printed nothing</td><td>Print or write a log message from the step</td></tr><tr><td>Workflow file not found</td><td>The path is wrong</td><td>Run the command from the folder that holds <code>workflows</code></td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What actions can a Hydra workflow run?</h3>
+  <p>Hydra ETL 0.22 has eleven actions: bash, powershell, python, ssh, webhook, email, log, delay, condition, set_param and assign_param. A step runs one of them with type action, an action name and a params block.</p>
+  <h3>How do I run a Python script in a workflow?</h3>
+  <p>Use the python action with an inline script in params.script, or a .py file in params.file_path. Optional keys are working_dir and timeout, which defaults to 60 seconds.</p>
+  <h3>Why is the Bash action unavailable on Windows?</h3>
+  <p>Each shell action is tied to an operating system: Bash runs on Linux and macOS, PowerShell on Windows. The palette shows the other one dimmed. Use Python when a step must run everywhere.</p>
+  <h3>Where does the output of a step go?</h3>
+  <p>The log action writes its message to the run, and a Python or PowerShell step shows what it prints under the step. In our test each message appeared right below its step.</p>
+  <h3>What does On failure do?</h3>
+  <p>Every action dialog has an On failure list whose default is fail. It decides what the workflow does when the step fails. The Resolve conflicts and recover lessons cover the other choices.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/use-the-palette">Use the node palette</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/branch-with-the-condition-node">Branch with the Condition node</a></li><li><a href="/studio/12-compose-jobs">Compose jobs in a workflow</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can run scripts and log messages from a workflow. Next, call a service or reach another machine with the Webhook, Email and SSH actions.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/12-compose-jobs">Compose jobs <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

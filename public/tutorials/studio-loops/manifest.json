@@ -1,0 +1,14 @@
+[
+  {
+    "file": "loops-run-terminal-output-dark.png",
+    "name": "loops-run-terminal-output",
+    "theme": "dark",
+    "alt": "The Studio terminal after hdrctl run in a project whose thread.yaml repeats two workflows: pass 1 of 2, a loop line announcing a one second wait, then pass 2 of 2, and a project summary with 4 of 4 workflows OK."
+  },
+  {
+    "file": "loops-dry-run-execution-plan-light.png",
+    "name": "loops-dry-run-execution-plan",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl run with the dry-run option: the execution plan lists stage 1 with the workflows fetch and check, then a loop line with 2 passes and a one second wait, and says the project is valid and nothing was executed."
+  }
+]

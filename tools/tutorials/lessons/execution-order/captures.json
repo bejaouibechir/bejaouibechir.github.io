@@ -1,0 +1,239 @@
+{
+  "base_url": "http://127.0.0.1:5680",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "hydra-workspace-eo": "hydra-workspace"
+  },
+  "shots": [
+    {
+      "name": "execution-order-define-stages-and-loops",
+      "path": "/settings/project/79be2218",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 560
+      },
+      "alt": "The Define tab of Execution order in Hydra Studio Project settings: three stages with their mode, wait fields and workflows, an Add stage button, a Not in the thread list, and a Loops box with one loop."
+    },
+    {
+      "name": "execution-order-define-unsaved-change",
+      "path": "/settings/project/79be2218",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:has-text('cleanup')"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 560
+      },
+      "alt": "The Define tab after adding the cleanup workflow to the thread: the workflow joins the list and the Save button is enabled because the change is not saved yet."
+    },
+    {
+      "name": "execution-order-preview-diagram",
+      "path": "/settings/project/79be2218",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:text-is('Preview')"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 380
+      },
+      "alt": "The Preview tab of Execution order: boxes for prepare, load_sales, load_stock and report from left to right, the two loads stacked, a one second wait marker and a dashed loop arrow."
+    },
+    {
+      "name": "execution-order-preview-wait-timeout-fallback",
+      "path": "/settings/project/d96618f7",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:text-is('Preview')"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 380
+      },
+      "alt": "The Preview tab of a thread with a wait before a workflow, a maximum duration and a fallback workflow shown as a dashed orange block below load_sales."
+    },
+    {
+      "name": "execution-order-check-ready-result",
+      "path": "/settings/project/79be2218",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:has-text('Check')"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 620
+      },
+      "alt": "The Execution order tab after pressing Check on a valid thread: a green line says Ready, then lists the workflows in order and the number of loops."
+    },
+    {
+      "name": "execution-order-check-errors-result",
+      "path": "/settings/project/eaf83030",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:has-text('Check')"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 230,
+        "y": 250,
+        "width": 1200,
+        "height": 620
+      },
+      "alt": "The Execution order tab after pressing Check on a thread that names a missing workflow file and a missing fallback file: red lines give the exact messages."
+    }
+  ]
+}

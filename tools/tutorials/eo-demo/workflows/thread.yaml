@@ -1,0 +1,18 @@
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+  - mode: parallel
+    delay_after: 1s
+    workflows:
+      - name: load_sales
+      - name: load_stock
+  - mode: sequential
+    workflows:
+      - name: report
+loops:
+  - from: report
+    to: prepare
+    times: 2
+    delay: 1s

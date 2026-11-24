@@ -1,0 +1,78 @@
+{
+  "base_url": "http://127.0.0.1:5682",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "hydra-workspace-eo": "hydra-workspace"
+  },
+  "shots": [
+    {
+      "name": "diagnose-failed-run-detail-error",
+      "path": "/runs",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "project:diag-demo"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 930
+      },
+      "alt": "The detail page of a failed project run in Hydra Studio: a Failed badge, the run error, an execution timeline, and the failing step opened with its traceback while the next workflow is marked as skipped."
+    },
+    {
+      "name": "diagnose-runs-list-failed-filter",
+      "path": "/runs",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button:has-text('Failed')"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 300
+      },
+      "alt": "The Runs page of Hydra Studio filtered on Failed: one failed project run with its steps count, start time, duration and the replay button at the end of the row."
+    }
+  ]
+}

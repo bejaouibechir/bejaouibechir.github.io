@@ -1,0 +1,20 @@
+[
+  {
+    "file": "workflow-rollback-toolbar-on-light.png",
+    "name": "workflow-rollback-toolbar-on",
+    "theme": "light",
+    "alt": "The workflow editor of wf_report with the Rollback button on in the toolbar."
+  },
+  {
+    "file": "undo-editor-share-dialog-dark.png",
+    "name": "undo-editor-share-dialog",
+    "theme": "dark",
+    "alt": "The dialog of the share action with the Undo section set to run a python action."
+  },
+  {
+    "file": "terminal-rollback-failed-run-light.png",
+    "name": "terminal-rollback-failed-run",
+    "theme": "light",
+    "alt": "The Studio terminal after a failed run of wf_report, with the two undone steps."
+  }
+]

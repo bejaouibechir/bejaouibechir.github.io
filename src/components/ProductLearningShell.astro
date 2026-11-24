@@ -27,6 +27,11 @@ const {
 const useLessons = lessons.length > 0;
 const unitCount = useLessons ? lessons.length : modules.length;
 const unitWord = useLessons ? 'lessons' : 'modules';
+const readyCount = useLessons ? lessons.filter((l) => l.slug).length : 0;
+const pending = useLessons && readyCount < unitCount;
+const sideMeta = pending ? `${unitCount} ${unitWord} · ${readyCount} available` : `${unitCount} ${unitWord} · ${duration}`;
+/* Un titre de bloc s'affiche quand `group` change d'une leçon à la suivante. */
+const newBlock = (i: number) => useLessons && !!lessons[i].group && (i === 0 || lessons[i - 1].group !== lessons[i].group);
 const num = (i: number) => String(i + 1).padStart(2, '0');
 const trackHref = product === 'CLI' ? '/cli' : '/studio';
 const isLessonPage = activeSlug !== null && activeSlug !== undefined;
@@ -49,11 +54,13 @@ const lessonHref = (lesson: Lesson, index: number) =>
       <span>Lessons</span><b>{currentLabel}</b><i aria-hidden="true">▾</i>
     </button>
     <a class="all-tracks" href="/get-started"><span aria-hidden="true">←</span><b>All learning tracks</b><small>return to Get started</small></a>
-    <div class="track-name"><span>{product}</span><b>{title}</b><small>{unitCount} {unitWord} · {duration}</small></div>
+    <div class="track-name"><span>{product}</span><b>{title}</b><small>{sideMeta}</small></div>
     <nav class="course-outline" aria-label={useLessons ? 'Course lessons' : 'Course modules'} id="courseOutline">
       <a class:list={['overview-link', { current: !isLessonPage }]} href={trackHref} aria-current={isLessonPage ? undefined : 'page'}><span>—</span><b>Tutorials overview</b></a>
       {useLessons
         ? lessons.map((lesson, index) => (
+            <Fragment>
+            {newBlock(index) && <div class="outline-block">{lesson.group}</div>}
             <a
               class:list={['outline-item', { on: isLessonPage && lesson.slug === activeSlug, written: !!lesson.slug }]}
               href={lessonHref(lesson, index)}
@@ -61,8 +68,9 @@ const lessonHref = (lesson: Lesson, index: number) =>
               aria-current={isLessonPage && lesson.slug === activeSlug ? 'page' : undefined}
             >
               <span>{num(index)}</span><b>{lesson.label}</b>
-              {!lesson.slug && <small>outline</small>}
+              {!lesson.slug && <small>soon</small>}
             </a>
+            </Fragment>
           ))
         : modules.map((module, index) => (
             <div class="outline-item"><span>{num(index)}</span><b>{module.title}</b><small>outline</small></div>
@@ -80,7 +88,7 @@ const lessonHref = (lesson: Lesson, index: number) =>
         <div class="eyebrow"><span></span>Hydra {product} learning track</div>
         <h1>{title}</h1>
         <p>{lead}</p>
-        <div class="hero-meta"><span>{unitCount} {unitWord}</span><span>{duration}</span><span>beginner to independent</span></div>
+        <div class="hero-meta"><span>{unitCount} {unitWord}</span>{pending && <span>{readyCount} available now · {unitCount - readyCount} coming soon</span>}<span>{duration}</span><span>beginner to independent</span></div>
       </div>
     </section>
 
@@ -88,7 +96,9 @@ const lessonHref = (lesson: Lesson, index: number) =>
       <div class="section-head"><div><span>Course map</span><h2 id="courseMapTitle">All {unitWord}</h2></div><p>Follow them in order, or jump to the one you need.</p></div>
       {useLessons ? (
         <div class="lesson-grid">{lessons.map((lesson, index) => (
-          lesson.slug ? (
+          <Fragment>
+          {newBlock(index) && <h3 class="block-head">{lesson.group}</h3>}
+          {lesson.slug ? (
             <a id={`lesson-${num(index)}`} class="lesson-card open" href={`${trackHref}/${lesson.slug}`}>
               <span class="module-num">{num(index)}</span>
               <div>
@@ -100,7 +110,7 @@ const lessonHref = (lesson: Lesson, index: number) =>
               <small class="lesson-go">Start <span aria-hidden="true">→</span></small>
             </a>
           ) : (
-            <article id={`lesson-${num(index)}`} class="lesson-card">
+            <article id={`lesson-${num(index)}`} class="lesson-card soon" aria-label={`${lesson.title} — coming soon`}>
               <span class="module-num">{num(index)}</span>
               <div>
                 {lesson.group && <span class="lesson-group">{lesson.group}</span>}
@@ -108,9 +118,10 @@ const lessonHref = (lesson: Lesson, index: number) =>
                 <p>{lesson.description}</p>
                 {lesson.command && <code class="lesson-cmd">{lesson.command}</code>}
               </div>
-              <small>Outline</small>
+              <small class="soon-badge">Coming soon</small>
             </article>
-          )
+          )}
+          </Fragment>
         ))}</div>
       ) : (
         <div class="module-grid">{modules.map((module, index) => <article><span class="module-num">{num(index)}</span><div><h3>{module.title}</h3><p>{module.description}</p></div><small>Outline</small></article>)}</div>

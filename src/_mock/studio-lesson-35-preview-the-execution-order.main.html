@@ -1,0 +1,112 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 35</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 35 of 65 · Execution order: Preview</div><h1>Preview the execution order of a Hydra project</h1><p class="lead">The Preview tab draws workflows/thread.yaml as a diagram: stages, parallel blocks, waits, loops and fallbacks. Read it before you run anything.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Preview</span><span>about 5 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><b>Preview</b> turns the execution order into a diagram that reads from left to right. Stages are columns, parallel workflows are stacked, a diamond is a wait, a dashed blue arrow is a loop and a dashed orange block is a fallback. Nothing is run.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Open Preview, read each symbol, and compare a plain thread with one that has a wait, a maximum duration and a fallback.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 with Studio running: <code>hdrctl serve</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I preview the execution order?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open Preview</h3>
+    <h4>Objective</h4><p>See the thread as a diagram.</p>
+    <h4>Actions</h4><ol><li>Open <b>Settings</b> → <b>Project settings</b> → <b>Execution order</b>.</li><li>Click <b>Preview</b> next to <b>Define</b>.</li></ol>
+    <pre class="cmd">Execution order → Preview</pre>
+    <p>The diagram follows the stages left to right: <code>prepare</code>, then <code>load_sales</code> and <code>load_stock</code> stacked, then <code>report</code>. A diamond labeled <code>1s</code> sits between stage 2 and stage 3, and a dashed arrow goes back from <code>report</code> to <code>prepare</code> with the label <code>×2</code> and its own <code>1s</code> pause.</p>
+    <div class="expect"><b>What you should see</b><p>Four blocks, a diamond, and a dashed loop arrow.</p><pre class="out">prepare → [ load_sales / load_stock ] → ◇ 1s → report
+          ╰─ loop ×2 · 1s ─ back to prepare</pre>
+      <figure class="shot"><img src="/tutorials/studio-execution-order/execution-order-preview-diagram-dark.png" width="1200" height="380" loading="lazy" decoding="async" alt="The Preview tab of Execution order: boxes for prepare, load_sales, load_stock and report from left to right, the two loads stacked, a one second wait marker and a dashed loop arrow." /><figcaption>The diagram of the Stages project, with a loop.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the legend</h3>
+    <h4>Objective</h4><p>Learn the symbols.</p>
+    <h4>Actions</h4><ol><li>Read the text under the diagram.</li><li>Match each symbol with the YAML key behind it.</li></ol>
+    <pre class="cmd">thread.yaml</pre>
+    <p>The legend says: stages run in order from left to right, stacked blocks run in parallel, a diamond is a wait before the next stage, a dashed blue arrow is a loop, and a dashed orange block under a workflow is its fallback. A clock on a block is a wait before it starts and an hourglass is its maximum duration. Behind them are <code>delay_after</code>, <code>loops</code>, <code>fallback</code>, <code>delay_before</code> and <code>timeout</code>.</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+  - mode: parallel
+    delay_after: 1s
+    workflows:
+      - name: load_sales
+      - name: load_stock
+  - mode: sequential
+    workflows:
+      - name: report
+loops:
+  - from: report
+    to: prepare
+    times: 2
+    delay: 1s</pre>
+    <div class="expect"><b>What you should see</b><p>The same thread as the diagram.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>See a wait, a timeout and a fallback</h3>
+    <h4>Objective</h4><p>Compare with a richer thread.</p>
+    <h4>Actions</h4><ol><li>Open the Preview of a thread like the one below.</li><li>Find the orange block under <code>load_sales</code>, the <code>30s</code> badge and the <code>2s</code> clock on <code>load_stock</code>.</li></ol>
+    <pre class="cmd">Execution order → Preview</pre>
+    <p><code>load_sales</code> has <code>timeout: 30s</code> and a fallback that runs <code>cleanup</code> on failure. <code>load_stock</code> waits <code>2s</code> before it starts. The diagram marks each one on its block.</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+  - mode: parallel
+    delay_after: 1s
+    workflows:
+      - name: load_sales
+        timeout: 30s
+        fallback:
+          use: [cleanup]
+          on_failure: true
+      - name: load_stock
+        delay_before: 2s
+  - mode: sequential
+    workflows:
+      - name: report</pre>
+    <div class="expect"><b>What you should see</b><p>A dashed orange block named <code>cleanup</code> labeled <code>on failure</code>, a <code>30s</code> badge and a <code>2s</code> badge.</p><pre class="out">load_sales  ⌛ 30s
+  └ on failure → cleanup
+load_stock  ◷ 2s</pre>
+      <figure class="shot"><img src="/tutorials/studio-execution-order/execution-order-preview-wait-timeout-fallback-light.png" width="1200" height="380" loading="lazy" decoding="async" alt="The Preview tab of a thread with a wait before a workflow, a maximum duration and a fallback workflow shown as a dashed orange block below load_sales." /><figcaption>Wait, timeout and fallback in the diagram.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Open Preview after every structural change: a misplaced stage is obvious in a diagram and easy to miss in a list.</p>
+  <p data-kind="TIP">Use Preview to explain a project to someone else before sharing the YAML.</p>
+  <p data-kind="TRAP">Preview draws the thread in the editor, saved or not. Save before you rely on it for a run.</p>
+  <p data-kind="TRAP">A diagram cannot tell whether a workflow succeeds. Use <b>Check</b> for the files and <code>--dry-run</code> for the plan.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Diagram</td><td>Stages left to right, parallel blocks stacked</td></tr><tr><td>Waits</td><td>A diamond between stages, a clock on a block</td></tr><tr><td>Loop</td><td>A dashed arrow with its passes and pause</td></tr><tr><td>Fallback</td><td>A dashed orange block under its workflow</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The diagram is empty</td><td>The thread has no workflow</td><td>Add workflows in the Define tab</td></tr><tr><td>A block has no badge</td><td>No wait or timeout is set on it</td><td>Set wait or max in Define</td></tr><tr><td>The loop arrow is missing</td><td>The thread has no loops</td><td>Add a loop in Define</td></tr><tr><td>Preview disagrees with the file</td><td>Changes are not saved</td><td>Save, then reopen Preview</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does the Preview tab show?</h3>
+  <p>Preview draws the thread as a diagram, from left to right: one column per stage, parallel workflows stacked, waits as diamonds, loops as a dashed arrow and fallbacks as dashed blocks. It draws what is in the editor.</p>
+  <h3>How do I see which workflows run in parallel?</h3>
+  <p>Parallel workflows are stacked in the same column. In our project, load_sales sits above load_stock, between prepare and report.</p>
+  <h3>What do the clock and hourglass mean?</h3>
+  <p>The clock marks a wait before a workflow starts, and the hourglass its maximum duration. In our test the diagram showed 2s on load_stock and 30s on load_sales.</p>
+  <h3>Does Preview run anything?</h3>
+  <p>No. It only draws the thread. To rehearse the order from a terminal without running workflows, use hdrctl run with --dry-run.</p>
+  <h3>Can I open a workflow from the diagram?</h3>
+  <p>Yes, according to the legend under the diagram and the Studio source: a click on a block opens that workflow. This lesson did not click a block.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/define-the-execution-order">Define the execution order</a></li><li><a href="/studio/check-the-execution-order">Check the execution order</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can read an execution order at a glance. Next, check that every workflow in it exists.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/check-the-execution-order">Check the order <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

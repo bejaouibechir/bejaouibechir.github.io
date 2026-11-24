@@ -150,3 +150,6 @@ dialog.lightbox .lightbox-cap:empty{display:none}
 .linklist a{color:var(--accent-text);font-size:12.5px;text-decoration:underline;text-underline-offset:2px}
 
 @media(max-width:620px){.doc pre.cmd,.doc pre.out{font-size:11.5px}.lesson-nav{flex-direction:column}.shots{grid-template-columns:1fr}}
+
+.byline{margin:10px 0 0;color:var(--muted);font-size:12px}.byline a{color:var(--accent-text);text-decoration:underline;text-underline-offset:2px}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:28px 0 8px;padding:16px;border:1px solid var(--border);border-radius:11px;background:var(--bg-soft)}.cta b{flex:1 1 100%;font-size:14px}.cta p{flex:1 1 100%;margin:0;color:var(--soft);font-size:12.5px}.cta a{padding:8px 13px;border:1px solid var(--strong);border-radius:8px;font-size:12.5px;font-weight:650}.cta a.primary{border-color:var(--accent);background:var(--accent);color:#fff}

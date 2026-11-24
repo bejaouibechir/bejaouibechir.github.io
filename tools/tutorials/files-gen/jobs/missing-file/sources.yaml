@@ -1,0 +1,5 @@
+sources:
+  src_missing_file:
+    type: csv
+    extract:
+      table: data/nothing.csv

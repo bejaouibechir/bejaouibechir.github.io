@@ -1,0 +1,92 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 47</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 47 of 65 · Fallback conditions</div><h1>Fallback conditions in Hydra ETL: when, on_failure and on_probe_error</h1><p class="lead">A fallback is only as good as its condition. Write the test, decide what a failed test means, and choose whether a failure also calls the backup.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">Execution order → Fallback editor</span><span>about 20 minutes</span><span>a project with fallbacks</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>A Hydra ETL fallback has three settings. <code>when</code> is the condition tested just before the workflow starts, built from <code>file_exists()</code>, <code>file_size()</code>, <code>file_age()</code>, <code>previous.rows</code> and similar. <code>on_probe_error</code> says what to do when a check cannot answer. <code>on_failure: true</code> also calls the backup after a failure that published nothing.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Write a valid <code>when</code> condition, read the error when it is not valid, decide what a check that cannot answer means, and let a failed workflow call its backup. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>fallback-demo</code> copy of <code>fallbackproject</code> from lesson 46, with its three fallbacks: <code>wf_load</code> (backup <code>wf_load_backup</code>, when the file is missing or under 100 bytes), <code>wf_report</code> (backup <code>wf_report_quarantine</code>, when <code>previous.rows &lt; 10</code>, also after a failure) and <code>wf_archive</code> (backup <code>wf_archive_alt</code>, when <code>file_age('Data/stamp.txt') &gt; 30s</code>).</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I write the condition of a fallback in Hydra ETL?</h2>
+<div class="step">
+  <h3><i>01</i>Read what a condition can test</h3>
+  <h4>Objective</h4><p>Know the closed list of functions before you write one.</p>
+  <h4>Actions</h4><ol><li>Open the fallback editor of <code>wf_load</code> (the lifebuoy button).</li><li>Open the function list of the assistant under the <b>when</b> field.</li><li>Read the help shown for each function.</li></ol>
+  <pre class="cmd">when: not file_exists('Data/orders.csv')</pre>
+  <p>A condition is a small language, read by Hydra ETL itself: never Python. Operators are <code>and</code>, <code>or</code>, <code>not</code>, parentheses and the comparisons <code>==</code> <code>!=</code> <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code>. Durations are written <code>500ms</code>, <code>30s</code>, <code>5m</code>, <code>24h</code>, <code>7d</code> and sizes <code>10KB</code>, <code>5MB</code>, <code>1GB</code>. These are the functions a project can use without a database:</p><table><thead><tr><th>Function</th><th>True or measured</th></tr></thead><tbody><tr><td><code>file_exists('path')</code></td><td>the file exists</td></tr><tr><td><code>file_size('path')</code></td><td>size of the file, for example <code>file_size('in.csv') &lt; 1MB</code></td></tr><tr><td><code>file_age('path')</code></td><td>time since the last change, for example <code>file_age('in.csv') &gt; 24h</code></td></tr><tr><td><code>source_available('name')</code></td><td>the source answers (connection test, or the file is there)</td></tr><tr><td><code>destination_available('name')</code></td><td>the destination answers (or its folder is writable)</td></tr><tr><td><code>url_ok('url')</code></td><td>the URL answers with HTTP 2xx or 3xx</td></tr><tr><td><code>secret_defined('name')</code></td><td>the secret is set in <code>.hydra/secrets</code> or in the environment</td></tr><tr><td><code>previous.rows</code></td><td>rows written by the previous workflow</td></tr><tr><td><code>previous.status</code></td><td><code>success</code>, <code>failed</code>, <code>skipped</code>, <code>inactive</code> or <code>none</code></td></tr></tbody></table><p>Database and change-data-capture functions (<code>db.load</code>, <code>cdc.lag</code>, <code>cdc.status</code> and others) exist as well; they need a database source.</p>
+  <div class="expect"><b>What you should see</b><p>The assistant shows a join, a <b>not</b> box, a function list, an argument field and an <b>Insert</b> button.</p>
+      <figure class="shot"><img src="/tutorials/studio-fallback-conditions-when-on-failure/condition-assistant-insert-row-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor of wf_load with the assistant row open on the file_size function." /><figcaption>The assistant builds the condition piece by piece.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Write a condition with the assistant</h3>
+  <h4>Objective</h4><p>Build a condition without typing the syntax.</p>
+  <h4>Actions</h4><ol><li>Pick a function in the <b>Condition function</b> list.</li><li>Type its argument.</li><li>Select <b>Insert</b>.</li></ol>
+  <pre class="cmd">file_size('Data/orders.csv') < 100</pre>
+  <p>The assistant completes the <b>when</b> field and keeps what you already wrote. Select the <b>not</b> box to negate the test, and the <b>or</b> or <b>and</b> list to join it to the previous one. The field checks as you type.</p>
+  <div class="expect"><b>What you should see</b><p>The field is updated and ends with a green check mark.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Read the error of an invalid condition</h3>
+  <h4>Objective</h4><p>Recognize a condition that Hydra ETL refuses.</p>
+  <h4>Actions</h4><ol><li>Replace <code>file_exists</code> with <code>file_exist</code> in the <b>when</b> field.</li><li>Read the red mark and the message.</li></ol>
+  <pre class="cmd">file_exist('Data/orders.csv')</pre>
+  <p>Studio shows the message in red. The same condition in <code>thread.yaml</code> stops <code>hdrctl run</code> before anything runs:</p>
+  <div class="expect"><b>What you should see</b><p>A red cross, and a message that names the unknown function and lists the valid ones.</p><pre class="out">❌ Project cannot run:
+  err   — workflows/thread.yaml: thread.0.workflows.0.fallback.when: unknown function file_exist() — use one of: source_available(), destination_available(), file_exists(), file_size(), file_age(), url_ok(), secret_defined(), db.load(), …
+
+  err   — workflows/thread.yaml: thread.1.workflows.0.fallback.when: file_age() takes 1 argument(s), got 0</pre>
+      <figure class="shot"><img src="/tutorials/studio-fallback-conditions-when-on-failure/condition-error-message-red-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor of wf_load with the condition file_exist marked with a red cross and an error message." /><figcaption>A misspelled function is refused as you type.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Decide what a check that cannot answer means</h3>
+  <h4>Objective</h4><p>Choose between keeping the workflow and calling the backup when the test itself fails.</p>
+  <h4>Actions</h4><ol><li>Open the fallback editor of <code>wf_archive</code>.</li><li>Open the list <b>if a check cannot answer</b>.</li><li>Choose <b>keep wf_archive</b> or <b>use the fallback</b>.</li></ol>
+  <pre class="cmd">on_probe_error: keep | replace</pre>
+  <p>The condition of <code>wf_archive</code> reads <code>Data/stamp.txt</code>, which does not exist, so the check cannot answer. With <code>keep</code> (the default) the workflow runs and Hydra ETL warns you. With <code>replace</code> the backup runs, and the reason is printed.</p>
+  <div class="expect"><b>What you should see</b><p>A list with two choices, <b>keep wf_archive</b> and <b>use the fallback</b>.</p><pre class="out">keep:
+⚠  wf_archive: fallback check failed (file_age('Data/stamp.txt'): file not found (…/Data/stamp.txt)); keeping wf_archive
+
+replace:
+↪  Fallback: wf_archive → wf_archive_alt — check failed: file_age('Data/stamp.txt'): file not found (…/Data/stamp.txt)</pre>
+      <figure class="shot"><img src="/tutorials/studio-fallback-conditions-when-on-failure/on-probe-error-replace-menu-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor of wf_archive with the if a check cannot answer list set to use the fallback." /><figcaption>The setting sits at the end of the editor.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Call the backup after a failure</h3>
+  <h4>Objective</h4><p>Let a workflow that fails without publishing anything be replaced.</p>
+  <h4>Actions</h4><ol><li>Open the fallback editor of <code>wf_report</code>.</li><li>Check <b>also after a failure</b>.</li><li>Save and run the project.</li></ol>
+  <pre class="cmd">on_failure: true</pre>
+  <p>The checkbox reads <b>also after a failure (only if nothing was published)</b>. Its tooltip is precise: the first replacement runs if the workflow fails, or exceeds its max time, without leaving anything published. That means nothing loaded and nothing done outside Hydra ETL, or everything undone by <code>rollback: true</code>. If the workflow had already published data, the project stops and says why. In the project of this lesson, <code>wf_report</code> has <code>rollback: true</code>; with <code>Data/finalize.csv</code> missing, its last step fails:</p>
+  <div class="expect"><b>What you should see</b><p>The box is checked on <code>wf_report</code>. After the failure, Hydra ETL undoes the steps, then runs the backup and carries on.</p><pre class="out">✓  Step 'build_report' OK
+✓  Step 'share' OK
+✗  Step 'finalize' FAILED: ValueError: CSVConnector [src]: source file not found.
+↩  Step 'share' undone
+↩  Step 'build_report' undone
+↯  Workflow 'wf_report' failed (&lt;duration&gt;), nothing published — replaced by wf_report_quarantine
+↪  Fallback: wf_report → wf_report_quarantine — wf_report failed without publishing anything
+▶  Workflow  wf_report_quarantine  (fallback, in place of wf_report)
+✓  Workflow 'wf_report_quarantine' OK
+✅ Project completed — 3/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-fallback-conditions-when-on-failure/on-failure-checkbox-wf-report-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor of wf_report with the also after a failure box checked." /><figcaption>The failure option is a checkbox, saved as on_failure: true.</figcaption></figure>
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Write the condition as the situation in which the main workflow must <b>not</b> run.</p><p data-kind="TIP">Paths are relative to the project folder, not to the job folder.</p><p data-kind="TRAP"><code>file_exist()</code> is not <code>file_exists()</code>: an unknown function stops the project before it runs.</p><p data-kind="TRAP">A fallback that publishes to a different file is allowed. Hydra ETL warns you, so check that it is intended.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Condition</td><td>A green check mark after the <code>when</code> field</td></tr><tr><td>Error</td><td>A red message that names the function you misspelled</td></tr><tr><td>Probe error</td><td><code>keep</code> prints a warning, <code>replace</code> runs the backup</td></tr><tr><td>After a failure</td><td>A failed <code>wf_report</code> is replaced by <code>wf_report_quarantine</code></td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Red cross after the condition</td><td>Unknown function or wrong number of arguments</td><td>Read the message under the field, then pick the function from the assistant</td></tr><tr><td>The backup never runs</td><td>The condition is false, or the check cannot answer and <code>on_probe_error</code> is <code>keep</code></td><td>Run with <code>hdrctl run . -v</code> and read the <code>fallback not needed</code> line</td></tr><tr><td>The project stops after a failure</td><td>The failed workflow had already published data</td><td>Add <code>rollback: true</code> to the workflow so everything is undone first</td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>Which functions can a fallback condition use?</h3><p>file_exists, file_size, file_age, source_available, destination_available, url_ok, secret_defined, db.load and the four cdc functions, plus the values previous.rows and previous.status. Conditions combine them with and, or, not and comparisons.</p><h3>What happens when a fallback check cannot answer?</h3><p>By default the workflow is kept and Hydra ETL prints a warning. Set on_probe_error to replace, shown in Studio as use the fallback, to run the backup instead.</p><h3>Does a fallback run after a failure?</h3><p>Only with on_failure: true, and only if the failed workflow published nothing, either because nothing was loaded or because rollback undid everything.</p><h3>Which units can a condition use?</h3><p>Durations such as 500ms, 30s, 5m, 24h and 7d, and sizes such as 10KB, 5MB and 1GB.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/declare-a-fallback-workflow">Declare a fallback workflow</a></li><li><a href="/studio/set-timeouts-on-workflows">Set a timeout on a workflow</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+<h2>Next lesson</h2><p>The next lesson sets a maximum duration on a workflow, which also counts as a failure that a fallback can answer.</p>
+<div class="lesson-nav"><a class="primary" href="/studio/set-timeouts-on-workflows">Set a timeout <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-10-run-the-job.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Run a Hydra job from Studio: four ways, one engine", description: "Run a Hydra job from the Studio canvas, the workflow, the built-in terminal or your own shell, and read the numbers each returns. Tested on Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/10-run-the-job/',
+  name: article.headline,
+  steps: ["Import a job you already have", "Finish the job before running it", "Point the three nodes at real values", "Run the job on its own", "Read the numbers, not the colour", "Run the parent workflow", "Let the notifications keep the history", "Run from the terminal, without leaving Studio", "Run the whole workflow from the CLI"],
+  faq: [
+    ["How do I run a job in Hydra Studio?", "Select Run Job on the job canvas. Studio opens the Logs panel and follows the status of the run."],
+    ["Is running from Studio different from running from the command line?", "No. The button changes, but the same engine runs underneath, whether you start it from the canvas, the workflow, the Studio terminal or your own shell."],
+    ["What is the difference between Open a project, Import workflow and Import a job?", "Open a project takes a whole workspace, Import workflow takes a workflow and its jobs, and Import a job takes one job folder and drops it into the current project."],
+    ["Where do I find the result of a finished run?", "On the Runs page, covered in the next lesson. Each run keeps its status, duration and logs."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Run a job", '/studio/10-run-the-job/']],
+});
 ---
 
-<BaseLayout title="Lesson 10 — Four ways to run, one engine underneath" description="Import a job onto the canvas, configure it, then run it from Run Job, Run Workflow, the built-in terminal and the hdrctl command line.">
+<BaseLayout title="Run a Hydra job from Studio: four ways, one engine" exactTitle="Run a Hydra Job in Studio: Four Ways | Hydra ETL" description="Run a Hydra job from the Studio canvas, the workflow, the built-in terminal or your own shell, and read the numbers each returns. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

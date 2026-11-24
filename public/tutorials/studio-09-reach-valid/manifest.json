@@ -1,0 +1,14 @@
+[
+  {
+    "file": "header-valid-badge-job-light.png",
+    "name": "header-valid-badge-job",
+    "theme": "light",
+    "alt": "Editor header for first-job with the green Valid badge next to the node and edge count."
+  },
+  {
+    "file": "header-valid-badge-workflow-dark.png",
+    "name": "header-valid-badge-workflow",
+    "theme": "dark",
+    "alt": "Editor header in the workflow scene with the Valid badge and a count of two nodes and one edge."
+  }
+]

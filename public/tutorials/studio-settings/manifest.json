@@ -1,0 +1,38 @@
+[
+  {
+    "file": "settings-project-choose-project-light.png",
+    "name": "settings-project-choose-project",
+    "theme": "light",
+    "alt": "The Project settings tab of Hydra Studio with no project open, offering a list to choose a project and a Projects button."
+  },
+  {
+    "file": "settings-project-execution-order-dark.png",
+    "name": "settings-project-execution-order",
+    "theme": "dark",
+    "alt": "The Project settings page of the studio-course project, Execution order tab selected, with the file note workflows/thread.yaml."
+  },
+  {
+    "file": "settings-project-parameters-tab-light.png",
+    "name": "settings-project-parameters-tab",
+    "theme": "light",
+    "alt": "The Parameters tab of the Project settings page, saved in parameters.yaml and environments files."
+  },
+  {
+    "file": "settings-project-secrets-tab-dark.png",
+    "name": "settings-project-secrets-tab",
+    "theme": "dark",
+    "alt": "The Secrets tab of the Project settings page, saved in .hydra/secrets and ignored by git."
+  },
+  {
+    "file": "settings-project-triggers-tab-light.png",
+    "name": "settings-project-triggers-tab",
+    "theme": "light",
+    "alt": "The Triggers tab of the Project settings page, empty, with the message that the project runs only when someone starts it."
+  },
+  {
+    "file": "settings-global-new-environment-box-dark.png",
+    "name": "settings-global-new-environment-box",
+    "theme": "dark",
+    "alt": "The Environments card of Global settings with the New environment name box open, before saving anything."
+  }
+]

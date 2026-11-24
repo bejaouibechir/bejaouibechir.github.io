@@ -1,0 +1,20 @@
+[
+  {
+    "file": "terminal-validate-undo-refused-light.png",
+    "name": "terminal-validate-undo-refused",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl workflow validate wf_bad_rollback, showing the refusal for the step notify."
+  },
+  {
+    "file": "undo-editor-not-set-dialog-dark.png",
+    "name": "undo-editor-not-set-dialog",
+    "theme": "dark",
+    "alt": "The dialog of the notify action with the Undo list showing Not set."
+  },
+  {
+    "file": "undo-editor-nothing-selected-light.png",
+    "name": "undo-editor-nothing-selected",
+    "theme": "light",
+    "alt": "The dialog of the notify action with the Undo list set to Nothing to undo."
+  }
+]

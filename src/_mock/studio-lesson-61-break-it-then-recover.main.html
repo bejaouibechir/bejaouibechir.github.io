@@ -1,0 +1,91 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 61</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 61 of 65 · Scenario</div><h1>Break a Hydra ETL pipeline on purpose, then recover</h1><p class="lead">You only know that a protection works when you have seen it trigger. Break the pipeline four ways, and read what each protection does.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl run · Runs page</span><span>about 30 minutes</span><span>the resilient-pipeline project</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>Break the resilient project on purpose: delete the input, so a fallback loads the backup; make the service fail beyond its retries, so the project stops; break the last step of the report, so it is rolled back and replaced by a quarantine workflow; shorten the timeout, so the workflow is stopped. Each case prints a different line.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Cause four failures, read the line that tells which protection reacted, and put the project back in its working state. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>resilient-pipeline</code> project of lesson 60. Each failure is created by renaming a file or editing one value, and undone afterwards.</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I test the failure handling of a Hydra ETL project?</h2>
+<div class="step">
+  <h3><i>01</i>Delete the input file</h3>
+  <h4>Objective</h4><p>Make the load fallback trigger.</p>
+  <h4>Actions</h4><ol><li>Rename <code>Data/orders.csv</code> to <code>orders.csv.off</code>.</li><li>Run the project.</li><li>Open the run.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>The condition of <code>wf_load</code> is true, so the backup runs. It loads 8 rows, which makes the condition of <code>wf_report</code> true as well: the two fallbacks chain.</p>
+  <div class="expect"><b>What you should see</b><p>Two fallback lines, and a project that completes.</p><pre class="out">↪  Fallback: wf_load → wf_load_backup — file_exists('Data/orders.csv') = false (not found)
+▶  Workflow  wf_load_backup  (fallback, in place of wf_load)
+↪  Fallback: wf_report → wf_report_quarantine — previous.rows = 8
+▶  Workflow  wf_report_quarantine  (fallback, in place of wf_report)
+✅ Project 'resilient-pipeline' completed in &lt;duration&gt; — 4/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-break-it-then-recover/run-project-orders-missing-fallback-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page of the resilient pipeline with wf_load and wf_report replaced by their fallbacks." /><figcaption>Two workflows were replaced by their backups.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Make the service fail beyond its retries</h3>
+  <h4>Objective</h4><p>See what a retry cannot save.</p>
+  <h4>Actions</h4><ol><li>Put <code>orders.csv</code> back.</li><li>Replace the script of <code>call_service</code> with <code>raise SystemExit('service unavailable')</code>.</li><li>Run the project.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>The step is tried again three times, then fails. <code>wf_flaky</code> has no fallback, so the project stops, and <code>wf_archive</code>, in the same stage, does not run.</p>
+  <div class="expect"><b>What you should see</b><p>A failed step, a failed workflow and a failed project. In the step log of the run page, three WARNING lines <code>[call_service] failed, retry 1/3 in 1s</code>, <code>2/3</code> and <code>3/3</code> come before the failure.</p><pre class="out">▶  Workflow  wf_flaky
+   ✗  Step 'call_service' FAILED: Python script exited with code 1: service unavailable
+✗  Workflow 'wf_flaky' failed (&lt;duration&gt;): Step 'call_service' failed: …
+⏭  wf_archive — not run (a previous workflow failed)
+❌ Project 'resilient-pipeline' failed after &lt;duration&gt; — failed: wf_flaky</pre>
+      <figure class="shot"><img src="/tutorials/studio-break-it-then-recover/run-project-service-failed-stopped-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page of the resilient pipeline with wf_flaky failed and the project stopped." /><figcaption>A failure without a fallback stops the project.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Break the last step of the report</h3>
+  <h4>Objective</h4><p>See rollback and the failure fallback work together.</p>
+  <h4>Actions</h4><ol><li>Restore the script of <code>call_service</code>.</li><li>Rename <code>Data/finalize.csv</code> to <code>finalize.csv.off</code>.</li><li>Run the project.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p><code>finalize</code> cannot read its file. Hydra ETL undoes <code>share</code> and <code>build_report</code>, sees that nothing is published, and calls the quarantine workflow. The project goes on.</p>
+  <div class="expect"><b>What you should see</b><p>Two undo lines, a <code>↯</code> line and a completed project.</p><pre class="out">   ✗  Step 'finalize' FAILED: ValueError: CSVConnector [src]: source file not found.
+   ↩  Step 'share' undone
+   ↩  Step 'build_report' undone
+↯  Workflow 'wf_report' failed (&lt;duration&gt;), nothing published — replaced by wf_report_quarantine: Step 'finalize' failed: …
+✅ Project 'resilient-pipeline' completed in &lt;duration&gt; — 4/5 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-break-it-then-recover/run-project-finalize-undone-replaced-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page of the resilient pipeline with wf_report failed, undone and replaced by the quarantine workflow." /><figcaption>The failed report was undone, then replaced.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Make a workflow exceed its timeout</h3>
+  <h4>Objective</h4><p>See the limit stop a slow workflow.</p>
+  <h4>Actions</h4><ol><li>Put <code>finalize.csv</code> back.</li><li>Set <code>delay: 4</code> in the retry of <code>call_service</code>, and <code>timeout: 3s</code> on <code>wf_flaky</code>.</li><li>Run the project.</li></ol>
+  <pre class="cmd">timeout: 3s</pre>
+  <p>The first attempt fails, the retry waits four seconds, and the limit of three seconds is exceeded.</p>
+  <div class="expect"><b>What you should see</b><p>A failure that mentions the timeout.</p><pre class="out">⏳  wf_flaky: timed out after 3s — stopping at the next step or batch
+✗  Workflow 'wf_flaky' failed (4.1s): timed out after 3s (timeout in workflows/thread.yaml): Step 'call_service' failed: Python script exited with code 1: service unavailable (attempt 2)
+❌ Project 'resilient-pipeline' failed after &lt;duration&gt; — failed: wf_flaky</pre>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Put the project back</h3>
+  <h4>Objective</h4><p>Leave a working project.</p>
+  <h4>Actions</h4><ol><li>Restore every file you renamed.</li><li>Set <code>delay: 1</code> and <code>timeout: 20s</code> again.</li><li>Run <code>hdrctl run . --dry-run</code> and then the project.</li></ol>
+  <pre class="cmd">hdrctl run . --dry-run</pre>
+  <p>If a run was interrupted during a rollback, <code>hdrctl workflow undo</code> and the journal in <code>.hydra/undo</code> are covered in the lesson on conflicts and recovery.</p>
+  <div class="expect"><b>What you should see</b><p><b>Dry run OK</b>, then four workflows completed.</p><pre class="out">✅ Dry run OK: the project is valid. Nothing was executed.
+✅ Project 'resilient-pipeline' completed in &lt;duration&gt; — 4/4 workflow(s) OK</pre>
+
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Break one thing at a time and put it back before the next test.</p><p data-kind="TIP">Read the arrows: <code>↪</code> is a fallback, <code>↩</code> an undo, <code>↯</code> a failure answered by a backup.</p><p data-kind="TRAP">A fallback that works in the dry run can still fail at run time if its own data is missing.</p><p data-kind="TRAP">Do not leave a file renamed after a test: the next run starts from a broken state.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Missing input</td><td><code>↪ Fallback: wf_load → wf_load_backup</code>, then a second switch on <code>wf_report</code></td></tr><tr><td>Failing service</td><td><code>Project failed — failed: wf_flaky</code></td></tr><tr><td>Broken last step</td><td>Two <code>↩</code> lines, then <code>↯</code> and a quarantine workflow</td></tr><tr><td>Timeout</td><td><code>timed out after 3s</code> on <code>wf_flaky</code></td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Nothing changed after the rename</td><td>The file name has another case or folder</td><td>Check the path in the condition: it is relative to the project</td></tr><tr><td>The project keeps failing after the tests</td><td>A file is still renamed, or the timeout is still short</td><td>Undo each change from the last step of this lesson</td></tr><tr><td><code>a previous run … stopped before undoing</code></td><td>A rollback was interrupted</td><td>See the lesson on conflicts and recovery</td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>How do I test a Hydra ETL fallback?</h3><p>Make its condition true on purpose, for example by renaming the input file, run the project and look for the line starting with a fallback arrow. A dry run alone does not test it.</p><h3>What happens when a retried step still fails?</h3><p>The workflow fails, and the project stops. In our test wf_archive, which follows wf_flaky, did not run, and the project ended as failed.</p><h3>Why did the report fallback run after I deleted the input?</h3><p>The backup of wf_load loads 8 rows, and the condition of wf_report is previous.rows < 10. The two fallbacks chain.</p><h3>Is the failed report published?</h3><p>No. In our test the share was deleted and the report restored before the quarantine workflow ran, so nothing was left published.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/build-a-resilient-pipeline">Build a resilient pipeline</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li><li><a href="/studio/resolve-conflicts-and-recover">Resolve conflicts and recover</a></li><li><a href="/studio/set-timeouts-on-workflows">Set a timeout on a workflow</a></li><li><a href="/cli">The hdrctl command line</a></li></ul>
+<h2>Next lesson</h2><p>You have reached the end of the orchestration and resilience block. The course continues with AI and MCP.</p>
+<div class="lesson-nav"><a class="primary" href="/studio">Back to the course map <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

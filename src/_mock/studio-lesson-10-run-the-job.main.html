@@ -1,13 +1,15 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 10</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 10 of 14 · Run the job</div><h1>Four ways to run, one engine underneath</h1><p class="lead">From the canvas, from the workflow, from the terminal inside Studio, or from your own shell. The button changes; what executes does not.</p></div>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 14</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 14 of 65 · Run the job</div><h1>Run a Hydra job from Studio: four ways, one engine</h1><p class="lead">From the canvas, from the workflow, from the terminal inside Studio, or from your own shell. The button changes; what executes does not.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 4 November 2026 · Last verified 22 November 2026 · Tested with Hydra ETL 0.22.0 (Studio source and API checks on Linux)</p></div>
 <div class="lesson-meta"><span class="mono">Run Job</span><span>about 25 minutes</span><span>a complete job</span></div>
 <section class="doc">
-  <h2>1. Objective</h2>
-  <h3>Goal</h3><p>Bring an existing job into a project, finish it, then run it four different ways. By the end you should know which one to reach for, and be able to read the numbers each returns.</p>
-  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
-  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A CSV file to read, and a folder to write into.</li></ul>
+  <div class="callout"><b>Quick answer</b><p>You can run a Hydra job four ways: <b>Run Job</b> on the canvas, <b>Run Workflow</b> from the workflow editor, the terminal built into Studio, or your own shell. The button changes but the same engine executes. This lesson brings <code>first-job</code> into the workflow, checks it and runs it each way, then reads the results.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Bring an existing job into a workflow, check what it holds, then run it four different ways. By the end you should know which one to reach for, and be able to read the numbers each returns.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code> with one manual workflow, <code>first-workflow</code>. Its job <code>first-job</code> reads <code>data/orders.csv</code> (20 orders), keeps the paid ones and writes <code>outputs/paid_orders.csv</code>. At this point the workflow holds only that job.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>The <code>first-job</code> folder of the course project, with its sample file <code>data/orders.csv</code>.</li></ul>
 
-  <h2>2. Steps</h2>
+  <h2>How do I run a Hydra job from Hydra Studio?</h2>
 
   <div class="step">
     <h3><i>01</i>Import a job you already have</h3>
@@ -15,38 +17,37 @@
     <h4>Actions</h4><ol><li>Open <b>Workflow configuration</b>.</li><li>Select <b>Import</b> in the top bar, then <b>Import a job</b>.</li><li>Pick a folder holding the four job manifests.</li></ol>
     <pre class="cmd">Workflow configuration → Import → Import a job</pre>
     <p>This is a third route into a project, and the most direct. <b>Open a project</b> takes a whole workspace, <b>Import workflow</b> takes a workflow and its jobs — <b>Import a job</b> takes one job folder and drops it straight onto the canvas as a node.</p>
-    <div class="expect"><b>What you should see</b><p>A job node appears on the canvas and the job joins the <b>Jobs</b> category of the palette. It carries a red badge until you confirm its paths.</p><pre class="out">Import a job
+    <div class="expect"><b>What you should see</b><p>A job node appears on the canvas and the job joins the <b>Jobs</b> category of the palette.</p><pre class="out">Import a job
 Select a job folder (4 YAML files) → add a node to the canvas</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen1.png" width="1911" height="989" loading="lazy" decoding="async" alt="The workflow canvas with the Import menu open, showing the Import a job entry, and an imported first-job node already placed." /><figcaption>The menu states the contract: <b>four YAML files</b>, and you get a node.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-12-compose-jobs/workflow-one-job-import-menu-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The workflow canvas with the Import menu open on the Import a job entry." /><figcaption><b>Import a job.</b> One job folder becomes one node on the workflow canvas.</figcaption></figure>
     </div>
   </div>
 
   <div class="step">
-    <h3><i>02</i>Finish the job before running it</h3>
-    <h4>Objective</h4><p>Give the imported job the transformation it is missing.</p>
-    <h4>Actions</h4><ol><li>Double-click the job node to enter <b>Jobs configuration</b>.</li><li>Drag a <b>Filter</b> between the source and the destination.</li><li>Reconnect the chain so the three nodes follow one another.</li></ol>
-    <pre class="cmd">Transformations → Filter → connect</pre>
-    <p>Importing brings the manifests, not your intent. Adding a filter here is what makes the run interesting: without it the job would copy its input unchanged, and the numbers at the end would tell you nothing.</p>
-    <div class="expect"><b>What you should see</b><p>Three nodes, two edges, and the header reading <b>Valid</b>.</p><pre class="out">first-workflow / first-job   3 nodes · 2 edges   Valid
-src_orders → transform_filter_1 → dst_orders_clean</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen2.png" width="1913" height="951" loading="lazy" decoding="async" alt="The job canvas with a CSV source, a Filter transformation and a CSV destination connected in a line." /><figcaption>The shape every job takes: one source, the transformations, one destination.</figcaption></figure>
+    <h3><i>02</i>Check the job before running it</h3>
+    <h4>Objective</h4><p>Read what the job holds, so the numbers at the end mean something.</p>
+    <h4>Actions</h4><ol><li>Double-click the job node to enter <b>Jobs configuration</b>.</li><li>Follow the chain from the source to the destination.</li><li>Read the counters and the badge in the header.</li></ol>
+    <pre class="cmd">double-click first-job → Jobs configuration</pre>
+    <p>Importing brings the manifests, not your intent, so look before you run. <code>first-job</code> has four nodes: a CSV source, a <b>Select</b> that keeps five columns, a <b>Filter</b> that keeps the paid orders, and a CSV destination. Without the filter the job would copy its input unchanged, and the numbers at the end would tell you nothing.</p>
+    <div class="expect"><b>What you should see</b><p>Four nodes, three edges, and the header reading <b>Valid</b>.</p><pre class="out">first-workflow / first-job   4 nodes · 3 edges   Valid
+src_orders → select → filter → dest_paid</pre>
+      <figure class="shot"><img src="/tutorials/studio-03-read-the-canvas/job-canvas-four-nodes-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Jobs configuration canvas of first-job: a CSV source, a select, a filter and a CSV destination joined by three edges, with the Valid badge in the header." /><figcaption>The job <code>first-job</code>, ready to run.</figcaption></figure>
     </div>
   </div>
 
   <div class="step">
-    <h3><i>03</i>Point the three nodes at real values</h3>
-    <h4>Objective</h4><p>Replace what the import brought with paths and a condition that belong to your machine.</p>
-    <h4>Actions</h4><ol><li>Open the source and set the input file.</li><li>Open the filter and write its expression.</li><li>Open the destination and set the output file.</li></ol>
-    <pre class="cmd">double-click each node → fill → Save</pre>
-    <p>An imported job carries the paths of the machine it came from. They are almost never the paths of yours, so this step is not optional — and a run that reads nothing usually traces back to a path nobody checked.</p>
+    <h3><i>03</i>Read the three nodes that decide the result</h3>
+    <h4>Objective</h4><p>Know which path, which condition and which output the run will use.</p>
+    <h4>Actions</h4><ol><li>Open the source and read the input file.</li><li>Open the filter and read its expression.</li><li>Read the output file in the Hydra DSL panel, under <b>Destinations</b>.</li></ol>
+    <pre class="cmd">double-click the source and the filter → read → close</pre>
+    <p>Paths inside a job are relative to the job's own folder: <code>data/orders.csv</code> resolves inside <code>jobs/first-job</code>, and <code>../../outputs/paid_orders.csv</code> climbs back to the project's <code>outputs</code> folder. That is why the project keeps working wherever its folder lives. A path copied from another machine is the usual reason a run reads nothing.</p>
     <div class="shots">
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen3.png" width="1914" height="950" loading="lazy" decoding="async" alt="The CSV source dialog with a file path pointing at an orders file." /><figcaption><b>Source.</b> The file to read — <b>Browse</b> writes a path that exists.</figcaption></figure>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen4.png" width="1917" height="950" loading="lazy" decoding="async" alt="The Filter transformation dialog with the expression region equals North." /><figcaption><b>Filter.</b> One expression decides which rows survive.</figcaption></figure>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen5.png" width="1913" height="944" loading="lazy" decoding="async" alt="The CSV destination dialog with an output file path for the filtered orders." /><figcaption><b>Destination.</b> Where the surviving rows are written.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/job-source-dialog-open-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The CSV source dialog of first-job, with its step name and the file path data/orders.csv." /><figcaption><b>Source.</b> The file the job reads.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/job-filter-dialog-open-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Filter dialog of first-job, with the expression status == 'paid'." /><figcaption><b>Filter.</b> The condition a row must meet to be kept.</figcaption></figure>
     </div>
-    <div class="expect"><b>What you should see</b><p>Every red badge cleared. A badge left anywhere means a required field is still empty, and the run will stop there.</p><pre class="out">FILE PATH *   d:\data\orders.csv
-EXPRESSION *  region == "North"
-FILE PATH *   d:\data\orders_filtered.csv</pre>
+    <div class="expect"><b>What you should see</b><p>Every required field filled in. A badge left anywhere means a required field is still empty, and the run will stop there.</p><pre class="out">FILE PATH     data/orders.csv
+EXPRESSION    status == 'paid'
+FILE PATH     ../../outputs/paid_orders.csv   ← Hydra DSL → Destinations</pre>
     </div>
   </div>
 
@@ -57,7 +58,6 @@ FILE PATH *   d:\data\orders_filtered.csv</pre>
     <pre class="cmd">Jobs configuration → Run Job</pre>
     <p>Two buttons, one action. The green one in the top bar and the floating one on the canvas do the same thing; the second is simply closer to where your eyes already are. This is the loop you use while designing — one job, immediate feedback, no orchestration in the way.</p>
     <div class="expect"><b>What you should see</b><p>The run panel opens with three tabs and a status. <b>Logs</b> holds the trace, <b>Parameters</b> the values in play, <b>Terminal</b> a shell.</p><pre class="out">LOGS   PARAMETERS   TERMINAL      SUCCESS</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen6.png" width="1911" height="950" loading="lazy" decoding="async" alt="The job canvas with both Run Job buttons highlighted in red, one in the top bar and one floating over the canvas." /><figcaption>Two entry points, highlighted here — the same run either way.</figcaption></figure>
     </div>
   </div>
 
@@ -66,13 +66,12 @@ FILE PATH *   d:\data\orders_filtered.csv</pre>
     <h4>Objective</h4><p>Take from the log the two figures that tell you whether the job did what you meant.</p>
     <h4>Actions</h4><ol><li>Open the <b>Logs</b> tab.</li><li>Find the <code>rows_in</code> and <code>rows_out</code> line.</li><li>Compare it with what your filter should have kept.</li></ol>
     <pre class="cmd">LOGS → rows_in · rows_out</pre>
-    <p>Green means the job finished, not that it was right. The pair of counters is the real verdict: twelve rows read, four written, and the difference is exactly what the filter removed. Had it written twelve, the filter would not have been applied; had it written zero, the expression matched nothing.</p>
-    <div class="expect"><b>What you should see</b><p>A short trace, ending on the row counts and the duration. The <code>job_path</code> line is worth reading too — it tells you which folder actually ran.</p><pre class="out">Run cbd25f3b — first-workflow [SUCCESS]
-Total duration: 0.11s
-- step job_1786264545421 : ✓ success (0.11s)
-    rows_in=12  rows_out=4
-    INFO  [job] Job 'first-job' completed successfully: 12 rows in, 4 rows out, 0.07s</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen8.png" width="1889" height="1022" loading="lazy" decoding="async" alt="The run panel expanded over the canvas, showing the log of a successful run with row counts and the job path." /><figcaption>Twelve in, four out. The filter kept the North rows and nothing else.</figcaption></figure>
+    <p>Green means the job finished, not that it was right. The pair of counters is the real verdict: twenty rows read, fourteen written, and the difference is exactly what the filter removed. Had it written twenty, the filter would not have been applied; had it written zero, the expression matched nothing.</p>
+    <div class="expect"><b>What you should see</b><p>A short trace, ending on the row counts and the duration.</p><pre class="out">Run &lt;run id&gt; — first-job [SUCCESS]
+Total duration: &lt;observed&gt;s
+- step first-job : ✓ success (&lt;observed&gt;s)
+    rows_in=20  rows_out=14</pre>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/run-job-logs-success-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Logs panel after Run Job: the run of first-job is marked SUCCESS, with the duration, the step line, and rows_in=20 rows_out=14." /><figcaption>The panel after <b>Run Job</b>: the verdict is in the two counters.</figcaption></figure>
     </div>
   </div>
 
@@ -86,10 +85,10 @@ Total duration: 0.11s
       <tr><td><b>Run Job</b></td><td>The open job, alone</td><td>You are iterating on one transformation.</td></tr>
       <tr><td><b>Run Workflow</b></td><td>Every step of the graph</td><td>You want to know the whole thing holds together.</td></tr>
     </tbody></table>
-    <div class="expect"><b>What you should see</b><p>A run identifier, the trigger, the number of steps and the duration — the workflow-level summary rather than one job's counters.</p><pre class="out">Run cbd25f3b — first-workflow [SUCCESS]
-Total duration: 0.11s
-first-workflow succeeded · manual · 1/1 steps · 0.1s</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen7.png" width="1890" height="962" loading="lazy" decoding="async" alt="The workflow scene with Run Workflow highlighted in both positions, the log panel open below and a Run completed toast in the corner." /><figcaption><b>Run Workflow</b> is also doubled: top bar and canvas.</figcaption></figure>
+    <div class="expect"><b>What you should see</b><p>A run identifier, the trigger, the number of steps and the duration — the workflow-level summary rather than one job's counters.</p><pre class="out">Run &lt;run id&gt; — first-workflow [SUCCESS]
+Total duration: &lt;observed&gt;s
+first-workflow succeeded · manual · 1/1 steps · &lt;observed&gt;s</pre>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/workflow-one-job-run-success-light.png" width="2464" height="1120" loading="lazy" decoding="async" alt="The workflow canvas after Run Workflow on a workflow that holds only first-job: the single job node is outlined in green." /><figcaption><b>Run Workflow</b> on the workflow that holds <code>first-job</code>: the node turns green.</figcaption></figure>
     </div>
   </div>
 
@@ -99,9 +98,8 @@ first-workflow succeeded · manual · 1/1 steps · 0.1s</pre>
     <h4>Actions</h4><ol><li>Select the bell in the top bar.</li><li>Read the entries, newest first.</li><li>Use <b>Clear all</b> once you have read them.</li></ol>
     <pre class="cmd">Top bar → notifications</pre>
     <p>Each finished run leaves a line: what ran, how it was triggered, how many steps and how long ago. The toast in the corner disappears on its own — the bell keeps it. That matters once a run takes longer than your attention.</p>
-    <div class="expect"><b>What you should see</b><p>One entry per run, job runs and workflow runs together, each with its age.</p><pre class="out">Run completed   first-workflow succeeded · manual · 1/1 st…   2m
-Run completed   first-job succeeded · manual · 1/1 steps · 0…  7m</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen9.png" width="1912" height="1030" loading="lazy" decoding="async" alt="The notifications panel open from the top bar, listing two completed runs with their trigger, step count and age." /><figcaption>The bell is the short history. The <b>Runs</b> page is the long one.</figcaption></figure>
+    <div class="expect"><b>What you should see</b><p>One entry per run, job runs and workflow runs together, each with its age.</p><pre class="out">Run completed   first-job succeeded · manual · 1/1 steps</pre>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/notifications-panel-open-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The notifications panel open from the top bar, listing the run completed a moment ago, above the logs panel showing 20 rows in and 14 out." /><figcaption>The bell is the short history. The <b>Runs</b> page is the long one.</figcaption></figure>
     </div>
   </div>
 
@@ -109,46 +107,42 @@ Run completed   first-job succeeded · manual · 1/1 steps · 0…  7m</pre>
     <h3><i>08</i>Run from the terminal, without leaving Studio</h3>
     <h4>Objective</h4><p>Reach the same job through the CLI, in the panel you already have open.</p>
     <h4>Actions</h4><ol><li>Open the <b>Terminal</b> tab of the run panel.</li><li>Type <code>hdrctl run</code> followed by the job folder.</li><li>Read the summary the CLI prints.</li></ol>
-    <pre class="cmd">hdrctl run &lt;path-to-job-folder&gt;</pre>
+    <pre class="cmd">cd ~/hydra-workspace/studio-course
+hdrctl run jobs/first-job</pre>
     <p>The terminal is a real shell inside Studio, so nothing is simulated. <code>hdrctl run</code> takes the <b>folder</b> of a job — the one holding the four manifests. It reports the same work in its own words: rows read, rows written, duration.</p>
-    <div class="expect"><b>What you should see</b><p>The banner, then the pipeline line, then the two counters. Same engine as the button, different presentation.</p><pre class="out">▶ Pipeline  first-job  — test_scenarios\first_workflow_demo\import_bundle\jobs\first-job
+    <div class="expect"><b>What you should see</b><p>The banner, then the pipeline line, then the two counters. Same engine as the button, different presentation.</p><pre class="out">▶ Pipeline  first-job
 
-✅ Pipeline completed successfully in 8.3s
-Rows read   : 12
-Rows written: 8</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen10.png" width="1885" height="1423" loading="lazy" decoding="async" alt="The Terminal tab inside Studio running hdrctl run on a job folder, showing the Hydra banner and a successful pipeline summary." /><figcaption>A different job folder here, hence different counters — <b>always read the path before the numbers</b>.</figcaption></figure>
+✅ Pipeline completed successfully in &lt;duration&gt;
+Rows read   : 20
+Rows written: 14</pre>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/terminal-run-first-job-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Terminal tab inside Studio after hdrctl run jobs/first-job, with the Hydra banner, the pipeline line, 20 rows read and 14 rows written." /><figcaption>Move to the project folder first, then run the job folder. <b>Always read the path before the numbers</b>.</figcaption></figure>
     </div>
   </div>
 
   <div class="step">
     <h3><i>09</i>Run the whole workflow from the CLI</h3>
     <h4>Objective</h4><p>Launch the orchestration the way a scheduler would.</p>
-    <h4>Actions</h4><ol><li>Stay in the terminal.</li><li>Run <code>hdrctl workflow run</code> on the workflow <b>file</b>.</li><li>Read one line per step.</li></ol>
-    <pre class="cmd">hdrctl workflow run "&lt;path&gt;\workflow.yaml"</pre>
-    <p>Note the difference in what each command expects: <code>hdrctl run</code> takes a job <b>folder</b>, <code>hdrctl workflow run</code> takes a workflow <b>file</b>. Point the second at a folder and it will not find anything to run.</p>
+    <h4>Actions</h4><ol><li>Stay in the terminal.</li><li>Run <code>hdrctl workflow run</code> on the workflow <b>name</b>.</li><li>Read one line per step.</li></ol>
+    <pre class="cmd">hdrctl workflow run first-workflow</pre>
+    <p>Note the difference in what each command expects: <code>hdrctl run</code> takes a job <b>folder</b>, <code>hdrctl workflow run</code> takes a workflow <b>name</b> (<code>workflows/&lt;name&gt;.yaml</code>) or a file path. Both are resolved from the project folder, so run them from there.</p>
     <p>This is also the command a scheduler, a CI pipeline or a colleague without Studio will use. That the same design runs identically from a button and from a shell is the whole point of keeping the manifests plain files.</p>
-    <div class="expect"><b>What you should see</b><p>One line per step, in dependency order, each with its duration — jobs and actions alike.</p><pre class="out">Workflow  first-workflow
-✓  Step 'first-job' OK (2.6s)
-✓  Step 'second-job' OK (0.1s)
-✓  Step 'action_log_1' OK (0.0s)
-✓  Step 'action_powershell_2' OK (2.6s)</pre>
-      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/screen11.png" width="1910" height="1355" loading="lazy" decoding="async" alt="The Terminal tab running hdrctl workflow run on a workflow file, listing four steps each marked OK with its duration." /><figcaption>Four steps, two jobs and two actions. The PowerShell step runs here because the host is Windows.</figcaption></figure>
+    <div class="expect"><b>What you should see</b><p>One line per step, in dependency order, each with its duration — one per job here.</p><pre class="out">Workflow  first-workflow
+✓  Step 'first-job' OK (&lt;duration&gt;)
+✓  Step 'second-job' OK (&lt;duration&gt;)
+Workflow 'first-workflow' completed in &lt;duration&gt; — 2/2 steps OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-10-run-the-job/terminal-run-first-workflow-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Terminal tab after hdrctl workflow run first-workflow, listing the two job steps OK and the line 2/2 steps OK." /><figcaption>Two steps, one per job, in dependency order.</figcaption></figure>
     </div>
   </div>
 
 <div class="rules">
-  <h5>Tips and traps</h5>
-  <p data-kind="TIP">The four routes share <b>one engine</b>. A job that runs from the canvas runs from the CLI, and the reverse.</p>
-  <p data-kind="TRAP">Green means <b>finished</b>, not correct. Read <b>rows_in</b> and <b>rows_out</b> before believing it.</p>
-  <p data-kind="TIP">Use <b>Run Job</b> while iterating, <b>Run Workflow</b> to check the design holds together.</p>
-  <p data-kind="TRAP"><code>hdrctl run</code> takes a job <b>folder</b>; <code>hdrctl workflow run</code> takes a workflow <b>file</b>. They are not interchangeable.</p>
-  <p data-kind="TIP">An imported job keeps the <b>paths of another machine</b>. Reopen all three nodes before the first run.</p>
-  <p data-kind="TRAP">Row counts belong to <b>one path</b>. Read the <code>job_path</code> line before comparing two runs.</p>
-  <p data-kind="TIP">The toast fades, the <b>bell</b> keeps it. Reach for it when a run outlasts your attention.</p>
-  <p data-kind="TRAP">A shell action ties the run to its host. <b>PowerShell</b> succeeds on Windows and fails on Linux.</p>
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Import a job folder with <b>Import → Import a job</b> instead of rebuilding a job written elsewhere.</p>
+  <p data-kind="TIP">Run Job opens the Logs panel automatically: read the status there before opening the Runs page.</p>
+  <p data-kind="TRAP">An animation is not an outcome. Wait for a <b>terminal state</b> on the Runs page.</p>
+  <p data-kind="TRAP">The <b>Valid</b> badge means the manifest parses. Only a <b>run</b> proves the job works.</p>
 </div>
 
-  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
     <tr><td>Import</td><td>The job appears as a node and in the palette</td></tr>
     <tr><td>Configuration</td><td>No red badge on any of the three nodes</td></tr>
     <tr><td>Run Job</td><td>The panel opens on <b>SUCCESS</b></td></tr>
@@ -158,16 +152,29 @@ Rows written: 8</pre>
     <tr><td>CLI</td><td>The same work, reported as rows read and written</td></tr>
   </tbody></table>
 
-  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
     <tr><td><b>Run Job</b> does nothing</td><td>A node still carries a red badge</td><td>Open each node and fill the fields marked with a red asterisk</td></tr>
-    <tr><td><code>rows_in=0</code></td><td>The source path does not point at your file</td><td>Reopen the source and use <b>Browse</b></td></tr>
+    <tr><td><code>rows_in=0</code></td><td>The source path does not point at your file</td><td>Reopen the source and check the path, which is relative to the job's folder</td></tr>
     <tr><td><code>rows_out=0</code></td><td>The filter expression matches nothing</td><td>Check the column name and the exact spelling of the value</td></tr>
     <tr><td><code>rows_out</code> equals <code>rows_in</code></td><td>The transformation is not on the chain</td><td>Reconnect it between the source and the destination</td></tr>
     <tr><td>The CLI reports no workflow file</td><td>A folder was passed instead of the file</td><td>Append <code>\workflow.yaml</code> to the path</td></tr>
     <tr><td>Two runs report different counts</td><td>They ran different job folders</td><td>Compare the <code>job_path</code> line of each</td></tr>
   </tbody></table>
 
-  <h2>5. Next lesson</h2><p>The job runs, and you can read its verdict. The next lesson opens the <b>Runs</b> page, where those verdicts are kept — and where a failure explains itself.</p>
+  <h2>Frequently asked questions</h2>
+  <h3>How do I run a job in Hydra Studio?</h3>
+  <p>Select Run Job on the job canvas. Studio opens the Logs panel and follows the status of the run.</p>
+  <h3>Is running from Studio different from running from the command line?</h3>
+  <p>No. The button changes, but the same engine runs underneath, whether you start it from the canvas, the workflow, the Studio terminal or your own shell.</p>
+  <h3>What is the difference between Open a project, Import workflow and Import a job?</h3>
+  <p>Open a project takes a whole workspace, Import workflow takes a workflow and its jobs, and Import a job takes one job folder and drops it into the current project.</p>
+  <h3>Where do I find the result of a finished run?</h3>
+  <p>On the Runs page, covered in the next lesson. Each run keeps its status, duration and logs.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/09-reach-valid">Reach Valid</a></li><li><a href="/studio/11-review-a-run">Review a past run</a></li><li><a href="/studio/12-compose-jobs">Compose jobs into a workflow</a></li><li><a href="/cli">Hydra CLI reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>The job runs, and you can read its verdict. The next lesson opens the <b>Runs</b> page, where those verdicts are kept — and where a failure explains itself.</p>
   <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review a run <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
-  <h4>Close by</h4><ul class="linklist"><li><a href="/cli/run/">Run a job from the CLI</a></li><li><a href="/cli/workflow/run/">Run a workflow from the CLI</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

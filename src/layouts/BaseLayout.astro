@@ -25,9 +25,11 @@ interface Props {
     dateModified?: string;
     author: string;
   };
+  /** Extra JSON-LD nodes (HowTo, FAQPage, BreadcrumbList) matching the visible page. */
+  jsonld?: Record<string, unknown>[];
 }
 
-const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false, exactTitle, article } = Astro.props;
+const { title, description, image = '/og/hydra-etl-og.png', noindex = false, software = false, exactTitle, article, jsonld = [] } = Astro.props;
 const site = Astro.site ?? new URL('https://hydraetl.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
@@ -85,13 +87,14 @@ if (article) {
     description: article.description,
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
-    author: { '@type': 'Person', name: article.author, url: 'https://github.com/bejaouibechir' },
+    author: { '@type': 'Person', name: article.author, url: 'https://github.com/bejaouibechir', sameAs: ['https://github.com/bejaouibechir', 'https://www.linkedin.com/in/bejaoui-bechir-06b2452b/'] },
     publisher: { '@id': `${site.origin}/#organization` },
     mainEntityOfPage: canonical,
     image: ogImage,
     inLanguage: 'en',
   });
 }
+graph.push(...jsonld);
 const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 ---
 

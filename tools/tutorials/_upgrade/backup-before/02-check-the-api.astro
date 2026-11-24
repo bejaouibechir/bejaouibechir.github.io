@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-02-check-the-api.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: 'Check the Hydra Studio API connection (API online or offline)', description: 'Check the Hydra Studio API connection: read the API online or offline label, call /api/health and fix it with hdrctl serve.', datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/02-check-the-api/',
+  name: article.headline,
+  steps: ['Start the backend and Studio with one command', 'Read the top-bar indicator', 'Call the health route yourself', 'Stop the backend and watch the label change', 'Know the New Studio version button'],
+  faq: [
+    ['What port does Hydra Studio use?', 'Hydra ETL 0.22.0 serves Studio and the API on port 5678 by default, at http://127.0.0.1:5678. Change it with hdrctl serve --port.'],
+    ['How often does Studio check the API?', 'Studio repeats the health check every 5 seconds and does not retry a failed request inside a cycle, so the label follows the backend within about five seconds.'],
+    ['Why is the Studio page blank or empty while the sidebar works?', 'The sidebar belongs to the page already loaded in the browser. Data comes from the backend, so an offline API leaves the shell visible and the canvas empty. Start hdrctl serve, then refresh.'],
+    ['Can I check the API without opening Studio?', 'Yes. curl http://127.0.0.1:5678/api/health works from any terminal and returns HTTP 200 with status ok when the backend is running.'],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ['Check the API', '/studio/02-check-the-api/']],
+});
+---
+
+<BaseLayout title="Check the Hydra Studio API connection" exactTitle="Hydra Studio API Offline? Check the Connection | Hydra ETL" description="Check the Hydra Studio API connection: read the API online or offline label, call /api/health and fix it with hdrctl serve. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="02-check-the-api"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

@@ -1,0 +1,5 @@
+sources:
+  src_csv_job:
+    type: csv
+    extract:
+      table: data/people.csv

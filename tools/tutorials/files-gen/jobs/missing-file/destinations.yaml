@@ -1,0 +1,6 @@
+destinations:
+  dest_csv:
+    type: csv
+    load:
+      table: data/out_missing-file.csv
+      mode: replace

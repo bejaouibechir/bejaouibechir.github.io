@@ -1,0 +1,272 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "run-job-logs-success",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Run Job"
+        },
+        {
+          "wait_ms": 6000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "After Run Job, the logs panel reports a successful run of first-job with rows in and rows out, and a toast says Run completed."
+    },
+    {
+      "name": "run-workflow-logs-success",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click_text": "Run Workflow"
+        },
+        {
+          "wait_ms": 7000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 560
+      },
+      "alt": "After Run Workflow, both job nodes of first-workflow are outlined in green, the sign that each step succeeded."
+    },
+    {
+      "name": "job-source-dialog-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 0
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The CSV source dialog of first-job with its step name and file path."
+    },
+    {
+      "name": "job-filter-dialog-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 2
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Filter dialog of first-job with the expression status equals paid."
+    },
+    {
+      "name": "job-destination-dialog-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 3
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The CSV destination dialog of first-job with its output file path."
+    },
+    {
+      "name": "notifications-panel-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click": "button[title='Notifications']"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The notifications panel opened from the top bar, listing completed runs."
+    },
+    {
+      "name": "terminal-run-first-job",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "hdrctl run jobs\\first-job"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 9000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Terminal tab inside Studio after running hdrctl run on the first-job folder."
+    },
+    {
+      "name": "terminal-run-first-workflow",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "hdrctl workflow run workflows\\first-workflow.yaml"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 9000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Terminal tab after running hdrctl workflow run on first-workflow.yaml."
+    }
+  ]
+}

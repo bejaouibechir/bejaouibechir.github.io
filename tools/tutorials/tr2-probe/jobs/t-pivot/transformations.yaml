@@ -1,0 +1,9 @@
+steps:
+  - cast:
+      mapping:
+        amount: int
+  - pivot:
+      index: [region]
+      column: month
+      values: amount
+      aggfunc: sum

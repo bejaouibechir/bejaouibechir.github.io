@@ -1,0 +1,68 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "workflow-two-jobs-linked",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "Workflow scene with first-job linked to second-job."
+    },
+    {
+      "name": "execution-order-define-tab",
+      "path": "/projects/e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "Execution order panel of Project settings with Stage 1 running first-workflow sequentially."
+    }
+  ]
+}

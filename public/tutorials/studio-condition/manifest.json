@@ -1,0 +1,14 @@
+[
+  {
+    "file": "condition-node-dialog-structured-mode-light.png",
+    "name": "condition-node-dialog-structured-mode",
+    "theme": "light",
+    "alt": "The Condition node dialog of Hydra Studio in Structured mode, with a name field, Expression and Structured buttons, and left, operator and right fields."
+  },
+  {
+    "file": "condition-workflow-run-terminal-output-dark.png",
+    "name": "condition-workflow-run-terminal-output",
+    "theme": "dark",
+    "alt": "The Studio terminal after running a workflow with a Condition step, showing small_batch skipped and big_batch OK with the message Big batch path."
+  }
+]

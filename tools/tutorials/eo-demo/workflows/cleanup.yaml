@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: cleanup
+  trigger:
+    type: manual
+  steps:
+    - name: say_cleanup
+      type: action
+      action: log
+      params:
+        message: "Cleanup ran"

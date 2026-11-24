@@ -8,3 +8,10 @@ _to_delete/
 
 # cache de build Astro
 .astro/
+
+# outils de tutoriels : sorties temporaires
+tools/tutorials/*.log
+tools/tutorials/recon*/
+tools/tutorials/walk/
+tools/tutorials/__pycache__/
+tools/tutorials/watcher/queue/

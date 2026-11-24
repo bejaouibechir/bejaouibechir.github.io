@@ -1,0 +1,125 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 33</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 33 of 65 · Create a workflow</div><h1>Create a workflow in a Hydra project with hdrctl</h1><p class="lead">hdrctl workflow add creates an empty workflow and puts it in thread.yaml for you. Add one, read the file, run it and remove it.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">workflow add</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl workflow add archive</code> creates <code>workflows/archive.yaml</code> with no steps and adds it to the last stage of <code>thread.yaml</code>. <code>hdrctl workflow list</code> shows every workflow in thread order, and <code>hdrctl workflow remove</code> deletes one.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>List the workflows of a project, add one, read the file it creates, check it, and remove it.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>.</li></ul>
+  <h2>How do I create a workflow?</h2>
+
+  <div class="step">
+    <h3><i>01</i>List the workflows</h3>
+    <h4>Objective</h4><p>See the order the project follows.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the project folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl workflow list</pre>
+    <p>The list follows the thread. Each line gives the stage number, its mode, the workflow, its status and its number of steps.</p>
+    <div class="expect"><b>What you should see</b><p>Four workflows, three stages.</p><pre class="out">1·sequential   prepare     ✓ active  1 step(s)
+2·parallel     load_sales  ✓ active  1 step(s)
+2·parallel     load_stock  ✓ active  1 step(s)
+3·sequential   report      ✓ active  1 step(s)
+
+4 workflow(s) found</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Add a workflow</h3>
+    <h4>Objective</h4><p>Create <code>archive</code>.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl workflow add archive</pre>
+    <p>Hydra creates the file and adds the workflow at the end of the <b>last</b> stage. In our project that is stage 3, which is sequential, so <code>archive</code> runs after <code>report</code>. The command also rewrites <code>thread.yaml</code>: it adds explanatory comments at the top and an <code>active: true</code> line to every workflow.</p>
+    <div class="expect"><b>What you should see</b><p>A green line saying the workflow was created, the stage it joined, and a hint for the next step.</p><pre class="out">✔ Workflow 'archive' created — workflows\archive.yaml
+Added to workflows/thread.yaml, stage 3 (sequential).
+Next: attach jobs with hdrctl job attach <job> archive, then check with hdrctl run . --dry-run</pre>
+      <figure class="shot"><img src="/tutorials/studio-createwf/workflow-add-command-output-light.png" width="1232" height="230" loading="lazy" decoding="async" alt="The Studio terminal after hdrctl workflow add archive: a message says the workflow archive was created in workflows, that it was added to thread.yaml in stage 3, and suggests attaching jobs." /><figcaption><code>workflow add</code> in the Studio terminal.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read the new file</h3>
+    <h4>Objective</h4><p>Know what an empty workflow looks like.</p>
+    <h4>Actions</h4><ol><li>Open <code>workflows\archive.yaml</code>.</li></ol>
+    <pre class="cmd">workflows\archive.yaml</pre>
+    <p>The file holds a name, an empty description, a manual trigger and an empty list of steps. Add steps by hand, or open the workflow in Studio.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: archive
+  description: ""
+  trigger:
+    type: manual
+  steps: []</pre>
+    <div class="expect"><b>What you should see</b><p>A file of seven lines with <code>steps: []</code>.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Check it and list again</h3>
+    <h4>Objective</h4><p>Confirm the project still holds together.</p>
+    <h4>Actions</h4><ol><li>Run <code>hdrctl workflow validate workflows\archive.yaml</code>.</li><li>Run <code>hdrctl run . --dry-run</code>.</li><li>Run <code>hdrctl workflow list</code> again.</li></ol>
+    <pre class="cmd">hdrctl workflow validate workflows\archive.yaml
+hdrctl run . --dry-run
+hdrctl workflow list</pre>
+    <p>An empty workflow is valid. The dry run lists it with <code>(0)</code>, its number of steps, and running it alone completes with <code>0/0 steps OK</code>. In the list, <code>archive</code> comes last with <code>0 step(s)</code>.</p>
+    <div class="expect"><b>What you should see</b><p><code>Workflow valid</code>, a plan that ends with <code>archive (0)</code>, and five workflows in the list.</p><pre class="out">Workflow valid — no errors detected.
+
+Stage 3/3 — sequential
+   •  report  (1: say_report)
+   •  archive  (0)
+Dry run OK: the project is valid. Nothing was executed.
+
+3·sequential   archive  ✓ active  0 step(s)
+5 workflow(s) found</pre>
+      <figure class="shot"><img src="/tutorials/studio-createwf/workflow-list-in-thread-order-dark.png" width="1232" height="300" loading="lazy" decoding="async" alt="The Studio terminal after hdrctl workflow list: five workflows listed with their stage, mode, active status and step count, the new archive workflow last with zero steps." /><figcaption><code>workflow list</code> after the add.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Let Hydra name it, then remove one</h3>
+    <h4>Objective</h4><p>See the unnamed form and the cleanup.</p>
+    <h4>Actions</h4><ol><li>Run <code>hdrctl workflow add</code> without a name.</li><li>Run <code>hdrctl workflow remove archive -y</code>.</li></ol>
+    <pre class="cmd">hdrctl workflow add
+hdrctl workflow remove archive -y</pre>
+    <p>Without a name, Hydra generates one, here <code>workflow-109f7411</code>. Yours will differ. <code>remove</code> deletes the file and the thread entry; without <code>-y</code> it asks for confirmation first.</p>
+    <div class="expect"><b>What you should see</b><p>A generated name, then two <code>ok</code> lines for the removal.</p><pre class="out">✔ Workflow 'workflow-109f7411' created — workflows\workflow-109f7411.yaml
+
+ok  Deleted workflows\archive.yaml
+ok  Removed from workflows/thread.yaml
+✔ Workflow 'archive' removed.</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Pass a clear name: it becomes the file name and appears in <code>thread.yaml</code>, the plan and the run logs.</p>
+  <p data-kind="TIP">After adding, check the project with <code>hdrctl run . --dry-run</code>, as the command itself suggests.</p>
+  <p data-kind="TRAP">A new workflow lands in the <b>last</b> stage. If that stage is parallel, the new workflow starts with the others. Move it in the <a href="/studio/define-the-execution-order">Define</a> tab.</p>
+  <p data-kind="TRAP"><code>workflow remove</code> deletes the file for good. Use <code>-y</code> only when you are sure.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Create</td><td>workflow add writes workflows/<name>.yaml</td></tr><tr><td>Order</td><td>The workflow joins the last stage of thread.yaml</td></tr><tr><td>Check</td><td>Valid, listed with zero steps, runs 0/0</td></tr><tr><td>Remove</td><td>The file and the thread entry disappear</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>No project found</td><td>The command ran outside a project folder</td><td>Run it from the folder that holds .hydra</td></tr><tr><td>Name already exists</td><td>A workflow file has this name</td><td>Choose another name</td></tr><tr><td>The workflow runs too early</td><td>It joined a parallel last stage</td><td>Move it in Execution order</td></tr><tr><td>Dry run shows (0)</td><td>The workflow has no steps yet</td><td>Add steps in the YAML or in Studio</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I create a workflow in a Hydra project?</h3>
+  <p>Run hdrctl workflow add <name> in the project folder. It creates workflows/<name>.yaml with no steps and a manual trigger, and adds the workflow at the end of the last stage of workflows/thread.yaml.</p>
+  <h3>What happens if I give no name?</h3>
+  <p>Hydra invents one. In our test the name was workflow- followed by eight characters, workflow-109f7411, and the workflow was added like any other.</p>
+  <h3>Does the new workflow run in the project?</h3>
+  <p>Yes, as soon as it is in the thread. A workflow with no steps runs in 0.0 seconds and counts 0 of 0 steps. The dry run lists it with a zero between parentheses.</p>
+  <h3>How do I delete a workflow?</h3>
+  <p>Run hdrctl workflow remove <name>. It asks for confirmation unless you add -y. It deletes the file and removes the workflow from workflows/thread.yaml. Jobs are not deleted.</p>
+  <h3>Can I import an existing workflow file?</h3>
+  <p>According to the Studio source, a workflow file that sits in the workflows folder but not in thread.yaml is listed under Not in the thread in Execution order, where one click adds it. We did not test this with a file copied from elsewhere. The Studio Import button, which brings in a job, has its own lesson.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/define-the-execution-order">Define the execution order</a></li><li><a href="/studio/orchestrate-from-thread-yaml">Orchestrate from thread.yaml</a></li><li><a href="/studio/12-compose-jobs">Compose jobs in a workflow</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can create, check and remove workflows from the command line. Next, put jobs in them.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/12-compose-jobs">Compose jobs <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: check
+  trigger:
+    type: manual
+  steps:
+    - name: say_check
+      type: action
+      action: log
+      params:
+        message: "check ran"

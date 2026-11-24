@@ -1,0 +1,105 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 31</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 31 of 65 · Settings</div><h1>Hydra Studio settings: global preferences and project settings</h1><p class="lead">Studio keeps its settings in two places. Learn which ones apply everywhere, which belong to a project, and which file each of them ends up in.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Settings</span><span>about 15 minutes</span><span>a project in Studio</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>Hydra Studio has <b>Global settings</b> for every project and <b>Project settings</b> for one project. Global settings hold the data viewer, the environments and the job sync interval. Project settings hold the execution order, parameters, secrets and triggers, each saved in its own file.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Visit the two Settings tabs, tell which setting is global and which is per project, and know the file each project setting writes.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>Studio running with the <code>studio-course</code> project. The pictures of the project settings come from it.</li></ul>
+  <h2>Where do I change a setting in Hydra Studio?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open Global settings</h3>
+    <h4>Objective</h4><p>See what applies to every project.</p>
+    <h4>Actions</h4><ol><li>Select <b>Settings</b> at the bottom of the sidebar.</li><li>Stay on the <b>Global settings</b> tab.</li></ol>
+    <pre class="cmd">Sidebar → Settings → Global settings</pre>
+    <p>Three things live here. The <b>data viewer</b> row count (10 by default) sets how many rows <b>View data</b> shows when you right-click a destination. The <b>Environments</b> card holds variables shared by every project on the machine. The <b>job files sync</b> interval sets how often an open job is compared with its files on disk. The editor preferences stay in this browser, while the environments are saved on this machine.</p>
+    <div class="expect"><b>What you should see</b><p>A page with the data viewer field, the Environments card and the sync interval.</p><pre class="out">Data viewer: 10 rows (default: 10)
+Environments: Common · dev · prod
+Job files sync: 5 seconds</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/settings-page-global-settings-light.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Global settings tab of Hydra Studio in the light theme: the data viewer row count, the Common, dev and prod environments with a variable table, and the job files sync interval." /><figcaption><b>Global settings</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the Environments card</h3>
+    <h4>Objective</h4><p>Understand how shared variables are organized.</p>
+    <h4>Actions</h4><ol><li>Select <b>Common</b>, then <b>dev</b>, and compare the variable tables.</li><li>Select <b>New environment</b> to see the name box, then cancel.</li></ol>
+    <pre class="cmd">Global settings → Environments</pre>
+    <p>Variables in <b>Common</b> apply to every environment, saved in <code>~/.hydra/env</code>. Each other tab, such as <code>dev</code>, adds variables saved in <code>~/.hydra/env.&lt;name&gt;</code>. A run loads the common variables first, then those of the active environment. Use a variable as <code>${ENV:NAME}</code> in a field. Names accept letters, digits and underscores and cannot start with a digit; Studio flags duplicates. A later lesson builds an environment from scratch.</p>
+    <div class="expect"><b>What you should see</b><p>Tabs for Common and each environment, a table of names and values, and a <b>New environment</b> button that opens a name box.</p><pre class="out">Common   ~/.hydra/env
+dev      ~/.hydra/env.dev</pre>
+      <figure class="shot"><img src="/tutorials/studio-settings/settings-global-new-environment-box-dark.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Environments card of Hydra Studio Global settings in the dark theme, with the Common tab selected, a name box open after New environment and the variable table below." /><figcaption>The name box after <b>New environment</b>, before anything is saved.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Open Project settings</h3>
+    <h4>Objective</h4><p>Reach the settings of one project.</p>
+    <h4>Actions</h4><ol><li>Select the <b>Project settings</b> tab.</li><li>Choose <b>studio-course</b> in the list.</li></ol>
+    <pre class="cmd">Settings → Project settings</pre>
+    <p>Without a project, the tab only offers a list and a Projects button. Once a project is chosen, the header shows its name and folder, the active environment with a <b>Manage</b> link, a project list and <b>Back to the project</b>. Four tabs follow: <b>Execution order</b>, <b>Parameters</b>, <b>Secrets</b> and <b>Triggers</b>. The address <code>/settings/project/&lt;project id&gt;</code> opens a project directly.</p>
+    <div class="expect"><b>What you should see</b><p>A list reading Choose a project, then the four tabs once a project is selected.</p><pre class="out">Project settings
+Choose a project…</pre>
+      <figure class="shot"><img src="/tutorials/studio-settings/settings-project-choose-project-light.png" width="1232" height="300" loading="lazy" decoding="async" alt="The Project settings tab of Hydra Studio in the light theme with no project open: a Choose a project list and a Projects button." /><figcaption><b>Project settings</b> before a project is chosen.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read the Execution order tab</h3>
+    <h4>Objective</h4><p>See where the order of workflows is set for the whole project.</p>
+    <h4>Actions</h4><ol><li>Stay on <b>Execution order</b>.</li><li>Read the stage line, then the workflow line.</li></ol>
+    <pre class="cmd">Project settings → Execution order</pre>
+    <p>The order is saved in <code>workflows/thread.yaml</code> for everyone who opens the project. Workflows are grouped in stages: inside a stage they run one after the other or in parallel, and each workflow can wait before it starts or be given a longest running time. <b>Define</b> edits the order, <b>Preview</b> shows it, <b>Check</b> validates it and the button shows <b>Saved</b> once written. <b>Loops</b> can replay a part of the thread. A later lesson covers the execution order in detail.</p>
+    <div class="expect"><b>What you should see</b><p>One stage, sequential, holding <code>first-workflow</code>, with wait and max fields.</p><pre class="out">Stage 1  sequential  then wait 0
+☑ first-workflow  wait 0  max none</pre>
+      <figure class="shot"><img src="/tutorials/studio-settings/settings-project-execution-order-dark.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Execution order tab of the Project settings of studio-course in the dark theme: Stage 1, sequential, holding first-workflow, with Define, Preview, Check and Saved buttons and a Loops section." /><figcaption><b>Execution order</b> of <code>studio-course</code>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read Parameters, Secrets and Triggers</h3>
+    <h4>Objective</h4><p>Know what each remaining tab writes, and for whom.</p>
+    <h4>Actions</h4><ol><li>Select <b>Parameters</b>, then <b>Secrets</b>, then <b>Triggers</b>.</li><li>Read the grey note under the project name each time.</li></ol>
+    <pre class="cmd">Project settings → Parameters · Secrets · Triggers</pre>
+    <p>The note under the project name says where a tab saves. <b>Parameters</b> go to <code>parameters.yaml</code> and <code>environments/&lt;env&gt;.yaml</code>, for everyone who opens the project. <b>Secrets</b> go to <code>.hydra/secrets</code> and <code>.hydra/secrets.&lt;env&gt;</code>, ignored by Git: this machine only. <b>Triggers</b> go to <code>triggers.yaml</code>: what starts the whole project, by time, file, data change, webhook or the end of another project. They run under <code>hdrctl serve</code> or <code>hdrctl watch</code>. The Parameters and Secrets tabs are the same panels as in the bottom panel of the editor.</p>
+    <div class="expect"><b>What you should see</b><p>Three tabs, each with a note, and empty lists on a new project.</p><pre class="out">Parameters  → parameters.yaml, environments/<env>.yaml
+Secrets     → .hydra/secrets (git-ignored)
+Triggers    → triggers.yaml</pre>
+      <figure class="shot"><img src="/tutorials/studio-settings/settings-project-parameters-tab-light.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Parameters tab of the Project settings of studio-course in the light theme, with an empty table and the Add parameter and Save buttons." /><figcaption><b>Parameters</b>.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-settings/settings-project-secrets-tab-dark.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Secrets tab of the Project settings of studio-course in the dark theme: scope list, explanation of the .hydra/secrets file, an empty list and the name and value fields." /><figcaption><b>Secrets</b>.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-settings/settings-project-triggers-tab-light.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Triggers tab of the Project settings of studio-course in the light theme, with Refresh and Add a trigger buttons, an empty list and the History section." /><figcaption><b>Triggers</b>.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Read the grey note under the project name: it tells where the current tab writes and who receives the change.</p>
+  <p data-kind="TIP">Open <code>/settings/project/&lt;project id&gt;?tab=triggers</code> to land on a tab directly.</p>
+  <p data-kind="TRAP">Secrets do not travel with the project. A colleague who opens the project from Git has to add their own.</p>
+  <p data-kind="TIP">Environment variables of Global settings are shared by every project on this machine: keep names specific.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Global settings</td><td>Data viewer rows, Environments, job files sync interval</td></tr><tr><td>Project settings</td><td>Four tabs: Execution order, Parameters, Secrets, Triggers</td></tr><tr><td>Files</td><td>thread.yaml, parameters.yaml, environments/<env>.yaml, .hydra/secrets, triggers.yaml</td></tr><tr><td>Secrets</td><td>Git ignores them: this machine only</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Project settings shows only a list</td><td>No project is chosen</td><td>Choose one in the list, or open it from the Overview</td></tr><tr><td>The page says the project is not open</td><td>Studio has not opened that project</td><td>Open it from the Overview first</td></tr><tr><td>A variable name is refused</td><td>Names accept letters, digits and underscores only</td><td>Rename it, without a leading digit</td></tr><tr><td>A colleague lacks a secret</td><td>Secrets are not committed</td><td>Each machine adds its own secret values</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What is the difference between Global settings and Project settings in Hydra Studio?</h3>
+  <p>Global settings apply to every project: the data viewer row count, the environments saved on your machine and the job sync interval. Project settings belong to one project and are written in its files: execution order, parameters, secrets and triggers.</p>
+  <h3>Where does Studio save each setting?</h3>
+  <p>The editor preferences are kept in this browser. Environment variables go to ~/.hydra on your machine. The execution order goes to workflows/thread.yaml, parameters to parameters.yaml and environments/<env>.yaml, secrets to .hydra/secrets and triggers to triggers.yaml.</p>
+  <h3>Are secrets shared with my team through Git?</h3>
+  <p>No. Secrets are saved in .hydra/secrets and .hydra/secrets.<env>, which Git ignores, so they stay on this machine. Parameters, the execution order and triggers are project files that everyone who opens the project receives.</p>
+  <h3>How do I open the settings of a project?</h3>
+  <p>Select Settings in the sidebar, then the Project settings tab, and choose a project in the list. You can also open the address /settings/project/<project id>, and append ?tab=parameters, secrets or triggers.</p>
+  <h3>When do triggers run?</h3>
+  <p>Triggers run while hdrctl serve is running, which is Studio itself, or while hdrctl watch runs. The Studio panel states that they do not run in both on the same project.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/tour-the-pages">Tour the Studio pages</a></li><li><a href="/studio/use-the-bottom-panel">Use the bottom panel</a></li><li><a href="/studio/14-use-parameters">Use parameters</a></li><li><a href="/studio/set-timeouts-on-workflows">Set timeouts on workflows</a></li></ul>
+
+  <h2>Next lesson</h2><p>You know where every setting lives. The next lessons build parameters and environments in a real project.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/14-use-parameters">Use parameters <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

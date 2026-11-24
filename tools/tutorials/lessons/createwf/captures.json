@@ -1,0 +1,252 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "workflow-add-command-output",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_xy": [
+            800,
+            622,
+            800,
+            380
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('TERMINAL')"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\cap1\\wf-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\wf-demo> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow add archive"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 6000
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 6000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 380,
+        "width": 1232,
+        "height": 230
+      },
+      "alt": "The Studio terminal after hdrctl workflow add archive: a message says the workflow archive was created in workflows, that it was added to thread.yaml in stage 3, and suggests attaching jobs."
+    },
+    {
+      "name": "workflow-list-in-thread-order",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_xy": [
+            800,
+            622,
+            800,
+            380
+          ]
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('TERMINAL')"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\cap2\\wf-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\wf-demo> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow add archive"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 6000
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow list"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 6000
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 6000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 380,
+        "width": 1232,
+        "height": 300
+      },
+      "alt": "The Studio terminal after hdrctl workflow list: five workflows listed with their stage, mode, active status and step count, the new archive workflow last with zero steps."
+    }
+  ]
+}

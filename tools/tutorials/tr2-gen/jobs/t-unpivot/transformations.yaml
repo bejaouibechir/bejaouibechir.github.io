@@ -1,0 +1,5 @@
+steps:
+  - unpivot:
+      id_vars: [region]
+      var_name: month
+      value_name: amount

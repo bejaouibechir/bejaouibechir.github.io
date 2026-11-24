@@ -1,0 +1,130 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 50</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 50 of 65 · Condition</div><h1>Branch a Hydra Studio workflow with the Condition node</h1><p class="lead">The Condition node turns a comparison into a true or false variable. Steps that follow read it in their run condition, so one workflow can take two paths.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Condition</span><span>about 15 minutes</span><span>Hydra ETL 0.22</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>The <b>Condition</b> node of Hydra Studio evaluates a comparison and stores the result in a variable. A later step reads it with <code>when: "{{ param:big }}"</code> and runs only if it is true. In our test, a count of 15 above 10 ran the <i>big</i> path and skipped the other.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Read the Condition dialog, write a workflow with two branches, run it, and see which step runs and which is skipped.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A terminal: PowerShell on Windows.</li></ul>
+  <h2>How do I branch a workflow with a Condition?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the Condition dialog</h3>
+    <h4>Objective</h4><p>Read what the node asks for.</p>
+    <h4>Actions</h4><ol><li>Open a workflow in <b>Workflow configuration</b>.</li><li>Expand <b>Control Flow</b>, drag <b>Condition</b> onto the canvas and double-click it.</li><li>Select <b>Structured</b>.</li></ol>
+    <pre class="cmd">Palette → Control Flow → Condition</pre>
+    <p>The dialog says it <i>evaluates a condition into a variable (used by downstream when)</i>. The <b>result variable name</b> is the name later steps use, as <code>{{ param:&lt;name&gt; }}</code>. Two modes follow: <b>Expression</b> for a free boolean expression, and <b>Structured</b> for a left value, an operator and a right value.</p>
+    <div class="expect"><b>What you should see</b><p>A dialog with a CONTROL_FLOW badge, the result variable name, the two mode buttons, and the three structured fields.</p><pre class="out">Condition   CONTROL_FLOW
+Result variable name: check
+[ Expression ] [ Structured ]   {{ param:count }}  ==  10</pre>
+      <figure class="shot"><img src="/tutorials/studio-condition/condition-node-dialog-structured-mode-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Condition node dialog of Hydra Studio in the light theme, Structured mode selected: a step name, a result variable name field, Expression and Structured buttons, and left, operator and right fields." /><figcaption>The <b>Condition</b> dialog in Structured mode.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Write a workflow with two branches</h3>
+    <h4>Objective</h4><p>See the same logic as YAML.</p>
+    <h4>Actions</h4><ol><li>Create a folder <code>cond-demo</code> with a <code>workflows</code> folder inside.</li><li>Save the YAML below as <code>workflows\wf_branch.yaml</code>.</li></ol>
+    <pre class="cmd">workflows\wf_branch.yaml</pre>
+    <p><code>set_count</code> creates a runtime parameter <code>count</code> with the value 15. <code>check</code> compares it with 10 and stores the result in <code>big</code>. The two log steps both depend on <code>check</code> and carry opposite <code>when</code> guards.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: wf_branch
+  trigger:
+    type: manual
+  steps:
+    - name: set_count
+      type: action
+      action: set_param
+      params:
+        name: count
+        value: 15
+        type: int
+    - name: check
+      type: action
+      action: condition
+      params:
+        name: big
+        mode: structured
+        left: "{{ param:count }}"
+        op: "&gt;"
+        right: "10"
+      depends_on: [set_count]
+    - name: big_batch
+      type: action
+      action: log
+      params:
+        message: "Big batch path"
+      when: "{{ param:big }}"
+      depends_on: [check]
+    - name: small_batch
+      type: action
+      action: log
+      params:
+        message: "Small batch path"
+      when: "not {{ param:big }}"
+      depends_on: [check]</pre>
+    <div class="expect"><b>What you should see</b><p>A file of 37 lines.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Validate the workflow</h3>
+    <h4>Objective</h4><p>Check the file before you run it.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>cond-demo</code> folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl workflow validate workflows\wf_branch.yaml</pre>
+    <p>Validation checks the actions, keys, parameters and dependencies without running anything.</p>
+    <div class="expect"><b>What you should see</b><p>A confirmation line.</p><pre class="out">Workflow valid — no errors detected.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Run it and read the two branches</h3>
+    <h4>Objective</h4><p>See one path run and the other skipped.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Find the skipped step.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\wf_branch.yaml</pre>
+    <p>Because 15 is greater than 10, <code>big</code> is true: <code>big_batch</code> runs and logs its message, and <code>small_batch</code> is skipped. Change <code>value: 15</code> to <code>5</code> and run again to take the other path.</p>
+    <div class="expect"><b>What you should see</b><p>Four steps OK, one of them reported as skipped.</p><pre class="out">✓  Step 'set_count' OK (0.0s)
+✓  Step 'check' OK (0.0s)
+⏭  Step 'small_batch' skipped
+✓  Step 'big_batch' OK (0.0s)
+   | Big batch path
+
+Workflow 'wf_branch' completed in 0.0s — 4/4 steps OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-condition/condition-workflow-run-terminal-output-dark.png" width="1232" height="500" loading="lazy" decoding="async" alt="The Hydra Studio terminal in the dark theme after running the wf_branch workflow: set_count and check are OK, small_batch is skipped, big_batch is OK with the message Big batch path, and the workflow completed with 4 of 4 steps OK." /><figcaption>The same run, from the Studio terminal.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Name the result variable after the question it answers, for example <code>big</code> or <code>file_ready</code>.</p>
+  <p data-kind="TIP">Write the opposite branch with <code>not {{ param:name }}</code>.</p>
+  <p data-kind="TRAP">A skipped step counts as a normal outcome. The workflow still ends with all steps OK, so check the skipped lines when you read a run.</p>
+  <p data-kind="TIP">Keep the <code>depends_on</code> of both branches on the Condition step, so they only start after it has decided.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Dialog</td><td>Result variable name, Expression and Structured modes</td></tr><tr><td>Validation</td><td><code>hdrctl workflow validate</code> prints Workflow valid</td></tr><tr><td>Run with count 15</td><td>big_batch runs, small_batch is skipped</td></tr><tr><td>Run with count 5</td><td>small_batch runs, big_batch is skipped</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Both branches run</td><td>A step has no <code>when</code> guard</td><td>Add a <code>when</code> to every step that depends on the condition</td></tr><tr><td>Neither branch runs</td><td>The variable name in <code>when</code> differs from the result variable name</td><td>Use the same name in both places</td></tr><tr><td>One step shows skipped</td><td>Its <code>when</code> guard is false</td><td>This is the expected outcome on the branch not taken</td></tr><tr><td>Workflow file not found</td><td>The path is wrong</td><td>Run the command from the folder that holds <code>workflows</code></td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does the Condition node do in Hydra Studio?</h3>
+  <p>It evaluates a condition and stores the true or false result in a variable. Steps that come after it read that variable in their run condition, written when in YAML, so a step runs only on the matching branch.</p>
+  <h3>How do I make a step run only when a condition is true?</h3>
+  <p>Give the Condition node a result variable name, such as big, then set the Run condition (when) of the downstream step to {{ param:big }}. For the opposite branch, use not {{ param:big }}.</p>
+  <h3>What is the difference between Expression and Structured mode?</h3>
+  <p>Structured mode compares a left value and a right value with an operator such as ==, !=, <, <=, > or >=, or contains. Expression mode takes a free boolean expression with comparisons, and, or and not, evaluated without running any code.</p>
+  <h3>What happens to the step on the other branch?</h3>
+  <p>It is skipped. In our test the run reported Step 'small_batch' skipped, and the workflow still completed with all steps OK.</p>
+  <h3>Where does the value being compared come from?</h3>
+  <p>From a project parameter, an environment variable or a runtime parameter, written as {{ param:name }}. In our test a set_param step created count with the value 15 before the condition ran.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/use-the-palette">Use the node palette</a></li><li><a href="/studio/14-use-parameters">Use parameters</a></li><li><a href="/dsl">Hydra DSL reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can branch a workflow. Next, learn how to group steps and run them in stages.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/12-compose-jobs">Compose jobs <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

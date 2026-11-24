@@ -1,0 +1,81 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you"
+  },
+  "shots": [
+    {
+      "name": "api-online-top-bar",
+      "path": "/overview",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "selector": "header",
+        "padding": 0
+      },
+      "alt": "Hydra Studio top bar with the API online indicator in green, next to the theme switcher."
+    },
+    {
+      "name": "api-offline-top-bar",
+      "path": "/overview",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "block_api": "**/api/**"
+        }
+      ],
+      "clip": {
+        "selector": "header",
+        "padding": 0
+      },
+      "alt": "Hydra Studio top bar with the API offline indicator in red after the backend stopped answering."
+    },
+    {
+      "name": "api-online-overview-page",
+      "path": "/overview",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        }
+      ],
+      "alt": "Hydra Studio Overview page with the API online and the project list loaded from the backend."
+    },
+    {
+      "name": "api-offline-overview-page",
+      "path": "/overview",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "block_api": "**/api/**"
+        }
+      ],
+      "alt": "Hydra Studio Overview page with the API offline: the sidebar still renders but no project data loads."
+    }
+  ]
+}

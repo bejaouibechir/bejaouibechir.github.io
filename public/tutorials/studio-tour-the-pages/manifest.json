@@ -1,0 +1,50 @@
+[
+  {
+    "file": "overview-page-start-actions-light.png",
+    "name": "overview-page-start-actions",
+    "theme": "light",
+    "alt": "The Overview page with the project list and the start actions, beside the expanded sidebar."
+  },
+  {
+    "file": "runs-page-run-history-dark.png",
+    "name": "runs-page-run-history",
+    "theme": "dark",
+    "alt": "The Runs page listing past runs."
+  },
+  {
+    "file": "templates-page-job-templates-light.png",
+    "name": "templates-page-job-templates",
+    "theme": "light",
+    "alt": "The Templates page, listing the job templates Studio offers."
+  },
+  {
+    "file": "insights-page-run-counters-dark.png",
+    "name": "insights-page-run-counters",
+    "theme": "dark",
+    "alt": "The Insights page with run counters and the average duration."
+  },
+  {
+    "file": "settings-page-global-settings-light.png",
+    "name": "settings-page-global-settings",
+    "theme": "light",
+    "alt": "The Settings page, opened from the bottom of the sidebar."
+  },
+  {
+    "file": "help-page-studio-help-dark.png",
+    "name": "help-page-studio-help",
+    "theme": "dark",
+    "alt": "The Help page, which holds a single card reading that help is coming in a future sprint."
+  },
+  {
+    "file": "sidebar-expanded-five-entries-light.png",
+    "name": "sidebar-expanded-five-entries",
+    "theme": "light",
+    "alt": "The expanded sidebar: Overview, Runs, Templates, Insights, then Settings and Help at the bottom."
+  },
+  {
+    "file": "sidebar-collapsed-icons-only-dark.png",
+    "name": "sidebar-collapsed-icons-only",
+    "theme": "dark",
+    "alt": "The collapsed sidebar, reduced to icons."
+  }
+]

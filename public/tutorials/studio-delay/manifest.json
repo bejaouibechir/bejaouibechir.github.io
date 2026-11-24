@@ -1,0 +1,14 @@
+[
+  {
+    "file": "delay-node-dialog-seconds-field-light.png",
+    "name": "delay-node-dialog-seconds-field",
+    "theme": "light",
+    "alt": "The Delay node dialog of Hydra Studio, with a step name and a required Delay in seconds field."
+  },
+  {
+    "file": "delay-workflow-run-terminal-output-dark.png",
+    "name": "delay-workflow-run-terminal-output",
+    "theme": "dark",
+    "alt": "The Studio terminal after running a workflow with a three second Delay step, listing the steps before, pause and after as OK and the total time."
+  }
+]

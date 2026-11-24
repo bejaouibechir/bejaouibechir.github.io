@@ -1,0 +1,14 @@
+[
+  {
+    "file": "workflow-one-job-import-menu-light.png",
+    "name": "workflow-one-job-import-menu",
+    "theme": "light",
+    "alt": "The workflow canvas holding only first-job, with the Import menu open on the Import a job entry."
+  },
+  {
+    "file": "workflow-one-job-canvas-dark.png",
+    "name": "workflow-one-job-canvas",
+    "theme": "dark",
+    "alt": "The workflow canvas holding a single first-job node."
+  }
+]

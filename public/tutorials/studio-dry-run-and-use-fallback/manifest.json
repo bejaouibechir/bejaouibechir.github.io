@@ -1,0 +1,20 @@
+[
+  {
+    "file": "terminal-dry-run-fallback-plan-light.png",
+    "name": "terminal-dry-run-fallback-plan",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl run . --dry-run, ending with Dry run OK."
+  },
+  {
+    "file": "project-check-quarantine-warning-dark.png",
+    "name": "project-check-quarantine-warning",
+    "theme": "dark",
+    "alt": "The Execution order panel after Check, with a Ready line and a warning about wf_report_quarantine."
+  },
+  {
+    "file": "terminal-use-fallback-forced-run-light.png",
+    "name": "terminal-use-fallback-forced-run",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl run . --use-fallback wf_load, showing the forced switch."
+  }
+]

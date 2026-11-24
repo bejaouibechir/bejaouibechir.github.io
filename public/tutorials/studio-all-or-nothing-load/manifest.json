@@ -1,0 +1,14 @@
+[
+  {
+    "file": "terminal-destination-yaml-replace-light.png",
+    "name": "terminal-destination-yaml-replace",
+    "theme": "light",
+    "alt": "The Studio terminal showing jobs/atomic_demo/destinations.yaml, a CSV destination in replace mode without an atomic line."
+  },
+  {
+    "file": "terminal-atomic-load-failed-dark.png",
+    "name": "terminal-atomic-load-failed",
+    "theme": "dark",
+    "alt": "The Studio terminal after a failed load of wf_atomic_demo, followed by the content of outputs/atomic_demo.csv."
+  }
+]

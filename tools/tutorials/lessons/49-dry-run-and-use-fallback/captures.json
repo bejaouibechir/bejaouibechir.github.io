@@ -1,0 +1,191 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "fallback-demo": "orders-fallback-demo"
+  },
+  "shots": [
+    {
+      "name": "terminal-dry-run-fallback-plan",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd ~/hydra-workspace/fallback-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl run . --dry-run"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 9000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Studio terminal after hdrctl run . --dry-run, ending with Dry run OK."
+    },
+    {
+      "name": "project-check-quarantine-warning",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "[data-testid=thread-editor] button:has-text('Check')"
+        },
+        {
+          "wait_ms": 3000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Execution order panel after Check, with a Ready line and a warning about wf_report_quarantine."
+    },
+    {
+      "name": "terminal-use-fallback-forced-run",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd ~/hydra-workspace/fallback-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl run . --use-fallback wf_load"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 9000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Studio terminal after hdrctl run . --use-fallback wf_load, showing the forced switch."
+    }
+  ]
+}

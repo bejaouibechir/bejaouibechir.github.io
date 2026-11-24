@@ -1,0 +1,3 @@
+pipeline:
+  from: src_missing_file
+  to: dest_csv

@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-60-build-a-resilient-pipeline.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Build a resilient ETL pipeline in Hydra ETL Studio", description: "Combine fallback, retry, timeout, rollback and undo in one Hydra ETL project, check it with a dry run and run it. Tested on Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/build-a-resilient-pipeline/',
+  name: article.headline,
+  steps: ["Match each failure to a protection", "Add a fallback to the load", "Add a retry to the flaky call", "Make the report safe to undo", "Limit the duration of the flaky workflow", "Check the whole project", "Run the project"],
+  faq: [["How do I make a Hydra ETL project resilient?", "Protect each failure at the place where it happens: a fallback for a missing or empty input, retry for a call that sometimes fails, rollback with undo for a workflow that publishes in several steps, and a timeout for a workflow that can hang. Then check the plan with hdrctl run . --dry-run."], ["Does a retry show up in the log?", "In the Studio run page, yes: the step log has a WARNING line for each retry, such as retry 1/3 in 1s. The command line output of hdrctl run prints only the final result of the step. In our test the step failed twice and answered on the third attempt, one second apart, and the workflow lasted about two seconds."], ["What does a dry run check in a project with protections?", "It validates the project, prints each workflow with its fallback and condition, and warns when a backup writes somewhere else than the workflow it replaces. It runs nothing."], ["Why is wf_flaky not before wf_report?", "The condition previous.rows refers to the workflow just before. A workflow that writes no rows between the load and the report would make previous.rows equal 0 and trigger the report fallback by mistake."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Build a resilient pipeline", '/studio/build-a-resilient-pipeline/']],
+});
+---
+
+<BaseLayout title="Build a resilient ETL pipeline in Hydra ETL Studio" exactTitle="Build a Resilient ETL Pipeline in Hydra ETL | Hydra ETL" description="Combine fallback, retry, timeout, rollback and undo in one Hydra ETL project, check it with a dry run and run it. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="build-a-resilient-pipeline"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

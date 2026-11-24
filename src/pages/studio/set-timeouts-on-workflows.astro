@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-48-set-timeouts-on-workflows.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Set a timeout on a workflow in Hydra ETL Studio", description: "Set a maximum duration on a Hydra ETL workflow, see when it stops and read the timeout in the run. Tested on Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/set-timeouts-on-workflows/',
+  name: article.headline,
+  steps: ["Find the max field", "Type a duration", "Save and run", "Read how it stopped", "Read the timeout in thread.yaml"],
+  faq: [["How do I set a timeout on a Hydra ETL workflow?", "Type a duration such as 30s, 5m or 1h in the max field of the workflow in Execution order, or add a timeout line to the workflow in workflows/thread.yaml."], ["Does the timeout stop a step in the middle?", "No. The workflow is stopped at the next step or batch. A long step finishes before the stop takes effect."], ["What happens to the workflow after a timeout?", "It counts as failed. With rollback: true its finished steps are undone, and a fallback with on_failure: true can run in its place."], ["Does a fallback run have its own timeout?", "The limit applies to the workflow and to each fallback run in its place, according to the tooltip of the max field in Studio."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Set a timeout", '/studio/set-timeouts-on-workflows/']],
+});
+---
+
+<BaseLayout title="Set a timeout on a workflow in Hydra ETL Studio" exactTitle="Workflow Timeout in Hydra ETL Studio | Hydra ETL" description="Set a maximum duration on a Hydra ETL workflow, see when it stops and read the timeout in the run. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="set-timeouts-on-workflows"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

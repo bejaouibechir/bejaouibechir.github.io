@@ -1,0 +1,135 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 56</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 56 of 65 · Triggers</div><h1>Declare project triggers in triggers.yaml</h1><p class="lead">A trigger says when a project starts. Write four triggers in triggers.yaml, list and check them with hdrctl trigger, start one by hand and read its history.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl trigger</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>Triggers are declared in <code>triggers.yaml</code> at the project root. <code>hdrctl trigger list</code> shows them, <code>validate</code> checks them, <code>fire NAME</code> starts one now and <code>history</code> lists what ran.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Declare four triggers, list and validate them, fire one by hand, read the history and read the errors of a broken file.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and the project built in <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I declare a trigger?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Write triggers.yaml</h3>
+    <h4>Objective</h4><p>Four triggers, one per kind of start.</p>
+    <h4>Actions</h4><ol><li>Open the project folder.</li><li>Create <code>triggers.yaml</code> at its root with the content below.</li></ol>
+    <pre class="cmd">triggers.yaml</pre>
+    <p>Each trigger has a <code>name</code> and a <code>type</code>. A <code>cron</code> trigger holds a cron expression and optionally a time zone. An <code>interval</code> trigger holds an <code>every</code> delay. A <code>file</code> trigger watches a path inside the project and a <code>marker</code> trigger waits for a flag file. <code>workflows</code> lists what the trigger runs. Without it, the whole thread runs. <code>enabled: false</code> keeps a trigger in the file but switched off.</p><pre class="cmd">version: "1.0"
+triggers:
+  - name: nightly
+    type: cron
+    cron: "0 2 * * *"
+    timezone: UTC
+    workflows: [workflow1]
+  - name: every-15-min
+    type: interval
+    every: 15m
+    overlap: skip
+  - name: new-files
+    type: file
+    path: Data/incoming
+    events: [added]
+  - name: go-flag
+    type: marker
+    path: go.flag
+    enabled: false</pre>
+    <div class="expect"><b>What you should see</b><p>A file with four triggers.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>List the triggers</h3>
+    <h4>Objective</h4><p>See what the project declares.</p>
+    <h4>Actions</h4><ol><li>Run the command below in the project folder.</li></ol>
+    <pre class="cmd">hdrctl trigger list</pre>
+    <p>Each line gives the state, <code>on</code> or <code>off</code>, the name and a plain-language summary of when the trigger fires. Before you create the file, the command answers <code>No trigger</code>.</p>
+    <div class="expect"><b>What you should see</b><p>Four lines, three <code>on</code> and one <code>off</code>.</p><pre class="out">on  nightly            cron 0 2 * * * (UTC)
+on  every-15-min       every 15m
+on  new-files          added: Data/incoming
+off go-flag            marker file go.flag (removed)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Validate the file</h3>
+    <h4>Objective</h4><p>Catch mistakes before anything runs.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger validate</pre>
+    <p>The command reads the file and checks each trigger against its type.</p>
+    <div class="expect"><b>What you should see</b><p><code>Triggers valid</code> with the number of triggers.</p><pre class="out">Triggers valid — 4 trigger(s)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Fire one trigger by hand</h3>
+    <h4>Objective</h4><p>Start the project as the trigger would.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger fire nightly</pre>
+    <p><code>fire</code> runs the project now, with the workflows, environment and parameters of the trigger. In our test the run took 2.8 seconds. Naming a trigger that does not exist stops with <code>Trigger 'nope' not found in triggers.yaml</code> and lists the known names.</p>
+    <div class="expect"><b>What you should see</b><p>A line naming the trigger and its schedule, then <code>project run</code> with the duration.</p><pre class="out">Trigger nightly — cron 0 2 * * * (UTC) — env: none
+Trigger 'nightly' — project run in 2.8s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the history</h3>
+    <h4>Objective</h4><p>See what the triggers started.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger history</pre>
+    <p>The history lives in <code>.hydra/triggers/history.jsonl</code>, inside the project. The line shows the date in UTC, the trigger, <code>manual</code> because we used <code>fire</code>, and the duration.</p>
+    <div class="expect"><b>What you should see</b><p>One line with a green mark.</p><pre class="out">Trigger history  ...\.hydra\triggers\history.jsonl
+✓ 2026-11-24T05:46:40+00:00  nightly          manual  2.76s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Break the file on purpose</h3>
+    <h4>Objective</h4><p>Read the four errors you will meet.</p>
+    <h4>Actions</h4><ol><li>Change <code>cron</code> to <code>"99 2 * * *"</code> and validate.</li><li>Rename <code>every</code> to <code>evry</code> and validate.</li><li>Give the interval trigger a <code>cron</code> key and remove it from the cron trigger, then validate.</li><li>Set <code>workflows: [missing-wf]</code> and validate.</li></ol>
+    <pre class="cmd">hdrctl trigger validate</pre>
+    <p>The messages name the trigger and the key at fault. Several errors in one file are reported together.</p>
+    <div class="expect"><b>What you should see</b><p>A red <code>err</code> line for each problem.</p><pre class="out">trigger 'nightly': cron '99 2 * * *': minute: 99 is out of range (0-59)
+triggers[0].evry: Extra inputs are not permitted
+trigger 'every-15-min': cron does not apply to type interval
+trigger 'nightly': type cron requires 'cron'
+trigger 'nightly': workflow(s) not found: missing-wf (workflows/<name>.yaml)</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Keep <code>enabled: false</code> on a trigger you are still writing: it stays in the file without starting anything.</p>
+  <p data-kind="TIP">Test a trigger with <code>hdrctl trigger fire</code> before you rely on its schedule.</p>
+  <p data-kind="TRAP">A <code>file</code> or <code>marker</code> path must stay inside the project: relative, without <code>..</code>. The Hydra source rejects absolute paths.</p>
+  <p data-kind="TRAP"><code>fire</code> really runs the project and writes its data. Use <code>hdrctl run . --dry-run</code> first if you only want to check the plan.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>File</td><td>triggers.yaml at the project root</td></tr><tr><td>Types</td><td>cron, interval, file, marker, and three more</td></tr><tr><td>Check</td><td>hdrctl trigger validate</td></tr><tr><td>Test</td><td>hdrctl trigger fire NAME</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Extra inputs are not permitted</td><td>A key is misspelled</td><td>Fix the key named in the message</td></tr><tr><td>does not apply to type</td><td>A key belongs to another trigger type</td><td>Remove it or change the type</td></tr><tr><td>workflow(s) not found</td><td>A workflow in the list has no file</td><td>Create it or fix the name</td></tr><tr><td>Trigger not found</td><td>The name is not in triggers.yaml</td><td>Read the list of known names</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What is a trigger in Hydra ETL?</h3>
+  <p>A trigger is an entry in triggers.yaml, at the project root, that says when to run the project: at a time, every so often, when a file shows up, and so on. Each trigger has a name and a type.</p>
+  <h3>Which trigger types exist?</h3>
+  <p>The Hydra ETL 0.22 source lists seven: cron, interval, file, marker, source_change, webhook and after_project. We tested cron, interval, file and marker; the others have their own lessons.</p>
+  <h3>Who runs the triggers?</h3>
+  <p>According to the help of hdrctl trigger, they run inside hdrctl watch and hdrctl serve. We did not leave either running in this lesson. hdrctl trigger fire NAME runs one trigger right away, and that is what we tested.</p>
+  <h3>How do I check triggers.yaml before using it?</h3>
+  <p>Run hdrctl trigger validate. It reports unknown keys, keys that do not suit the trigger type, impossible cron expressions and workflows that do not exist. A valid file answers Triggers valid, with the number of triggers.</p>
+  <h3>Where do I see what a trigger started?</h3>
+  <p>Run hdrctl trigger history. It reads .hydra/triggers/history.jsonl in the project and prints one line per run, with the trigger name, how it started (manual for fire) and the duration.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/orchestrate-from-thread-yaml">Orchestrate from thread.yaml</a></li><li><a href="/studio/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li><li><a href="/studio/create-a-workflow">Create a workflow</a></li></ul>
+
+  <h2>Next lesson</h2><p>A trigger is one entry in one file. Next, see the other ways to launch a project without Studio.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/launch-a-job-from-the-cli-and-the-api">Launch from the CLI <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

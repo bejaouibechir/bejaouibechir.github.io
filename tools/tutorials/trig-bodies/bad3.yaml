@@ -1,0 +1,8 @@
+version: "1.0"
+triggers:
+  - name: every-15-min
+    type: interval
+    every: 15m
+    cron: "0 2 * * *"
+  - name: nightly
+    type: cron

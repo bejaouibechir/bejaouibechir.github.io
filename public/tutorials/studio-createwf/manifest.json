@@ -1,0 +1,14 @@
+[
+  {
+    "file": "workflow-add-command-output-light.png",
+    "name": "workflow-add-command-output",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl workflow add archive: a message says the workflow archive was created in workflows, that it was added to thread.yaml in stage 3, and suggests attaching jobs."
+  },
+  {
+    "file": "workflow-list-in-thread-order-dark.png",
+    "name": "workflow-list-in-thread-order",
+    "theme": "dark",
+    "alt": "The Studio terminal after hdrctl workflow list: five workflows listed with their stage, mode, active status and step count, the new archive workflow last with zero steps."
+  }
+]

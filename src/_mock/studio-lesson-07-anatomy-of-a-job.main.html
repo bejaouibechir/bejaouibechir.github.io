@@ -1,0 +1,153 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 7</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 7 of 65 · Anatomy of a job</div><h1>What a Hydra job is made of: four YAML files</h1><p class="lead">A Hydra job is a folder of four YAML manifests. Create a project, read each file, break one on purpose and see what validate says.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl init</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A Hydra job is a folder with <code>sources.yaml</code>, <code>transformations.yaml</code>, <code>destinations.yaml</code> and <code>pipeline.yaml</code>. <code>pipeline.yaml</code> links the other files by id, and <code>hdrctl validate</code> checks the links before any data moves.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Create a project, read the four manifests of its first job, run it, and see what validate reports when a file or an id is missing.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>What is a job made of?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Create a project</h3>
+    <h4>Objective</h4><p>Let Hydra write a first job.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in an empty folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl init anatomy-demo</pre>
+    <p>The command creates the project folder and lists every file it writes. The job is <code>jobs/job1</code>. The default template is <code>csv</code>, a small CSV to CSV job with sample data.</p>
+    <div class="expect"><b>What you should see</b><p>A list of <code>ok</code> lines ending with <code>Project 'anatomy-demo' created (workflow1 with job1)</code>.</p><pre class="out">ok  jobs/job1/sources.yaml
+ok  jobs/job1/destinations.yaml
+ok  jobs/job1/pipeline.yaml
+ok  jobs/job1/transformations.yaml
+ok  jobs/job1/data/input.csv
+ok  jobs/job1/README.md
+ok  workflows/workflow1.yaml
+ok  workflows/thread.yaml
+...</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the source and the destination</h3>
+    <h4>Objective</h4><p>Two files declare where data comes from and goes.</p>
+    <h4>Actions</h4><ol><li>Open <code>jobs/job1/sources.yaml</code>.</li><li>Open <code>jobs/job1/destinations.yaml</code>.</li></ol>
+    <pre class="cmd">jobs/job1/sources.yaml
+jobs/job1/destinations.yaml</pre>
+    <p>Each file declares one or more entries under an id you choose: <code>src_csv</code> and <code>dest_csv</code>. An entry has a <code>type</code> and the place to read or write, here a file path. The paths are relative to the job folder.</p><pre class="cmd">sources:
+  src_csv:
+    type: csv
+    extract:
+      table: data/input.csv
+      batch_size: 50000
+
+destinations:
+  dest_csv:
+    type: csv
+    load:
+      table: data/output.csv
+      mode: replace</pre>
+    <div class="expect"><b>What you should see</b><p><code>src_csv</code> reads <code>data/input.csv</code>. <code>dest_csv</code> writes <code>data/output.csv</code> and replaces it at each run.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read the transformations</h3>
+    <h4>Objective</h4><p>The steps applied between the two.</p>
+    <h4>Actions</h4><ol><li>Open <code>jobs/job1/transformations.yaml</code>.</li></ol>
+    <pre class="cmd">jobs/job1/transformations.yaml</pre>
+    <p>The file is an ordered list of steps. This one keeps three columns, casts <code>value</code> to a float and keeps the rows where <code>value</code> is above zero.</p><pre class="cmd">steps:
+  - select:
+      columns: [id, name, value]
+  - cast:
+      mapping:
+        value: float
+  - filter:
+      expr: "value &gt; 0"</pre>
+    <div class="expect"><b>What you should see</b><p>Three steps: select, cast, filter.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read the pipeline</h3>
+    <h4>Objective</h4><p>The file that ties the others together.</p>
+    <h4>Actions</h4><ol><li>Open <code>jobs/job1/pipeline.yaml</code>.</li></ol>
+    <pre class="cmd">jobs/job1/pipeline.yaml</pre>
+    <p>The pipeline holds no data details. It names a source id and a destination id, and nothing else. It does not mention <code>transformations.yaml</code>: in our test the file was applied anyway because it sits in the job folder.</p><pre class="cmd">pipeline:
+  from: src_csv
+  to: dest_csv</pre>
+    <div class="expect"><b>What you should see</b><p>Two lines: <code>from</code> and <code>to</code>.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Validate and run the job</h3>
+    <h4>Objective</h4><p>Check the links, then move the data.</p>
+    <h4>Actions</h4><ol><li>Run <code>hdrctl validate jobs/job1</code>.</li><li>Run <code>hdrctl run jobs/job1</code>.</li></ol>
+    <pre class="cmd">hdrctl validate jobs/job1
+hdrctl run jobs/job1</pre>
+    <p><code>validate</code> checks each file and resolves <code>pipeline.from</code> and <code>pipeline.to</code> against the ids. The run reads three rows and writes two: the row with a negative <code>value</code> is filtered out. The result is <code>jobs/job1/data/output.csv</code>.</p>
+    <div class="expect"><b>What you should see</b><p><code>DSL valid</code>, then <code>Pipeline completed successfully</code> with 3 rows read and 2 written.</p><pre class="out">ok  sources.yaml                         — Pydantic valid
+ok  destinations.yaml                    — Pydantic valid
+ok  transformations.yaml                 — Pydantic valid
+ok  pipeline.from                        — resolved: src_csv
+ok  pipeline.to                          — resolved: dest_csv
+DSL valid — no errors detected.
+
+Pipeline completed successfully in 3.0s
+Rows read   : 3
+Rows written: 2</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Break it on purpose</h3>
+    <h4>Objective</h4><p>Read the errors you will meet.</p>
+    <h4>Actions</h4><ol><li>Move <code>transformations.yaml</code> out of the folder and run the job again.</li><li>Put it back. In <code>pipeline.yaml</code>, change <code>src_csv</code> to <code>src_missing</code> and validate.</li><li>Restore it. Move <code>destinations.yaml</code> away and validate.</li></ol>
+    <pre class="cmd">hdrctl validate jobs/job1</pre>
+    <p>Without <code>transformations.yaml</code> the job still runs and writes all three rows. A pipeline that names an unknown id is reported with the file where Hydra looked. A missing <code>destinations.yaml</code> gives two errors: the file is missing, and <code>pipeline.to</code> cannot be resolved.</p>
+    <div class="expect"><b>What you should see</b><p><code>1 error(s) detected</code> for the unknown source, <code>2 error(s) detected</code> for the missing destinations file.</p><pre class="out">err pipeline.from='src_missing' not found in sources.yaml
+1 error(s) detected.
+
+err destinations.yaml — MISSING
+err pipeline.to='dest_csv' not found in destinations.yaml
+2 error(s) detected.</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Read <code>pipeline.yaml</code> first. It is two lines and shows which source feeds which destination.</p>
+  <p data-kind="TIP">Run <code>hdrctl validate</code> after each edit. It costs nothing and reports the file and the id at fault.</p>
+  <p data-kind="TRAP">Do not leave an old <code>transformations.yaml</code> in a job folder. In our test it was applied even though <code>pipeline.yaml</code> did not mention it.</p>
+  <p data-kind="TRAP">Ids are free text. If you rename <code>src_csv</code> in <code>sources.yaml</code>, change <code>pipeline.from</code> too.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Files</td><td>sources, transformations, destinations, pipeline</td></tr><tr><td>Link</td><td>pipeline.from and pipeline.to name ids</td></tr><tr><td>Optional</td><td>transformations.yaml only</td></tr><tr><td>Check</td><td>hdrctl validate jobs/job1</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>destinations.yaml MISSING</td><td>The file is not in the job folder</td><td>Restore it or recreate the job</td></tr><tr><td>pipeline.from not found</td><td>The id is not declared in sources.yaml</td><td>Align the id in both files</td></tr><tr><td>Rows read equals rows written</td><td>No transformations.yaml in the folder</td><td>Check the file name and place</td></tr><tr><td>Not a job folder</td><td>The command ran from the wrong folder</td><td>Pass the job folder to the command</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What files make up a Hydra job?</h3>
+  <p>A job is a folder with four YAML manifests: sources.yaml, transformations.yaml, destinations.yaml and pipeline.yaml. In the project created by hdrctl init 0.22 the folder is jobs/job1, and it also holds a README.md and a data folder with a sample input.csv.</p>
+  <h3>Which manifest is optional?</h3>
+  <p>transformations.yaml. In our test a job without it validated and ran, and wrote all 3 rows read, where the job with it wrote 2. We removed destinations.yaml in a test and validate reported it as MISSING; we did not test removing the other files.</p>
+  <h3>How does pipeline.yaml connect the other files?</h3>
+  <p>Through ids. pipeline.from names a source declared in sources.yaml, and pipeline.to names a destination declared in destinations.yaml. validate reports an id that is not found and tells you in which file it looked.</p>
+  <h3>Where are the paths in a job resolved from?</h3>
+  <p>In the generated job, the source reads data/input.csv and the destination writes data/output.csv. After a run, output.csv appeared in jobs/job1/data, next to input.csv, so these relative paths start from the job folder.</p>
+  <h3>How do I check a job without running it?</h3>
+  <p>Run hdrctl validate jobs/job1. It checks that each file is present and valid and that pipeline.from and pipeline.to resolve. hdrctl run . --dry-run validates the whole project and runs nothing.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/05-add-a-source">Create a job, then give it a source</a></li><li><a href="/studio/08-see-the-yaml">Read the manifests Studio generates</a></li><li><a href="/studio/09-reach-valid">Resolve what the validity badge reports</a></li></ul>
+
+  <h2>Next lesson</h2><p>A job is four files and two ids. Next, see how Studio writes them from the canvas.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/08-see-the-yaml">See the YAML <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

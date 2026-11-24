@@ -1,0 +1,61 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "fallback-demo": "orders-fallback-demo"
+  },
+  "shots": [
+    {
+      "name": "run-project-fallback-badge",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Run project"
+        },
+        {
+          "wait_ms": 10000
+        },
+        {
+          "goto": "/runs"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "a[href*='/runs/']"
+        },
+        {
+          "wait_ms": 2500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The run detail page where wf_load_backup ran in place of wf_load with a fallback badge."
+    }
+  ]
+}

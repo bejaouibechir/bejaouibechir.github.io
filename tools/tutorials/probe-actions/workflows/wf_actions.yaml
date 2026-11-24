@@ -1,0 +1,25 @@
+version: "1.0"
+workflow:
+  name: wf_actions
+  trigger:
+    type: manual
+  steps:
+    - name: say_hello
+      type: action
+      action: log
+      params:
+        message: "Hello from the log action"
+    - name: run_python
+      type: action
+      action: python
+      params:
+        script: |
+          import sys
+          print("Python", sys.version.split()[0])
+      depends_on: [say_hello]
+    - name: run_powershell
+      type: action
+      action: powershell
+      params:
+        command: Write-Output "Hello from PowerShell"
+      depends_on: [run_python]

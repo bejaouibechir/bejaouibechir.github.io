@@ -1,0 +1,164 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "error-scope-dropped-canvas",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "drag": "Error Scope",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The workflow canvas with an Error Scope container just dropped from the palette."
+    },
+    {
+      "name": "error-scope-settings-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "drag": "Error Scope",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "dblclick_last_node": 1
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Error Scope container selected, with its On child failure setting."
+    },
+    {
+      "name": "retry-scope-settings-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "drag": "Retry Scope",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "dblclick_last_node": 1
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Retry Scope container selected, with its retry settings."
+    },
+    {
+      "name": "sequence-container-dropped-canvas",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "drag": "Sequence Container",
+          "x": 330,
+          "y": 110
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The workflow canvas with a Sequence Container just dropped from the palette."
+    }
+  ]
+}

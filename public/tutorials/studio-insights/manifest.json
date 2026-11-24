@@ -1,0 +1,14 @@
+[
+  {
+    "file": "insights-run-counters-and-average-light.png",
+    "name": "insights-run-counters-and-average",
+    "theme": "light",
+    "alt": "The Insights page of Hydra Studio in the light theme: four counters for total, successful, failed and running runs, and a card with the average duration in seconds."
+  },
+  {
+    "file": "insights-runs-list-same-numbers-dark.png",
+    "name": "insights-runs-list-same-numbers",
+    "theme": "dark",
+    "alt": "The Runs page of Hydra Studio in the dark theme, listing the executions whose statuses and durations feed the Insights counters."
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "run-workflow-parameter-log-expanded",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Run Workflow"
+        },
+        {
+          "wait_ms": 8000
+        },
+        {
+          "goto": "/runs"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "a[href*='/runs/']"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_last_text": "set_region"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "click_last_text": "switch_region"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The run detail page of parameters-workflow with the set_region and switch_region steps expanded, showing the parameter created as north and then reassigned to south."
+    }
+  ]
+}

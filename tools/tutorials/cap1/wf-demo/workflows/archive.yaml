@@ -1,0 +1,7 @@
+version: "1.0"
+workflow:
+  name: archive
+  description: ""
+  trigger:
+    type: manual
+  steps: []

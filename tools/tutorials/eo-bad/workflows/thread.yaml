@@ -1,0 +1,16 @@
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+      - name: ghost
+  - mode: parallel
+    workflows:
+      - name: load_sales
+        fallback:
+          use: [backup]
+          on_failure: true
+      - name: load_stock
+  - mode: sequential
+    workflows:
+      - name: report

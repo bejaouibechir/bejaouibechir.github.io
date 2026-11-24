@@ -1,0 +1,3 @@
+pipeline:
+  from: src_t_unpivot
+  to: dest_csv

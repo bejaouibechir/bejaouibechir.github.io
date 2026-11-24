@@ -1,0 +1,119 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "fallback-demo": "orders-fallback-demo"
+  },
+  "shots": [
+    {
+      "name": "workflow-timeout-field-filled",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "fill": "[aria-label='wf_conflict timeout']",
+          "value": "5s"
+        },
+        {
+          "wait_ms": 700
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Execution order panel with the max field of wf_conflict set to 5s."
+    },
+    {
+      "name": "run-timeout-failed-detail",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "fill": "[aria-label='wf_conflict timeout']",
+          "value": "5s"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "click": "[data-testid=thread-editor] button:has-text('Save')"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Back to the project"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Run project"
+        },
+        {
+          "wait_ms": 42000
+        },
+        {
+          "goto": "/runs"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "a[href*='/runs/']"
+        },
+        {
+          "wait_ms": 2500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The run detail page of a project whose workflow wf_conflict failed after exceeding its 5 second timeout."
+    }
+  ]
+}

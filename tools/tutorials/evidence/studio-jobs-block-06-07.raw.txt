@@ -1,0 +1,126 @@
+wrote C:\Users\DELL\hydra-workspace\jobs-evidence\jobs\first-job\data\orders.csv
+== A. nominal job
+$ hdrctl validate jobs/first-job -> exit 0
+   ? DSL Validation  first-job
+   
+   ok  pipeline.yaml                        � present
+   ok  sources.yaml                         � present
+   ok  sources.yaml                         � Pydantic valid
+   ok  destinations.yaml                    � present
+   ok  destinations.yaml                    � Pydantic valid
+   ok  transformations.yaml                 � present
+   ok  transformations.yaml                 � Pydantic valid
+   ok  pipeline.from                        � resolved: src_orders
+   ok  pipeline.to                          � resolved: dest_paid
+   
+   
+   ? DSL valid � no errors detected.
+$ hdrctl run jobs/first-job -> exit 0
+   | |_| |   \ V /   | | | |  | |_) |   / _ \
+   |  _  |    | |    | |_| |  |  _ <   / ___ \
+   |_| |_|    |_|    |____/   |_| \_\ /_/   \_\
+   
+   DevOps Edition  v0.22.0  ----------------------------
+   
+   
+   ?  Pipeline  first-job  � jobs/first-job
+   
+   
+   
+   ? Pipeline completed successfully in 10.3s
+   Rows read   : 20
+   Rows written: 14
+rows written: 14
+== B. a second destination declared, pipeline keeps one `to`
+$ hdrctl validate jobs/first-job -> exit 0
+   ? DSL Validation  first-job
+   
+   ok  pipeline.yaml                        � present
+   ok  sources.yaml                         � present
+   ok  sources.yaml                         � Pydantic valid
+   ok  destinations.yaml                    � present
+   ok  destinations.yaml                    � Pydantic valid
+   ok  transformations.yaml                 � present
+   ok  transformations.yaml                 � Pydantic valid
+   ok  pipeline.from                        � resolved: src_orders
+   ok  pipeline.to                          � resolved: dest_paid
+   
+   
+   ? DSL valid � no errors detected.
+$ hdrctl run jobs/first-job --dry-run -> exit 0
+   
+   ok  sources.yaml                         � present
+   ok  destinations.yaml                    � present
+   ok  pipeline.yaml                        � present
+   ok  transformations.yaml                 � present
+   
+   ok  sources.yaml                         � DSL valid
+   ok  destinations.yaml                    � DSL valid
+   ok  transformations.yaml                 � DSL valid
+   ok  pipeline.from                        � resolved: src_orders
+   ok  pipeline.to                          � resolved: dest_paid
+   
+   ? Dry-run complete � everything is valid. Ready to execute.
+   Run: hdrctl run jobs/first-job
+== C. pipeline lists two destinations
+$ hdrctl validate jobs/first-job -> exit 1
+   
+   ok  pipeline.yaml                        � present
+   ok  sources.yaml                         � present
+   ok  sources.yaml                         � Pydantic valid
+   ok  destinations.yaml                    � present
+   ok  destinations.yaml                    � Pydantic valid
+   ok  transformations.yaml                 � present
+   ok  transformations.yaml                 � Pydantic valid
+   ok  pipeline.from                        � resolved: src_orders
+   
+   err pipeline.yaml: to � Input should be a valid string
+   err pipeline.to is missing or empty
+   
+   ? 2 error(s) detected.
+$ hdrctl run jobs/first-job --dry-run -> exit 1
+   ok  sources.yaml                         � present
+   ok  destinations.yaml                    � present
+   ok  pipeline.yaml                        � present
+   ok  transformations.yaml                 � present
+   
+   ok  sources.yaml                         � DSL valid
+   ok  destinations.yaml                    � DSL valid
+   ok  transformations.yaml                 � DSL valid
+   ok  pipeline.from                        � resolved: src_orders
+   
+   err pipeline.yaml: to � Input should be a valid string
+   err pipeline.to is missing or empty
+   
+   ? Dry-run failed � validation errors detected. Fix them before running.
+== D. filter before select on a dropped column
+$ hdrctl validate jobs/first-job -> exit 0
+   ? DSL Validation  first-job
+   
+   ok  pipeline.yaml                        � present
+   ok  sources.yaml                         � present
+   ok  sources.yaml                         � Pydantic valid
+   ok  destinations.yaml                    � present
+   ok  destinations.yaml                    � Pydantic valid
+   ok  transformations.yaml                 � present
+   ok  transformations.yaml                 � Pydantic valid
+   ok  pipeline.from                        � resolved: src_orders
+   ok  pipeline.to                          � resolved: dest_paid
+   
+   
+   ? DSL valid � no errors detected.
+$ hdrctl run jobs/first-job -> exit 1
+   DevOps Edition  v0.22.0  ----------------------------
+   
+   
+   ?  Pipeline  first-job  � jobs/first-job
+   
+   
+   
+   Cause:
+   ValueError: Step 2/2: filter: invalid expression 'status == 'paid''. Error: name 'status' is not defined
+   
+   Hint: re-run with -v for more details
+   Job 'first-job' failed: ValueError: Step 2/2: filter: invalid expression 'status == 'paid''. Error: name 'status' is not defined
+   
+   ? Pipeline FAILED in 2.9s

@@ -1,0 +1,32 @@
+[
+  {
+    "file": "new-job-tab-created-dark.png",
+    "name": "new-job-tab-created",
+    "theme": "dark",
+    "alt": "The plus button pressed: a new job1 tab at the bottom and an empty canvas with 0 nodes."
+  },
+  {
+    "file": "job-tab-options-menu-light.png",
+    "name": "job-tab-options-menu",
+    "theme": "light",
+    "alt": "The options menu of a job tab with Rename, Archive and Delete."
+  },
+  {
+    "file": "job-tab-rename-input-dark.png",
+    "name": "job-tab-rename-input",
+    "theme": "dark",
+    "alt": "The job tab in rename mode, with the new name first-job typed in."
+  },
+  {
+    "file": "first-job-tab-renamed-light.png",
+    "name": "first-job-tab-renamed",
+    "theme": "light",
+    "alt": "The job tab and the breadcrumb now read first-job."
+  },
+  {
+    "file": "workflow-palette-jobs-listed-dark.png",
+    "name": "workflow-palette-jobs-listed",
+    "theme": "dark",
+    "alt": "The workflow palette listing first-job under Jobs."
+  }
+]

@@ -1,0 +1,281 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "fallback-demo": "orders-fallback-demo"
+  },
+  "shots": [
+    {
+      "name": "execution-order-before-fallback",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Execution order panel of Project settings with wf_load alone in Stage 1 and the lifebuoy button on its row."
+    },
+    {
+      "name": "fallback-editor-open",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor opened under wf_load, with the replacement list still empty."
+    },
+    {
+      "name": "fallback-condition-valid",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "select_option": "select[aria-label='Add a fallback for wf_load']",
+          "value": "wf_load_backup"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "fill": "[aria-label='wf_load fallback condition']",
+          "value": "not file_exists('Data/orders.csv')"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor for wf_load with wf_load_backup as replacement and the condition not file_exists('Data/orders.csv') marked valid."
+    },
+    {
+      "name": "fallback-preview-tab",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "select_option": "select[aria-label='Add a fallback for wf_load']",
+          "value": "wf_load_backup"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "fill": "[aria-label='wf_load fallback condition']",
+          "value": "not file_exists('Data/orders.csv')"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "[data-testid=thread-editor] button:has-text('Preview')"
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Preview tab drawing wf_load with a dashed fallback block for wf_load_backup and the condition on the link."
+    },
+    {
+      "name": "fallback-check-ready",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "select_option": "select[aria-label='Add a fallback for wf_load']",
+          "value": "wf_load_backup"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "fill": "[aria-label='wf_load fallback condition']",
+          "value": "not file_exists('Data/orders.csv')"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "[data-testid=thread-editor] button:has-text('Save')"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "[data-testid=thread-editor] button:has-text('Check')"
+        },
+        {
+          "wait_ms": 3000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Check result of the Execution order panel after saving the fallback."
+    },
+    {
+      "name": "run-project-fallback-badge",
+      "path": "/projects/374d37b5",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Run project"
+        },
+        {
+          "wait_ms": 9000
+        },
+        {
+          "goto": "/runs"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "a[href*='/runs/']"
+        },
+        {
+          "wait_ms": 2500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The run detail page where wf_load_backup ran in place of wf_load with a fallback badge."
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "base_url": "http://127.0.0.1:5679",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "overview-page-start-actions",
+      "path": "/overview",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Overview page with the project list and the start actions, beside the expanded sidebar.",
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 700
+      }
+    },
+    {
+      "name": "runs-page-run-history",
+      "path": "/runs",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Runs page listing past runs."
+    },
+    {
+      "name": "templates-page-job-templates",
+      "path": "/templates",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Templates page, listing the job templates Studio offers."
+    },
+    {
+      "name": "insights-page-run-counters",
+      "path": "/insights",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Insights page with run counters and the average duration."
+    },
+    {
+      "name": "settings-page-global-settings",
+      "path": "/settings",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Settings page, opened from the bottom of the sidebar."
+    },
+    {
+      "name": "help-page-studio-help",
+      "path": "/help",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The Help page, which holds a single card reading that help is coming in a future sprint.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "name": "sidebar-expanded-five-entries",
+      "path": "/overview",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "alt": "The expanded sidebar: Overview, Runs, Templates, Insights, then Settings and Help at the bottom.",
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 260,
+        "height": 640
+      }
+    },
+    {
+      "name": "sidebar-collapsed-icons-only",
+      "path": "/overview",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "aside"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[title='Collapse sidebar']"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "alt": "The collapsed sidebar, reduced to icons.",
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 260,
+        "height": 640
+      }
+    }
+  ]
+}

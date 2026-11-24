@@ -1,0 +1,26 @@
+[
+  {
+    "file": "condition-assistant-insert-row-light.png",
+    "name": "condition-assistant-insert-row",
+    "theme": "light",
+    "alt": "The fallback editor of wf_load with the assistant row open on the file_size function."
+  },
+  {
+    "file": "condition-error-message-red-dark.png",
+    "name": "condition-error-message-red",
+    "theme": "dark",
+    "alt": "The fallback editor of wf_load with the condition file_exist marked with a red cross and an error message."
+  },
+  {
+    "file": "on-probe-error-replace-menu-light.png",
+    "name": "on-probe-error-replace-menu",
+    "theme": "light",
+    "alt": "The fallback editor of wf_archive with the if a check cannot answer list set to use the fallback."
+  },
+  {
+    "file": "on-failure-checkbox-wf-report-dark.png",
+    "name": "on-failure-checkbox-wf-report",
+    "theme": "dark",
+    "alt": "The fallback editor of wf_report with the also after a failure box checked."
+  }
+]

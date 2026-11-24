@@ -1,0 +1,93 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 43</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 43 of 65 · Rollback</div><h1>Roll back a failed workflow in Hydra ETL Studio</h1><p class="lead">When step three of three fails, steps one and two have already changed things. Rollback puts them back, last step first.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">Workflow toolbar → Rollback</span><span>about 20 minutes</span><span>the resilience-demo project</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>Turn on <b>Rollback</b> in the workflow toolbar, or write <code>rollback: true</code> in the workflow file. If a step fails, Hydra ETL undoes the finished steps, the last one first. Jobs are undone automatically; an action must say how it is undone.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Turn rollback on, give an action its undo, make the last step fail and check that the files are back in their previous state. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>resilience-demo</code> project with <code>wf_report</code>: <code>build_report</code> (a job that replaces <code>outputs/report.csv</code>), <code>share</code> (a python action that copies the report to <code>outputs/share</code>, with an undo that deletes the copy) and <code>finalize</code> (a job that fails because <code>Data/finalize.csv</code> is missing).</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I roll back a failed workflow in Hydra ETL?</h2>
+<div class="step">
+  <h3><i>01</i>Turn rollback on</h3>
+  <h4>Objective</h4><p>Switch the protection on for one workflow.</p>
+  <h4>Actions</h4><ol><li>Open the workflow <code>wf_report</code> in the editor.</li><li>Select <b>Rollback</b> in the toolbar until it reads <b>Rollback on</b>.</li></ol>
+  <pre class="cmd">rollback: true</pre>
+  <p>The button saves the workflow when you select it. Its tooltip says what it does: if the workflow fails, undo the steps already done, the last one first; jobs automatically, actions with their <b>Undo</b> setting.</p>
+  <div class="expect"><b>What you should see</b><p>A highlighted button reading <b>Rollback on</b>.</p>
+      <figure class="shot"><img src="/tutorials/studio-roll-back-a-failed-workflow/workflow-rollback-toolbar-on-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The workflow editor of wf_report with the Rollback button on in the toolbar." /><figcaption>Rollback is one button in the workflow toolbar.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Give an action its undo</h3>
+  <h4>Objective</h4><p>Say how to reverse the action that copies the report.</p>
+  <h4>Actions</h4><ol><li>Double-click the <code>share</code> node.</li><li>Find the <b>Undo (if the workflow rolls back)</b> section.</li><li>Read the action chosen there.</li></ol>
+  <pre class="cmd">undo: python</pre>
+  <p>The <code>share</code> action copies the report into <code>outputs/share</code>. Its undo is a second python action that deletes the copy. Hydra ETL runs it only if a later step fails.</p>
+  <div class="expect"><b>What you should see</b><p>A <b>Run an action: python</b> choice, with the script that removes the copy.</p>
+      <figure class="shot"><img src="/tutorials/studio-roll-back-a-failed-workflow/undo-editor-share-dialog-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The dialog of the share action with the Undo section set to run a python action." /><figcaption>The undo is configured next to the action it reverses.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Make the last step fail</h3>
+  <h4>Objective</h4><p>Provoke the failure that triggers the rollback.</p>
+  <h4>Actions</h4><ol><li>Rename <code>Data/finalize.csv</code> so that the job cannot read it.</li><li>Run the workflow.</li></ol>
+  <pre class="cmd">hdrctl workflow run wf_report</pre>
+  <p><code>build_report</code> and <code>share</code> succeed. <code>finalize</code> fails. Hydra ETL then undoes <code>share</code>, and <code>build_report</code>, in that order.</p>
+  <div class="expect"><b>What you should see</b><p>Two checkmarks, a failure, two undo lines, and a failed workflow marked <b>changes undone</b>.</p><pre class="out">✓  Step 'build_report' OK (&lt;duration&gt;)
+✓  Step 'share' OK (&lt;duration&gt;)
+✗  Step 'finalize' FAILED: ValueError: CSVConnector [src]: source file not found.
+↩  Step 'share' undone
+↩  Step 'build_report' undone
+❌ Workflow 'wf_report' FAILED in &lt;duration&gt; — Step 'finalize' failed: ValueError: CSVConnector [src]: source file not found. … (changes undone)</pre>
+      <figure class="shot"><img src="/tutorials/studio-roll-back-a-failed-workflow/terminal-rollback-failed-run-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Studio terminal after a failed run of wf_report, with the two undone steps." /><figcaption>The steps are undone in reverse order.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Check that everything is back</h3>
+  <h4>Objective</h4><p>Verify the state instead of trusting the log.</p>
+  <h4>Actions</h4><ol><li>List <code>outputs/share</code>.</li><li>Open <code>outputs/report.csv</code>.</li></ol>
+  <pre class="cmd">Get-ChildItem outputs\share</pre>
+  <p>The shared copy is gone, and the report holds what it held before the run. The temporary backup that the job used is removed.</p>
+  <div class="expect"><b>What you should see</b><p>An empty <code>outputs/share</code> folder and a report identical to the one before the run.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Read rollback in the workflow file</h3>
+  <h4>Objective</h4><p>See the same setting as text.</p>
+  <h4>Actions</h4><ol><li>Open <b>Hydra DSL</b> or the file <code>workflows/wf_report.yaml</code>.</li></ol>
+  <pre class="cmd">rollback: true</pre>
+  <p>The setting is one line at the level of the workflow, next to <code>trigger</code>. The action carries its own <code>undo</code>:</p><pre class="out">workflow:
+  name: wf_report
+  rollback: true
+  steps:
+    - name: share
+      type: action
+      action: python
+      params:
+        script: …
+      undo:
+        action: python
+        params:
+          script: import os; os.remove('outputs/share/report.csv')</pre>
+  <div class="expect"><b>What you should see</b><p>A <code>rollback: true</code> line and an <code>undo</code> block under the action.</p>
+
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Run <code>hdrctl workflow validate</code> after turning rollback on: it lists every action that has no undo.</p><p data-kind="TIP">Rollback and a fallback work together: after a rollback, <code>on_failure: true</code> can start a backup, as in lesson 47.</p><p data-kind="TRAP">Rollback undoes what Hydra ETL did. It cannot undo a side effect you did not declare, such as a message already sent.</p><p data-kind="TRAP">The failed step is not undone, only the steps finished before it.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Toolbar</td><td>The button reads <b>Rollback on</b></td></tr><tr><td>Run</td><td><code>✗ Step 'finalize' FAILED</code> followed by two <code>↩ … undone</code> lines</td></tr><tr><td>Report</td><td><code>outputs/report.csv</code> has its previous content</td></tr><tr><td>Share</td><td><code>outputs/share</code> no longer holds a copy</td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The button reads <b>Rollback off</b></td><td>The workflow has no <code>rollback: true</code></td><td>Select the button, it saves the workflow</td></tr><tr><td>Validation refuses the workflow</td><td>An action has no undo</td><td>Open the action and set its <b>Undo</b>, see the next lesson</td></tr><tr><td>The failed step is not undone</td><td>Only the steps finished before it are undone</td><td>Make the failing step safe to retry instead</td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>What does rollback do in Hydra ETL?</h3><p>When a step of the workflow fails, Hydra ETL undoes the steps already finished, the last one first. The workflow is then reported as failed with the mention that its changes were undone.</p><h3>Are jobs undone automatically?</h3><p>Yes. In our test, build_report restored the previous report file. A job that writes a file keeps a backup of the previous version, and rollback puts it back.</p><h3>What about actions?</h3><p>An action acts outside Hydra ETL, so Hydra ETL cannot guess how to reverse it. With rollback on, each action must declare an undo, or undo: none. The next lesson shows how.</p><h3>Does rollback run when a step succeeds?</h3><p>No. It runs when a step fails, and it undoes the steps that had finished before.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/all-or-nothing-load">All-or-nothing loads</a></li><li><a href="/studio/declare-undo-actions">Declare the undo of an action</a></li><li><a href="/studio/resolve-conflicts-and-recover">Resolve conflicts and recover</a></li><li><a href="/studio/declare-a-fallback-workflow">Declare a fallback workflow</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+<h2>Next lesson</h2><p>The next lesson explains how to tell Hydra ETL how an action is undone, and what the validation says when you forget.</p>
+<div class="lesson-nav"><a class="primary" href="/studio/declare-undo-actions">Declare the undo of an action <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

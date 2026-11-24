@@ -1,0 +1,175 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "palette-transformations-expanded",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Transformations"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The job palette with the Transformations category expanded."
+    },
+    {
+      "name": "palette-destinations-expanded",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Destinations"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The job palette with the Destinations category expanded."
+    },
+    {
+      "name": "dialog-select-node-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "dblclick_node": 1
+        },
+        {
+          "wait_ms": 1200
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Select dialog of first-job."
+    },
+    {
+      "name": "dialog-filter-node-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "dblclick_node": 2
+        },
+        {
+          "wait_ms": 1200
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Filter dialog of first-job."
+    },
+    {
+      "name": "dialog-csv-destination-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "dblclick_node": 3
+        },
+        {
+          "wait_ms": 1200
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The CSV destination dialog of first-job."
+    },
+    {
+      "name": "canvas-first-job-chain",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 300
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The canvas of first-job: source, select, filter and destination."
+    }
+  ]
+}

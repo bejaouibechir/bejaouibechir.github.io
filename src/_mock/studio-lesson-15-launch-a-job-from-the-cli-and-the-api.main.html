@@ -1,0 +1,108 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 15</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 15 of 65 · Other launches</div><h1>Launch a Hydra job from the CLI and the API</h1><p class="lead">Run the same job without Studio: from the command line for one job or a whole project, and from the API with one POST request.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl run</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl run jobs/job1</code> runs one job. <code>hdrctl run .</code> runs a whole project, and <code>POST /api/runs</code> starts the same project through the API of <code>hdrctl serve</code>. The engine underneath is the same.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Run a job and a project from the command line, then start the project from the API and read the run back.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and the project built in <a href="/studio/anatomy-of-a-job">Anatomy of a job</a> (a folder created by <code>hdrctl init</code>). See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I launch a job without Studio?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Run one job</h3>
+    <h4>Objective</h4><p>Launch a job folder from the command line.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the project folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run jobs\job1</pre>
+    <p>The command runs the job alone: its source, its transformations and its destination. The workflow and the thread are not involved.</p>
+    <div class="expect"><b>What you should see</b><p><code>Pipeline completed successfully</code> with the rows read and written.</p><pre class="out">Pipeline  job1 — jobs\job1
+Pipeline completed successfully in 2.3s
+Rows read   : 3
+Rows written: 2</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Run the whole project</h3>
+    <h4>Objective</h4><p>Launch every workflow of the thread.</p>
+    <h4>Actions</h4><ol><li>Run the command below from the project folder.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>A project is a folder that holds <code>.hydra</code>. <code>hdrctl run .</code> runs its workflows in the order of <code>workflows/thread.yaml</code>. This project has one workflow, <code>workflow1</code>, which runs <code>job1</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A stage line, one workflow line and <code>Project ... completed</code> with <code>1/1 workflow(s) OK</code>.</p><pre class="out">Project launch-demo — 1 workflow(s) in 1 stage(s)
+Stage 1/1 — sequential
+Workflow  workflow1
+Workflow 'workflow1' OK (1.6s)
+Project 'launch-demo' completed in 1.6s — 1/1 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Start the API server</h3>
+    <h4>Objective</h4><p>Serve the API that Studio itself uses.</p>
+    <h4>Actions</h4><ol><li>Open a second terminal.</li><li>Run the command below and leave it open.</li><li>Check the server from the first terminal with <code>curl.exe http://127.0.0.1:5678/api/health</code>.</li></ol>
+    <pre class="cmd">hdrctl serve</pre>
+    <p>The server listens on port 5678 by default. The health answer gives the version of the engine.</p>
+    <div class="expect"><b>What you should see</b><p>A JSON answer with <code>"status":"ok"</code> and <code>"version":"0.22.0"</code>.</p><pre class="out">{"message":"Hydra ETL API is running","status":"ok","version":"0.22.0","dsl_version":"1.0",...}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Start a run with a POST</h3>
+    <h4>Objective</h4><p>Send the project to the engine.</p>
+    <h4>Actions</h4><ol><li>Create a file <code>run.json</code> that holds the path of the project folder, with doubled backslashes.</li><li>Run the <code>curl.exe</code> command below from the first terminal.</li></ol>
+    <pre class="cmd">run.json:
+{"workflow_path": "C:\\Users\\you\\launch-demo"}
+
+curl.exe -s -i -X POST -H "Content-Type: application/json" -d @run.json http://127.0.0.1:5678/api/runs</pre>
+    <p>The server answers <code>202 Accepted</code> at once, without waiting for the end of the run. The body gives a <code>run_id</code>, which is different on each call, and the status <code>pending</code>. Because the path is a project folder, the run is named <code>project:</code> followed by the folder name.</p>
+    <div class="expect"><b>What you should see</b><p><code>HTTP/1.1 202 Accepted</code> and a JSON body with <code>"status":"pending"</code>.</p><pre class="out">HTTP/1.1 202 Accepted
+{"run_id":"692f87f4","workflow_name":"project:launch-demo",...,"status":"pending",...,"trigger":"manual"}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the run</h3>
+    <h4>Objective</h4><p>Follow the run to its end.</p>
+    <h4>Actions</h4><ol><li>Wait a few seconds.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">curl.exe -s http://127.0.0.1:5678/api/runs</pre>
+    <p>The list holds one entry per run, with its status, its duration and one item per step. In our test the run was <code>success</code> after 0.6 seconds, with one step, <code>workflow1</code>, and the log line <code>OK job1</code>. <code>output.csv</code> was written in <code>jobs/job1/data</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A run with <code>"status":"success"</code> and one step.</p><pre class="out">[{"run_id":"692f87f4","workflow_name":"project:launch-demo","status":"success","duration":0.62,...,"steps":[{"step_name":"workflow1","success":true,...,"logs":["OK job1"]}],"trigger":"manual"}]</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use <code>hdrctl run jobs/job1</code> while you write a job, and <code>hdrctl run .</code> when the thread matters.</p>
+  <p data-kind="TIP">Add <code>--dry-run</code> to <code>hdrctl run .</code> to validate the project without running anything.</p>
+  <p data-kind="TRAP">In our test the run list of a freshly started server was empty, although two command-line runs had completed before. Runs started from the terminal were not in it. Start a run from the API or from Studio to see it listed.</p>
+  <p data-kind="TRAP">A run is not saved on disk by the server: the list is lost when <code>hdrctl serve</code> stops, so read a run before you close the server.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>One job</td><td>hdrctl run jobs/job1</td></tr><tr><td>Project</td><td>hdrctl run .</td></tr><tr><td>API</td><td>POST /api/runs with workflow_path</td></tr><tr><td>Read</td><td>GET /api/runs</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Path not found (404)</td><td>workflow_path does not exist</td><td>Check the path and the doubled backslashes</td></tr><tr><td>The list is empty</td><td>The run was started outside this server</td><td>Start it with the POST</td></tr><tr><td>Status stays pending</td><td>The run has not finished</td><td>Wait, then read the list again</td></tr><tr><td>Connection refused</td><td>hdrctl serve is not running</td><td>Start the server and check the port</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I run a Hydra job without Studio?</h3>
+  <p>Run hdrctl run <job folder>, for example hdrctl run jobs/job1. It runs that one job and prints the rows read and written.</p>
+  <h3>What is the difference between running a job and running a project?</h3>
+  <p>hdrctl run on a job folder runs that job only. hdrctl run on a project folder, a folder with .hydra, runs the workflows of workflows/thread.yaml in order. In our test the project run took 1.6 seconds and reported 1/1 workflow(s) OK.</p>
+  <h3>How do I start a run from the API?</h3>
+  <p>Start hdrctl serve, then send POST /api/runs with a JSON body that holds workflow_path, the path of a workflow file or a project folder. The server answers 202 Accepted with a run_id and the status pending, and the run goes on in the background.</p>
+  <h3>How do I read the result of an API run?</h3>
+  <p>Call GET /api/runs. Each run lists its status, its duration and its steps. In our test the run went from pending to success in under a second.</p>
+  <h3>Can an AI assistant launch a job?</h3>
+  <p>Hydra ETL ships an MCP server with a hydra_run_job tool. According to its source, it runs hdrctl run on the job folder and returns the log. We did not test it here: the MCP server has its own lesson.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/10-run-the-job">Four ways to run, one engine underneath</a></li><li><a href="/studio/11-review-a-run">Find a past execution and its result</a></li><li><a href="/studio/anatomy-of-a-job">What a Hydra job is made of</a></li></ul>
+
+  <h2>Next lesson</h2><p>One engine, three doors: the terminal, the API and, later, an assistant. Next, review what a run produced.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review a run <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

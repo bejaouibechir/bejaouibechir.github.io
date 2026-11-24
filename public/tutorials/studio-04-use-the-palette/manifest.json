@@ -1,0 +1,98 @@
+[
+  {
+    "file": "palette-workflow-categories-collapsed-light.png",
+    "name": "palette-workflow-categories-collapsed",
+    "theme": "light",
+    "alt": "The workflow palette with all categories collapsed: Actions, Control Flow, Containers and Jobs."
+  },
+  {
+    "file": "palette-job-categories-collapsed-dark.png",
+    "name": "palette-job-categories-collapsed",
+    "theme": "dark",
+    "alt": "The job palette with all categories collapsed: Sources, Transformations, Destinations and Containers."
+  },
+  {
+    "file": "dialog-log-action-open-light.png",
+    "name": "dialog-log-action-open",
+    "theme": "light",
+    "alt": "The Log action dialog, which writes a message to the run logs."
+  },
+  {
+    "file": "dialog-webhook-action-open-dark.png",
+    "name": "dialog-webhook-action-open",
+    "theme": "dark",
+    "alt": "The Webhook action dialog with a required URL and a method list."
+  },
+  {
+    "file": "dialog-email-action-open-light.png",
+    "name": "dialog-email-action-open",
+    "theme": "light",
+    "alt": "The Email action dialog with required recipient and subject fields and a body."
+  },
+  {
+    "file": "dialog-python-inline-open-dark.png",
+    "name": "dialog-python-inline-open",
+    "theme": "dark",
+    "alt": "The Python action dialog in Inline script mode with a code editor."
+  },
+  {
+    "file": "dialog-python-file-open-light.png",
+    "name": "dialog-python-file-open",
+    "theme": "light",
+    "alt": "The Python action dialog in .py file mode, with a file path and a working directory."
+  },
+  {
+    "file": "dialog-ssh-action-open-dark.png",
+    "name": "dialog-ssh-action-open",
+    "theme": "dark",
+    "alt": "The SSH action dialog requiring a host, a port that defaults to 22 and a user."
+  },
+  {
+    "file": "dialog-set-param-open-light.png",
+    "name": "dialog-set-param-open",
+    "theme": "light",
+    "alt": "The Set Param dialog, which creates a runtime parameter and fails if it already exists."
+  },
+  {
+    "file": "dialog-assign-param-open-dark.png",
+    "name": "dialog-assign-param-open",
+    "theme": "dark",
+    "alt": "The Assign Param dialog, which assigns a value to an existing runtime parameter."
+  },
+  {
+    "file": "palette-control-flow-expanded-light.png",
+    "name": "palette-control-flow-expanded",
+    "theme": "light",
+    "alt": "The Control Flow category expanded, showing Condition and Delay."
+  },
+  {
+    "file": "palette-containers-job-scene-dark.png",
+    "name": "palette-containers-job-scene",
+    "theme": "dark",
+    "alt": "The three containers offered in the job scene, below the collapsed Sources and Destinations."
+  },
+  {
+    "file": "palette-jobs-listed-workflow-light.png",
+    "name": "palette-jobs-listed-workflow",
+    "theme": "light",
+    "alt": "The Jobs category expanded in the workflow palette, listing first-job and second-job."
+  },
+  {
+    "file": "palette-transformations-end-of-list-dark.png",
+    "name": "palette-transformations-end-of-list",
+    "theme": "dark",
+    "alt": "The end of the transformation list: Pivot, Unpivot, Transpose, Merge, Union, Text to Rows, Window and Script."
+  },
+  {
+    "file": "dialog-script-transformation-open-light.png",
+    "name": "dialog-script-transformation-open",
+    "theme": "light",
+    "alt": "The Script transformation dialog with the execution mode and a Python code editor."
+  },
+  {
+    "file": "canvas-toolbar-pan-select-undo-dark.png",
+    "name": "canvas-toolbar-pan-select-undo",
+    "theme": "dark",
+    "alt": "The vertical canvas toolbar beside the palette: pan, select, undo, redo, minimap and terminal."
+  }
+]

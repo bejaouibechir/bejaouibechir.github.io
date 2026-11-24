@@ -1,0 +1,14 @@
+[
+  {
+    "file": "templates-csv-to-csv-yaml-open-light.png",
+    "name": "templates-csv-to-csv-yaml-open",
+    "theme": "light",
+    "alt": "The Templates page of Hydra Studio with the YAML of the CSV to CSV template expanded under its card."
+  },
+  {
+    "file": "templates-copy-yaml-button-dark-dark.png",
+    "name": "templates-copy-yaml-button-dark",
+    "theme": "dark",
+    "alt": "The three template cards of Hydra Studio, each with a View YAML button on the left and a Copy YAML button on the right."
+  }
+]

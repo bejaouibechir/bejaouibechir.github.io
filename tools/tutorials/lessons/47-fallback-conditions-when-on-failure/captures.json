@@ -1,0 +1,172 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "fallback-demo": "orders-fallback-demo"
+  },
+  "shots": [
+    {
+      "name": "condition-assistant-insert-row",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "select_option": "[aria-label='Condition function']",
+          "value": "file_size"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor of wf_load with the assistant row open on the file_size function."
+    },
+    {
+      "name": "condition-error-message-red",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_load fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "fill": "[aria-label='wf_load fallback condition']",
+          "value": "file_exist('Data/orders.csv')"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor of wf_load with the condition file_exist marked with a red cross and an error message."
+    },
+    {
+      "name": "on-probe-error-replace-menu",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_archive fallback']"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "select_option": "[aria-label='wf_archive on probe error']",
+          "value": "replace"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor of wf_archive with the if a check cannot answer list set to use the fallback."
+    },
+    {
+      "name": "on-failure-checkbox-wf-report",
+      "path": "/projects/6b44d0ff",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Project settings"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "button[aria-label='wf_report fallback']"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The fallback editor of wf_report with the also after a failure box checked."
+    }
+  ]
+}

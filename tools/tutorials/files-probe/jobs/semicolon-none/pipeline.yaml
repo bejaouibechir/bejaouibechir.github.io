@@ -1,0 +1,3 @@
+pipeline:
+  from: src_semicolon_none
+  to: dest_csv

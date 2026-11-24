@@ -1,0 +1,144 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 39</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 39 of 65 · Manage projects</div><h1>Manage the jobs and parameters of a Hydra project</h1><p class="lead">Add, attach and detach jobs in a workflow, and give a parameter a default value and a value per environment, all with hdrctl.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl job · hdrctl param</span><span>about 20 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl job</code> adds, attaches, detaches and lists the jobs of a project. <code>hdrctl param</code> declares parameters in <code>parameters.yaml</code> and gives them a value per environment. A job reads a parameter with <code>{{ param:NAME }}</code>.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Create a project, add a job to its workflow, move and detach it, then declare a parameter and run a job with two values of it.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. Create a project with <code>hdrctl init manage-demo</code> and open a terminal in it. See <a href="/studio/install-and-start">Install and start</a> and <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I manage the jobs and parameters of a project?</h2>
+
+  <div class="step">
+    <h3><i>01</i>List the jobs</h3>
+    <h4>Objective</h4><p>See each job and the workflows that use it.</p>
+    <h4>Actions</h4><ol><li>Run the command below in the project folder.</li></ol>
+    <pre class="cmd">hdrctl job list</pre>
+    <p>A new project has one job, <code>job1</code>, used by <code>workflow1</code>. A job that no workflow uses is shown as free.</p>
+    <div class="expect"><b>What you should see</b><p>One job, in workflow1.</p><pre class="out">job1  ✓ in: workflow1
+
+1 job(s), 0 free</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Add a job to a workflow</h3>
+    <h4>Objective</h4><p>Create it and attach it in one command.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Open <code>workflows/workflow1.yaml</code>.</li></ol>
+    <pre class="cmd">hdrctl job add extra workflow1</pre>
+    <p>The job <code>extra</code> is created in <code>jobs/extra</code> with the default template, and attached at the end of the workflow. The workflow file now has a second step that depends on the first.</p><pre class="cmd">  steps:
+    - name: job1
+      type: job
+      job: ../jobs/job1
+      depends_on: []
+      on_failure: fail
+    - name: extra
+      type: job
+      job: ../jobs/extra
+      depends_on: [job1]
+      on_failure: fail</pre>
+    <div class="expect"><b>What you should see</b><p>A message saying the job was attached at position 2, after <code>job1</code>.</p><pre class="out">Job 'extra' created — jobs\extra
+Job 'extra' attached to workflow 'workflow1', position 2.
+Runs after step 'job1'.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Detach and attach at a position</h3>
+    <h4>Objective</h4><p>Move a job without editing YAML.</p>
+    <h4>Actions</h4><ol><li>Run <code>hdrctl job detach extra workflow1</code>.</li><li>Run <code>hdrctl job attach extra workflow1 -p 1</code>.</li><li>Read <code>workflows/workflow1.yaml</code> again.</li></ol>
+    <pre class="cmd">hdrctl job detach extra workflow1
+hdrctl job attach extra workflow1 -p 1</pre>
+    <p>Detaching keeps the folder: <code>extra</code> becomes free. Attaching at position 1 puts it first, and <code>job1</code> now depends on it (<code>depends_on: [extra]</code>).</p>
+    <div class="expect"><b>What you should see</b><p><code>extra</code> free, then attached as the first step.</p><pre class="out">Job 'extra' is now free: its folder is kept in jobs/.
+
+Job 'extra' attached to workflow 'workflow1', position 1.
+First step of the workflow.
+Step 'job1' now runs after 'extra'.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Declare a parameter</h3>
+    <h4>Objective</h4><p>A name, a type and a default.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Run <code>hdrctl param list</code>.</li><li>Open <code>parameters.yaml</code>.</li></ol>
+    <pre class="cmd">hdrctl param set min_value 0 --type int --description "Smallest value kept"</pre>
+    <p>The parameter is written in <code>parameters.yaml</code>. Before this command, <code>param list</code> answers <code>No parameters</code>.</p><pre class="cmd">version: '1.0'
+parameters:
+  min_value:
+    type: int
+    default: 0
+    description: Smallest value kept</pre>
+    <div class="expect"><b>What you should see</b><p>A table with <code>min_value</code>, <code>int</code> and <code>0</code>.</p><pre class="out">NAME       TYPE  DEFAULT
+min_value  int   0</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Use the parameter in a job</h3>
+    <h4>Objective</h4><p>Replace a fixed value by a placeholder.</p>
+    <h4>Actions</h4><ol><li>In <code>jobs/job1/transformations.yaml</code>, change the filter to the line below.</li><li>Run the job.</li></ol>
+    <pre class="cmd">      expr: "value > {{ param:min_value }}"
+
+hdrctl run jobs\job1</pre>
+    <p>The sample data has three rows, one of them with a negative value. With the default 0 the job reads three rows and writes two.</p>
+    <div class="expect"><b>What you should see</b><p><code>Pipeline completed successfully</code>, 3 rows read and 2 written.</p><pre class="out">Rows read   : 3
+Rows written: 2</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Give the parameter a value per environment</h3>
+    <h4>Objective</h4><p>Run the same job with another value.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Run the job with <code>--env prod</code>.</li><li>Run <code>hdrctl param unset min_value --env prod</code> to remove the value.</li></ol>
+    <pre class="cmd">hdrctl param set min_value 150 --env prod
+hdrctl run jobs\job1 --env prod</pre>
+    <p>The value goes to <code>environments/prod.yaml</code>. With 150 only the row with <code>200</code> stays: one row written. The <code>param list</code> table gets a <code>prod</code> column, and after <code>unset</code> the cell shows that the default is inherited.</p>
+    <div class="expect"><b>What you should see</b><p>1 row written, <code>2,Bob,200.0</code>.</p><pre class="out">NAME       TYPE  DEFAULT  prod
+min_value  int   0        150
+
+Rows read   : 3
+Rows written: 1
+
+id,name,value
+2,Bob,200.0</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Run <code>hdrctl job list</code> after each change. A job that is <code>free</code> is not run by any workflow.</p>
+  <p data-kind="TIP">After attaching or detaching, check the project with <code>hdrctl run . --dry-run</code>, as the command itself suggests.</p>
+  <p data-kind="TRAP"><code>job detach</code> keeps the folder and <code>job add</code> creates one from a template. Neither deletes your work.</p>
+  <p data-kind="TRAP">Cast a CSV column before you compare it to a parameter, as in the first transformations lesson. The text of a CSV is not a number.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Jobs</td><td>hdrctl job list | add | attach | detach</td></tr><tr><td>Parameters</td><td>hdrctl param list | set | unset</td></tr><tr><td>Placeholder</td><td>{{ param:NAME }}</td></tr><tr><td>Environment</td><td>hdrctl run ... --env NAME</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Job not found</td><td>The job folder does not exist</td><td>Run hdrctl job list</td></tr><tr><td>Workflow not found</td><td>The workflow name is wrong</td><td>Run hdrctl workflow list</td></tr><tr><td>Parameter not replaced</td><td>The name differs from parameters.yaml</td><td>Run hdrctl param list</td></tr><tr><td>Same result with --env</td><td>The environment has no value</td><td>Run hdrctl param list and read its column</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I add a job to a workflow from the command line?</h3>
+  <p>Run hdrctl job add <job> <workflow>. It creates jobs/<job>/ from a template and adds a step of type job at the end of the workflow, after the previous step. Add -p N to choose the position.</p>
+  <h3>What does detaching a job do?</h3>
+  <p>hdrctl job detach <job> <workflow> removes the step and keeps the job folder in jobs/. The steps that ran after it now run after its own predecessors. hdrctl job list then shows the job as free.</p>
+  <h3>Where is a project parameter stored?</h3>
+  <p>Its type, default value and description are in parameters.yaml at the project root. The value for an environment is in environments/<env>.yaml. Both are written by hdrctl param set.</p>
+  <h3>How do I use a parameter in a job?</h3>
+  <p>Write {{ param:NAME }} where the value goes, for example in a filter expression. In our test a job with value > {{ param:min_value }} wrote 2 rows with the default 0, and 1 row with the value 150 of the prod environment.</p>
+  <h3>How do I run a job with an environment?</h3>
+  <p>Add --env NAME to hdrctl run. We ran hdrctl run jobs\job1 --env prod, and the job used the prod value of the parameter.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/create-a-workflow">Create a workflow</a></li><li><a href="/studio/14-use-parameters">One placeholder, two values, two results</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can manage jobs and parameters without opening Studio. Next, see how triggers start a project.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -1,0 +1,23 @@
+version: "1.0"
+workflow:
+  name: wf_wait
+  trigger:
+    type: manual
+  steps:
+    - name: before
+      type: action
+      action: log
+      params:
+        message: "Before the pause"
+    - name: pause
+      type: action
+      action: delay
+      params:
+        seconds: 3
+      depends_on: [before]
+    - name: after
+      type: action
+      action: log
+      params:
+        message: "After the pause"
+      depends_on: [pause]

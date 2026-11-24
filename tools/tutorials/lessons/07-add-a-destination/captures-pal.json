@@ -1,0 +1,72 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "palette-destinations-expanded",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "click": "button:has-text('Sources')"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The job palette with Sources collapsed and the ten Destinations listed."
+    }
+  ]
+}

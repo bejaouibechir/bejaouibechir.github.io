@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-01-open-a-project.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: 'Create a project in Hydra Studio and add its first workflow', description: 'Create a project in Hydra Studio, add a first workflow with a Manual, Schedule or Webhook trigger and open it in the editor.', datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/01-open-a-project/',
+  name: article.headline,
+  steps: ['Open the start page', 'Create the cumulative project', 'Find the project in the list', 'Read the empty project', 'Create the first workflow', 'Read the workflow card', 'Open the workflow in the editor'],
+  faq: [
+    ['Where does Hydra Studio store a new project?', 'In the default workspace folder, ~/hydra-workspace, unless you chose a parent folder in the dialog or started hdrctl serve --workspace with another one.'],
+    ['What is the difference between a project and a workflow?', 'A project is a folder that groups everything for one data topic. A workflow is a YAML file inside workflows/ that orders jobs and actions. Studio runs a workflow, never a whole project.'],
+    ['Which trigger should I choose for a new workflow?', 'Manual while you design. Choose Schedule (cron) for recurring loads and Webhook when another system must start the run. You can change the trigger later from the workflow card.'],
+    ['Can I use a project created outside Studio?', 'Open a project accepts a folder that already follows the Hydra structure, so a project built outside Studio opens too. The Hydra CLI then runs it from the terminal.'],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ['Create a project', '/studio/01-open-a-project/']],
+});
+---
+
+<BaseLayout title="Create a project in Hydra Studio" exactTitle="Create a Project in Hydra Studio: First Workflow | Hydra ETL" description="Create a project in Hydra Studio, add a first workflow with a Manual, Schedule or Webhook trigger and open it in the editor. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="01-open-a-project"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

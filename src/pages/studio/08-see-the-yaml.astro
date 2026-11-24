@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-08-see-the-yaml.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Read the YAML Hydra Studio generates (Hydra DSL panel)", description: "Open the Hydra DSL panel in Hydra Studio and read the YAML it generates for workflows and jobs. Spot what the canvas leaves out. Tested on Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/08-see-the-yaml/',
+  name: article.headline,
+  steps: ["Open the panel", "Read the workflow file", "Read a job, section by section", "Read what is missing", "Read the wiring"],
+  faq: [
+    ["Where do I see the YAML in Hydra Studio?", "Select Hydra DSL in the top bar. In Workflow configuration it shows workflow.yaml, marked synced when it matches the canvas. In Jobs configuration it shows the job's manifests in four tabs."],
+    ["What does a job step look like in workflow.yaml?", "A job step has type: job and a job: path, for example job: ../jobs/first-job. An action step has type: action and an action name such as log."],
+    ["Does a container appear in workflow.yaml?", "No. Containers are purely visual. They only copy their failure or retry policy onto the steps they enclose."],
+    ["Can I write the YAML by hand instead?", "Studio writes the same YAML files that hdrctl runs, so you can also write them by hand. See the Hydra DSL reference for the full syntax."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["See the YAML", '/studio/08-see-the-yaml/']],
+});
 ---
 
-<BaseLayout title="Lesson 8 — Read the manifests Studio generates" description="Open the Hydra DSL panel in both scenes, walk the four job tabs, and learn to spot what a canvas cannot show: empty fields and missing steps.">
+<BaseLayout title="Read the YAML Hydra Studio generates (Hydra DSL panel)" exactTitle="Hydra Studio YAML: Read the Hydra DSL Panel | Hydra ETL" description="Open the Hydra DSL panel in Hydra Studio and read the YAML it generates for workflows and jobs. Spot what the canvas leaves out. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

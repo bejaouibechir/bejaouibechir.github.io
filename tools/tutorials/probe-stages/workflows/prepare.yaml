@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: prepare
+  trigger:
+    type: manual
+  steps:
+    - name: say_prepare
+      type: action
+      action: log
+      params:
+        message: "Prepare: folders ready"

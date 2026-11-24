@@ -1,0 +1,116 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 1</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 1 of 65 · Install and start</div><h1>Install Hydra ETL and start Hydra Studio with hdrctl serve</h1><p class="lead">Two commands install Hydra ETL with its server extra and start Studio. Check the version, read the banner, then open the address it prints.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl serve</span><span>about 10 minutes</span><span>Python 3.9 or newer</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>Install Hydra ETL with <code>pip install "hydra-etl[server]"</code>, then run <code>hdrctl serve</code>. Studio starts at <code>http://127.0.0.1:5678</code>. The <b>server</b> extra adds the API and the web interface; without it the command line works but Studio does not start.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Create a virtual environment, install Hydra ETL 0.22 with its server extra, start Studio and confirm it is up.</p>
+  <h3>Prerequisites</h3><ul><li>Python 3.9 or newer, available as <code>py</code> on Windows.</li><li>A terminal: PowerShell on Windows.</li><li>An internet connection to download the package from PyPI.</li></ul>
+  <h2>How do I install Hydra ETL and open Studio?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Check Python</h3>
+    <h4>Objective</h4><p>Know which Python the next commands will use.</p>
+    <h4>Actions</h4><ol><li>Open PowerShell.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">py --version</pre>
+    <p>Hydra ETL needs Python 3.9 or newer. On Windows, the <code>py</code> launcher picks the installed Python. On Linux and macOS the same commands use <code>python3</code> and a <code>bin/</code> folder in place of <code>Scripts\</code>; this lesson was run on Windows only.</p>
+    <div class="expect"><b>What you should see</b><p>A version number of 3.9 or higher.</p><pre class="out">Python 3.13.7</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Create a virtual environment</h3>
+    <h4>Objective</h4><p>Keep Hydra ETL and its dependencies apart from the rest of your Python.</p>
+    <h4>Actions</h4><ol><li>Choose a folder for the environment.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">py -m venv hydra-env</pre>
+    <p>A virtual environment is a folder that holds its own Python packages. Removing the folder removes the installation, which makes a clean start easy.</p>
+    <div class="expect"><b>What you should see</b><p>No output. A <code>hydra-env</code> folder now exists.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Install Hydra ETL with the server extra</h3>
+    <h4>Objective</h4><p>Get the engine, the command line, the API and Studio in one install.</p>
+    <h4>Actions</h4><ol><li>Run the command below and wait for pip to finish.</li></ol>
+    <pre class="cmd">hydra-env\Scripts\python.exe -m pip install "hydra-etl[server]"</pre>
+    <p>The quotes protect the square brackets. pip downloads <code>hydra-etl</code> and its dependencies, among them pandas, FastAPI and uvicorn. Without <code>[server]</code> you get the engine and the <code>hdrctl</code> command only.</p>
+    <div class="expect"><b>What you should see</b><p>pip ends with a line that lists the installed packages, including hydra-etl.</p><pre class="out">Installing collected packages: … hydra-etl, fastapi
+Successfully installed … hydra-etl-0.22.0 …</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Check the installation</h3>
+    <h4>Objective</h4><p>Confirm which version answers.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hydra-env\Scripts\hdrctl.exe --version</pre>
+    <p>The command prints the version of Hydra ETL, the name of the framework and the Python it runs on.</p>
+    <div class="expect"><b>What you should see</b><p>The version, then the Python version, on one line.</p><pre class="out">hydra 0.22.0  |  Hydra ETL Framework  |  Python 3.13.7</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-terminal-tab-dark.png" width="1232" height="500" loading="lazy" decoding="async" alt="The terminal of Hydra Studio in the dark theme showing hdrctl --version and its result, Hydra ETL 0.22.0 on Python 3.13.7." /><figcaption>The same command, run from the Studio terminal.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Start Studio</h3>
+    <h4>Objective</h4><p>Start the API and the web interface with one command.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Leave the window open: closing it stops Studio.</li></ol>
+    <pre class="cmd">hydra-env\Scripts\hdrctl.exe serve</pre>
+    <p><code>hdrctl serve</code> starts the Hydra API and Studio on one port. The default port is <b>5678</b>, on <code>127.0.0.1</code>, and the projects live in <code>~/hydra-workspace</code>. Add <code>--port 5679</code> to use another port, <code>--workspace</code> to choose the projects folder, <code>--open</code> to open your browser and <code>--no-studio</code> to serve the API alone.</p>
+    <div class="expect"><b>What you should see</b><p>An ASCII banner, then the address to open and the API and docs addresses. Press Ctrl+C to stop.</p><pre class="out">Hydra Studio is ready. Open this address in your browser:
+
+    http://127.0.0.1:5678
+
+  API       http://127.0.0.1:5678/api
+  Docs      http://127.0.0.1:5678/docs
+
+  Press CTRL+C to stop.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Open Studio and check the API</h3>
+    <h4>Objective</h4><p>Confirm that the page and the API both answer.</p>
+    <h4>Actions</h4><ol><li>Open <code>http://127.0.0.1:5678</code> in your browser.</li><li>In another PowerShell window, run the command below.</li></ol>
+    <pre class="cmd">curl.exe http://127.0.0.1:5678/api/health</pre>
+    <p>Studio opens on the <b>Overview</b> page. The top bar shows <b>API online</b> when the backend answers. The health route returns a small JSON document with the version and the build of the bundled Studio. <a href="/studio/02-check-the-api">Check the API</a> explains the indicator in detail.</p>
+    <div class="expect"><b>What you should see</b><p>The Overview page with a project list, and a JSON answer with <code>status</code> set to <code>ok</code>.</p><pre class="out">{"message":"Hydra ETL API is running","status":"ok","version":"0.22.0","dsl_version":"1.0","studio":"bundled","studio_build":"index-CxM6JVFV.js"}</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/overview-page-start-actions-light.png" width="1440" height="700" loading="lazy" decoding="async" alt="The Overview page of Hydra Studio in the light theme, with the project list showing the sample project hydra-demo, the Get started card and the API online indicator in the top bar." /><figcaption>Studio on a new workspace: the sample project <code>hydra-demo</code> is listed.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use <code>--workspace</code> to keep course projects apart from your other work, for example <code>hdrctl serve --workspace C:\data\studio</code>.</p>
+  <p data-kind="TIP">Run <code>hdrctl serve --help</code> to list every option.</p>
+  <p data-kind="TRAP">Closing the window that runs <code>hdrctl serve</code> stops Studio. The browser page stays open but its data stops loading.</p>
+  <p data-kind="TIP">Port 5678 busy? Start Studio on another port with <code>--port</code> and open that address instead.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Python</td><td>3.9 or newer</td></tr><tr><td>Install</td><td>pip finishes without an error and lists hydra-etl 0.22.0</td></tr><tr><td>Version</td><td><code>hdrctl --version</code> prints 0.22.0</td></tr><tr><td>Studio</td><td>The Overview opens at http://127.0.0.1:5678 and the health route returns status ok</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>hdrctl</code> is not recognized</td><td>The environment is not on the path</td><td>Call it with its full path, <code>hydra-env\Scripts\hdrctl.exe</code></td></tr><tr><td>The page does not load</td><td>The server is not running or uses another port</td><td>Read the address in the banner, and keep the window open</td></tr><tr><td>Studio does not start after install</td><td>The package was installed without the server extra</td><td>Install <code>"hydra-etl[server]"</code></td></tr><tr><td>pip cannot find the package</td><td>No internet access or an old pip</td><td>Check the connection, then run <code>python -m pip install --upgrade pip</code></td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I install Hydra ETL and start Studio?</h3>
+  <p>Create a virtual environment, install the package with its server extra using pip install "hydra-etl[server]", then run hdrctl serve. Studio opens at http://127.0.0.1:5678. On Windows, use py -m venv to create the environment.</p>
+  <h3>Which Python version does Hydra ETL need?</h3>
+  <p>Python 3.9 or newer, according to the package metadata. In our test of Hydra ETL 0.22.0 we used Python 3.13.7 on Windows.</p>
+  <h3>Why install the server extra?</h3>
+  <p>The base package gives you the engine and the hdrctl command line. The server extra adds the API and the web interface that hdrctl serve starts, so Studio needs it.</p>
+  <h3>How do I start Studio on another port?</h3>
+  <p>Add --port to the command, for example hdrctl serve --port 5679. Other options are --host, --open to open the browser, --no-studio for the API alone, --workspace for the projects folder and --lang for the interface language.</p>
+  <h3>Where does Studio keep my projects?</h3>
+  <p>In the workspace folder, ~/hydra-workspace by default. Pass --workspace to choose another folder. A new workspace gets a sample project named hydra-demo.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/02-check-the-api">Check the Studio API connection</a></li><li><a href="/studio/tour-the-pages">Tour the Studio pages</a></li><li><a href="/get-started">Get started with Hydra ETL</a></li><li><a href="/cli">The hdrctl command line</a></li></ul>
+
+  <h2>Next lesson</h2><p>Studio is running. The next lessons create a project and read the interface.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/01-open-a-project">Create a project <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

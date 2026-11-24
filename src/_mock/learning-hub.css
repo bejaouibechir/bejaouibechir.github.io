@@ -27,3 +27,12 @@ a.outline-item.on b{font-weight:700}
 .lesson-card small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.07em}
 @media(max-width:900px){}
 
+
+.outline-block{margin:14px 8px 4px;color:var(--accent-text);font:800 9px var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.outline-item:not(.written){opacity:.55}
+.block-head{grid-column:1/-1;margin:18px 0 2px;padding-bottom:6px;border-bottom:1px solid var(--border);color:var(--text);font-size:15px}
+.block-head:first-child{margin-top:0}
+.lesson-card.soon{border-style:dashed;background:transparent}
+.lesson-card.soon h3,.lesson-card.soon p,.lesson-card.soon .module-num{opacity:.7}
+.lesson-card .soon-badge{align-self:start;padding:3px 7px;border:1px solid var(--strong);border-radius:99px;color:var(--soft);white-space:nowrap}
+@media(max-width:900px){.lesson-grid{grid-template-columns:1fr}}

@@ -1,0 +1,38 @@
+[
+  {
+    "file": "execution-order-define-stages-and-loops-light.png",
+    "name": "execution-order-define-stages-and-loops",
+    "theme": "light",
+    "alt": "The Define tab of Execution order in Hydra Studio Project settings: three stages with their mode, wait fields and workflows, an Add stage button, a Not in the thread list, and a Loops box with one loop."
+  },
+  {
+    "file": "execution-order-define-unsaved-change-dark.png",
+    "name": "execution-order-define-unsaved-change",
+    "theme": "dark",
+    "alt": "The Define tab after adding the cleanup workflow to the thread: the workflow joins the list and the Save button is enabled because the change is not saved yet."
+  },
+  {
+    "file": "execution-order-preview-diagram-dark.png",
+    "name": "execution-order-preview-diagram",
+    "theme": "dark",
+    "alt": "The Preview tab of Execution order: boxes for prepare, load_sales, load_stock and report from left to right, the two loads stacked, a one second wait marker and a dashed loop arrow."
+  },
+  {
+    "file": "execution-order-preview-wait-timeout-fallback-light.png",
+    "name": "execution-order-preview-wait-timeout-fallback",
+    "theme": "light",
+    "alt": "The Preview tab of a thread with a wait before a workflow, a maximum duration and a fallback workflow shown as a dashed orange block below load_sales."
+  },
+  {
+    "file": "execution-order-check-ready-result-light.png",
+    "name": "execution-order-check-ready-result",
+    "theme": "light",
+    "alt": "The Execution order tab after pressing Check on a valid thread: a green line says Ready, then lists the workflows in order and the number of loops."
+  },
+  {
+    "file": "execution-order-check-errors-result-dark.png",
+    "name": "execution-order-check-errors-result",
+    "theme": "dark",
+    "alt": "The Execution order tab after pressing Check on a thread that names a missing workflow file and a missing fallback file: red lines give the exact messages."
+  }
+]

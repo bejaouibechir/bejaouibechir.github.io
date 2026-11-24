@@ -1,0 +1,14 @@
+[
+  {
+    "file": "thread-yaml-dry-run-execution-plan-light.png",
+    "name": "thread-yaml-dry-run-execution-plan",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl run with the dry-run option on a project with three stages: the plan lists each workflow, a timeout of 30s, a fallback named cleanup on failure, and a wait of 2s before a workflow starts."
+  },
+  {
+    "file": "thread-yaml-invalid-loop-error-dark.png",
+    "name": "thread-yaml-invalid-loop-error",
+    "theme": "dark",
+    "alt": "The Studio terminal after hdrctl run with the dry-run option on a thread whose loop goes forward: a message says the project cannot run because report must come before prepare in the thread."
+  }
+]

@@ -1,0 +1,4 @@
+steps:
+  - text_to_rows:
+      column: tags
+      sep: ";"

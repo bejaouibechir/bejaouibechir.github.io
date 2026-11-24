@@ -1,0 +1,32 @@
+[
+  {
+    "file": "job-dsl-sources-tab-light.png",
+    "name": "job-dsl-sources-tab",
+    "theme": "light",
+    "alt": "Hydra DSL panel open beside the job canvas, showing sources.yaml for first-job with tabs Sources, Transformations, Destinations and Pipeline."
+  },
+  {
+    "file": "job-dsl-pipeline-tab-dark.png",
+    "name": "job-dsl-pipeline-tab",
+    "theme": "dark",
+    "alt": "The Pipeline tab of the Hydra DSL panel showing which source feeds which destination."
+  },
+  {
+    "file": "job-dsl-transformations-tab-light.png",
+    "name": "job-dsl-transformations-tab",
+    "theme": "light",
+    "alt": "The Transformations tab of the Hydra DSL panel showing the select and filter steps of first-job."
+  },
+  {
+    "file": "job-dsl-destinations-tab-dark.png",
+    "name": "job-dsl-destinations-tab",
+    "theme": "dark",
+    "alt": "The Destinations tab of the Hydra DSL panel showing the csv destination of first-job with its load table and replace mode."
+  },
+  {
+    "file": "workflow-dsl-panel-open-light.png",
+    "name": "workflow-dsl-panel-open",
+    "theme": "light",
+    "alt": "Hydra DSL panel in the Workflow configuration tab, showing workflow.yaml with the two job steps."
+  }
+]

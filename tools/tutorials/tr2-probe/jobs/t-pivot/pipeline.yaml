@@ -1,0 +1,3 @@
+pipeline:
+  from: src_t_pivot
+  to: dest_csv

@@ -1,0 +1,165 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "resilience-demo": "orders-resilience-demo"
+  },
+  "shots": [
+    {
+      "name": "terminal-conflict-run-refused",
+      "path": "/workflows/911d8715?projectId=8b107f14&scene=workflow",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd ~/hydra-workspace/resilience-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\project> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow run wf_conflict"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 12000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Studio terminal after a second run of wf_conflict, refused because of the undo journal."
+    },
+    {
+      "name": "terminal-workflow-undo-stopped",
+      "path": "/workflows/911d8715?projectId=8b107f14&scene=workflow",
+      "theme": "auto",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click_text": "Terminal"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd ~/hydra-workspace/resilience-demo"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\project> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow undo wf_conflict"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 12000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Studio terminal after hdrctl workflow undo wf_conflict, which stops at build_report."
+    }
+  ]
+}

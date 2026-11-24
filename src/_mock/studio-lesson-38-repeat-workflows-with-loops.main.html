@@ -1,0 +1,146 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 38</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 38 of 65 · Loops and pauses</div><h1>Repeat Hydra workflows with loops in thread.yaml</h1><p class="lead">A loop in thread.yaml replays part of a project several times, with a pause before each new pass. Add one, preview it with a dry run, and run it.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">loops</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A <b>loop</b> in <code>workflows/thread.yaml</code> replays a run of workflows <code>times</code> times, in total, and waits <code>delay</code> before each new pass. In our test, two workflows with <code>times: 2</code> and <code>delay: 1s</code> ran four times in 1.6 seconds.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Add a loop to a project, read it in a dry run, run it, and see how <code>times</code> and <code>delay</code> behave.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project folder (a folder with a <code>.hydra</code> subfolder) and the stages of the <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a> lesson.</li></ul>
+  <h2>How do I repeat workflows with a loop?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Write two small workflows</h3>
+    <h4>Objective</h4><p>Have a portion to repeat.</p>
+    <h4>Actions</h4><ol><li>In the <code>workflows</code> folder, create <code>fetch.yaml</code> and <code>check.yaml</code>.</li><li>Give each one a single Python step that does nothing, so that the output stays short.</li></ol>
+    <pre class="cmd">workflows\fetch.yaml</pre>
+    <p><code>check.yaml</code> is the same file with <code>check</code> in place of <code>fetch</code>.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: fetch
+  trigger:
+    type: manual
+  steps:
+    - name: fetch
+      type: action
+      action: python
+      params:
+        script: |
+          pass</pre>
+    <div class="expect"><b>What you should see</b><p>Two files in <code>workflows</code>.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Add a loop</h3>
+    <h4>Objective</h4><p>Say which portion repeats, how often, and how long to wait.</p>
+    <h4>Actions</h4><ol><li>Create <code>workflows\thread.yaml</code> with the content below.</li><li>Read the <code>loops</code> block: <code>from</code> is the last workflow of the repeated portion and <code>to</code> the first.</li></ol>
+    <pre class="cmd">workflows\thread.yaml</pre>
+    <p>One stage runs <code>fetch</code> then <code>check</code>. The loop replays the portion from <code>fetch</code> to <code>check</code> for <code>2</code> passes in all, and waits <code>1s</code> before the second one. <code>to</code> must come before <code>from</code> in the thread, or be the same workflow.</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: fetch
+      - name: check
+loops:
+  - from: check
+    to: fetch
+    times: 2
+    delay: 1s</pre>
+    <div class="expect"><b>What you should see</b><p>A file of 11 lines.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Preview the plan</h3>
+    <h4>Objective</h4><p>Check the loop before running anything.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the project folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run . --dry-run</pre>
+    <p>A dry run prints the execution plan and runs nothing. A loop appears as one line under the stage it belongs to.</p>
+    <div class="expect"><b>What you should see</b><p>The stage, its two workflows, a loop line, and a confirmation.</p><pre class="out">Project loops-demo — 2 workflow(s) in 1 stage(s)
+
+DRY-RUN mode — no data will be written
+
+Execution plan
+Stage 1/1 — sequential
+   •  fetch  (1: fetch)
+   •  check  (1: check)
+↻  loop check → fetch, 2 pass(es), waiting 1s
+
+Dry run OK: the project is valid. Nothing was executed.</pre>
+      <figure class="shot"><img src="/tutorials/studio-loops/loops-dry-run-execution-plan-light.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Studio terminal after hdrctl run with the dry-run option: the execution plan lists stage 1 with the workflows fetch and check, then a loop line with 2 passes and a one second wait, and says the project is valid and nothing was executed." /><figcaption>The dry run lists the loop under its stage.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Run the project</h3>
+    <h4>Objective</h4><p>See the passes and the pause.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>The stage runs once, a loop line announces the next pass and its wait, then the stage runs again. Each workflow header shows its pass, such as <code>pass 1/2</code>.</p>
+    <div class="expect"><b>What you should see</b><p>Two passes, a loop line between them, and a summary of four workflow runs.</p><pre class="out">Stage 1/1 — sequential
+▶ Workflow  fetch  (pass 1/2)
+  ✓ Step 'fetch' OK (0.2s)
+✓ Workflow 'fetch' OK (0.2s)
+▶ Workflow  check  (pass 1/2)
+  ✓ Step 'check' OK (0.2s)
+✓ Workflow 'check' OK (0.2s)
+
+↻ Loop check → fetch: pass 2/2 — waiting 1s
+
+Stage 1/1 — sequential
+▶ Workflow  fetch  (pass 2/2)
+…
+Project 'loops-demo' completed in 1.6s — 4/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-loops/loops-run-terminal-output-dark.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Studio terminal after hdrctl run in a project whose thread.yaml repeats two workflows: pass 1 of 2, a loop line announcing a one second wait, then pass 2 of 2, and a project summary with 4 of 4 workflows OK." /><figcaption>The run, with the loop line between the passes.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Change the number of passes</h3>
+    <h4>Objective</h4><p>See that times counts every pass.</p>
+    <h4>Actions</h4><ol><li>Set <code>times: 3</code> in <code>thread.yaml</code>.</li><li>Run <code>hdrctl run .</code> again.</li></ol>
+    <pre class="cmd">times: 3
+hdrctl run .</pre>
+    <p><code>times</code> is the total number of passes, the first included. With <code>3</code>, the loop line appears twice, and each wait adds one second.</p>
+    <div class="expect"><b>What you should see</b><p>Three passes and a summary of six workflow runs.</p><pre class="out">Loop check → fetch: pass 2/3 — waiting 1s
+…
+Loop check → fetch: pass 3/3 — waiting 1s
+…
+Project 'loops-demo' completed in 2.0s — 6/6 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Run <code>hdrctl run . --dry-run</code> after every change to <code>loops</code>: the plan shows the passes and the wait without running anything.</p>
+  <p data-kind="TIP">Use <code>delay</code> to give a system time to settle between two passes. It accepts <code>500ms</code>, <code>30s</code>, <code>5m</code> or <code>1h</code>.</p>
+  <p data-kind="TRAP"><code>times: 1</code> means no repeat: it counts the first pass. To run a portion twice, write <code>times: 2</code>.</p>
+  <p data-kind="TRAP"><code>to</code> must come before <code>from</code> in the thread. A loop that goes forward is refused with <code>a loop goes back</code> in the message; see the <a href="/studio/orchestrate-from-thread-yaml">thread.yaml</a> lesson.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Plan</td><td>The dry run shows a loop line with its passes and wait</td></tr><tr><td>Run</td><td>Workflow headers show pass 1/2 and pass 2/2</td></tr><tr><td>Wait</td><td>A loop line says waiting 1s before each new pass</td></tr><tr><td>Total</td><td>Four workflow runs for times 2, six for times 3</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The workflows run only once</td><td>The loops block is missing, or times is 1</td><td>Add the loop and set times to the total number of passes</td></tr><tr><td>The project is reported invalid</td><td>A loop names a workflow that is not in the thread, or to comes after from</td><td>Use workflow names from the thread and put to before from</td></tr><tr><td>The loop never seems to wait</td><td>delay is missing</td><td>Add delay to the loop</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I repeat a workflow in Hydra?</h3>
+  <p>Add a loops list to workflows/thread.yaml. Each loop has a from workflow, a to workflow, times and an optional delay. Hydra replays the workflows from to up to from, in thread order.</p>
+  <h3>Does times count the first run?</h3>
+  <p>Yes. times is the total number of passes. In our test, times: 2 over two workflows ran four workflows in all, and times: 3 ran six.</p>
+  <h3>How do I pause between passes?</h3>
+  <p>Set delay on the loop, for example delay: 1s. The run prints a line saying it is waiting before the next pass. delay accepts seconds or durations such as 500ms, 30s, 5m or 1h.</p>
+  <h3>Can I check a loop without running it?</h3>
+  <p>Yes. hdrctl run with --dry-run prints the execution plan, including a line for each loop with its passes and its wait, and runs nothing. It also confirms that the project is valid.</p>
+  <h3>What happens if a workflow fails inside a loop?</h3>
+  <p>The engine's thread documentation says a failure stops the project, loops included. This lesson only ran successful workflows, so it did not reproduce a failure.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li><li><a href="/studio/12-compose-jobs">Compose jobs in a workflow</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can repeat part of a project and pause between passes. Next, set a timeout so that a stuck workflow cannot block a loop.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/set-timeouts-on-workflows">Set timeouts <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

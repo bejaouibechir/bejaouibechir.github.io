@@ -1,11 +1,13 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 9</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 9 of 14 · Reach Valid</div><h1>Resolve what the validity badge reports</h1><p class="lead">Finish the job graph, configure each required field, and distinguish the header's DAG validity from node-level readiness.</p></div>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 13</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 13 of 65 · Reach Valid</div><h1>Hydra Studio Valid badge: what it checks and what it does not</h1><p class="lead">Finish the job graph, configure each required field, and distinguish the header's DAG validity from node-level readiness.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 4 November 2026 · Last verified 22 November 2026 · Tested with Hydra ETL 0.22.0 (Studio source and API checks on Linux)</p></div>
 <div class="lesson-meta"><span class="mono">Valid</span><span>about 15 minutes</span><span>source YAML verified</span></div>
 <section class="doc">
-  <h2>1. Objective</h2><h3>Goal</h3><p>Build <code>CSV source → Cast → Filter → CSV destination</code>. Configure Cast and Filter with fields defined in <code>NodeConfigDialog</code>, choose a destination file, connect the four nodes, and verify both graph validity and node configuration.</p><h3>Why this matters</h3><p>The header's <b>Valid</b> state comes from DAG validation: no duplicated IDs, unknown dependencies, or cycle. Individual node badges use <code>isNodeConfigured</code>. A trustworthy job needs both; a green DAG badge alone does not prove required connector fields are filled.</p>
+  <div class="callout"><b>Quick answer</b><p>The <b>Valid</b> badge in the Hydra Studio header reports that the job graph is sound: no duplicated IDs, no unknown dependencies and no cycle. It does not prove that each node is configured, which the red badges on nodes show, and only a run proves the job works. This lesson clears both.</p></div>
+  <h2>What will you learn in this lesson?</h2><h3>Goal</h3><p>Build <code>CSV source → Cast → Filter → CSV destination</code>. Configure Cast and Filter with fields defined in <code>NodeConfigDialog</code>, choose a destination file, connect the four nodes, and verify both graph validity and node configuration.</p><h3>Why this matters</h3><p>The header's <b>Valid</b> state comes from DAG validation: no duplicated IDs, unknown dependencies, or cycle. Individual node badges use <code>isNodeConfigured</code>. A trustworthy job needs both; a green DAG badge alone does not prove required connector fields are filled.</p>
   <div class="callout"><b>Course project</b><p>Continue with <code>studio-course</code>, the manual <code>first-workflow</code>, and the <code>first-job</code> canvas saved by the preceding lesson. Do not create a parallel replacement project.</p></div>
   <h3>Prerequisites</h3><ul><li>The top bar shows <b>API online</b>.</li><li>The cumulative workflow is open in the editor.</li><li>The preceding lesson checklist is complete.</li></ul>
-  <h2>2. Steps</h2>
+  <h2>How do I get a valid job in Hydra Studio?</h2>
   <div class="step">
     <h3><i>01</i>Add and configure Cast</h3>
     <h4>Objective</h4><p>Give numeric CSV columns explicit types before comparison.</p>
@@ -47,22 +49,32 @@ Save</pre></div>
     <pre class="cmd">CSV source → Cast → Filter → CSV destination → Save</pre>
     <div class="expect"><b>What you should see</b><p>The designed chain has four nodes, three directed edges, no DAG error, and all required fields saved.</p><pre class="out">4 nodes · 3 edges
 Valid
-Saved ✓</pre></div>
+Saved ✓</pre>
+      <figure class="shot"><img src="/tutorials/studio-09-reach-valid/header-valid-badge-job-light.png" width="1520" height="120" loading="lazy" decoding="async" alt="Editor header for a job with the counter reading 4 nodes and 3 edges and a green Valid badge, next to the environment selector." /><figcaption>The header of a job whose graph is valid: four nodes, three edges, and the green <b>Valid</b> badge.</figcaption></figure></div>
   </div>
 <div class="rules">
-  <h5>Tips and traps</h5>
-  <p data-kind="TIP">Sources and transformations live in <b>Jobs configuration</b>. Jobs and actions live in <b>Workflow configuration</b>.</p>
-  <p data-kind="TRAP">A <b>container never runs</b>. Five nodes on screen can mean <b>four steps</b> in the YAML.</p>
-  <p data-kind="TIP">An edge leaves a <b>right handle</b> and enters a <b>left handle</b>. Direction is never ambiguous.</p>
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Give numeric CSV columns explicit types with a <b>Cast</b> before you compare them in a <b>Filter</b>.</p>
+  <p data-kind="TIP">A trustworthy job needs two greens: the header badge for the graph, and no red badge on any node.</p>
   <p data-kind="TRAP">The <b>Valid</b> badge means the manifest parses. Only a <b>run</b> proves the job works.</p>
-  <p data-kind="TIP">A policy reaches only what sits <b>inside</b> the container. A node beside it gets <b>nothing</b>.</p>
-  <p data-kind="TRAP">Studio can be <b>ahead of the disk</b>. Open the file to be sure.</p>
-  <p data-kind="TIP">Counts and durations are <b>live values</b>. Never quote them as thresholds.</p>
-  <p data-kind="TRAP">An animation is <b>not an outcome</b>. Wait for a <b>terminal state</b> on the Runs page.</p>
+  <p data-kind="TRAP">A green header with a red node badge is normal while a required field is still empty.</p>
 </div>
-  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Graph</td><td>Source → Cast → Filter → Destination</td></tr><tr><td>Required mappings</td><td>price float and qty int</td></tr><tr><td>Filter</td><td>price > 0</td></tr><tr><td>Readiness</td><td>DAG Valid plus every node configured</td></tr></tbody></table>
-  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Valid appears while a node is incomplete</td><td>Header validity checks the DAG</td><td>Open each node and satisfy its required fields</td></tr><tr><td>An edge is rejected</td><td>Direction, capacity, duplicate, or cycle rule is violated</td><td>Connect left to right once and keep destination last</td></tr><tr><td>Cast remains incomplete</td><td>Mapping JSON is blank or malformed</td><td>Use the exact JSON object and save</td></tr></tbody></table>
-  <h2>5. Next lesson</h2><p>The visual job is complete and serialized. The next lesson selects Run Job, opens the Logs panel automatically, and follows the status produced by the inline job execution path.</p>
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Graph</td><td>Source → Cast → Filter → Destination</td></tr><tr><td>Required mappings</td><td>price float and qty int</td></tr><tr><td>Filter</td><td>price > 0</td></tr><tr><td>Readiness</td><td>DAG Valid plus every node configured</td></tr></tbody></table>
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Valid appears while a node is incomplete</td><td>Header validity checks the DAG</td><td>Open each node and satisfy its required fields</td></tr><tr><td>An edge is rejected</td><td>Direction, capacity, duplicate, or cycle rule is violated</td><td>Connect left to right once and keep destination last</td></tr><tr><td>Cast remains incomplete</td><td>Mapping JSON is blank or malformed</td><td>Use the exact JSON object and save</td></tr></tbody></table>
+  <h2>Frequently asked questions</h2>
+  <h3>What does the Valid badge mean in Hydra Studio?</h3>
+  <p>It comes from graph validation: no duplicated IDs, no unknown dependencies and no cycle. It says nothing about whether each node has its required fields.</p>
+  <h3>Why is my job valid but a node still has a red badge?</h3>
+  <p>Node badges check that the node is configured, which the header badge does not. Open the node and fill the field marked with a red asterisk.</p>
+  <h3>Does a valid job always run successfully?</h3>
+  <p>No. Valid is a design-time check before any data moves. Run the job to prove it works, then read the result on the Runs page.</p>
+  <h3>What does a Cast node need?</h3>
+  <p>A Types (JSON) mapping from column to type, for example {"price":"float","qty":"int"}.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/08-see-the-yaml">Read the YAML Studio generates</a></li><li><a href="/studio/06-add-a-transformation">Add a transformation</a></li><li><a href="/studio/10-run-the-job">Run a job</a></li><li><a href="/dsl">Hydra DSL reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>The visual job is complete and serialized. The next lesson selects Run Job, opens the Logs panel automatically, and follows the status produced by the inline job execution path.</p>
   <div class="lesson-nav"><a class="primary" href="/studio/10-run-the-job">Run the job <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
-  <h4>Close by</h4><ul class="linklist"><li><a href="/cli/serve/">Serve the Hydra API</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

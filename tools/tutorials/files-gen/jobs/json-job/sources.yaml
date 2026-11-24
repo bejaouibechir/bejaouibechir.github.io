@@ -1,0 +1,5 @@
+sources:
+  src_json_job:
+    type: json
+    extract:
+      table: data/people.json

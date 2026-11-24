@@ -1,0 +1,20 @@
+[
+  {
+    "file": "execution-order-resilient-project-light.png",
+    "name": "execution-order-resilient-project",
+    "theme": "light",
+    "alt": "The Execution order panel with two stages and the protections of the resilient pipeline."
+  },
+  {
+    "file": "project-check-resilient-ready-dark.png",
+    "name": "project-check-resilient-ready",
+    "theme": "dark",
+    "alt": "The Execution order panel after Check, with the Ready line."
+  },
+  {
+    "file": "run-project-resilient-nominal-detail-light.png",
+    "name": "run-project-resilient-nominal-detail",
+    "theme": "light",
+    "alt": "The run detail page of the resilient pipeline, with four workflows succeeded."
+  }
+]

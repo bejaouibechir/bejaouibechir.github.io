@@ -1,0 +1,3 @@
+pipeline:
+  from: src_t_split
+  to: dest_csv

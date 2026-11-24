@@ -1,0 +1,101 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 36</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 36 of 65 · Execution order: Check</div><h1>Check the execution order of a Hydra project for errors</h1><p class="lead">The Check button of Execution order validates workflows/thread.yaml before a run. See the green Ready line and the red message for a missing workflow.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Check</span><span>about 5 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><b>Check</b> validates the execution order before any workflow runs. A valid thread gets a green <b>Ready</b> line that lists the workflows in order. A thread that names a workflow without a file gets a red line with the exact file path that is missing.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Press Check on a valid thread, then on a broken one, and read each message.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 with Studio running: <code>hdrctl serve</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I check the execution order?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Check a valid thread</h3>
+    <h4>Objective</h4><p>See what a good result looks like.</p>
+    <h4>Actions</h4><ol><li>Open <b>Settings</b> → <b>Project settings</b> → <b>Execution order</b>.</li><li>Click <b>Check</b> at the top right.</li></ol>
+    <pre class="cmd">Execution order → Check</pre>
+    <p>A green line appears under the Loops box. It lists the active workflows in order and counts the loops.</p>
+    <div class="expect"><b>What you should see</b><p>A green line starting with a check mark.</p><pre class="out">✓ Ready: prepare → load_sales → load_stock → report (+ 1 loop)</pre>
+      <figure class="shot"><img src="/tutorials/studio-execution-order/execution-order-check-ready-result-light.png" width="1200" height="620" loading="lazy" decoding="async" alt="The Execution order tab after pressing Check on a valid thread: a green line says Ready, then lists the workflows in order and the number of loops." /><figcaption>Check on a valid thread.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Break the thread on purpose</h3>
+    <h4>Objective</h4><p>Name a workflow that has no file.</p>
+    <h4>Actions</h4><ol><li>Use a thread like the one below, where <code>ghost</code> has no <code>workflows/ghost.yaml</code> and <code>load_sales</code> falls back to a missing <code>backup</code>.</li><li>Open it in Define: <code>ghost</code> carries a red <b>file missing</b> tag.</li></ol>
+    <pre class="cmd">thread.yaml</pre>
+    <p>Studio already flags the missing file in Define. The thread is:</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+      - name: ghost
+  - mode: parallel
+    workflows:
+      - name: load_sales
+        fallback:
+          use: [backup]
+          on_failure: true
+      - name: load_stock
+  - mode: sequential
+    workflows:
+      - name: report</pre>
+    <div class="expect"><b>What you should see</b><p>A red <b>file missing</b> tag next to <code>ghost</code>.</p><pre class="out">[x] ghost  ⚠ file missing</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Press Check</h3>
+    <h4>Objective</h4><p>Read the error.</p>
+    <h4>Actions</h4><ol><li>Click <b>Check</b>.</li></ol>
+    <pre class="cmd">Execution order → Check</pre>
+    <p>The result turns red and gives the file and the problem. In our test only the missing <code>ghost</code> file was reported, although <code>backup</code> is missing too: the check stopped at the first problem. Fix it, then check again to see the next one.</p>
+    <div class="expect"><b>What you should see</b><p>A red line with a cross and the path of the missing file.</p><pre class="out">✗ workflows/thread.yaml: workflow 'ghost' has no file workflows/ghost.yaml</pre>
+      <figure class="shot"><img src="/tutorials/studio-execution-order/execution-order-check-errors-result-dark.png" width="1200" height="620" loading="lazy" decoding="async" alt="The Execution order tab after pressing Check on a thread that names a missing workflow file and a missing fallback file: red lines give the exact messages." /><figcaption>Check on a broken thread: the missing file is named.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Fix and check again</h3>
+    <h4>Objective</h4><p>Get back to Ready.</p>
+    <h4>Actions</h4><ol><li>Remove <code>ghost</code> from the thread with its cross, or create <code>workflows/ghost.yaml</code>.</li><li>Press <b>Check</b> again until the line is green.</li></ol>
+    <pre class="cmd">Execution order → Check</pre>
+    <p>Removing a workflow from the thread keeps its file. Repeat until the green <b>Ready</b> line appears; then run the project with <code>hdrctl run .</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A green line again.</p><pre class="out">✓ Ready: …</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Press <b>Check</b> before every run of a project, especially after renaming or deleting a workflow file.</p>
+  <p data-kind="TIP">An orange warning line can appear under the result. It does not block the run; read it, for example when a fallback writes somewhere different.</p>
+  <p data-kind="TRAP">Check validates files, not data. A workflow can pass and still fail on its first row.</p>
+  <p data-kind="TRAP">The check stops at the first problem found: a green result needs a second pass after each fix.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Valid</td><td>A green Ready line lists the workflows and loops</td></tr><tr><td>Invalid</td><td>A red line names the missing file</td></tr><tr><td>Order</td><td>The check stops at the first problem</td></tr><tr><td>Next</td><td>Run the project with hdrctl run .</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Check is disabled</td><td>A wait, max or loop value is invalid</td><td>Fix the red field</td></tr><tr><td>Workflow has no file</td><td>The name in the thread does not match a file</td><td>Create the file or remove the workflow from the thread</td></tr><tr><td>Fallback has no file</td><td>A fallback names a missing workflow</td><td>Create it or edit the fallback</td></tr><tr><td>Ready but the run fails</td><td>Check does not run workflows</td><td>Read the run logs and use a dry run</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does Check do in Execution order?</h3>
+  <p>Check validates the project before any run. It reports a green Ready line when the thread is usable, or red lines naming the problem. According to the Hydra source, it looks for missing workflow files, workflows that cannot be loaded, missing job folders and missing fallback files.</p>
+  <h3>What does the Ready line mean?</h3>
+  <p>It lists the active workflows in order and the number of loops, for example prepare, load_sales, load_stock, report and one loop. In our test it appeared in green under the Loops box.</p>
+  <h3>How is a missing workflow reported?</h3>
+  <p>As a red line: workflows/thread.yaml: workflow 'ghost' has no file workflows/ghost.yaml. In the Define tab the workflow is also tagged file missing.</p>
+  <h3>Does Check run my workflows?</h3>
+  <p>No. It validates the files before a run and runs nothing. A dry run from the terminal, hdrctl run --dry-run, gives the same safety with a printed plan.</p>
+  <h3>Does Check save my changes?</h3>
+  <p>Yes, when there are unsaved changes. According to the Studio source, Check saves first and then validates. The button is disabled while a wait or loop value is invalid.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/define-the-execution-order">Define the execution order</a></li><li><a href="/studio/preview-the-execution-order">Preview the execution order</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can validate an execution order before a run. Next, rehearse the whole project with a dry run.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/dry-run-and-use-fallback">Dry run <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

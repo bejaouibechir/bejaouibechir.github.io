@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: check
+  trigger:
+    type: manual
+  steps:
+    - name: check
+      type: action
+      action: python
+      params:
+        script: |
+          pass

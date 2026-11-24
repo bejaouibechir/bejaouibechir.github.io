@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: fetch
+  trigger:
+    type: manual
+  steps:
+    - name: say_fetch
+      type: action
+      action: log
+      params:
+        message: "fetch ran"

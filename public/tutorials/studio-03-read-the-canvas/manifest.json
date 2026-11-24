@@ -1,0 +1,26 @@
+[
+  {
+    "file": "job-canvas-four-nodes-light.png",
+    "name": "job-canvas-four-nodes",
+    "theme": "light",
+    "alt": "Jobs configuration canvas for first-job: a CSV source, a select, a filter and a CSV destination joined by three edges, with the Valid badge in the header."
+  },
+  {
+    "file": "workflow-canvas-two-jobs-dark.png",
+    "name": "workflow-canvas-two-jobs",
+    "theme": "dark",
+    "alt": "Workflow configuration canvas with two job nodes, first-job and second-job, joined by one edge."
+  },
+  {
+    "file": "job-canvas-second-job-light.png",
+    "name": "job-canvas-second-job",
+    "theme": "light",
+    "alt": "Jobs configuration canvas for second-job: a CSV source reading the output of first-job, a select and a CSV destination."
+  },
+  {
+    "file": "job-tab-bar-two-jobs-dark.png",
+    "name": "job-tab-bar-two-jobs",
+    "theme": "dark",
+    "alt": "Tab bar at the bottom of the editor with the first-job and second-job tabs and the plus button."
+  }
+]

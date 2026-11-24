@@ -1,0 +1,101 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 18</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 18 of 65 · Insights</div><h1>Read the Insights statistics of Hydra Studio</h1><p class="lead">The Insights page of Hydra Studio gives four run counters and an average duration. See what they count, how they match the Runs page, and what they leave out.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Insights</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><b>Insights</b> shows four counters (total, successful, failed and running runs) and the average duration of the runs, in seconds. In our test, three runs gave 3 total, 2 successful, 1 failed, 0 running and an average of 1.1 seconds. The server keeps these runs in memory only.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Start a few runs, read the Insights counters, match them with the Runs page, and learn what the page does not tell you.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 with Studio running: <code>hdrctl serve</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>, and a workflow that fails on purpose.</li></ul>
+  <h2>What do the Insights statistics measure?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Start a few runs</h3>
+    <h4>Objective</h4><p>Give Insights something to count.</p>
+    <h4>Actions</h4><ol><li>Add a workflow that fails: save the file below as <code>workflows\boom.yaml</code>.</li><li>Run the project, then one workflow, then <code>boom</code>, from Studio.</li></ol>
+    <pre class="cmd">Run Workflow</pre>
+    <p>In our test the three runs were started through the Studio API (<code>POST /api/runs</code>): the project, then <code>prepare</code>, then <code>boom</code>. The same runs start from the run buttons of Studio.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: boom
+  trigger:
+    type: manual
+  steps:
+    - name: fail_on_purpose
+      type: action
+      action: python
+      params:
+        script: |
+          raise RuntimeError("boom")</pre>
+    <div class="expect"><b>What you should see</b><p>Three entries on the Runs page, one of them Failed.</p><pre class="out">project:insights-demo   Success   4/4   3.1s
+prepare                 Success   1/1   0.0s
+boom                    Failed    0/1   0.1s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Open Insights</h3>
+    <h4>Objective</h4><p>Read the counters.</p>
+    <h4>Actions</h4><ol><li>Click <b>Insights</b> in the sidebar.</li></ol>
+    <pre class="cmd">Insights</pre>
+    <p>Four cards give <b>Total runs</b>, <b>Successful</b>, <b>Failed</b> and <b>Running</b>. A card below gives the <b>Average duration</b> in seconds. The page needs no setting and has no filter.</p>
+    <div class="expect"><b>What you should see</b><p>3 total, 2 successful, 1 failed, 0 running, and an average of 1.1 s.</p><pre class="out">3 Total runs   2 ✓ Successful   1 ✗ Failed   0 ⟳ Running
+Average duration: 1.1 s</pre>
+      <figure class="shot"><img src="/tutorials/studio-insights/insights-run-counters-and-average-light.png" width="1232" height="280" loading="lazy" decoding="async" alt="The Insights page of Hydra Studio in the light theme: four counters for total, successful, failed and running runs, and a card with the average duration in seconds." /><figcaption>The Insights page after three runs.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Match them with the Runs page</h3>
+    <h4>Objective</h4><p>See where the numbers come from.</p>
+    <h4>Actions</h4><ol><li>Click <b>Runs</b> in the sidebar.</li><li>Compare the list with the counters, and the summary at the top right.</li></ol>
+    <pre class="cmd">Runs</pre>
+    <p>The Runs page lists the same three runs and says <i>3 total · 0 running · 2 success · 1 failed</i>. The average is the mean of the three durations (3.1, 0.1 and 0.0 seconds), which is 1.1 seconds. Failed runs count in the average.</p>
+    <div class="expect"><b>What you should see</b><p>Three rows, and the same totals as Insights.</p><pre class="out">3 total · 0 running · 2 success · 1 failed</pre>
+      <figure class="shot"><img src="/tutorials/studio-insights/insights-runs-list-same-numbers-dark.png" width="1232" height="460" loading="lazy" decoding="async" alt="The Runs page of Hydra Studio in the dark theme, listing the executions whose statuses and durations feed the Insights counters." /><figcaption>The Runs page behind the numbers.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Know the limits</h3>
+    <h4>Objective</h4><p>Avoid reading too much into it.</p>
+    <h4>Actions</h4><ol><li>Restart <code>hdrctl serve</code> and open <b>Insights</b> again.</li><li>Run a workflow from the terminal and compare.</li></ol>
+    <pre class="cmd">hdrctl serve</pre>
+    <p>After a restart the counters were back to zero, because the server holds its runs in memory. Runs started with <code>hdrctl run</code> in a terminal do not appear, and the page has no history, chart or per-workflow view.</p>
+    <div class="expect"><b>What you should see</b><p>Zero everywhere after a restart.</p><pre class="out">0 Total runs   0 ✓ Successful   0 ✗ Failed   0 ⟳ Running
+Average duration: — s</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use the Runs page to find which run failed, and Insights only for a quick health count.</p>
+  <p data-kind="TIP">Open a failed run from the Runs page to read its logs: see <a href="/studio/11-review-a-run">Review a run</a>.</p>
+  <p data-kind="TRAP">A zero on Insights after a restart does not mean nothing ran: the list of runs lives in memory.</p>
+  <p data-kind="TRAP">The average includes failed runs, which are often very short. A failing workflow lowers it.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Counters</td><td>Total, successful, failed and running runs</td></tr><tr><td>Average</td><td>Mean duration of the runs, in seconds</td></tr><tr><td>Match</td><td>The Runs page shows the same totals</td></tr><tr><td>Limit</td><td>Counters reset when the server restarts</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Everything shows 0</td><td>No run since the server started, or a restart</td><td>Run a workflow from Studio</td></tr><tr><td>A terminal run is missing</td><td>It was not started through the server</td><td>Start it from Studio or the API</td></tr><tr><td>Average is —</td><td>No run has a duration yet</td><td>Wait for a run to finish</td></tr><tr><td>Total is more than the other three</td><td>A run is pending</td><td>Wait or open the Runs page, Pending tab</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does the Insights page show in Hydra Studio?</h3>
+  <p>Insights shows four counters, for total, successful, failed and running runs, and one card with the average duration in seconds. The numbers are computed in the browser from the list of runs.</p>
+  <h3>How is the average duration computed?</h3>
+  <p>As the mean of the durations of all the runs that have one, failed runs included. In our test, runs of 3.1, 0.1 and 0.0 seconds gave 1.1 seconds.</p>
+  <h3>Why are my Insights counters back to zero?</h3>
+  <p>The server keeps the list of runs in memory. After you restart hdrctl serve, the Runs page and Insights start empty again. We saw this after restarting Studio.</p>
+  <h3>Does Insights count runs started from the terminal?</h3>
+  <p>No. It counts the runs that the Studio server knows about, such as runs started from the Run buttons or the API. A run started with hdrctl run in a terminal is not in the list.</p>
+  <h3>Can I see statistics per workflow?</h3>
+  <p>Not in Hydra ETL 0.22. Insights shows project-wide totals only. The Runs page lists each run with its workflow, status, steps and duration, and its filter tabs narrow the list by status.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/11-review-a-run">Review a run</a></li><li><a href="/studio/tour-the-pages">Tour the Studio pages</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can read the Insights page and know its limits. Next, diagnose a failed run.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review a run <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

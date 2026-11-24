@@ -1,11 +1,13 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 13</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 13 of 14 · Use containers</div><h1>Organize workflow steps with containers</h1><p class="lead">Use Sequence, Error, and Retry containers to group workflow steps, control failure behavior, and keep the canvas readable.</p></div>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 39</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 39 of 65 · Use containers</div><h1>Hydra Studio containers: Sequence, Error Scope and Retry Scope</h1><p class="lead">Use Sequence, Error, and Retry containers to group workflow steps, control failure behavior, and keep the canvas readable.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 4 November 2026 · Last verified 22 November 2026 · Tested with Hydra ETL 0.22.0 (Studio source and API checks on Linux)</p></div>
 <div class="lesson-meta"><span class="mono">Containers</span><span>about 15 minutes</span><span>workflow configuration open</span></div>
 <section class="doc">
-  <h2>1. Objective</h2><h3>Goal</h3><p>Find the <b>Containers</b> category, compare its three container types, place <code>first-job</code> inside each relevant scope, and learn how to collapse, detach, and configure the container from the workflow canvas.</p>
+  <div class="callout"><b>Quick answer</b><p>Hydra Studio has three containers: <b>Sequence</b>, <b>Error Scope</b> and <b>Retry Scope</b>. They group workflow steps and keep the canvas readable. A container never runs: Error Scope and Retry Scope copy their failure or retry policy onto the steps inside them when the YAML is written, and Sequence only groups.</p></div>
+  <h2>What will you learn in this lesson?</h2><h3>Goal</h3><p>Find the <b>Containers</b> category, compare its three container types, place <code>first-job</code> inside each relevant scope, and learn how to collapse, detach, and configure the container from the workflow canvas.</p>
   <div class="callout"><b>Course project</b><p>Continue with <code>studio-course</code>, the manual <code>first-workflow</code>, and the saved <code>first-job</code> from the preceding lessons. Do not create a parallel replacement project.</p></div>
   <h3>Prerequisites</h3><ul><li>The top bar shows <b>API online</b>.</li><li><code>first-workflow</code> is open in the editor.</li><li><code>first-job</code> is available under <b>Jobs</b> in the node palette.</li></ul>
-  <h2>2. Steps</h2>
+  <h2>How do I use containers in a Hydra Studio workflow?</h2>
   <div class="step">
     <h3><i>01</i>Find the Containers category</h3>
     <h4>Objective</h4><p>Locate the grouping tools in the node palette.</p>
@@ -23,7 +25,7 @@
     <div class="expect"><b>What you should see</b><pre class="out">Sequence Container  — group ordered steps
 Error Scope         — choose behavior after child failure
 Retry Scope         — retry a failed child</pre></div>
-    <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen2.png" width="1910" height="990" loading="lazy" decoding="async" alt="Expanded Containers category showing Sequence Container, Error Scope, and Retry Scope" /><figcaption><b>Three containers, three purposes.</b> Sequence organizes; Error and Retry add failure behavior.</figcaption></figure>
+    <figure class="shot"><img src="/tutorials/studio-04-use-the-palette/palette-containers-workflow-tab-dark.png" width="416" height="940" loading="lazy" decoding="async" alt="Expanded Containers category showing Sequence Container, Error Scope, and Retry Scope" /><figcaption><b>Three containers, three purposes.</b> Sequence organizes; Error and Retry add failure behavior.</figcaption></figure>
   </div>
 
   <div class="step">
@@ -33,7 +35,7 @@ Retry Scope         — retry a failed child</pre></div>
     <pre class="cmd">Sequence Container ← first-job → collapse / expand</pre>
     <div class="expect"><b>What you should see</b><p>The expanded container shows the job on the canvas. The collapsed container keeps a compact child list and displays a count of <code>1</code>.</p></div>
     <div class="shots">
-      <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen3.png" width="1913" height="988" loading="lazy" decoding="async" alt="Expanded Sequence container with first-job placed inside it" /><figcaption><b>Expanded Sequence.</b> The job is visibly positioned inside the orange parent frame.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-13-handle-failure/sequence-container-around-first-job-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="Expanded Sequence container with first-job placed inside it" /><figcaption><b>Expanded Sequence.</b> The job is visibly positioned inside the orange parent frame.</figcaption></figure>
       <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen4.png" width="1912" height="987" loading="lazy" decoding="async" alt="Collapsed Sequence container listing first-job and showing one child" /><figcaption><b>Collapsed Sequence.</b> The child remains attached and is listed in the compact container.</figcaption></figure>
     </div>
   </div>
@@ -55,7 +57,8 @@ Retry Scope         — retry a failed child</pre></div>
     <div class="expect"><b>What you should see</b><p>The selected behavior appears in the container header and in the inspector's <b>On failure</b> field.</p><pre class="out">skip      — skip the failed child path
 continue  — continue after the failure
 fail      — fail the workflow</pre></div>
-    <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen6.png" width="1889" height="983" loading="lazy" decoding="async" alt="Error Scope containing first-job with the skip, continue, and fail policy menu open" /><figcaption><b>Choose explicitly.</b> The Error Scope exposes the failure policy directly above its child.</figcaption></figure>
+    <figure class="shot"><img src="/tutorials/studio-13-handle-failure/error-scope-around-first-job-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="An Error Scope on the workflow canvas, with its On child failure policy set to skip." /><figcaption>The policy sits in the scope header: <b>On child failure</b>.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen6.png" width="1889" height="983" loading="lazy" decoding="async" alt="Error Scope containing first-job with the skip, continue, and fail policy menu open" /><figcaption><b>Choose explicitly.</b> The Error Scope exposes the failure policy directly above its child.</figcaption></figure>
   </div>
 
   <div class="step">
@@ -64,20 +67,31 @@ fail      — fail the workflow</pre></div>
     <h4>Actions</h4><ol><li>Drag <b>Retry Scope</b> onto empty canvas space.</li><li>Move <code>first-job</code> inside the cyan frame.</li><li>Set <b>Retries</b> to <code>3</code>.</li><li>Set <b>delay</b> to <code>5</code> seconds.</li></ol>
     <pre class="cmd">Retry Scope ← first-job → 3 retries × 5 s</pre>
     <div class="expect"><b>What you should see</b><p>The Retry Scope header displays both values and the job remains visibly inside the scope.</p><pre class="out">Retries 3 ×, delay 5 s</pre></div>
-    <figure class="shot"><img src="/tutorials/studio-13-handle-failure/screen7.png" width="1908" height="946" loading="lazy" decoding="async" alt="Retry Scope containing first-job and configured for three retries with a five-second delay" /><figcaption><b>Bound the retries.</b> Both the attempt count and delay belong to the container that owns the child step.</figcaption></figure>
+    <figure class="shot"><img src="/tutorials/studio-13-handle-failure/retry-scope-around-first-job-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="Retry Scope containing first-job and configured for three retries with a five-second delay" /><figcaption><b>Bound the retries.</b> Both the attempt count and delay belong to the container that owns the child step.</figcaption></figure>
   </div>
 <div class="rules">
-  <h5>Tips and traps</h5>
-  <p data-kind="TIP">Use <b>Sequence</b> when the goal is organization, not failure recovery.</p>
-  <p data-kind="TRAP">A node that merely overlaps a container may still be <b>outside</b> it. Confirm that it moves and collapses with the parent.</p>
-  <p data-kind="TIP">Use <b>Remove from container</b> to detach a child without deleting the workflow step.</p>
-  <p data-kind="TRAP">Delete and Remove from container are <b>different actions</b>. Check the context-menu label before selecting it.</p>
-  <p data-kind="TIP">Choose an Error Scope policy deliberately: <b>skip</b>, <b>continue</b>, and <b>fail</b> produce different workflow outcomes.</p>
-  <p data-kind="TRAP">Unlimited or aggressive retries can hide a persistent failure. Keep both the <b>retry count</b> and <b>delay</b> bounded.</p>
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Set the policy once on the container instead of on every step.</p>
+  <p data-kind="TRAP">A policy reaches only what sits <b>inside</b> the container. A node beside it gets <b>nothing</b>.</p>
+  <p data-kind="TRAP">A child that sets its own value keeps it: the container fills the blanks, it does not overrule.</p>
+  <p data-kind="TIP">Collapse a container to keep a long workflow readable, and detach a step to take it out safely.</p>
 </div>
-  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Palette</td><td>Sequence Container, Error Scope, and Retry Scope are visible</td></tr><tr><td>Sequence</td><td><code>first-job</code> stays attached in expanded and collapsed views</td></tr><tr><td>Detachment</td><td>The job remains on the canvas after Remove from container</td></tr><tr><td>Error Scope</td><td><code>skip</code>, <code>continue</code>, and <code>fail</code> are available</td></tr><tr><td>Retry Scope</td><td>Three retries and a five-second delay are visible</td></tr></tbody></table>
-  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The job does not collapse with the Sequence</td><td>It overlaps the frame but is not a child</td><td>Drag it out, then drop it again inside the expanded container</td></tr><tr><td>The job disappears after an action</td><td><b>Delete</b> was selected instead of <b>Remove from container</b></td><td>Undo the deletion, then use the job context menu to detach it</td></tr><tr><td>Error behavior is unexpected</td><td>The wrong On child failure option is selected</td><td>Open the Error Scope menu and confirm skip, continue, or fail</td></tr><tr><td>The retry takes too long</td><td>The retry count or delay is too high</td><td>Reduce the values in the Retry Scope header</td></tr></tbody></table>
-  <h2>5. Next lesson</h2><p>The workflow now survives a failing step. One thing is still fixed in stone: every value it uses is written into a manifest. The last lesson moves those values onto the canvas, where a run can change them as it goes.</p>
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Palette</td><td>Sequence Container, Error Scope, and Retry Scope are visible</td></tr><tr><td>Sequence</td><td><code>first-job</code> stays attached in expanded and collapsed views</td></tr><tr><td>Detachment</td><td>The job remains on the canvas after Remove from container</td></tr><tr><td>Error Scope</td><td><code>skip</code>, <code>continue</code>, and <code>fail</code> are available</td></tr><tr><td>Retry Scope</td><td>Three retries and a five-second delay are visible</td></tr></tbody></table>
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The job does not collapse with the Sequence</td><td>It overlaps the frame but is not a child</td><td>Drag it out, then drop it again inside the expanded container</td></tr><tr><td>The job disappears after an action</td><td><b>Delete</b> was selected instead of <b>Remove from container</b></td><td>Undo the deletion, then use the job context menu to detach it</td></tr><tr><td>Error behavior is unexpected</td><td>The wrong On child failure option is selected</td><td>Open the Error Scope menu and confirm skip, continue, or fail</td></tr><tr><td>The retry takes too long</td><td>The retry count or delay is too high</td><td>Reduce the values in the Retry Scope header</td></tr></tbody></table>
+  <h2>Frequently asked questions</h2>
+  <h3>What are the containers in Hydra Studio?</h3>
+  <p>Sequence, which only groups; Error Scope, which sets what happens when a child fails (skip, continue or fail); and Retry Scope, which sets the number of retries and the delay.</p>
+  <h3>Do containers appear in workflow.yaml?</h3>
+  <p>No. Containers are visual. Their policy is copied onto the enclosed steps, as on_failure or retry, when the YAML is written.</p>
+  <h3>What are the on_failure values?</h3>
+  <p>fail stops the workflow, skip marks the step skipped and continue carries on.</p>
+  <h3>Can a step override its container?</h3>
+  <p>Yes. A child that sets its own value keeps it.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/03-read-the-canvas">Read the Hydra Studio canvas</a></li><li><a href="/studio/12-compose-jobs">Order jobs in a workflow</a></li><li><a href="/studio/14-use-parameters">Use parameters</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>The workflow now survives a failing step. One thing is still fixed in stone: every value it uses is written into a manifest. The last lesson moves those values onto the canvas, where a run can change them as it goes.</p>
   <div class="lesson-nav"><a class="primary" href="/studio/14-use-parameters">Use parameters <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
-  <h4>Close by</h4><ul class="linklist"><li><a href="/cli/serve/">Serve the Hydra API</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/pipeline-yaml">pipeline.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

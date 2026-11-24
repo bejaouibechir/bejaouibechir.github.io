@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: report
+  trigger:
+    type: manual
+  steps:
+    - name: say_report
+      type: action
+      action: log
+      params:
+        message: "Report: all loads finished"

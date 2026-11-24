@@ -1,0 +1,115 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 4</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 4 of 65 · Tour the pages</div><h1>Tour the Hydra Studio pages: Overview, Runs, Templates, Insights and Settings</h1><p class="lead">Studio has six pages in its sidebar. Visit each one once, learn what it is for and where your jobs really live, so you never hunt for a page that does not exist.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Pages</span><span>about 10 minutes</span><span>Studio running</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>Hydra Studio has six pages, all in its sidebar: <b>Overview</b> (your projects), <b>Runs</b> (run history), <b>Templates</b> (ready-made workflows), <b>Insights</b> (run counters), <b>Settings</b> and <b>Help</b>. There is no Jobs page: you edit jobs inside a project.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Open each sidebar page once, read what it shows, and know which one to use for which task.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>Hydra Studio running at <code>http://127.0.0.1:5678</code>. The pictures of this lesson come from a clean Studio with its sample project.</li></ul>
+  <h2>How do I find my way around Hydra Studio?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Start from the Overview</h3>
+    <h4>Objective</h4><p>Know where every project begins.</p>
+    <h4>Actions</h4><ol><li>Select <b>Overview</b> in the sidebar.</li><li>Read the project list on the left.</li><li>Read the <b>Get started</b> card on the right.</li></ol>
+    <pre class="cmd">Sidebar → Overview</pre>
+    <p>The Overview lists your projects, with a search box, and offers three starting actions: <b>Clone a repository</b> (disabled in 0.22, marked coming soon), <b>Open a project</b> for an existing folder, and <b>Create a project</b>. A <b>Links</b> card points to the documentation and GitHub, and a <b>Statistics</b> card counts projects, active runs and the success rate.</p>
+    <div class="expect"><b>What you should see</b><p>A project list and a Get started card. A project you select opens its workflows and jobs.</p><pre class="out">Get started: Clone a repository (disabled) · Open a project · Create a project
+Statistics: Projects · Active runs · Success rate</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/overview-page-start-actions-light.png" width="1440" height="700" loading="lazy" decoding="async" alt="The Overview page of Hydra Studio in the light theme: the project list with one sample project, and the Get started, Links and Statistics cards." /><figcaption>The <b>Overview</b>: projects on the left, actions and statistics on the right.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the Runs page</h3>
+    <h4>Objective</h4><p>Find where runs are recorded.</p>
+    <h4>Actions</h4><ol><li>Select <b>Runs</b>.</li><li>Read the filter tabs above the list.</li></ol>
+    <pre class="cmd">Sidebar → Runs</pre>
+    <p>Runs shows the runs recorded by the server, with a summary count at the right of the title. Five tabs filter the list: <b>All</b>, <b>Running</b>, <b>Success</b>, <b>Failed</b> and <b>Pending</b>. Before any execution it shows an empty state.</p>
+    <div class="expect"><b>What you should see</b><p>On a fresh Studio, the empty state tells you to execute a workflow.</p><pre class="out">0 total · 0 running · 0 success · 0 failed
+No runs
+Execute a workflow to see runs here.</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/runs-page-run-history-dark.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Runs page of Hydra Studio in the dark theme: the All, Running, Success, Failed and Pending filter tabs above an empty state reading No runs." /><figcaption>The <b>Runs</b> page before the first execution.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Browse the templates</h3>
+    <h4>Objective</h4><p>Start from a ready-made workflow instead of a blank canvas.</p>
+    <h4>Actions</h4><ol><li>Select <b>Templates</b>.</li><li>Select <b>View YAML</b> on a card to read it.</li><li>Select <b>Copy YAML</b> to copy it.</li></ol>
+    <pre class="cmd">Sidebar → Templates</pre>
+    <p>Hydra ETL 0.22 ships three templates: <b>CSV → CSV</b> (reads a CSV file, applies a transformation, writes a CSV file), <b>API → Database</b> (fetches data from a REST API and loads it into a database) and <b>Parallel ETL</b> (two extractions run in parallel, then a load that waits for both). Each card shows its YAML and copies it to the clipboard.</p>
+    <div class="expect"><b>What you should see</b><p>Three cards, each with a View YAML and a Copy YAML button.</p><pre class="out">3 ready-to-use workflow templates
+CSV → CSV · API → Database · Parallel ETL</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/templates-page-job-templates-light.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Templates page of Hydra Studio: three cards named CSV to CSV, API to Database and Parallel ETL, each with View YAML and Copy YAML buttons." /><figcaption>The <b>Templates</b> page and its three cards.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Check the Insights counters</h3>
+    <h4>Objective</h4><p>Read what Insights actually measures.</p>
+    <h4>Actions</h4><ol><li>Select <b>Insights</b>.</li><li>Read the four counters and the average duration.</li></ol>
+    <pre class="cmd">Sidebar → Insights</pre>
+    <p>Insights is a small summary of the run history: <b>Total runs</b>, <b>Successful</b>, <b>Failed</b> and <b>Running</b>, plus the <b>average duration</b> in seconds. It reads the same runs as the Runs page, so it stays at zero until something has run.</p>
+    <div class="expect"><b>What you should see</b><p>Four counters and one line. On a fresh Studio, all counters read 0 and the average duration shows a dash.</p><pre class="out">0 Total runs · 0 Successful · 0 Failed · 0 Running
+Average duration: — s</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/insights-page-run-counters-dark.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Insights page of Hydra Studio in the dark theme: four counters reading 0, for total, successful, failed and running runs, and the line Average duration." /><figcaption><b>Insights</b>: counters and average duration.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Open Settings</h3>
+    <h4>Objective</h4><p>Know which settings are global and which belong to a project.</p>
+    <h4>Actions</h4><ol><li>Select <b>Settings</b> at the bottom of the sidebar.</li><li>Compare the <b>Global settings</b> and <b>Project settings</b> tabs.</li></ol>
+    <pre class="cmd">Sidebar → Settings</pre>
+    <p><b>Global settings</b> apply to every project: the number of rows of the data viewer (10 by default), the environments shared by every project on the machine, and the interval at which an open job is compared with its files on disk (5 seconds by default). Environment variables are saved on the machine, not in the browser. <b>Project settings</b> belong to the current project. A later lesson covers environments and secrets in detail.</p>
+    <div class="expect"><b>What you should see</b><p>Two tabs. The first one shows the data viewer, the environments (Common, dev, prod) and the job sync interval.</p><pre class="out">Global settings · Project settings
+Data viewer: 10 rows · Environments: Common, dev, prod · Job files sync: 5 seconds</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/settings-page-global-settings-light.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Settings page of Hydra Studio, Global settings tab: the data viewer row count, the Common, dev and prod environments with a table of variables, and the job files sync interval." /><figcaption><b>Settings</b>, Global settings tab.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Notice Help, and shrink the sidebar</h3>
+    <h4>Objective</h4><p>Know what is not there yet, and win some screen width.</p>
+    <h4>Actions</h4><ol><li>Select <b>Help</b>: read the card.</li><li>Select the <b>‹</b> button at the top of the sidebar to collapse it.</li><li>Select the arrow that appears to expand it again.</li></ol>
+    <pre class="cmd">Sidebar → Help · ‹</pre>
+    <p>Help is a placeholder in 0.22: a single card says that help is coming in a future sprint. The sidebar collapses to a column of icons, and Studio remembers your choice in this browser. The <b>+</b> button next to it returns to the Overview, where you create a project.</p>
+    <div class="expect"><b>What you should see</b><p>The collapsed sidebar keeps the same six entries as icons; hover an icon to read its name.</p><pre class="out">Help — coming in a future sprint</pre>
+      <figure class="shot"><img src="/tutorials/studio-tour-the-pages/sidebar-expanded-five-entries-light.png" width="260" height="640" loading="lazy" decoding="async" alt="The expanded sidebar of Hydra Studio: the Hydra logo with plus, search and collapse buttons, then Overview, Runs, Templates and Insights." /><figcaption>The expanded sidebar.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-tour-the-pages/sidebar-collapsed-icons-only-dark.png" width="260" height="640" loading="lazy" decoding="async" alt="The collapsed sidebar of Hydra Studio in the dark theme: only icons remain, with an arrow at the top to expand it." /><figcaption>The collapsed sidebar.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-tour-the-pages/help-page-studio-help-dark.png" width="700" height="160" loading="lazy" decoding="async" alt="The Help page of Hydra Studio in the dark theme: a single card reading Help, coming in a future sprint." /><figcaption>The <b>Help</b> placeholder.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Jobs and workflows have no sidebar page: open a project from the <b>Overview</b>, then a workflow.</p>
+  <p data-kind="TIP">Collapse the sidebar when you work on a wide canvas. Studio remembers it for this browser.</p>
+  <p data-kind="TRAP">Do not wait for the Runs or Insights page to fill by itself: both stay empty until a workflow or a job has been executed.</p>
+  <p data-kind="TIP">Templates are a quick way to read how a workflow is written: select <b>View YAML</b> before you copy it.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Sidebar entries</td><td>Overview, Runs, Templates, Insights, then Settings and Help</td></tr><tr><td>Overview</td><td>Project list and the Get started card</td></tr><tr><td>Templates</td><td>Three cards: CSV → CSV, API → Database, Parallel ETL</td></tr><tr><td>Insights</td><td>Four counters and an average duration, all empty on a fresh Studio</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>No Jobs page in the sidebar</td><td>Jobs are edited inside a project</td><td>Open a project from the Overview, then <b>Jobs configuration</b></td></tr><tr><td>Runs and Insights show nothing</td><td>No run is recorded yet</td><td>Execute a workflow, then reload the page</td></tr><tr><td>Clone a repository cannot be selected</td><td>The action is disabled in 0.22</td><td>Use <b>Open a project</b> on a cloned folder</td></tr><tr><td>The sidebar shows only icons</td><td>It is collapsed</td><td>Select the arrow at its top to expand it</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What pages does Hydra Studio have?</h3>
+  <p>Hydra ETL 0.22 has six entries in the sidebar: Overview, Runs, Templates and Insights at the top, then Settings and Help at the bottom. Jobs and workflows have no page of their own: you open them from a project on the Overview.</p>
+  <h3>Where are my jobs if there is no Jobs page?</h3>
+  <p>Inside a project. Open the project from the Overview, open a workflow, and use Jobs configuration to edit a job and Workflow configuration to orchestrate jobs.</p>
+  <h3>Why is the Runs page empty?</h3>
+  <p>Runs lists the runs the server has recorded. On a fresh Studio it shows No runs, with the filter tabs All, Running, Success, Failed and Pending, and fills in as soon as a workflow is executed.</p>
+  <h3>Why does Insights show only zeros?</h3>
+  <p>Insights counts the same runs as the Runs page. With no run recorded, Total runs, Successful, Failed and Running read 0 and the average duration shows a dash.</p>
+  <h3>Is the Help page available?</h3>
+  <p>Not yet. In Hydra ETL 0.22 the page holds a single card saying that help is coming in a future sprint. Use the Documentation link on the Overview instead.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/02-check-the-api">Check the Studio API connection</a></li><li><a href="/studio/01-open-a-project">Create a project and its first workflow</a></li><li><a href="/studio/03-read-the-canvas">Read the Studio canvas</a></li><li><a href="/get-started">Get started with Hydra ETL</a></li></ul>
+
+  <h2>Next lesson</h2><p>You know the six pages. The next lesson opens a project and reads its canvas: nodes, ports and edges.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/03-read-the-canvas">Read the canvas <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -1,0 +1,252 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "parameters-workflow-seven-nodes",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The workflow canvas of parameters-workflow: seven nodes in one chain, from set_label to report."
+    },
+    {
+      "name": "dialog-set-label-open",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 0
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Set Param dialog for the step set_label, creating the parameter run_label."
+    },
+    {
+      "name": "dialog-set-region-open",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 1
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Set Param dialog for the step set_region, creating the parameter region."
+    },
+    {
+      "name": "dialog-announce-open",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 2
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Log dialog for the step announce, whose message contains two param placeholders."
+    },
+    {
+      "name": "dialog-switch-region-open",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 4
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Assign Param dialog for the step switch_region, changing region."
+    },
+    {
+      "name": "dialog-report-open",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "dblclick_node": 6
+        },
+        {
+          "wait_ms": 1000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Log dialog for the step report, with the same placeholders after the change."
+    },
+    {
+      "name": "run-workflow-timeline-detail",
+      "path": "/projects/b7c41d05",
+      "theme": "auto",
+      "steps": [
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1200
+        },
+        {
+          "click_text": "Run Workflow"
+        },
+        {
+          "wait_ms": 8000
+        },
+        {
+          "goto": "/runs"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click": "a[href*='/runs/']"
+        },
+        {
+          "wait_ms": 2500
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The run detail page of parameters-workflow with its execution timeline and seven steps."
+    }
+  ]
+}

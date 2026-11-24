@@ -1,0 +1,139 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 46</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 46 of 65 · Fallback workflow</div><h1>Declare a fallback workflow in Hydra ETL Studio</h1><p class="lead">Name a backup workflow and the condition that calls it. Hydra ETL tests the condition just before the main workflow starts.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">Project settings → Execution order</span><span>about 15 minutes</span><span>a project with two workflows</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>To declare a fallback workflow in Hydra ETL, open <b>Project settings → Execution order</b>, select the lifebuoy button on the workflow, pick a replacement workflow and write a condition such as <code>not file_exists('Data/orders.csv')</code>. Save, then Check. Before the workflow starts, Hydra ETL tests the condition and, if it is true, runs the replacement in its place.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Give a workflow a backup, write the condition that switches to it, check the declaration, and see the switch happen in a run. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>A copy of the <code>fallbackproject</code> example, registered in Studio as <code>fallback-demo</code>. <code>wf_load</code> reads <code>Data/orders.csv</code> (20 orders) and writes <code>outputs/orders_clean.csv</code>. <code>wf_load_backup</code> reads <code>Data/orders_backup.csv</code> (8 orders) and writes the same destination. In the copy, <code>wf_load</code> is the only workflow in the thread and <code>orders.csv</code> is renamed to <code>orders.csv.off</code>, so the main file is missing.</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>Two workflows that write the same destination: a main one and a backup. The backup stays <b>outside</b> the thread, so it runs only when it replaces another workflow.</li></ul>
+
+<h2>How do I declare a fallback workflow in Hydra ETL?</h2>
+
+<div class="step">
+  <h3><i>01</i>Open the execution order</h3>
+  <h4>Objective</h4><p>Reach the panel that decides which workflows run, and in what order.</p>
+  <h4>Actions</h4><ol><li>Open the project from the Projects page.</li><li>Select <b>Project settings</b>.</li><li>Stay on <b>Execution order</b>, on the <b>Define</b> tab.</li></ol>
+  <pre class="cmd">Project → Project settings → Execution order → Define</pre>
+  <p>The panel edits <code>workflows/thread.yaml</code>, the file <code>hdrctl run</code> reads. A workflow that is not in the thread is not run by <code>hdrctl run</code>: it appears in the list <b>Not in the thread (not run)</b> below the stages.</p>
+  <div class="expect"><b>What you should see</b><p>One stage holding <code>wf_load</code>, with a lifebuoy button on its row.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/execution-order-before-fallback-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Execution order panel of Project settings with wf_load alone in Stage 1 and the lifebuoy button on its row." /><figcaption>Stage 1 holds <code>wf_load</code>. The lifebuoy button adds a fallback.</figcaption></figure>
+  </div>
+</div>
+
+<div class="step">
+  <h3><i>02</i>Add a fallback to the workflow</h3>
+  <h4>Objective</h4><p>Open the fallback editor of <code>wf_load</code>.</p>
+  <h4>Actions</h4><ol><li>Select the lifebuoy button on the <code>wf_load</code> row.</li><li>Read the editor that opens under the row.</li></ol>
+  <pre class="cmd">wf_load → lifebuoy → Fallback</pre>
+  <p>The button's tooltip reads <b>Add a fallback: another workflow that runs in its place</b>. The editor is a dashed box with a replacement list, a <b>when</b> field and two options.</p>
+  <div class="expect"><b>What you should see</b><p>A box titled <b>Fallback</b>, a <b>replace with</b> list that is still empty, a <b>when</b> field showing an example, and a red message: <b>choose at least one replacement workflow</b>. The message goes away once you pick one.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/fallback-editor-open-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor opened under wf_load, with the replacement list still empty." /><figcaption>The fallback editor, before anything is chosen.</figcaption></figure>
+  </div>
+</div>
+
+<div class="step">
+  <h3><i>03</i>Choose the replacement and write the condition</h3>
+  <h4>Objective</h4><p>Say which workflow replaces <code>wf_load</code>, and when.</p>
+  <h4>Actions</h4><ol><li>Open the <b>+ add a workflow…</b> list and choose <code>wf_load_backup</code>.</li><li>In the <b>when</b> field, type the condition below.</li><li>Wait for the mark at the end of the field.</li></ol>
+  <pre class="cmd">not file_exists('Data/orders.csv')</pre>
+  <p>The field's tooltip says what the condition is for: <b>Checked just before the workflow starts. If true, the first replacement runs instead.</b> So the sentence to write is the situation in which the main workflow must <em>not</em> run. Paths are relative to the project folder.</p>
+  <div class="expect"><b>What you should see</b><p>The replacement as a dashed chip, and a green check mark after the condition. A red cross with a message means Hydra ETL cannot read the condition.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/fallback-condition-valid-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The fallback editor for wf_load with wf_load_backup as replacement and the condition not file_exists('Data/orders.csv') marked valid." /><figcaption>Replacement chosen, condition accepted.</figcaption></figure>
+  </div>
+</div>
+
+<div class="step">
+  <h3><i>04</i>Preview the result</h3>
+  <h4>Objective</h4><p>See the declaration as a diagram before you save it.</p>
+  <h4>Actions</h4><ol><li>Select the <b>Preview</b> tab.</li><li>Find the dashed block under <code>wf_load</code>.</li></ol>
+  <pre class="cmd">Execution order → Preview</pre>
+  <p>The preview draws the replacement as a dashed block under the workflow it replaces, with the start of the condition on the link between them. Select a block to jump back to the editor.</p>
+  <div class="expect"><b>What you should see</b><p><code>wf_load</code> in the stage, <code>wf_load_backup</code> in a dashed block under it.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/fallback-preview-tab-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Preview tab drawing wf_load with a dashed fallback block for wf_load_backup and the condition on the link." /><figcaption>The backup is drawn under the workflow it replaces.</figcaption></figure>
+  </div>
+</div>
+
+<div class="step">
+  <h3><i>05</i>Save, then check the project</h3>
+  <h4>Objective</h4><p>Write the declaration to <code>thread.yaml</code> and have Hydra ETL validate it.</p>
+  <h4>Actions</h4><ol><li>Select <b>Save</b> (it reads <b>Saved</b> once written).</li><li>Select <b>Check</b>.</li><li>Read the result under the panel.</li></ol>
+  <pre class="cmd">Save → Check</pre>
+  <p>The same declaration is plain YAML. This is the form <code>hdrctl</code> reads, validated with Hydra ETL 0.22.0:</p>
+  <pre class="out">thread:
+  - mode: sequential
+    workflows:
+      - name: wf_load
+        active: true
+        fallback:
+          use: [wf_load_backup]
+          when: "not file_exists('Data/orders.csv')"</pre>
+  <p>From a terminal, <code>hdrctl run . --dry-run</code> shows the plan without writing anything. The fallback appears under its workflow:</p>
+  <pre class="out">Execution plan
+Stage 1/1 — sequential
+   •  wf_load  (1: load_orders)
+      ↪  fallback: wf_load_backup (if not file_exists('Data/orders.csv'))
+
+✅ Dry run OK: the project is valid. Nothing was executed.</pre>
+  <div class="expect"><b>What you should see</b><p>The button reads <b>Saved</b> and a green line under the panel reads <b>Ready: wf_load</b>.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/fallback-check-ready-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Check result of the Execution order panel after saving the fallback." /><figcaption>Check validates the project, including the fallback.</figcaption></figure>
+  </div>
+</div>
+
+<div class="step">
+  <h3><i>06</i>Run it and read the switch</h3>
+  <h4>Objective</h4><p>Watch the backup take over when the main file is missing.</p>
+  <h4>Actions</h4><ol><li>Make sure <code>Data/orders.csv</code> is absent (in this project it is renamed to <code>orders.csv.off</code>).</li><li>Select <b>Run project</b> and open the run it creates.</li><li>Look for the line that says which workflow ran.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>In a terminal the same switch is one line, then the backup runs under its own name:</p>
+  <pre class="out">↪  Fallback: wf_load → wf_load_backup — file_exists('Data/orders.csv') = false (not found)
+▶  Workflow  wf_load_backup  (fallback, in place of wf_load)
+   ✓  Step 'load_orders_backup' OK (&lt;duration&gt;)
+✓  Workflow 'wf_load_backup' OK (&lt;duration&gt;)</pre>
+  <p>With <code>Data/orders.csv</code> present, the same command runs <code>wf_load</code> and prints no fallback line. <code>outputs/orders_clean.csv</code> then holds 20 orders; after the switch it holds the 8 orders of the backup.</p>
+  <div class="expect"><b>What you should see</b><p>One step, <b>wf_load_backup — fallback of wf_load</b>, with an orange badge <b>fallback · condition true</b>. <code>wf_load</code> itself does not run, and the run counts <b>1 ok / 1</b>.</p>
+      <figure class="shot"><img src="/tutorials/studio-declare-a-fallback-workflow/run-project-fallback-badge-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page where wf_load_backup ran in place of wf_load with a fallback badge." /><figcaption>The run page names the replacement, the workflow it replaced and why.</figcaption></figure>
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Keep the backup <b>outside</b> the thread. <code>hdrctl workflow list</code> then marks it <code>fallback of wf_load (runs only in its place)</code>.</p>
+  <p data-kind="TIP">Run <code>hdrctl run . --dry-run</code> after every change: the <code>↪ fallback</code> line proves the declaration was read.</p>
+  <p data-kind="TRAP">A fallback tests a condition <b>before</b> the workflow starts. It does not catch a failure inside the workflow unless you tick <b>also after a failure</b> (<code>on_failure: true</code>).</p>
+  <p data-kind="TRAP">A backup that writes somewhere else is allowed, but Hydra ETL warns you: <code>fallback … writes to … instead of …</code>.</p>
+</div>
+
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+  <tr><td>Panel</td><td><code>wf_load</code> has a fallback to <code>wf_load_backup</code> and a green condition</td></tr>
+  <tr><td>YAML</td><td>A <code>fallback</code> block with <code>use</code> and <code>when</code> in <code>thread.yaml</code></td></tr>
+  <tr><td>Dry run</td><td>A <code>↪ fallback</code> line under <code>wf_load</code></td></tr>
+  <tr><td>Run, file missing</td><td><code>↪ Fallback: wf_load → wf_load_backup</code>, then the backup runs</td></tr>
+  <tr><td>Run, file present</td><td><code>wf_load</code> runs and no fallback line appears</td></tr>
+</tbody></table>
+
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+  <tr><td>A red cross after the condition</td><td>The condition is not valid</td><td>Read the message under the field and fix the function name or the quotes</td></tr>
+  <tr><td>The backup never runs</td><td>The condition is false, for example the file exists</td><td>Run with <code>hdrctl run . -v</code> and read the <code>fallback not needed</code> line</td></tr>
+  <tr><td>The backup is not in the replacement list</td><td>The workflow does not exist in <code>workflows/</code></td><td>Create it, then reopen the list</td></tr>
+  <tr><td>The backup also runs on its own</td><td>It is still in the thread</td><td>Remove it from the stage with the <b>×</b> button; it stays on disk</td></tr>
+</tbody></table>
+
+<h2>Frequently asked questions</h2>
+<h3>What is a fallback workflow in Hydra ETL?</h3>
+<p>A workflow that runs only in place of another one, when a condition written in <code>thread.yaml</code> is true just before the main workflow would start.</p>
+<h3>Where is a fallback declared?</h3>
+<p>In <code>workflows/thread.yaml</code>, as a <code>fallback</code> block with <code>use</code> (the replacement workflows) and <code>when</code> (the condition) under the workflow it protects.</p>
+<h3>Does a fallback run when a workflow fails?</h3>
+<p>Only if the fallback sets <code>on_failure: true</code>, which Studio shows as the <b>also after a failure</b> checkbox. Without it, the condition is the only trigger.</p>
+<h3>Can I test a fallback without running anything?</h3>
+<p>Yes. <code>hdrctl run . --dry-run</code> prints the plan, including a <code>↪ fallback</code> line under each workflow that has one, and writes nothing.</p>
+
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/12-compose-jobs">Compose jobs into a workflow</a></li><li><a href="/studio/13-handle-failure">Organize steps with containers</a></li><li><a href="/studio/10-run-the-job">Run a job</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+
+<h2>Next lesson</h2><p>The condition used here is one line. The next lesson goes through the other functions you can test, and the options <code>on_failure</code> and <code>on_probe_error</code>.</p>
+<div class="lesson-nav"><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

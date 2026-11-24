@@ -1,0 +1,12 @@
+steps:
+  - cast:
+      mapping:
+        qty: int
+        price: float
+  - script:
+      inputs: [qty, price]
+      outputs:
+        total: float
+      code: |
+        import os
+        total = qty * price

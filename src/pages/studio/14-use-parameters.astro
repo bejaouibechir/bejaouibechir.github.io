@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-14-use-parameters.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Use parameters in Hydra Studio: Set Param and Assign Param", description: "Use parameters in Hydra Studio: write {{ param:name }} once, create it with Set Param, change it with Assign Param. Tested on Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/14-use-parameters/',
+  name: article.headline,
+  steps: ["Read the shape of the workflow", "Separate the jobs from the actions", "Create the first parameter", "Create the parameter the jobs will read", "Read a parameter back", "Change a value mid-run", "Read it back after the change", "Run it and read the timeline", "Watch the value change in the log", "Look at what the jobs wrote"],
+  faq: [
+    ["What is the syntax of a parameter in Hydra?", "{{ param:name }}, for example {{ param:region }}."],
+    ["What is the difference between Set Param and Assign Param?", "Set Param creates a runtime parameter and fails if it already exists. Assign Param changes the value of an existing one."],
+    ["Can a value change in the middle of a run?", "Yes. The workflow can assign a new value between two jobs, and the second job then reads the new value."],
+    ["Where do I learn about environments and secrets?", "They are covered in the lessons on environments and secrets, coming soon in the Settings block."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Parameters", '/studio/14-use-parameters/']],
+});
 ---
 
-<BaseLayout title="Lesson 14 — One placeholder, two values, two results" description="Create a runtime parameter from the workflow canvas, read it from two jobs, and change it between them.">
+<BaseLayout title="Use parameters in Hydra Studio: Set Param and Assign Param" exactTitle="Hydra Studio Parameters: Set Param, Assign Param | Hydra ETL" description="Use parameters in Hydra Studio: write {{ param:name }} once, create it with Set Param, change it with Assign Param. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

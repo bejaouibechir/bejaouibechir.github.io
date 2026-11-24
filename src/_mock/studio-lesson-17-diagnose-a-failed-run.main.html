@@ -1,0 +1,118 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 17</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 17 of 65 · Diagnose a failure</div><h1>Diagnose a failed Hydra run in Studio</h1><p class="lead">When a Hydra run fails, Studio opens the failing step for you. Read the run error, the timeline and the traceback, then decide between fixing the cause and running again.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Runs</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A failed run in Studio shows a red <b>Run error</b>, a timeline, and the failing step already open with its traceback. The workflows after it are marked skipped. Read the message, then fix the cause, or use <b>Run again</b> only if the failure may be temporary.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Make a run fail on purpose, find the failing step in the terminal and in Studio, and decide what to do.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 with Studio running: <code>hdrctl serve</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>.</li></ul>
+  <h2>How do I diagnose a failed run?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Make a run fail on purpose</h3>
+    <h4>Objective</h4><p>Have a failure to read.</p>
+    <h4>Actions</h4><ol><li>Save the file below as <code>workflows\boom.yaml</code>.</li><li>Put it between two workflows in <code>workflows\thread.yaml</code>.</li><li>In a terminal, run <code>hdrctl run .</code> from the project folder.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>The <code>boom</code> workflow has one Python step that raises an error.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: boom
+  trigger:
+    type: manual
+  steps:
+    - name: fail_on_purpose
+      type: action
+      action: python
+      params:
+        script: |
+          raise RuntimeError("boom")</pre><p>The thread runs <code>prepare</code>, <code>boom</code>, then <code>report</code>:</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+      - name: boom
+      - name: report</pre>
+    <div class="expect"><b>What you should see</b><p><code>prepare</code> succeeds, <code>boom</code> fails with its traceback, and <code>report</code> does not run.</p><pre class="out">Workflow  prepare
+  ✓ Step 'say_prepare' OK (0.0s)
+Workflow  boom
+  ✗ Step 'fail_on_purpose' FAILED: Python script exited with code 1: RuntimeError: boom
+  | Traceback (most recent call last):
+  |   File "<string>", line 1, in <module>
+  |     raise RuntimeError("boom")
+  | RuntimeError: boom
+Workflow 'boom' failed (0.2s): Step 'fail_on_purpose' failed: Python script exited with code 1: RuntimeError: boom
+report — not run (a previous workflow failed)
+Project 'diag-demo' failed after 0.2s — failed: boom</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Open the failed run in Studio</h3>
+    <h4>Objective</h4><p>Let Studio point at the failing step.</p>
+    <h4>Actions</h4><ol><li>Click <b>Runs</b> in the sidebar.</li><li>Click the run named after your project, with the Failed badge.</li></ol>
+    <pre class="cmd">Runs → the failed run</pre>
+    <p>The page opens on the failing step. From top to bottom: the <b>Failed</b> badge, four cards (started, finished, duration, steps), a red <b>Run error</b> with the short reason, an execution timeline with the failing workflow in red, then the steps. In our test the run was <i>1 ok · 1 skip / 3</i>.</p>
+    <div class="expect"><b>What you should see</b><p>The step <code>boom</code> is open, with a red message and five log lines.</p><pre class="out">Run error   failed: boom
+#2 boom   0.145s   5 lines
+Step 'fail_on_purpose' failed: Python script exited with code 1: RuntimeError: boom
+#3 report   skipped</pre>
+      <figure class="shot"><img src="/tutorials/studio-diagnose/diagnose-failed-run-detail-error-dark.png" width="1232" height="930" loading="lazy" decoding="async" alt="The detail page of a failed project run in Hydra Studio: a Failed badge, the run error, an execution timeline, and the failing step opened with its traceback while the next workflow is marked as skipped." /><figcaption>The failed run: the failing step is open and the next one is skipped.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read the three clues</h3>
+    <h4>Objective</h4><p>Turn the screen into a diagnosis.</p>
+    <h4>Actions</h4><ol><li>Read the red message of the step: it names the step and the cause.</li><li>Read the traceback below it: the last line is the exception, here <code>RuntimeError: boom</code>.</li><li>Open the skipped step: its only line says that a previous workflow failed.</li></ol>
+    <pre class="cmd">boom</pre>
+    <p>The message tells <i>what</i> failed (<code>fail_on_purpose</code>), the traceback tells <i>where</i> (line 1 of the script) and the skipped step tells <i>what did not happen</i> because of it (<code>report</code>). Fix a problem in the script, the file or the data, not in the steps that were skipped.</p>
+    <div class="expect"><b>What you should see</b><p>The same three facts in Studio and in the terminal.</p><pre class="out">what: Step 'fail_on_purpose' failed
+where: File "<string>", line 1
+why: RuntimeError: boom</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Find it again, then decide</h3>
+    <h4>Objective</h4><p>Filter the list and choose between fixing and running again.</p>
+    <h4>Actions</h4><ol><li>On <b>Runs</b>, click the <b>Failed</b> tab.</li><li>After fixing the cause, click the replay button of the row (<b>Run again</b>).</li></ol>
+    <pre class="cmd">Runs → Failed</pre>
+    <p>The <b>Failed</b> tab keeps only failed runs. The replay button at the end of the row starts a new run of the same path. Use it after a fix, or when the cause may be temporary. If the message names your script, a file or a column, running again changes nothing: fix the cause first.</p>
+    <div class="expect"><b>What you should see</b><p>One row with a Failed badge and a replay icon.</p><pre class="out">project:diag-demo   Failed   2/3   0.2s   ↻</pre>
+      <figure class="shot"><img src="/tutorials/studio-diagnose/diagnose-runs-list-failed-filter-light.png" width="1232" height="300" loading="lazy" decoding="async" alt="The Runs page of Hydra Studio filtered on Failed: one failed project run with its steps count, start time, duration and the replay button at the end of the row." /><figcaption>The Failed filter and the replay button.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Start at the failing step, never at the last step: the later ones are only skipped.</p>
+  <p data-kind="TIP">Copy the red message with its step name into your notes before fixing; it is the quickest search term later.</p>
+  <p data-kind="TRAP">Do not run again in a loop. A deterministic failure, such as a script error, repeats exactly.</p>
+  <p data-kind="TRAP">After a restart of <code>hdrctl serve</code> the runs list is empty: copy what you need first. See <a href="/studio/read-the-insights-statistics">Read the Insights statistics</a>.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Terminal</td><td>Step ... FAILED, then the traceback, then report not run</td></tr><tr><td>Studio</td><td>Run error, timeline and the failing step open</td></tr><tr><td>Skipped</td><td>Later workflows say a previous workflow failed</td></tr><tr><td>Filter</td><td>The Failed tab lists failed runs only</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The run list is empty</td><td>The server restarted, or the run was started in a terminal</td><td>Start the run again from Studio</td></tr><tr><td>No traceback appears</td><td>The step failed before running a script</td><td>Read the message of the step</td></tr><tr><td>Run again fails the same way</td><td>The cause was not temporary</td><td>Fix the script, file or data first</td></tr><tr><td>A later step looks broken</td><td>It was skipped</td><td>Fix the first failure</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I find out why a Hydra run failed?</h3>
+  <p>Open the run in Studio: Runs, then the run itself. The failing step opens by itself and shows a red error message and its log lines. In a terminal, the same message appears on the Step ... FAILED line of hdrctl run.</p>
+  <h3>What happens to the workflows after the one that failed?</h3>
+  <p>They do not run. In our test, report came after boom in the thread, and Studio marked it skipped with the log line not run: a previous workflow failed. hdrctl run printed the same reason.</p>
+  <h3>Where is the Python traceback?</h3>
+  <p>In the log of the failing step. Our script raised RuntimeError, and the log shows the traceback with the line of the script and the exception name, in the Studio run and in the terminal.</p>
+  <h3>Should I run again or fix the cause?</h3>
+  <p>Run again only when the cause may disappear by itself, such as a busy service. When the message names your script, a file or a column, a second run fails the same way: fix the cause first. This is our recommendation, not a Hydra rule.</p>
+  <h3>How do I run a failed workflow again from Studio?</h3>
+  <p>The Runs page has a replay button at the end of each row, titled Run again. It starts a new run of the same workflow or project. The old run stays in the list.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/11-review-a-run">Review a run</a></li><li><a href="/studio/declare-a-fallback-workflow">Declare a fallback workflow</a></li><li><a href="/studio/set-timeouts-on-workflows">Set timeouts on workflows</a></li><li><a href="/studio/read-the-insights-statistics">Read the Insights statistics</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can read a failure from the message to the cause. Next, let a project recover by itself with a fallback workflow.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/declare-a-fallback-workflow">Declare a fallback <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

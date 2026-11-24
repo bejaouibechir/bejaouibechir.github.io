@@ -1,0 +1,26 @@
+[
+  {
+    "file": "api-online-top-bar-light.png",
+    "name": "api-online-top-bar",
+    "theme": "light",
+    "alt": "Hydra Studio top bar with the API online indicator in green, next to the theme switcher."
+  },
+  {
+    "file": "api-offline-top-bar-dark.png",
+    "name": "api-offline-top-bar",
+    "theme": "dark",
+    "alt": "Hydra Studio top bar with the API offline indicator in red after the backend stopped answering."
+  },
+  {
+    "file": "api-online-overview-page-dark.png",
+    "name": "api-online-overview-page",
+    "theme": "dark",
+    "alt": "Hydra Studio Overview page with the API online and the project list loaded from the backend."
+  },
+  {
+    "file": "api-offline-overview-page-light.png",
+    "name": "api-offline-overview-page",
+    "theme": "light",
+    "alt": "Hydra Studio Overview page with the API offline: the sidebar still renders but no project data loads."
+  }
+]

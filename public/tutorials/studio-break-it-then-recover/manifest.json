@@ -1,0 +1,8 @@
+[
+  {
+    "file": "run-project-finalize-undone-replaced-light.png",
+    "name": "run-project-finalize-undone-replaced",
+    "theme": "light",
+    "alt": "The run detail page of the resilient pipeline with wf_report failed, undone and replaced by the quarantine workflow."
+  }
+]

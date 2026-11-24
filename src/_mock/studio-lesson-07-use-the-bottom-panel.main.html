@@ -1,0 +1,100 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 7</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 7 of 65 · Use the bottom panel</div><h1>Use the Hydra Studio bottom panel: Logs, Parameters, Secrets and Terminal</h1><p class="lead">Under the canvas sits one panel with four tabs. Open it, read what each tab does, and run a command without leaving Studio.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Logs · Terminal</span><span>about 10 minutes</span><span>an open job</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>The Hydra Studio bottom panel has four tabs: <b>LOGS</b> for the last run, <b>PARAMETERS</b> for project parameters, <b>SECRETS</b> for secret values and <b>TERMINAL</b> for a shell. Open it with the Logs panel button in the canvas toolbar.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Open the bottom panel, visit its four tabs, and run <code>hdrctl --version</code> in the Studio terminal.</p>
+  <div class="callout"><b>Course project</b><p>Keep one cumulative Studio project named <code>studio-course</code>, one manual workflow named <code>first-workflow</code>, and one job named <code>first-job</code>. Each lesson builds on the state saved by the previous one.</p></div>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>An open job in Studio, for example <code>first-job</code> of <code>studio-course</code>. The lesson Review a run reads the logs of a real run in detail.</li></ul>
+  <h2>How do I use the bottom panel in Hydra Studio?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the panel</h3>
+    <h4>Objective</h4><p>Find the one button that brings the panel up.</p>
+    <h4>Actions</h4><ol><li>Open a job in the editor.</li><li>In the vertical toolbar beside the canvas, select the terminal icon: its title is <b>Logs panel</b>.</li><li>Read the four tab names.</li></ol>
+    <pre class="cmd">Toolbar → Logs panel</pre>
+    <p>The panel docks under the canvas and above the job tabs. Running a job or a workflow opens it as well, on the LOGS tab. The cross at the right of the tab row closes it; the thin line on its top edge resizes it by dragging.</p>
+    <div class="expect"><b>What you should see</b><p>A panel with the tabs LOGS, PARAMETERS, SECRETS and TERMINAL. LOGS is selected.</p><pre class="out">LOGS  PARAMETERS  SECRETS  TERMINAL</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-open-with-toolbar-button-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Hydra Studio job editor in the light theme with the bottom panel open under the canvas, showing the LOGS tab, and the Logs panel button in the vertical toolbar." /><figcaption>The panel open under the canvas of <code>first-job</code>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the Logs tab</h3>
+    <h4>Objective</h4><p>Know where the output of a run appears.</p>
+    <h4>Actions</h4><ol><li>Select the <b>LOGS</b> tab.</li><li>Read the message in the empty panel.</li></ol>
+    <pre class="cmd">BOTTOM PANEL → LOGS</pre>
+    <p>Before any run, the tab invites you to run something. After a run it shows the log of the last execution, titled with the workflow name, with a <b>SUCCESS</b> or <b>FAILED</b> badge beside the tabs.</p>
+    <div class="expect"><b>What you should see</b><p>An empty panel with a single line.</p><pre class="out">Run a job or workflow to view logs.</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-logs-empty-state-light.png" width="1232" height="500" loading="lazy" decoding="async" alt="The LOGS tab of the Hydra Studio bottom panel in the light theme, empty, with the message Run a job or workflow to view logs." /><figcaption>The <b>LOGS</b> tab before the first run.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Open the Parameters tab</h3>
+    <h4>Objective</h4><p>See where project parameters are declared.</p>
+    <h4>Actions</h4><ol><li>Select the <b>PARAMETERS</b> tab.</li><li>Read the columns: name, type, default, one per environment, required and description.</li></ol>
+    <pre class="cmd">BOTTOM PANEL → PARAMETERS</pre>
+    <p>A parameter is declared once and can take a different value per environment. The default is written to <code>parameters.yaml</code>, and each environment column to <code>environments/&lt;env&gt;.yaml</code>. An empty cell inherits the default. Use a parameter as <code>{{ param:name }}</code> in any field, or <code>params["name"]</code> in a Script node. <b>Add parameter</b> creates a row and <b>Save</b> writes the files. A later lesson builds a full example.</p>
+    <div class="expect"><b>What you should see</b><p>On a project without parameters, the table is empty and offers Add parameter and Save.</p><pre class="out">No parameter yet.
+[ + Add parameter ]  [ Save ]</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-parameters-tab-dark.png" width="1232" height="500" loading="lazy" decoding="async" alt="The PARAMETERS tab of the Hydra Studio bottom panel in the dark theme, with an empty table and the Add parameter and Save buttons." /><figcaption>The <b>PARAMETERS</b> tab of a project without parameters.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Open the Secrets tab</h3>
+    <h4>Objective</h4><p>See where secret values live, and why they never show.</p>
+    <h4>Actions</h4><ol><li>Select the <b>SECRETS</b> tab.</li><li>Read the explanation above the list.</li><li>Open the <b>SECRETS FOR</b> list to see the scopes.</li></ol>
+    <pre class="cmd">BOTTOM PANEL → SECRETS</pre>
+    <p>Secrets are stored in <code>.hydra/secrets</code>, a file ignored by Git. Use one as <code>${SECRET:name}</code> in any field. An environment variable with the same name in upper case (<code>db.password</code> becomes <code>DB_PASSWORD</code>) wins over the file. Values are never displayed: typing a new value replaces the old one. A secret of an environment wins over the common one when a run uses that environment.</p>
+    <div class="expect"><b>What you should see</b><p>An empty list and two fields, name and value, with an Add button.</p><pre class="out">SECRETS FOR  Common (all environments)   .hydra/secrets
+No secret yet.</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-secrets-tab-light.png" width="1232" height="500" loading="lazy" decoding="async" alt="The SECRETS tab of the Hydra Studio bottom panel in the light theme: the Common environment scope, the explanation of the .hydra/secrets file, an empty list and the name, value and Add controls." /><figcaption>The <b>SECRETS</b> tab of a project without secrets.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Run a command in the Terminal</h3>
+    <h4>Objective</h4><p>Use a shell without leaving the editor.</p>
+    <h4>Actions</h4><ol><li>Select the <b>TERMINAL</b> tab.</li><li>Select inside the terminal and type <code>hdrctl --version</code>.</li><li>Press <b>Enter</b>.</li></ol>
+    <pre class="cmd">hdrctl --version</pre>
+    <p>The terminal opens a shell tab named after the shell, <b>pwsh 1</b> on Windows. The <b>+</b> at the right of the tabs opens another terminal and the cross closes them all. A right-click offers Clear, Copy, Paste and Save. Selecting a single Bash, PowerShell or SSH action node on the workflow canvas also shows a shortcut that opens the terminal on that shell.</p>
+    <div class="expect"><b>What you should see</b><p>The version of Hydra ETL, the Python version, then a new prompt. The prompt of the picture was shortened for the page.</p><pre class="out">hydra 0.22.0  |  Hydra ETL Framework  |  Python 3.13.7</pre>
+      <figure class="shot"><img src="/tutorials/studio-bottom-panel/bottom-panel-terminal-tab-dark.png" width="1232" height="500" loading="lazy" decoding="async" alt="The TERMINAL tab of the Hydra Studio bottom panel in the dark theme, a pwsh 1 tab showing the command hdrctl --version and its result, Hydra ETL 0.22.0 on Python 3.13.7." /><figcaption>The <b>TERMINAL</b> tab after <code>hdrctl --version</code>.</figcaption></figure>
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Keep the panel open while you build a job: running it switches to the LOGS tab by itself.</p>
+  <p data-kind="TIP">Use the Terminal for quick checks such as <code>hdrctl validate</code>, so the log of the editor stays on the LOGS tab.</p>
+  <p data-kind="TRAP">A secret value is never shown again once saved. Keep your own copy of the value, or type a new one to replace it.</p>
+  <p data-kind="TIP">The splitter on the top edge of the panel resizes it. Give the canvas the room when you do not need the panel.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Panel opened</td><td>Four tabs: LOGS, PARAMETERS, SECRETS, TERMINAL</td></tr><tr><td>Logs tab</td><td>Empty message before the first run</td></tr><tr><td>Parameters and Secrets tabs</td><td>Both empty on a project without parameters or secrets</td></tr><tr><td>Terminal</td><td><code>hdrctl --version</code> prints 0.22.0</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The panel does not open</td><td>The panel is closed</td><td>Select the <b>Logs panel</b> button in the vertical toolbar</td></tr><tr><td>The Terminal tab stays empty</td><td>The shell has not started yet</td><td>Wait a few seconds, then select inside the terminal</td></tr><tr><td>A secret appears empty</td><td>Values are never displayed</td><td>Type a new value to replace it</td></tr><tr><td>No Logs panel button on the toolbar</td><td>The job editor is not open</td><td>Open a job from the workflow</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I open the bottom panel in Hydra Studio?</h3>
+  <p>Select the Logs panel button, the terminal icon at the bottom of the vertical toolbar beside the canvas. The panel also opens by itself when you run a job or a workflow. The cross at its right edge closes it.</p>
+  <h3>What are the four tabs of the bottom panel?</h3>
+  <p>LOGS shows the log of the last run, PARAMETERS edits the project parameters, SECRETS stores secret values for the project, and TERMINAL opens a shell inside Studio.</p>
+  <h3>Where does Studio store the parameters and the secrets?</h3>
+  <p>Parameter defaults are written to parameters.yaml and each environment column to environments/<env>.yaml. Secrets go to .hydra/secrets, a file that Git ignores, and their values are never displayed.</p>
+  <h3>How do I use a parameter or a secret in a field?</h3>
+  <p>Write {{ param:name }} for a parameter, or params["name"] in a Script node, and ${SECRET:name} for a secret. An environment variable named in upper case, such as DB_PASSWORD for db.password, wins over the file.</p>
+  <h3>Can I resize the bottom panel?</h3>
+  <p>Yes. Drag the thin splitter on its top edge. In Hydra ETL 0.22 the height stays between 120 and 520 pixels.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/tour-the-pages">Tour the Studio pages</a></li><li><a href="/studio/03-read-the-canvas">Read the Studio canvas</a></li><li><a href="/studio/11-review-a-run">Review a run</a></li><li><a href="/studio/14-use-parameters">Use parameters</a></li></ul>
+
+  <h2>Next lesson</h2><p>You know the whole editor frame. The next lessons open a job and build it step by step.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/05-add-a-source">Create a job <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

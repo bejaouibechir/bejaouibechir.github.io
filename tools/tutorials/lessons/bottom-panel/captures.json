@@ -1,0 +1,245 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "bottom-panel-logs-empty-state",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 400,
+        "width": 1232,
+        "height": 500
+      },
+      "alt": "The bottom panel of Hydra Studio opened under the canvas, with the LOGS tab selected and the message Run a job or workflow to view logs."
+    },
+    {
+      "name": "bottom-panel-parameters-tab",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('PARAMETERS')"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 400,
+        "width": 1232,
+        "height": 500
+      },
+      "alt": "The PARAMETERS tab of the Hydra Studio bottom panel, listing parameter declarations with their default and per-environment values."
+    },
+    {
+      "name": "bottom-panel-secrets-tab",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('SECRETS')"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 400,
+        "width": 1232,
+        "height": 500
+      },
+      "alt": "The SECRETS tab of the Hydra Studio bottom panel, with a name field and a value field to add a secret."
+    },
+    {
+      "name": "bottom-panel-terminal-tab",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('TERMINAL')"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\studio-course> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl --version"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 3000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 400,
+        "width": 1232,
+        "height": 500
+      },
+      "alt": "The TERMINAL tab of the Hydra Studio bottom panel running hdrctl --version in a PowerShell terminal."
+    },
+    {
+      "name": "bottom-panel-open-with-toolbar-button",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Hydra Studio job editor with the bottom panel open under the canvas and the Logs panel button highlighted in the vertical toolbar."
+    }
+  ]
+}

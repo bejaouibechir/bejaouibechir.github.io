@@ -1,13 +1,15 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 14</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 14 of 14 · Use parameters</div><h1>One placeholder, two values, two results</h1><p class="lead">Two jobs contain the <b>same</b> line. They produce different files, because the workflow changed a value between them.</p></div>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 28</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 28 of 65 · Use parameters</div><h1>Use parameters in Hydra Studio: Set Param and Assign Param</h1><p class="lead">Two jobs contain the <b>same</b> line. They produce different files, because the workflow changed a value between them.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 4 November 2026 · Last verified 22 November 2026 · Tested with Hydra ETL 0.22.0 (Studio source and API checks on Linux)</p></div>
 <div class="lesson-meta"><span class="mono">Set Param · Assign Param</span><span>about 25 minutes</span><span>a workflow that runs</span></div>
 <section class="doc">
-  <h2>1. Objective</h2>
+  <div class="callout"><b>Quick answer</b><p>To use a parameter in Hydra Studio, write <code>{{ param:region }}</code> in a manifest, create the value with a <b>Set Param</b> action and change it later with an <b>Assign Param</b> action. Jobs that run after the change read the new value, so one manifest produces two different results in a single workflow run.</p></div>
+  <h2>What will you learn in this lesson?</h2>
   <h3>Goal</h3><p>Stop hard-coding values into manifests. Write <code>{{ param:region }}</code> once, let the workflow decide what it means, and change that meaning halfway through a run.</p>
   <div class="callout"><b>A ready-made workflow</b><p>This lesson uses <code>parameters_demo</code>, a project that ships with the engine under <code>test_scenarios</code>. Open it with <b>Open a project</b> — everything below is already wired, so you can read rather than type. Rebuild it any time with <code>python build_demo.py</code>.</p></div>
-  <h3>Prerequisites</h3><ul><li>Hydra API started with <code>hdrctl serve</code>.</li><li>Studio started from <code>Hydra/studio</code> with <code>npm run dev</code>.</li><li>A workflow you have already run once.</li></ul>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A workflow you have already run once.</li></ul>
 
-  <h2>2. Steps</h2>
+  <h2>How do I use parameters in a Hydra Studio workflow?</h2>
 
   <div class="step">
     <h3><i>01</i>Read the shape of the workflow</h3>
@@ -19,7 +21,7 @@
 
 set_label → set_region → announce → filter-orders
           → switch_region → summarize-orders → report</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen1.png" width="1912" height="983" loading="lazy" decoding="async" alt="The workflow canvas showing seven nodes in one chain: set_label, set_region, announce, filter-orders, switch_region, summarize-orders and report." /><figcaption>Seven nodes, six edges. The order is the whole point — a parameter only exists for the steps that follow it.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/parameters-workflow-seven-nodes-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The workflow canvas showing seven nodes in one chain: set_label, set_region, announce, filter-orders, switch_region, summarize-orders and report." /><figcaption>Seven nodes, six edges. The order is the whole point — a parameter only exists for the steps that follow it.</figcaption></figure>
     </div>
   </div>
 
@@ -53,7 +55,7 @@ set_label → set_region → announce → filter-orders
   STEP NAME        set_label
   PARAMETER NAME * run_label
   VALUE *          demo-run</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen3.png" width="1902" height="944" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_label, with parameter name run_label and value demo-run." /><figcaption>Three fields, and a sentence in the header that tells you exactly when this action fails.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/dialog-set-label-open-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_label, with parameter name run_label and value demo-run." /><figcaption>Three fields, and a sentence in the header that tells you exactly when this action fails.</figcaption></figure>
     </div>
   </div>
 
@@ -68,7 +70,7 @@ set_label → set_region → announce → filter-orders
   PARAMETER NAME * region
   VALUE *          north
   TYPE             str</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen4.png" width="1912" height="944" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_region, with parameter name region and value north." /><figcaption>The value that <code>filter-orders</code> is about to read, written on the canvas rather than in a manifest.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/dialog-set-region-open-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Set Param dialog for the step set_region, with parameter name region and value north." /><figcaption>The value that <code>filter-orders</code> is about to read, written on the canvas rather than in a manifest.</figcaption></figure>
     </div>
   </div>
 
@@ -82,7 +84,7 @@ set_label → set_region → announce → filter-orders
     <div class="expect"><b>What you should see</b><p>Two placeholders inside one sentence, unresolved on screen and resolved at run time.</p><pre class="out">Log   ACTION
   Writes a message to the run logs (always succeeds)
   MESSAGE   Starting {{ param:run_label }} on region {{ param:region }}</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen5.png" width="1911" height="948" loading="lazy" decoding="async" alt="The Log dialog for the step announce, whose message contains the placeholders param run_label and param region." /><figcaption>The editor shows the placeholder. The log will show the value.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/dialog-announce-open-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Log dialog for the step announce, whose message contains the placeholders param run_label and param region." /><figcaption>The editor shows the placeholder. The log will show the value.</figcaption></figure>
     </div>
   </div>
 
@@ -101,7 +103,7 @@ set_label → set_region → announce → filter-orders
   STEP NAME        switch_region
   PARAMETER NAME * region
   VALUE *          south</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen6.png" width="1912" height="947" loading="lazy" decoding="async" alt="The Assign Param dialog for the step switch_region, changing region to south." /><figcaption>Same fields as Set Param. Read the second line of the header — that is the whole difference.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/dialog-switch-region-open-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Assign Param dialog for the step switch_region, changing region to south." /><figcaption>Same fields as Set Param. Read the second line of the header — that is the whole difference.</figcaption></figure>
     </div>
   </div>
 
@@ -114,7 +116,7 @@ set_label → set_region → announce → filter-orders
     <div class="expect"><b>What you should see</b><p>An identical placeholder in a step that sits after the change.</p><pre class="out">Log   ACTION
   STEP NAME   report
   MESSAGE     Finished {{ param:run_label }} - last region was {{ param:region }}</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen7.png" width="1907" height="943" loading="lazy" decoding="async" alt="The Log dialog for the step report, containing the same two placeholders as the announce step." /><figcaption>Same text as <code>announce</code>. Position in the graph is what makes the answer differ.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/dialog-report-open-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Log dialog for the step report, containing the same two placeholders as the announce step." /><figcaption>Same text as <code>announce</code>. Position in the graph is what makes the answer differ.</figcaption></figure>
     </div>
   </div>
 
@@ -134,7 +136,7 @@ job_…_0        0.048s
 switch_region  0.000s
 job_…_1        0.048s
 report         0.000s</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen8.png" width="1907" height="952" loading="lazy" decoding="async" alt="The run detail page showing a successful workflow with seven steps and an execution timeline." /><figcaption>Seven bars. The two long ones are the jobs; everything else is bookkeeping.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/run-workflow-timeline-detail-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page showing a successful workflow with seven steps and an execution timeline." /><figcaption>Seven bars. The two long ones are the jobs; everything else is bookkeeping.</figcaption></figure>
     </div>
   </div>
 
@@ -151,7 +153,7 @@ report         0.000s</pre>
 #5 switch_region
    INFO [switch_region] START type=action
    INFO [switch_region] assign_param region: 'north' -> 'south'</pre>
-      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/screen9.png" width="1899" height="985" loading="lazy" decoding="async" alt="The run log with the set_region and switch_region steps expanded, showing the parameter being created as north and then reassigned to south." /><figcaption>The two lines the whole lesson turns on. <code>filter-orders</code> ran between them.</figcaption></figure>
+      <figure class="shot"><img src="/tutorials/studio-14-use-parameters/run-workflow-parameter-log-expanded-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run log with the set_region and switch_region steps expanded, showing the parameter being created as north and then reassigned to south." /><figcaption>The two lines the whole lesson turns on. <code>filter-orders</code> ran between them.</figcaption></figure>
     </div>
   </div>
 
@@ -175,20 +177,14 @@ demo-run_summary_south.csv
   </div>
 
 <div class="rules">
-  <h5>Tips and traps</h5>
-  <p data-kind="TIP">One syntax everywhere: <b>{{ param:NAME }}</b> in a message, a path, a filter or a connection.</p>
-  <p data-kind="TRAP">A Set Param <b>creates</b> and refuses to overwrite. Use Assign Param to change a value.</p>
-  <p data-kind="TIP">An Assign Param needs the parameter to <b>already exist</b>. Place a Set Param upstream of it.</p>
-  <p data-kind="TRAP">A project parameter must be <b>Set Param</b>-ed once before it can be assigned. Declaring it is not creating it.</p>
-  <p data-kind="TIP">A placeholder is resolved <b>when its step runs</b>. Two identical steps can print different values.</p>
-  <p data-kind="TRAP">Only the steps <b>downstream</b> see a value. A parameter action off the chain changes nothing.</p>
-  <p data-kind="TIP">A field holding <b>only</b> a placeholder keeps the declared type. Wrap it in text and you get a string.</p>
-  <p data-kind="TRAP">The runtime store lives for <b>one run</b>. Nothing survives to the next one — that is what the project layer is for.</p>
-  <p data-kind="TIP">Every write is logged with its <b>old and new value</b>. Read the last one before a surprising step.</p>
-  <p data-kind="TRAP">The runtime layer <b>overrides</b> the project layer. A Set Param on a declared name silently wins.</p>
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Write the placeholder once and let the workflow decide what it means.</p>
+  <p data-kind="TRAP"><b>Set Param</b> fails when the parameter already exists. Use <b>Assign Param</b> to change an existing value.</p>
+  <p data-kind="TIP">Run the workflow once before you change values, so you know the baseline result.</p>
+  <p data-kind="TIP">Use Assign Param between two jobs to make the second one answer differently from the first.</p>
 </div>
 
-  <h2>3. Checklist</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody>
     <tr><td>Canvas</td><td>Seven nodes, six edges, <b>Valid</b></td></tr>
     <tr><td>Palette</td><td>Two jobs among seven nodes</td></tr>
     <tr><td>Set Param</td><td>Name, value and type filled in</td></tr>
@@ -198,7 +194,7 @@ demo-run_summary_south.csv
     <tr><td>Output</td><td>Two files whose names carry the parameter values</td></tr>
   </tbody></table>
 
-  <h2>4. Troubleshooting</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody>
     <tr><td>The parameter already exists</td><td>Two Set Param on the same name</td><td>Keep one, turn the other into an Assign Param</td></tr>
     <tr><td>The parameter does not exist</td><td>Assign Param with no Set Param upstream</td><td>Add a Set Param and connect it before</td></tr>
     <tr><td>The placeholder prints as written</td><td>The syntax is not exactly <code>{{ param:NAME }}</code></td><td>Check the braces, the colon and the spelling</td></tr>
@@ -207,7 +203,20 @@ demo-run_summary_south.csv
     <tr><td>The value is not what the log said</td><td>A later Assign Param changed it</td><td>Read the writes in order and find the last one</td></tr>
   </tbody></table>
 
-  <h2>5. Next lesson</h2><p>The Studio track is complete. You opened a workspace, built and ran a job, reviewed its execution, composed a workflow, organized it with containers, and made it react to values decided at run time. Return to the course map or open the DSL reference.</p>
+  <h2>Frequently asked questions</h2>
+  <h3>What is the syntax of a parameter in Hydra?</h3>
+  <p>{{ param:name }}, for example {{ param:region }}.</p>
+  <h3>What is the difference between Set Param and Assign Param?</h3>
+  <p>Set Param creates a runtime parameter and fails if it already exists. Assign Param changes the value of an existing one.</p>
+  <h3>Can a value change in the middle of a run?</h3>
+  <p>Yes. The workflow can assign a new value between two jobs, and the second job then reads the new value.</p>
+  <h3>Where do I learn about environments and secrets?</h3>
+  <p>They are covered in the lessons on environments and secrets, coming soon in the Settings block.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/12-compose-jobs">Order jobs in a workflow</a></li><li><a href="/studio/10-run-the-job">Run a job</a></li><li><a href="/studio/04-use-the-palette">Use the palette</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>The Studio track is complete. You opened a workspace, built and ran a job, reviewed its execution, composed a workflow, organized it with containers, and made it react to values decided at run time. Return to the course map or open the DSL reference.</p>
   <div class="lesson-nav"><a class="primary" href="/studio">Return to the course map <span aria-hidden="true">→</span></a><a href="/studio/13-handle-failure">Back to the previous lesson</a></div>
-  <h4>Close by</h4><ul class="linklist"><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li><li><a href="/dsl/transformations-yaml">transformations.yaml reference</a></li><li><a href="/dsl/destinations-yaml">destinations.yaml reference</a></li><li><a href="/playground">Hydra Playground</a></li></ul>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

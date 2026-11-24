@@ -1,0 +1,84 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 45</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 45 of 65 · Conflict and recovery</div><h1>Resolve a rollback conflict and recover in Hydra ETL</h1><p class="lead">What if someone edits the file while your workflow runs, and then the workflow fails? Hydra ETL will not overwrite their change. It stops, and tells you how to continue.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl workflow undo · .hydra/undo</span><span>about 25 minutes</span><span>the resilience-demo project</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>If a rollback finds that a file changed after the run wrote it, Hydra ETL does not restore it, keeps a journal in <code>.hydra/undo/&lt;workflow&gt;.json</code> and refuses to run the workflow again. Review the file, then run <code>hdrctl workflow undo &lt;workflow&gt;</code>, or delete the journal if the data is fine.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Provoke a rollback conflict, read the three messages Hydra ETL prints, and leave the project in a state where the workflow runs again. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>resilience-demo</code> project and <code>wf_conflict</code>: <code>build_report</code>, a 30-second <code>delay</code> action named <code>wait</code>, then <code>finalize</code>, which fails because <code>Data/finalize.csv</code> is missing. The workflow has <code>rollback: true</code>. This lesson adds one line, <code>MANUAL,1</code>, to <code>outputs/report.csv</code> during the wait.</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I recover from a rollback conflict in Hydra ETL?</h2>
+<div class="step">
+  <h3><i>01</i>Run the workflow and edit the file during the wait</h3>
+  <h4>Objective</h4><p>Create the conflict on purpose.</p>
+  <h4>Actions</h4><ol><li>Run <code>wf_conflict</code>.</li><li>While it waits, add a line to <code>outputs/report.csv</code>.</li><li>Wait for the failure.</li></ol>
+  <pre class="cmd">hdrctl workflow run wf_conflict</pre>
+  <p>The report is built, then the workflow sleeps for 30 seconds. You have time to change the file. Then <code>finalize</code> fails, and the rollback starts.</p>
+  <div class="expect"><b>What you should see</b><p>A step that succeeded, a wait of 30 seconds, and a failure on <code>finalize</code>.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Read the failed rollback</h3>
+  <h4>Objective</h4><p>Understand why the report was not restored.</p>
+  <h4>Actions</h4><ol><li>Read the lines after the failure.</li></ol>
+  <pre class="cmd">hdrctl workflow run wf_conflict</pre>
+  <p>The <code>build_report</code> job would restore the previous report, but the file no longer matches what the run wrote. Hydra ETL keeps your change.</p>
+  <div class="expect"><b>What you should see</b><p>A <b>not undone</b> line with the reason, and a failed workflow that tells you how to continue.</p><pre class="out">✓  Step 'build_report' OK (&lt;duration&gt;)
+✓  Step 'wait' OK (30.0s)
+✗  Step 'finalize' FAILED: ValueError: CSVConnector [src]: source file not found.
+✗  Step 'build_report' not undone: …/outputs/report.csv changed after this run wrote it (size or date): not restored, to keep the other changes
+❌ Workflow 'wf_conflict' FAILED in &lt;duration&gt; — … rollback stopped: …/outputs/report.csv changed after this run wrote it (size or date): not restored, to keep the other changes. Finish it with: hdrctl workflow undo wf_conflict</pre>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Try to run the workflow again</h3>
+  <h4>Objective</h4><p>See that Hydra ETL protects the half-undone state.</p>
+  <h4>Actions</h4><ol><li>Run the workflow again.</li></ol>
+  <pre class="cmd">hdrctl workflow run wf_conflict</pre>
+  <p>Every step is skipped, and the message names the journal and the command to use:</p>
+  <div class="expect"><b>What you should see</b><p>A failed workflow, with the path of the journal.</p><pre class="out">⏭  Step 'build_report' skipped
+⏭  Step 'wait' skipped
+⏭  Step 'finalize' skipped
+❌ Workflow 'wf_conflict' FAILED in &lt;duration&gt; — a previous run of 'wf_conflict' stopped before undoing its changes (…/.hydra/undo/wf_conflict.json). Finish it with: hdrctl workflow undo wf_conflict — or delete that file if the data is fine.</pre>
+      <figure class="shot"><img src="/tutorials/studio-resolve-conflicts-and-recover/terminal-conflict-run-refused-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Studio terminal after a second run of wf_conflict, refused because of the undo journal." /><figcaption>The second run is refused until the journal is dealt with.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Try to finish the undo</h3>
+  <h4>Objective</h4><p>Use the command that the message gave you.</p>
+  <h4>Actions</h4><ol><li>Run <code>hdrctl workflow undo</code>.</li><li>Read the answer.</li></ol>
+  <pre class="cmd">hdrctl workflow undo wf_conflict</pre>
+  <p>The file is still different from what the run wrote, so the undo stops again and keeps the journal. This is the right answer: the command never overwrites a change.</p>
+  <div class="expect"><b>What you should see</b><p>The same <b>not undone</b> line, and a message saying that the rest is kept in the journal.</p><pre class="out">✗  Step 'build_report' not undone: …/outputs/report.csv changed after this run wrote it (size or date): not restored, to keep the other changes
+❌ Workflow 'wf_conflict': undo stopped at 'build_report': … The rest is kept in …/.hydra/undo/wf_conflict.json.</pre>
+      <figure class="shot"><img src="/tutorials/studio-resolve-conflicts-and-recover/terminal-workflow-undo-stopped-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Studio terminal after hdrctl workflow undo wf_conflict, which stops at build_report." /><figcaption>The undo stops again: the file is still not the one the run wrote.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Recover</h3>
+  <h4>Objective</h4><p>Decide which version you keep and leave the project clean.</p>
+  <h4>Actions</h4><ol><li>Compare <code>outputs/report.csv</code> with the backup <code>.report.csv.hydra-bak-…</code>.</li><li>Keep the version you want.</li><li>Delete <code>.hydra/undo/wf_conflict.json</code>.</li></ol>
+  <pre class="cmd">.hydra/undo/wf_conflict.json</pre>
+  <p>The journal is a small file that lists the steps waiting to be undone. Once you delete it, the workflow is free to run again. Validate it to check:</p>
+  <div class="expect"><b>What you should see</b><p>The workflow validates, and the next run starts normally.</p><pre class="out">✅ Workflow valid — no errors detected.</pre>
+
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Read the journal before deleting it: it names every step that is still waiting to be undone.</p><p data-kind="TIP">The leftover <code>.report.csv.hydra-bak-…</code> file in <code>outputs</code> is the backup of the previous report. Keep it until you have decided.</p><p data-kind="TRAP">Deleting the journal tells Hydra ETL the data is fine. If it is not, the old version is lost.</p><p data-kind="TRAP">A manual change and a rollback do not mix. Do not edit the destination of a running workflow.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Failure</td><td><code>✗ Step 'build_report' not undone</code> with the reason</td></tr><tr><td>Journal</td><td>A file <code>.hydra/undo/wf_conflict.json</code></td></tr><tr><td>Refusal</td><td>The workflow refuses to run and names the command to finish the undo</td></tr><tr><td>Recovery</td><td>After you delete the journal, the workflow validates and runs again</td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The workflow refuses to run</td><td>A journal is waiting in <code>.hydra/undo</code></td><td>Run <code>hdrctl workflow undo</code>, or delete the journal if the data is fine</td></tr><tr><td><code>hdrctl workflow undo</code> stops at the same step</td><td>The file is still different from what the run wrote</td><td>Decide which version you keep, then delete the journal</td></tr><tr><td>You want your manual line and the old report</td><td>The undo keeps the changed file and the backup next to it</td><td>Merge them by hand, then delete the journal</td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>Why did Hydra ETL not undo my step?</h3><p>The file it would restore changed after the run wrote it, by size or by date. Restoring the old version would destroy that change, so Hydra ETL leaves the file as it is.</p><h3>Where does Hydra ETL keep what is left to undo?</h3><p>In .hydra/undo/ followed by the workflow name and .json, inside the project. The file lists each step still to undo.</p><h3>Why can I not run the workflow again?</h3><p>Because a previous run stopped before undoing its changes. Running again could build on a half-undone state, so Hydra ETL asks you to finish the undo first.</p><h3>Does putting the file back as it was fix the conflict?</h3><p>Not in our test. After removing our added line by hand, the undo still stopped, because the date of the file had changed as well.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/roll-back-a-failed-workflow">Roll back a failed workflow</a></li><li><a href="/studio/declare-undo-actions">Declare the undo of an action</a></li><li><a href="/studio/all-or-nothing-load">All-or-nothing loads</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li><li><a href="/cli">The hdrctl command line</a></li></ul>
+<h2>Next lesson</h2><p>This block is complete. The next lessons of the course combine fallback, retry and undo in two scenarios.</p>
+<div class="lesson-nav"><a class="primary" href="/studio">Back to the course map <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -1,0 +1,32 @@
+[
+  {
+    "file": "bottom-panel-logs-empty-state-light.png",
+    "name": "bottom-panel-logs-empty-state",
+    "theme": "light",
+    "alt": "The bottom panel of Hydra Studio opened under the canvas, with the LOGS tab selected and the message Run a job or workflow to view logs."
+  },
+  {
+    "file": "bottom-panel-parameters-tab-dark.png",
+    "name": "bottom-panel-parameters-tab",
+    "theme": "dark",
+    "alt": "The PARAMETERS tab of the Hydra Studio bottom panel, listing parameter declarations with their default and per-environment values."
+  },
+  {
+    "file": "bottom-panel-secrets-tab-light.png",
+    "name": "bottom-panel-secrets-tab",
+    "theme": "light",
+    "alt": "The SECRETS tab of the Hydra Studio bottom panel, with a name field and a value field to add a secret."
+  },
+  {
+    "file": "bottom-panel-terminal-tab-dark.png",
+    "name": "bottom-panel-terminal-tab",
+    "theme": "dark",
+    "alt": "The TERMINAL tab of the Hydra Studio bottom panel running hdrctl --version in a PowerShell terminal."
+  },
+  {
+    "file": "bottom-panel-open-with-toolbar-button-light.png",
+    "name": "bottom-panel-open-with-toolbar-button",
+    "theme": "light",
+    "alt": "The Hydra Studio job editor with the bottom panel open under the canvas and the Logs panel button highlighted in the vertical toolbar."
+  }
+]

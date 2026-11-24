@@ -1,0 +1,18 @@
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+  - modee: parallel
+    delay_after: 1s
+    workflows:
+      - name: load_sales
+        timeout: 30s
+        fallback:
+          use: [cleanup]
+          on_failure: true
+      - name: load_stock
+        delay_before: 2s
+  - mode: sequential
+    workflows:
+      - name: report

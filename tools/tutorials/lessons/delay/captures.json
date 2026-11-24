@@ -1,0 +1,163 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "delay-node-dialog-seconds-field",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button:has(span:text-is(\"Control Flow\"))"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "drag_visible": "Delay",
+          "x": 820,
+          "y": 520
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Delay node dialog of Hydra Studio, with a step name and a required Delay in seconds field."
+    },
+    {
+      "name": "delay-workflow-run-terminal-output",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 1000
+        },
+        {
+          "click": "button[title='Logs panel']"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button:has-text('TERMINAL')"
+        },
+        {
+          "wait_ms": 2500
+        },
+        {
+          "click": ".xterm"
+        },
+        {
+          "type": "cd C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\probe-delay"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "type": "function prompt { 'PS C:\\Users\\you\\delay-demo> ' }"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "cls"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "type": "hdrctl workflow run workflows\\wf_wait.yaml"
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 9000
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 400,
+        "width": 1232,
+        "height": 500
+      },
+      "alt": "The Studio terminal after running a workflow with a three second Delay step, listing the steps before, pause and after as OK and the total time."
+    }
+  ]
+}

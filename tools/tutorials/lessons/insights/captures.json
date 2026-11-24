@@ -1,0 +1,63 @@
+{
+  "base_url": "http://127.0.0.1:5681",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo",
+    "hydra-workspace-eo": "hydra-workspace"
+  },
+  "shots": [
+    {
+      "name": "insights-run-counters-and-average",
+      "path": "/insights",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Insights page of Hydra Studio in the light theme: four counters for total, successful, failed and running runs, and a card with the average duration in seconds.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 280
+      }
+    },
+    {
+      "name": "insights-runs-list-same-numbers",
+      "path": "/runs",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "alt": "The Runs page of Hydra Studio in the dark theme, listing the executions whose statuses and durations feed the Insights counters.",
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 460
+      }
+    }
+  ]
+}

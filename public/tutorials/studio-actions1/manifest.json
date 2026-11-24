@@ -1,0 +1,14 @@
+[
+  {
+    "file": "powershell-action-dialog-command-field-light.png",
+    "name": "powershell-action-dialog-command-field",
+    "theme": "light",
+    "alt": "The PowerShell action dialog of Hydra Studio, with a step name, an on-failure list, a run condition, the required PowerShell command field, a working directory and a timeout."
+  },
+  {
+    "file": "actions-workflow-run-terminal-output-dark.png",
+    "name": "actions-workflow-run-terminal-output",
+    "theme": "dark",
+    "alt": "The Studio terminal after running a workflow with a log, a Python and a PowerShell step, all three marked OK with their output messages."
+  }
+]

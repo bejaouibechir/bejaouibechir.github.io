@@ -1,0 +1,570 @@
+{
+  "base_url": "http://127.0.0.1:5678",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "jobs-tab-empty-canvas",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "Jobs configuration of a workflow that holds no job yet: an empty canvas, the source palette and the plus button at the bottom left."
+    },
+    {
+      "name": "new-job-tab-created",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 520,
+        "width": 1440,
+        "height": 380
+      },
+      "alt": "The plus button pressed: a new job1 tab at the bottom and an empty canvas with 0 nodes."
+    },
+    {
+      "name": "job-tab-options-menu",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "button[title='Options']"
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 520,
+        "width": 1440,
+        "height": 380
+      },
+      "alt": "The options menu of a job tab with Rename, Archive and Delete."
+    },
+    {
+      "name": "job-tab-rename-input",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "button[title='Options']"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "click_text": "Rename"
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "press": "Control+a"
+        },
+        {
+          "type": "first-job"
+        },
+        {
+          "wait_ms": 300
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 520,
+        "width": 1440,
+        "height": 380
+      },
+      "alt": "The job tab in rename mode, with the new name first-job typed in."
+    },
+    {
+      "name": "first-job-tab-renamed",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "button[title='Options']"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "click_text": "Rename"
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "press": "Control+a"
+        },
+        {
+          "type": "first-job"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 700
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 520,
+        "width": 1440,
+        "height": 380
+      },
+      "alt": "The job tab and the breadcrumb now read first-job."
+    },
+    {
+      "name": "workflow-palette-jobs-listed",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "click": "button[title='Options']"
+        },
+        {
+          "wait_ms": 500
+        },
+        {
+          "click_text": "Rename"
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "press": "Control+a"
+        },
+        {
+          "type": "first-job"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "press": "Enter"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "click_text": "Workflow configuration"
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 640,
+        "height": 560
+      },
+      "alt": "The workflow palette listing first-job under Jobs."
+    },
+    {
+      "name": "source-node-red-badge",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "drag": "CSV",
+          "x": 560,
+          "y": 320
+        },
+        {
+          "wait_ms": 600
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "A CSV node just dropped on the canvas, with a red badge in its corner."
+    },
+    {
+      "name": "dialog-csv-source-configured",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "drag": "CSV",
+          "x": 560,
+          "y": 320
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "fill": "input[placeholder='./data/file.csv']",
+          "value": "data/orders.csv"
+        },
+        {
+          "wait_ms": 400
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The CSV source dialog with the file path data/orders.csv filled in."
+    },
+    {
+      "name": "dialog-postgres-source-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "x": 560,
+          "y": 320,
+          "drag_visible": "PostgreSQL"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The PostgreSQL source dialog with the choice between Table and SQL query, the host, the database and the user."
+    },
+    {
+      "name": "dialog-web-api-source-open",
+      "path": "/workflows/a991cb22?projectId=e84ae443",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_xy": [
+            1417,
+            140
+          ]
+        },
+        {
+          "wait_ms": 400
+        },
+        {
+          "click_text": "Jobs configuration"
+        },
+        {
+          "wait_ms": 800
+        },
+        {
+          "click": "button[title='Add a new job']"
+        },
+        {
+          "wait_ms": 900
+        },
+        {
+          "x": 560,
+          "y": 320,
+          "drag_visible": "Web API"
+        },
+        {
+          "wait_ms": 600
+        },
+        {
+          "dblclick_last_node": true
+        },
+        {
+          "wait_ms": 900
+        }
+      ],
+      "clip": {
+        "x": 208,
+        "y": 56,
+        "width": 1232,
+        "height": 844
+      },
+      "alt": "The Web API source dialog with the URL field and the method."
+    }
+  ]
+}

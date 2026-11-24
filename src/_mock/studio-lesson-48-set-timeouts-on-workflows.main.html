@@ -1,0 +1,87 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 48</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 48 of 65 · Timeouts</div><h1>Set a timeout on a workflow in Hydra ETL Studio</h1><p class="lead">A workflow that never ends is a failure you notice too late. Give it a maximum duration, and Hydra ETL stops it at the next safe point.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">Execution order → max</span><span>about 15 minutes</span><span>a project with a slow workflow</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>To set a timeout on a Hydra ETL workflow, type a duration such as <code>5s</code>, <code>5m</code> or <code>1h</code> in the <b>max</b> field of the workflow in <b>Execution order</b> and save. It is written as <code>timeout:</code> in <code>thread.yaml</code>. Beyond it, the workflow is stopped at the next step or batch and counts as failed.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Set a maximum duration on one workflow, run it, and read exactly when and how it stops. A fallback can answer a timeout like any other failure. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>fallback-demo</code> copy of <code>fallbackproject</code>, with <code>wf_conflict</code> alone in the thread. It runs <code>build_report</code>, waits 30 seconds with a <code>delay</code> action, then runs <code>finalize</code>. It has <code>rollback: true</code>.</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I set a timeout on a workflow in Hydra ETL?</h2>
+<div class="step">
+  <h3><i>01</i>Find the max field</h3>
+  <h4>Objective</h4><p>Locate where a workflow's duration limit is set.</p>
+  <h4>Actions</h4><ol><li>Open <b>Project settings → Execution order</b>.</li><li>Find the <b>max</b> field on the row of the workflow.</li></ol>
+  <pre class="cmd">Execution order → wf_conflict → max</pre>
+  <p>The field sits on the workflow row, between <b>wait</b> and the lifebuoy. Its tooltip explains it: the maximum duration of the workflow and of each fallback run in its place, written <code>30s</code>, <code>5m</code> or <code>1h</code>; empty means no limit.</p>
+  <div class="expect"><b>What you should see</b><p>One stage with <code>wf_conflict</code> and an empty <b>max</b> field.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Type a duration</h3>
+  <h4>Objective</h4><p>Give the workflow five seconds.</p>
+  <h4>Actions</h4><ol><li>Select the <b>max</b> field.</li><li>Type <code>5s</code>.</li><li>Check the border stays normal.</li></ol>
+  <pre class="cmd">5s</pre>
+  <p>A red border means the value cannot be read. Five seconds is deliberately short: <code>wf_conflict</code> waits 30 seconds, so the limit will be exceeded.</p>
+  <div class="expect"><b>What you should see</b><p><code>5s</code> in the field, with a normal border.</p>
+      <figure class="shot"><img src="/tutorials/studio-set-timeouts-on-workflows/workflow-timeout-field-filled-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Execution order panel with the max field of wf_conflict set to 5s." /><figcaption>The limit is one short field per workflow.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Save and run</h3>
+  <h4>Objective</h4><p>Write the limit and start the project.</p>
+  <h4>Actions</h4><ol><li>Select <b>Save</b>.</li><li>Go back to the project and select <b>Run project</b>.</li><li>Open the run.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>The run lasts about 30 seconds because the <code>delay</code> step cannot be interrupted.</p>
+  <div class="expect"><b>What you should see</b><p>A run that ends in <b>Failed</b>.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Read how it stopped</h3>
+  <h4>Objective</h4><p>Understand when the stop happened and what was undone.</p>
+  <h4>Actions</h4><ol><li>Read the failed run.</li><li>Open the failed step.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>The timeout is announced at the moment it expires, then enforced at the next step. Because the workflow has <code>rollback: true</code>, the step that had finished is undone:</p>
+  <div class="expect"><b>What you should see</b><p>The run page reads <b>Failed</b> with <b>0 ok / 1</b>. The step carries a <b>timed out</b> badge and the message <b>timed out after 5s (timeout in workflows/thread.yaml) (changes undone)</b>.</p><pre class="out">▶  Workflow  wf_conflict
+⏳  wf_conflict: timed out after 5s — stopping at the next step or batch
+   ✓  Step 'build_report' OK (&lt;duration&gt;)
+   ✓  Step 'wait' OK (30.0s)
+   ↩  Step 'build_report' undone
+✗  Workflow 'wf_conflict' failed (30.4s): timed out after 5s (timeout in workflows/thread.yaml) (changes undone)
+❌ Project failed — failed: wf_conflict</pre>
+      <figure class="shot"><img src="/tutorials/studio-set-timeouts-on-workflows/run-timeout-failed-detail-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page of a project whose workflow wf_conflict failed after exceeding its 5 second timeout." /><figcaption>The run shows the failure and its reason.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Read the timeout in thread.yaml</h3>
+  <h4>Objective</h4><p>See the same limit as text.</p>
+  <h4>Actions</h4><ol><li>Open <b>Hydra DSL</b> or the file <code>workflows/thread.yaml</code>.</li></ol>
+  <pre class="cmd">timeout: 5s</pre>
+  <p>This is the form written by Studio, validated with Hydra ETL 0.22.0:</p><pre class="out">thread:
+  - mode: sequential
+    workflows:
+      - name: wf_conflict
+        active: true
+        timeout: 5s</pre>
+  <div class="expect"><b>What you should see</b><p>A <code>timeout</code> line under the workflow it limits.</p>
+
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Pick a limit well above the normal duration, so it only stops a real problem.</p><p data-kind="TIP">An empty <b>max</b> field means no limit.</p><p data-kind="TRAP">The stop happens at the <b>next step or batch</b>. A single long step runs to the end, as the 30-second wait does here.</p><p data-kind="TRAP">A timeout in <code>thread.yaml</code> applies to the project run, not to <code>hdrctl workflow run</code> of a single workflow.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Field</td><td><b>max</b> holds a duration such as <code>5s</code> and is not red</td></tr><tr><td>YAML</td><td>A <code>timeout: 5s</code> line under the workflow</td></tr><tr><td>Run</td><td>The workflow fails with <code>timed out after 5s</code></td></tr><tr><td>Rollback</td><td>The finished step is undone</td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The <b>max</b> field turns red</td><td>The duration is not valid</td><td>Write a number and a unit: <code>30s</code>, <code>5m</code> or <code>1h</code></td></tr><tr><td>The run lasts longer than the limit</td><td>A step was still running when the limit passed</td><td>The stop is applied at the next step or batch</td></tr><tr><td>The timeout is ignored</td><td>The workflow was run alone</td><td>Run the project: <code>hdrctl run .</code></td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>How do I set a timeout on a Hydra ETL workflow?</h3><p>Type a duration such as 30s, 5m or 1h in the max field of the workflow in Execution order, or add a timeout line to the workflow in workflows/thread.yaml.</p><h3>Does the timeout stop a step in the middle?</h3><p>No. The workflow is stopped at the next step or batch. A long step finishes before the stop takes effect.</p><h3>What happens to the workflow after a timeout?</h3><p>It counts as failed. With rollback: true its finished steps are undone, and a fallback with on_failure: true can run in its place.</p><h3>Does a fallback run have its own timeout?</h3><p>The limit applies to the workflow and to each fallback run in its place, according to the tooltip of the max field in Studio.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/declare-a-fallback-workflow">Declare a fallback workflow</a></li><li><a href="/studio/fallback-conditions-when-on-failure">Fallback conditions</a></li><li><a href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+<h2>Next lesson</h2><p>The last lesson of this block rehearses everything without running a workflow, and forces a fallback on demand.</p>
+<div class="lesson-nav"><a class="primary" href="/studio/dry-run-and-use-fallback">Dry run and --use-fallback <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

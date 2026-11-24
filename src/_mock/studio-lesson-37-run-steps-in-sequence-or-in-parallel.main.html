@@ -1,0 +1,166 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 37</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 37 of 65 · Stages</div><h1>Run Hydra workflows in sequence or in parallel with stages</h1><p class="lead">Stages in thread.yaml decide which workflows run one after another and which run together. Build four workflows, run them, and measure what parallel saves.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">thread.yaml</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A Hydra project runs its workflows in <b>stages</b>, declared in <code>workflows/thread.yaml</code>. A <code>sequential</code> stage runs its workflows one after the other and a <code>parallel</code> stage runs them together. In our test, two 2-second workflows took 3.3 seconds in a parallel stage and 5.4 seconds in a sequential one.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Write a project with three stages, run it with <code>hdrctl run</code>, compare parallel with sequential, and skip a workflow with <code>active: false</code>.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project folder: a folder that contains a <code>.hydra</code> subfolder. <a href="/studio/01-open-a-project">Create a project</a> shows how to make one in Studio.</li></ul>
+  <h2>How do I run workflows in stages?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Write four small workflows</h3>
+    <h4>Objective</h4><p>Have something to order.</p>
+    <h4>Actions</h4><ol><li>In the <code>workflows</code> folder of the project, create <code>prepare.yaml</code>, <code>load_sales.yaml</code>, <code>load_stock.yaml</code> and <code>report.yaml</code>.</li><li>Give <code>load_sales</code> and <code>load_stock</code> a Python step that waits 2 seconds; give the other two a <b>log</b> step.</li></ol>
+    <pre class="cmd">workflows\load_sales.yaml</pre>
+    <p>The two loads stand for slow work. <code>load_stock</code> is identical except for its name and message. <code>prepare</code> and <code>report</code> each hold one <code>log</code> step.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: load_sales
+  trigger:
+    type: manual
+  steps:
+    - name: work_load_sales
+      type: action
+      action: python
+      params:
+        script: |
+          import time
+          time.sleep(2)
+          print("load_sales done")</pre>
+    <div class="expect"><b>What you should see</b><p>Four files in <code>workflows</code>.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Declare the stages</h3>
+    <h4>Objective</h4><p>Say which workflows wait for which.</p>
+    <h4>Actions</h4><ol><li>Create <code>workflows\thread.yaml</code> with the content below.</li><li>Read it from top to bottom: one stage per dash under <code>thread</code>.</li></ol>
+    <pre class="cmd">workflows\thread.yaml</pre>
+    <p>Three stages. Stage 1 runs <code>prepare</code>. Stage 2 is <code>parallel</code>: <code>load_sales</code> and <code>load_stock</code> start together, then the project waits <code>1s</code> (<code>delay_after</code>). Stage 3 runs <code>report</code>. Each <code>name</code> is the file name in <code>workflows</code>, without <code>.yaml</code>.</p><pre class="cmd">version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+  - mode: parallel
+    delay_after: 1s
+    workflows:
+      - name: load_sales
+      - name: load_stock
+  - mode: sequential
+    workflows:
+      - name: report</pre>
+    <div class="expect"><b>What you should see</b><p>A file of 13 lines.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Run the project</h3>
+    <h4>Objective</h4><p>Watch the stages go by.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the project folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>In a project folder, <code>hdrctl run .</code> runs every workflow in the order of <code>thread.yaml</code>. Each stage prints a header with its number and mode. In the parallel stage, both workflows start before either one finishes.</p>
+    <div class="expect"><b>What you should see</b><p>Three stage headers, every workflow OK, a one second wait, and a final summary.</p><pre class="out">Stage 1/3 — sequential
+▶ Workflow  prepare
+  ✓ Step 'say_prepare' OK (0.0s)
+  | Prepare: folders ready
+✓ Workflow 'prepare' OK (0.0s)
+
+Stage 2/3 — parallel
+▶ Workflow  load_sales
+▶ Workflow  load_stock
+  ✓ Step 'work_load_sales' OK (2.2s)
+  | load_sales done
+✓ Workflow 'load_sales' OK (2.2s)
+  ✓ Step 'work_load_stock' OK (2.2s)
+  | load_stock done
+✓ Workflow 'load_stock' OK (2.2s)
+  Waiting 1s before the next stage
+
+Stage 3/3 — sequential
+▶ Workflow  report
+  ✓ Step 'say_report' OK (0.0s)
+  | Report: all loads finished
+✓ Workflow 'report' OK (0.0s)
+
+Project 'stages-demo' completed in 3.3s — 4/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-stages/stages-parallel-run-terminal-output-light.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Hydra Studio terminal after hdrctl run in a project with three stages: a sequential stage, a parallel stage running two workflows at once, then a sequential stage, finishing in 3.3 seconds with 4 of 4 workflows OK." /><figcaption>The run in the Studio terminal. The two loads start together.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Compare with a sequential stage</h3>
+    <h4>Objective</h4><p>Measure what parallel saves.</p>
+    <h4>Actions</h4><ol><li>In <code>thread.yaml</code>, change the second stage to <code>mode: sequential</code>.</li><li>Run <code>hdrctl run .</code> again.</li></ol>
+    <pre class="cmd">mode: sequential
+hdrctl run .</pre>
+    <p>The two loads now run one after the other. Each still takes about 2 seconds, so the stage takes the sum instead of the longest.</p>
+    <div class="expect"><b>What you should see</b><p><code>load_stock</code> starts only after <code>load_sales</code> ends, and the total grows.</p><pre class="out">Stage 2/3 — sequential
+▶ Workflow  load_sales
+  ✓ Step 'work_load_sales' OK (2.2s)
+  | load_sales done
+✓ Workflow 'load_sales' OK (2.2s)
+▶ Workflow  load_stock
+  ✓ Step 'work_load_stock' OK (2.1s)
+  | load_stock done
+✓ Workflow 'load_stock' OK (2.1s)
+  Waiting 1s before the next stage
+…
+Project 'stages-demo' completed in 5.4s — 4/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-stages/stages-sequential-run-terminal-output-dark.png" width="1232" height="520" loading="lazy" decoding="async" alt="The Hydra Studio terminal in the dark theme after hdrctl run in a project where all three stages are sequential: load_sales ends before load_stock starts and the project completes in 5.4 seconds." /><figcaption>The same project with the second stage sequential.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Skip a workflow</h3>
+    <h4>Objective</h4><p>Keep a workflow in the file but leave it out of the run.</p>
+    <h4>Actions</h4><ol><li>Set the second stage back to <code>parallel</code>.</li><li>Under <code>load_stock</code>, add <code>active: false</code>.</li><li>Run <code>hdrctl run .</code> again.</li></ol>
+    <pre class="cmd">      - name: load_stock
+        active: false
+hdrctl run .</pre>
+    <p><code>active: false</code> is the way to leave a workflow out while debugging, without deleting its line. The run names it and does not count it.</p>
+    <div class="expect"><b>What you should see</b><p>A line saying <code>load_stock</code> is inactive, and one workflow fewer in the summary.</p><pre class="out">Stage 2/3 — parallel
+▶ Workflow  load_sales
+  ✓ Step 'work_load_sales' OK (2.2s)
+  | load_sales done
+✓ Workflow 'load_sales' OK (2.2s)
+  load_stock — inactive, skipped
+…
+Project 'stages-demo' completed in 3.2s — 3/3 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Put workflows that do not depend on each other in a <code>parallel</code> stage, and keep ordered work in separate <code>sequential</code> stages.</p>
+  <p data-kind="TIP">Use <code>delay_after</code> to leave a system time to settle between two stages. It accepts <code>500ms</code>, <code>30s</code>, <code>5m</code> or <code>1h</code>.</p>
+  <p data-kind="TRAP">Parallel only helps when the work waits. Two workflows that share one slow resource, such as the same database, can take as long as running them in sequence.</p>
+  <p data-kind="TIP">Edit the order in Studio instead of YAML: <a href="/studio/global-and-project-settings">Project settings</a> has an Execution order tab for this file.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Run</td><td><code>hdrctl run .</code> prints Stage 1/3, 2/3 and 3/3 with their modes</td></tr><tr><td>Parallel</td><td>Both workflows of the stage start before either one finishes</td></tr><tr><td>Time</td><td>3.3 seconds in parallel against 5.4 sequentially</td></tr><tr><td>Skip</td><td>An inactive workflow is named and not counted</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The project is treated as a single job</td><td>The folder has no <code>.hydra</code> subfolder, or has job files at its root</td><td>Run the command from a project folder, with workflows in <code>workflows</code></td></tr><tr><td>A workflow is not found</td><td>The <code>name</code> does not match a file in <code>workflows</code></td><td>Use the file name without <code>.yaml</code></td></tr><tr><td>Parallel is not faster</td><td>The workflows are short, or wait on the same resource</td><td>Measure each workflow alone before choosing the mode</td></tr><tr><td>A workflow does not run</td><td>It has <code>active: false</code></td><td>Remove the line or set it to <code>true</code></td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What is a stage in thread.yaml?</h3>
+  <p>A stage is one entry of the thread list in workflows/thread.yaml. It has a mode, sequential or parallel, and a list of workflows. Stages run one after the other, and hdrctl run reads them in order.</p>
+  <h3>How do I run two workflows at the same time in Hydra?</h3>
+  <p>Put them in the same stage with mode: parallel. In our test, two workflows of 2.2 seconds each finished together, and the whole project took 3.3 seconds instead of 5.4 with the same stage set to sequential.</p>
+  <h3>What does delay_after do?</h3>
+  <p>delay_after pauses the project after a stage, before the next one starts. It takes a number of seconds or a duration such as 500ms, 30s, 5m or 1h. The run prints a line saying it is waiting.</p>
+  <h3>How do I skip a workflow without deleting it?</h3>
+  <p>Add active: false to the workflow in thread.yaml. The run prints that the workflow is inactive and skipped, and counts only the others. In our test, 3 of 3 remaining workflows ran.</p>
+  <h3>What happens when a workflow in a stage fails?</h3>
+  <p>The Studio Execution order page states that a failed workflow stops the project. This lesson only ran successful workflows, so it did not reproduce a failure.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/12-compose-jobs">Compose jobs in a workflow</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/start-from-a-template">Start from a workflow template</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can run workflows in order, in parallel, and leave one out. Next, repeat part of a project and pause between steps.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio">Back to the lessons <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

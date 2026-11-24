@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: boom
+  trigger:
+    type: manual
+  steps:
+    - name: fail_on_purpose
+      type: action
+      action: python
+      params:
+        script: |
+          raise RuntimeError("boom")

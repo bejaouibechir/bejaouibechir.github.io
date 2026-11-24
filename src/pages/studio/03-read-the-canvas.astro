@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-03-read-the-canvas.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Read the Hydra Studio canvas: nodes, ports and edges", description: "Read the Hydra Studio canvas on the course project: the workflow and job scenes, node dialogs, and the YAML each produces. Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/03-read-the-canvas/',
+  name: article.headline,
+  steps: ["Read the workflow graph", "Open the first job", "Open the second job", "Read what a node is configured with", "Read the DSL a job produces", "Read the workflow the canvas describes"],
+  faq: [
+    ["What is the difference between Jobs configuration and Workflow configuration?", "Jobs configuration shows one job as a line from source to destination, with the palette of Sources, Transformations and Destinations. Workflow configuration shows the orchestration graph of jobs and actions, with the palette of Actions, Control Flow, Containers and Jobs."],
+    ["Which way do edges point in Hydra Studio?", "An edge leaves the right handle of one node and enters the left handle of another, so a graph reads from left to right. In workflow.yaml an edge becomes a name inside depends_on."],
+    ["What do the counters beside the name mean?", "They count the nodes and the edges of the open scene, and a Valid or error status follows. In our course project the workflow reads 2 nodes · 1 edge, first-job reads 4 nodes · 3 edges and second-job 3 nodes · 2 edges."],
+    ["Where do I see the YAML behind the canvas?", "Select Hydra DSL in the top bar. It shows workflow.yaml in the workflow scene and the four manifests of the job in the job scene."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Read the canvas", '/studio/03-read-the-canvas/']],
+});
 ---
 
-<BaseLayout title="Lesson 3 — Recognize nodes, ports and edges" description="Create the guided workflow and learn Studio's two scenes, nodes, ports, edges and graph direction.">
+<BaseLayout title="Read the Hydra Studio canvas: nodes, ports and edges" exactTitle="Hydra Studio Canvas: Nodes, Ports and Edges | Hydra ETL" description="Read the Hydra Studio canvas on the course project: the workflow and job scenes, node dialogs, and the YAML each produces. Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-47-fallback-conditions-when-on-failure.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Fallback conditions in Hydra ETL: when, on_failure and on_probe_error", description: "Write the when condition of a Hydra ETL fallback, handle a check that cannot answer and trigger a backup after a failure. Tested on Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/fallback-conditions-when-on-failure/',
+  name: article.headline,
+  steps: ["Read what a condition can test", "Write a condition with the assistant", "Read the error of an invalid condition", "Decide what a check that cannot answer means", "Call the backup after a failure"],
+  faq: [["Which functions can a fallback condition use?", "file_exists, file_size, file_age, source_available, destination_available, url_ok, secret_defined, db.load and the four cdc functions, plus the values previous.rows and previous.status. Conditions combine them with and, or, not and comparisons."], ["What happens when a fallback check cannot answer?", "By default the workflow is kept and Hydra ETL prints a warning. Set on_probe_error to replace, shown in Studio as use the fallback, to run the backup instead."], ["Does a fallback run after a failure?", "Only with on_failure: true, and only if the failed workflow published nothing, either because nothing was loaded or because rollback undid everything."], ["Which units can a condition use?", "Durations such as 500ms, 30s, 5m, 24h and 7d, and sizes such as 10KB, 5MB and 1GB."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Fallback conditions", '/studio/fallback-conditions-when-on-failure/']],
+});
+---
+
+<BaseLayout title="Fallback conditions in Hydra ETL: when, on_failure and on_probe_error" exactTitle="Fallback Conditions: when and on_failure | Hydra ETL" description="Write the when condition of a Hydra ETL fallback, handle a check that cannot answer and trigger a backup after a failure. Tested on Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="fallback-conditions-when-on-failure"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

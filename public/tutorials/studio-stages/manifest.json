@@ -1,0 +1,14 @@
+[
+  {
+    "file": "stages-parallel-run-terminal-output-light.png",
+    "name": "stages-parallel-run-terminal-output",
+    "theme": "light",
+    "alt": "The Studio terminal after hdrctl run in a project with three stages: a sequential stage, a parallel stage running two workflows at once, then a sequential stage, finishing in 3.5 seconds."
+  },
+  {
+    "file": "stages-sequential-run-terminal-output-dark.png",
+    "name": "stages-sequential-run-terminal-output",
+    "theme": "dark",
+    "alt": "The Studio terminal after hdrctl run in a project where all three stages are sequential, finishing in 5.3 seconds."
+  }
+]

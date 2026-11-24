@@ -1,0 +1,11 @@
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: fetch
+      - name: check
+loops:
+  - from: check
+    to: fetch
+    times: 2
+    delay: 1s

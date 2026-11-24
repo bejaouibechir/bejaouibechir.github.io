@@ -1,0 +1,26 @@
+[
+  {
+    "file": "sequence-container-around-first-job-light.png",
+    "name": "sequence-container-around-first-job",
+    "theme": "light",
+    "alt": "A Sequence container on the workflow canvas with first-job placed inside it."
+  },
+  {
+    "file": "remove-from-container-menu-dark.png",
+    "name": "remove-from-container-menu",
+    "theme": "dark",
+    "alt": "The context menu of first-job inside its container."
+  },
+  {
+    "file": "error-scope-around-first-job-light.png",
+    "name": "error-scope-around-first-job",
+    "theme": "light",
+    "alt": "An Error Scope around first-job with its settings panel open."
+  },
+  {
+    "file": "retry-scope-around-first-job-dark.png",
+    "name": "retry-scope-around-first-job",
+    "theme": "dark",
+    "alt": "A Retry Scope around first-job with its settings panel open."
+  }
+]

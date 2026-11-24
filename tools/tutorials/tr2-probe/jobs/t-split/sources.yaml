@@ -1,0 +1,5 @@
+sources:
+  src_t_split:
+    type: csv
+    extract:
+      table: data/orders.csv

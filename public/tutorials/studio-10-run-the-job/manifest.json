@@ -1,0 +1,20 @@
+[
+  {
+    "file": "notifications-panel-open-light.png",
+    "name": "notifications-panel-open",
+    "theme": "light",
+    "alt": "The notifications panel opened from the top bar, listing completed runs."
+  },
+  {
+    "file": "terminal-run-first-job-dark.png",
+    "name": "terminal-run-first-job",
+    "theme": "dark",
+    "alt": "The Terminal tab inside Studio after running hdrctl run on the first-job folder."
+  },
+  {
+    "file": "terminal-run-first-workflow-light.png",
+    "name": "terminal-run-first-workflow",
+    "theme": "light",
+    "alt": "The Terminal tab after running hdrctl workflow run on first-workflow.yaml."
+  }
+]

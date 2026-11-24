@@ -1,0 +1,7 @@
+version: "1.0"
+thread:
+  - mode: sequential
+    workflows:
+      - name: prepare
+      - name: boom
+      - name: report

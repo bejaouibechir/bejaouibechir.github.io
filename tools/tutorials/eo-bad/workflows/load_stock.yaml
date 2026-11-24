@@ -1,0 +1,14 @@
+version: "1.0"
+workflow:
+  name: load_stock
+  trigger:
+    type: manual
+  steps:
+    - name: work_load_stock
+      type: action
+      action: python
+      params:
+        script: |
+          import time
+          time.sleep(2)
+          print("load_stock done")

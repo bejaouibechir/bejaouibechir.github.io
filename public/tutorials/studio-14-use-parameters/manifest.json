@@ -1,0 +1,8 @@
+[
+  {
+    "file": "run-workflow-parameter-log-expanded-light.png",
+    "name": "run-workflow-parameter-log-expanded",
+    "theme": "light",
+    "alt": "The run detail page of parameters-workflow with the set_region and switch_region steps expanded, showing the parameter created as north and then reassigned to south."
+  }
+]

@@ -1,0 +1,101 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 10</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 10 of 65 · Start from a template</div><h1>Start from a Hydra Studio workflow template: View YAML and Copy YAML</h1><p class="lead">Studio ships three ready-made workflows. Open them, read their YAML, and copy the one closest to what you need instead of starting from a blank file.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">Templates</span><span>about 10 minutes</span><span>Studio running</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>The <b>Templates</b> page of Hydra Studio lists three workflow templates: CSV → CSV, API → Database and Parallel ETL. Select <b>View YAML</b> to read one and <b>Copy YAML</b> to copy it. A template is a workflow file: the jobs it refers to are yours to create.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Open the Templates page, read the YAML of each template, tell the three apart, and copy one.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra and <code>hdrctl serve</code> running. See <a href="/studio/install-and-start">Install and start</a>.</li></ul>
+  <h2>How do I use a Hydra Studio template?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Open the Templates page</h3>
+    <h4>Objective</h4><p>Find the ready-made workflows.</p>
+    <h4>Actions</h4><ol><li>Select <b>Templates</b> in the sidebar.</li><li>Read the three cards.</li></ol>
+    <pre class="cmd">Sidebar → Templates</pre>
+    <p>The title reminds you of the count, <b>3 ready-to-use workflow templates</b>. Every card carries a name, an <b>ETL</b> category badge and one line that says what the workflow does.</p>
+    <div class="expect"><b>What you should see</b><p>Three cards, each with a View YAML button on the left and a Copy YAML button on the right.</p><pre class="out">CSV → CSV        Reads a CSV file, applies a transformation, writes a CSV file.
+API → Database   Fetches data from a REST API and loads it into a database.
+Parallel ETL     Two extractions run in parallel, then a load that waits for both.</pre>
+      <figure class="shot"><img src="/tutorials/studio-templates/templates-copy-yaml-buttons-dark.png" width="1232" height="260" loading="lazy" decoding="async" alt="The three template cards of Hydra Studio in the dark theme: CSV to CSV, API to Database and Parallel ETL, each with a View YAML button and a Copy YAML button." /><figcaption>The three cards, with <b>View YAML</b> and <b>Copy YAML</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read the YAML of CSV → CSV</h3>
+    <h4>Objective</h4><p>See the smallest workflow: two jobs in a row.</p>
+    <h4>Actions</h4><ol><li>Select <b>View YAML</b> on the CSV → CSV card.</li><li>Read it, then select <b>Hide YAML</b>.</li></ol>
+    <pre class="cmd">CSV → CSV → View YAML</pre>
+    <p>The workflow starts manually and has two steps of type <code>job</code>. The second one names the first in <code>depends_on</code>, so it runs afterwards. The jobs are referenced by path and are not part of the template.</p>
+    <div class="expect"><b>What you should see</b><p>The YAML opens under the card, in a scrollable block.</p><pre class="out">version: "1.0"
+workflow:
+  name: csv_to_csv
+  trigger:
+    type: manual
+  steps:
+    - name: extract_csv
+      type: job
+      job: ./jobs/extract
+    - name: load_csv
+      type: job
+      job: ./jobs/load
+      depends_on: [extract_csv]</pre>
+      <figure class="shot"><img src="/tutorials/studio-templates/templates-csv-to-csv-yaml-open-light.png" width="1232" height="700" loading="lazy" decoding="async" alt="The Templates page of Hydra Studio in the light theme with the YAML of the CSV to CSV template expanded under its card: a manual trigger, an extract_csv job and a load_csv job that depends on it." /><figcaption>The YAML of <b>CSV → CSV</b>, expanded.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Tell the three templates apart</h3>
+    <h4>Objective</h4><p>Pick the template whose shape matches your need.</p>
+    <h4>Actions</h4><ol><li>Select <b>View YAML</b> on the two other cards.</li><li>Compare the trigger and the steps.</li></ol>
+    <pre class="cmd">API → Database · Parallel ETL → View YAML</pre>
+    <p>The three templates differ by their trigger and by the way steps depend on each other.</p><table><thead><tr><th>Template</th><th>Trigger</th><th>Steps</th></tr></thead><tbody><tr><td><b>CSV → CSV</b></td><td><code>manual</code></td><td><code>extract_csv</code> then <code>load_csv</code></td></tr><tr><td><b>API → Database</b></td><td><code>schedule</code>, cron <code>0 8 * * *</code></td><td><code>fetch_api</code>, <code>load_db</code>, then a <code>webhook</code> action <code>notify</code> that is skipped if it fails (<code>on_failure: skip</code>)</td></tr><tr><td><b>Parallel ETL</b></td><td><code>manual</code></td><td><code>extract_a</code> and <code>extract_b</code> side by side, then <code>load</code> which depends on both</td></tr></tbody></table><p>A <code>schedule</code> trigger runs only while <code>hdrctl serve</code> is running.</p>
+    <div class="expect"><b>What you should see</b><p>Each YAML starts with <code>version: "1.0"</code> and a <code>workflow:</code> block.</p><pre class="out">api_to_db      trigger: schedule  cron: "0 8 * * *"
+parallel_etl   load depends_on: [extract_a, extract_b]</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Copy the template</h3>
+    <h4>Objective</h4><p>Take the YAML to your own project.</p>
+    <h4>Actions</h4><ol><li>Select <b>Copy YAML</b> on the card you chose.</li><li>Paste it into a new file in the <code>workflows</code> folder of your project.</li></ol>
+    <pre class="cmd">Copy YAML</pre>
+    <p>Studio copies the whole workflow to the clipboard and shows <b>Copied</b> for a moment. The pasted file refers to jobs such as <code>./jobs/extract</code> and <code>./jobs/load</code>, which you create in your project. In the API → Database template, replace the webhook URL, which the template writes as <code>{{ env.WEBHOOK_URL }}</code>, with your own. The lessons on jobs and workflows show how to build those jobs.</p>
+    <div class="expect"><b>What you should see</b><p>The button label changes to Copied, then returns to Copy YAML.</p><pre class="out">Copied</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Read the YAML before you copy it: the step names, the trigger and the job paths are what you will edit.</p>
+  <p data-kind="TIP">Start from <b>CSV → CSV</b> for a first workflow: it has two steps and no schedule.</p>
+  <p data-kind="TRAP">A template does not include its jobs. A workflow that points to <code>./jobs/extract</code> needs a job of that name in your project.</p>
+  <p data-kind="TIP">The schedule of <b>API → Database</b> only fires while <code>hdrctl serve</code> runs.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Templates page</td><td>Three cards: CSV → CSV, API → Database, Parallel ETL</td></tr><tr><td>View YAML</td><td>Opens the workflow under its card</td></tr><tr><td>Copy YAML</td><td>Shows Copied, then Copy YAML again</td></tr><tr><td>Reading</td><td>You can tell the trigger and the dependencies of each template</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Copy YAML does nothing</td><td>The browser blocks clipboard access</td><td>Select View YAML and copy the text by hand</td></tr><tr><td>The pasted workflow cannot find its jobs</td><td>Templates do not include jobs</td><td>Create the jobs the paths name</td></tr><tr><td>The Templates page is empty</td><td>No template is available</td><td>The page then shows No templates</td></tr><tr><td>The scheduled workflow does not start</td><td>No server is running</td><td>Keep <code>hdrctl serve</code> running</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What templates does Hydra Studio include?</h3>
+  <p>Hydra ETL 0.22 lists three workflow templates in the ETL category: CSV → CSV, API → Database and Parallel ETL. Each card shows a short description, its YAML and a button that copies the YAML.</p>
+  <h3>Does a template create jobs for me?</h3>
+  <p>No. A template is a workflow file. It refers to jobs by path, for example ./jobs/extract and ./jobs/load, and does not include them: you create those jobs in your project.</p>
+  <h3>How do I copy a template?</h3>
+  <p>Select Copy YAML on its card. Studio copies the whole workflow to the clipboard and shows Copied for a moment. Paste it into a workflow file of your project.</p>
+  <h3>Which template runs on a schedule?</h3>
+  <p>API → Database. Its trigger is a schedule with the cron expression 0 8 * * *, and it ends with a webhook action that is skipped if it fails. The two other templates start manually.</p>
+  <h3>What does depends_on do in a template?</h3>
+  <p>It makes a step wait for the steps it names. In Parallel ETL, the load step depends on both extractions, so it starts only after both finish.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/tour-the-pages">Tour the Studio pages</a></li><li><a href="/studio/08-see-the-yaml">Read the YAML Studio generates</a></li><li><a href="/studio/12-compose-jobs">Compose jobs in a workflow</a></li><li><a href="/dsl">Hydra DSL reference</a></li></ul>
+
+  <h2>Next lesson</h2><p>You can read and copy a workflow. The next lessons build the jobs it needs.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/05-add-a-source">Create a job <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

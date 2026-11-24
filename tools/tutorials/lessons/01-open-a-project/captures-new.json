@@ -1,0 +1,253 @@
+{
+  "base_url": "http://127.0.0.1:5679",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scale": 2,
+  "theme_cycle": [
+    "light",
+    "dark"
+  ],
+  "replace_text": {
+    "C:\\Users\\DELL": "C:\\Users\\you",
+    "essai012": "orders-demo",
+    "fallbackproject": "backup-demo",
+    "env-project": "env-demo",
+    "hydra-cdc-mirror-demo": "cdc-demo",
+    "snwoflake": "warehouse-demo"
+  },
+  "shots": [
+    {
+      "name": "overview-start-page",
+      "path": "/",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The Hydra Studio Overview page of a new workspace, with the Create a project card."
+    },
+    {
+      "name": "new-project-dialog-filled",
+      "path": "/",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Create a project"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "fill": "text=Project name >> xpath=following::input[1]",
+          "value": "studio-course"
+        },
+        {
+          "wait_ms": 300
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The New project dialog with the project name studio-course typed in."
+    },
+    {
+      "name": "project-in-list",
+      "path": "/",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "Create a project"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "fill": "text=Project name >> xpath=following::input[1]",
+          "value": "studio-course"
+        },
+        {
+          "wait_ms": 300
+        },
+        {
+          "click_text": "Create project"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The Overview project list now showing studio-course."
+    },
+    {
+      "name": "project-page-no-workflow",
+      "path": "/",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "studio-course"
+        },
+        {
+          "wait_ms": 1800
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The studio-course project page with no workflow yet and a New workflow button."
+    },
+    {
+      "name": "new-workflow-dialog-manual",
+      "path": "/",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "studio-course"
+        },
+        {
+          "wait_ms": 1800
+        },
+        {
+          "click_text": "New workflow"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "fill": "text=Workflow name >> xpath=following::input[1]",
+          "value": "first-workflow"
+        },
+        {
+          "wait_ms": 300
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The New workflow dialog with the name first-workflow and the Manual trigger."
+    },
+    {
+      "name": "workflow-card-manual",
+      "path": "/",
+      "theme": "dark",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "studio-course"
+        },
+        {
+          "wait_ms": 1800
+        },
+        {
+          "click_text": "New workflow"
+        },
+        {
+          "wait_ms": 700
+        },
+        {
+          "fill": "text=Workflow name >> xpath=following::input[1]",
+          "value": "first-workflow"
+        },
+        {
+          "click_text": "Create workflow"
+        },
+        {
+          "wait_ms": 2000
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The first-workflow card on the project page, with its Manual trigger."
+    },
+    {
+      "name": "workflow-editor-open",
+      "path": "/",
+      "theme": "light",
+      "steps": [
+        {
+          "wait_for": "header"
+        },
+        {
+          "wait_ms": 1500
+        },
+        {
+          "click_text": "studio-course"
+        },
+        {
+          "wait_ms": 1800
+        },
+        {
+          "click_text": "Open in editor"
+        },
+        {
+          "wait_ms": 2500
+        }
+      ],
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "alt": "The Hydra Studio editor opened on first-workflow with an empty canvas."
+    }
+  ]
+}

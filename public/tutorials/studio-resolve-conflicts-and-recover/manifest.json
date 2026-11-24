@@ -1,0 +1,14 @@
+[
+  {
+    "file": "terminal-conflict-run-refused-light.png",
+    "name": "terminal-conflict-run-refused",
+    "theme": "light",
+    "alt": "The Studio terminal after a second run of wf_conflict, refused because of the undo journal."
+  },
+  {
+    "file": "terminal-workflow-undo-stopped-dark.png",
+    "name": "terminal-workflow-undo-stopped",
+    "theme": "dark",
+    "alt": "The Studio terminal after hdrctl workflow undo wf_conflict, which stops at build_report."
+  }
+]

@@ -1,0 +1,19 @@
+version: "1.0"
+triggers:
+  - name: nightly
+    type: cron
+    cron: "0 2 * * *"
+    timezone: UTC
+    workflows: [workflow1]
+  - name: every-15-min
+    type: interval
+    every: 15m
+    overlap: skip
+  - name: new-files
+    type: file
+    path: Data/incoming
+    events: [added]
+  - name: go-flag
+    type: marker
+    path: go.flag
+    enabled: false

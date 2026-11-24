@@ -6,9 +6,23 @@ import css from '../../_mock/learning-hub.css?raw';
 import lessonCss from '../../_mock/cli-lesson.css?raw';
 import js from '../../_mock/learning-hub.js?raw';
 import main from '../../_mock/studio-lesson-13-handle-failure.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Hydra Studio containers: Sequence, Error Scope and Retry Scope", description: "Use the three Hydra Studio containers, Sequence, Error Scope and Retry Scope, to group steps and set failure and retry behavior. Hydra ETL 0.22.", datePublished: '2026-11-04', dateModified: '2026-11-22', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/13-handle-failure/',
+  name: article.headline,
+  steps: ["Find the Containers category", "Compare the three container types", "Group a job in a Sequence", "Detach a step from its container", "Choose an Error Scope policy", "Configure a Retry Scope"],
+  faq: [
+    ["What are the containers in Hydra Studio?", "Sequence, which only groups; Error Scope, which sets what happens when a child fails (skip, continue or fail); and Retry Scope, which sets the number of retries and the delay."],
+    ["Do containers appear in workflow.yaml?", "No. Containers are visual. Their policy is copied onto the enclosed steps, as on_failure or retry, when the YAML is written."],
+    ["What are the on_failure values?", "fail stops the workflow, skip marks the step skipped and continue carries on."],
+    ["Can a step override its container?", "Yes. A child that sets its own value keeps it."],
+  ],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Use containers", '/studio/13-handle-failure/']],
+});
 ---
 
-<BaseLayout title="Lesson 13 — Use containers" description="Group workflow steps with Sequence, Error, and Retry containers in Hydra Studio.">
+<BaseLayout title="Hydra Studio containers: Sequence, Error Scope and Retry Scope" exactTitle="Hydra Studio Containers: Error and Retry Scope | Hydra ETL" description="Use the three Hydra Studio containers, Sequence, Error Scope and Retry Scope, to group steps and set failure and retry behavior. Hydra ETL 0.22." article={article} jsonld={jsonld}>
   <style is:global set:html={css}></style>
   <style is:global set:html={lessonCss}></style>
   <ProductLearningShell

@@ -1,0 +1,129 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 60</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 60 of 65 · Scenario</div><h1>Build a resilient ETL pipeline in Hydra ETL Studio</h1><p class="lead">One protection is a feature. Five protections that fit together are a pipeline you can leave running. Build one, and prove it with a dry run.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (CLI outputs on Linux and Windows; Studio screens on Windows)</p></div>
+<div class="lesson-meta"><span class="mono">Execution order · hdrctl run</span><span>about 30 minutes</span><span>the resilient-pipeline project</span></div>
+<section class="doc">
+<div class="callout"><b>Quick answer</b><p>A resilient Hydra ETL project protects each failure where it happens: a <code>fallback</code> for a missing input, a <code>retry</code> for a flaky call, <code>rollback: true</code> with <code>undo</code> for a workflow that publishes in several steps, and a <code>timeout</code> for a workflow that can hang. <code>hdrctl run . --dry-run</code> checks them all before anything runs.</p></div>
+<h2>What will you learn in this lesson?</h2>
+<h3>Goal</h3><p>Assemble four workflows into a project with a fallback, a retry, a rollback with an undo and a timeout, check the whole plan without running it, then run it. Hydra ETL is unrelated to Meta's Hydra configuration library and to the PostgreSQL extension of the same name.</p>
+<div class="callout"><b>Project used here</b><p>The <code>resilient-pipeline</code> copy of <code>fallbackproject</code>, plus one workflow, <code>wf_flaky</code>, whose python step fails twice before it answers. Stage 1 runs <code>wf_load</code> then <code>wf_report</code>. Stage 2 runs <code>wf_flaky</code> then <code>wf_archive</code>.</p></div>
+<h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra, and <code>hdrctl serve</code> running: Studio is then at <code>http://127.0.0.1:5678</code>. See <a href="/studio/02-check-the-api">lesson 3, Check the API</a> if the top bar does not say <b>API online</b>.</li><li>A project with a fallback declared. See <a href="/studio/declare-a-fallback-workflow">lesson 46, Declare a fallback workflow</a>.</li></ul>
+<h2>How do I make a Hydra ETL pipeline resilient?</h2>
+<div class="step">
+  <h3><i>01</i>Match each failure to a protection</h3>
+  <h4>Objective</h4><p>Decide what protects what, before touching a file.</p>
+  <h4>Actions</h4><ol><li>Read the table.</li><li>Note which workflow each row concerns.</li></ol>
+  <pre class="cmd">failure → protection</pre>
+  <p>Each protection answers one kind of failure:</p><table><thead><tr><th>What can go wrong</th><th>Protection</th><th>Where it is set</th><th>Lesson</th></tr></thead><tbody><tr><td>The input file is missing or too small</td><td><code>fallback</code> on <code>wf_load</code></td><td>Execution order, lifebuoy button</td><td>46, 47</td></tr><tr><td>A call to a service fails now and then</td><td><code>retry</code> on the step</td><td>Retry Scope, or <code>retry:</code> in the workflow</td><td>—</td></tr><tr><td>A late step fails after earlier ones published</td><td><code>rollback: true</code> and <code>undo</code></td><td>Workflow toolbar, action dialog</td><td>43, 44</td></tr><tr><td>A workflow never ends</td><td><code>timeout</code></td><td><b>max</b> field in Execution order</td><td>48</td></tr><tr><td>A load stops in the middle</td><td><code>atomic</code></td><td>Destination</td><td>42</td></tr></tbody></table>
+  <div class="expect"><b>What you should see</b><p>A plan that you can read at a glance. Nothing to run yet.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>02</i>Add a fallback to the load</h3>
+  <h4>Objective</h4><p>Switch to a backup when the input is not usable.</p>
+  <h4>Actions</h4><ol><li>Open <b>Project settings → Execution order</b>.</li><li>Select the lifebuoy of <code>wf_load</code>.</li><li>Choose <code>wf_load_backup</code> and type the condition.</li></ol>
+  <pre class="cmd">when: not file_exists('Data/orders.csv') or file_size('Data/orders.csv') < 100</pre>
+  <p>This is lesson 46 in one line. The backup loads 8 rows from <code>Data/orders_backup.csv</code>. The same lifebuoy on <code>wf_report</code> sets <code>on_failure: true</code> and the condition <code>previous.rows &lt; 10</code>, and on <code>wf_archive</code> the condition <code>file_age('Data/stamp.txt') &gt; 30s</code>.</p>
+  <div class="expect"><b>What you should see</b><p>A lifebuoy button on <code>wf_load</code>, <code>wf_report</code> and <code>wf_archive</code>.</p>
+      <figure class="shot"><img src="/tutorials/studio-build-a-resilient-pipeline/execution-order-resilient-project-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Execution order panel with two stages and the protections of the resilient pipeline." /><figcaption>Four workflows, three fallbacks and one timeout in the thread.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>03</i>Add a retry to the flaky call</h3>
+  <h4>Objective</h4><p>Let a step try again before failing the workflow.</p>
+  <h4>Actions</h4><ol><li>Open <code>wf_flaky</code>.</li><li>Add <code>retry</code> to the step, or drop a <b>Retry Scope</b> around it.</li><li>Save.</li></ol>
+  <pre class="cmd">retry: {max: 3, delay: 1}</pre>
+  <p><code>max</code> is the number of retries <b>after</b> the first failure, <code>delay</code> is the wait in seconds. A Retry Scope created in Studio starts with <code>max: 3</code> and <code>delay: 5</code>. The step of this scenario fails twice and answers on the third attempt:</p><pre class="out">    - name: call_service
+      type: action
+      action: python
+      retry:
+        max: 3
+        delay: 1
+      params:
+        script: …</pre>
+  <div class="expect"><b>What you should see</b><p>A <code>retry</code> block on the step.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>04</i>Make the report safe to undo</h3>
+  <h4>Objective</h4><p>Undo a half-published report if a later step fails.</p>
+  <h4>Actions</h4><ol><li>Open <code>wf_report</code> and check that <b>Rollback</b> reads <b>on</b>.</li><li>Check that the <code>share</code> action has an undo.</li></ol>
+  <pre class="cmd">rollback: true</pre>
+  <p>This is lessons 43 and 44. <code>wf_report</code> builds a report, shares a copy, then runs <code>finalize</code>. If <code>finalize</code> fails, the copy is deleted and the report is restored.</p>
+  <div class="expect"><b>What you should see</b><p><b>Rollback on</b> in the toolbar, and a python undo on <code>share</code>.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>05</i>Limit the duration of the flaky workflow</h3>
+  <h4>Objective</h4><p>Stop a call that never answers.</p>
+  <h4>Actions</h4><ol><li>Type <code>20s</code> in the <b>max</b> field of <code>wf_flaky</code>.</li><li>Save.</li></ol>
+  <pre class="cmd">timeout: 20s</pre>
+  <p>Twenty seconds leaves room for the three attempts and their delays (about 2 seconds) with a wide margin.</p><pre class="out">thread:
+  - mode: sequential
+    workflows:
+      - name: wf_flaky
+        active: true
+        timeout: 20s</pre>
+  <div class="expect"><b>What you should see</b><p><code>20s</code> in the <b>max</b> field, with a normal border.</p>
+
+  </div>
+</div>
+<div class="step">
+  <h3><i>06</i>Check the whole project</h3>
+  <h4>Objective</h4><p>Validate every protection without running anything.</p>
+  <h4>Actions</h4><ol><li>Select <b>Check</b> in Execution order.</li><li>Open a terminal in the project folder and run the dry run.</li></ol>
+  <pre class="cmd">hdrctl run . --dry-run</pre>
+  <p>The plan lists each workflow with its fallback. The warning is expected: the quarantine workflow writes to its own file.</p>
+  <div class="expect"><b>What you should see</b><p>A plan with three fallbacks, one warning and <b>Dry run OK</b>.</p><pre class="out">Stage 1/2 — sequential
+   •  wf_load  (1: load_orders)
+      ↪  fallback: wf_load_backup (if not file_exists('Data/orders.csv') or file_size('Data/orders.csv') &lt; 100)
+   •  wf_report  (3: build_report, share, finalize)
+      ↪  fallback: wf_report_quarantine (if previous.rows &lt; 10; on failure)
+Stage 2/2 — sequential
+   •  wf_flaky  (1: call_service)
+   •  wf_archive  (1: archive)
+      ↪  fallback: wf_archive_alt (if file_age('Data/stamp.txt') &gt; 30s)
+⚠  workflows/thread.yaml: workflow 'wf_report' fallback: 'wf_report_quarantine' writes to ['csv:../../outputs/quarantine.csv'] instead of […] (fine for a quarantine workflow; otherwise check it)
+✅ Dry run OK: the project is valid. Nothing was executed.</pre>
+      <figure class="shot"><img src="/tutorials/studio-build-a-resilient-pipeline/project-check-resilient-ready-dark.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The Execution order panel after Check, with the Ready line." /><figcaption>Check validates the whole project.</figcaption></figure>
+  </div>
+</div>
+<div class="step">
+  <h3><i>07</i>Run the project</h3>
+  <h4>Objective</h4><p>See every protection stay quiet when nothing is wrong.</p>
+  <h4>Actions</h4><ol><li>Go back to the project.</li><li>Select <b>Run project</b>.</li><li>Open the run.</li></ol>
+  <pre class="cmd">hdrctl run .</pre>
+  <p>With good data, no fallback is used. If a step needed a retry, the run page shows a WARNING line for it in the step log. The only warning concerns <code>wf_archive</code>: its condition reads <code>Data/stamp.txt</code>, which does not exist, so Hydra ETL keeps the workflow (<code>on_probe_error: keep</code>).</p>
+  <div class="expect"><b>What you should see</b><p>Four workflows OK, and a run page with no fallback badge.</p><pre class="out">▶  Workflow  wf_load
+   ✓  Step 'load_orders' OK (&lt;duration&gt;)
+▶  Workflow  wf_report
+   ✓  Step 'build_report' OK
+   ✓  Step 'share' OK
+   ✓  Step 'finalize' OK
+▶  Workflow  wf_flaky
+   ✓  Step 'call_service' OK
+⚠  wf_archive: fallback check failed (file_age('Data/stamp.txt'): file not found (…)); keeping wf_archive
+▶  Workflow  wf_archive
+   ✓  Step 'archive' OK
+✅ Project 'resilient-pipeline' completed in &lt;duration&gt; — 4/4 workflow(s) OK</pre>
+      <figure class="shot"><img src="/tutorials/studio-build-a-resilient-pipeline/run-project-resilient-nominal-detail-light.png" width="2464" height="1688" loading="lazy" decoding="async" alt="The run detail page of the resilient pipeline, with four workflows succeeded." /><figcaption>A clean run: no protection was needed.</figcaption></figure>
+  </div>
+</div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Add one protection at a time and run <code>--dry-run</code> after each: the plan shows what changed.</p><p data-kind="TIP">Put a workflow that writes no rows after the workflows that a <code>previous.rows</code> condition watches.</p><p data-kind="TRAP">A retry cannot fix a wrong input: it only repeats the call. Keep retries for failures that pass by themselves.</p><p data-kind="TRAP">The timeout counts the retry delays. A short limit with long delays stops the workflow before the last attempt.</p>
+</div>
+<h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Plan</td><td>A <code>↪ fallback</code> line under <code>wf_load</code>, <code>wf_report</code> and <code>wf_archive</code></td></tr><tr><td>Dry run</td><td><code>Dry run OK: the project is valid. Nothing was executed.</code></td></tr><tr><td>Run</td><td><code>Project completed — 4/4 workflow(s) OK</code></td></tr><tr><td>Retry</td><td>The flaky call answers on its third attempt</td></tr></tbody></table>
+<h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>A fallback runs although nothing failed</td><td>A <code>previous.rows</code> condition sees a workflow that writes no rows</td><td>Move that workflow elsewhere, or test another value</td></tr><tr><td>The dry run warns about <code>wf_report_quarantine</code></td><td>The backup writes to another file</td><td>Expected for a quarantine workflow; otherwise check the destination</td></tr><tr><td>The flaky workflow fails with a timeout</td><td>Attempts and delays exceed the limit</td><td>Raise <code>timeout</code> or shorten the delays</td></tr></tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>How do I make a Hydra ETL project resilient?</h3><p>Protect each failure at the place where it happens: a fallback for a missing or empty input, retry for a call that sometimes fails, rollback with undo for a workflow that publishes in several steps, and a timeout for a workflow that can hang. Then check the plan with hdrctl run . --dry-run.</p><h3>Does a retry show up in the log?</h3><p>In the Studio run page, yes: the step log has a WARNING line for each retry, such as retry 1/3 in 1s. The command line output of hdrctl run prints only the final result of the step. In our test the step failed twice and answered on the third attempt, one second apart, and the workflow lasted about two seconds.</p><h3>What does a dry run check in a project with protections?</h3><p>It validates the project, prints each workflow with its fallback and condition, and warns when a backup writes somewhere else than the workflow it replaces. It runs nothing.</p><h3>Why is wf_flaky not before wf_report?</h3><p>The condition previous.rows refers to the workflow just before. A workflow that writes no rows between the load and the report would make previous.rows equal 0 and trigger the report fallback by mistake.</p>
+<h2>Related lessons</h2>
+<ul class="linklist"><li><a href="/studio/all-or-nothing-load">All-or-nothing loads</a></li><li><a href="/studio/roll-back-a-failed-workflow">Roll back a failed workflow</a></li><li><a href="/studio/declare-a-fallback-workflow">Declare a fallback workflow</a></li><li><a href="/studio/break-it-then-recover">Break it, then recover</a></li><li><a href="/dsl/workflow-yaml">workflow.yaml reference</a></li></ul>
+<h2>Next lesson</h2><p>The next scenario breaks this project on purpose, one failure at a time, and reads how each protection reacts.</p>
+<div class="lesson-nav"><a class="primary" href="/studio/break-it-then-recover">Break it, then recover <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+<div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>
