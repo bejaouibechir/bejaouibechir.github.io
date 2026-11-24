@@ -1,0 +1,33 @@
+{
+  "id": "377354a3",
+  "name": "act2-demo",
+  "description": "",
+  "created_at": "2026-11-24T12:17:23.096600+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [
+    {
+      "id": "6196cdbd",
+      "name": "wf-hook",
+      "file": "workflows/wf-hook.yaml"
+    },
+    {
+      "id": "594f2753",
+      "name": "wf-mail",
+      "file": "workflows/wf-mail.yaml"
+    },
+    {
+      "id": "73e85481",
+      "name": "workflow1",
+      "file": "workflows/workflow1.yaml"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "job1",
+      "path": "jobs/job1"
+    }
+  ]
+}

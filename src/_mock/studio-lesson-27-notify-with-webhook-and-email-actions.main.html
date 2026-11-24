@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">webhook, email</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p>The <code>webhook</code> action sends an HTTP request to a URL, and the <code>email</code> action sends a message through an SMTP server. Both are steps of type <code>action</code>, and a refused call or a closed port fails the step.</p></div>
+  <div class="callout"><b>Quick answer</b><p>The <code>webhook</code> action sends an HTTP request to a URL, and the <code>email</code> action sends a message through an SMTP server. Both are steps of type <code>action</code>, and a refused call or a closed port fails the step. In Studio, double-click the node to edit the same parameters in a dialog.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Start a local test server, send a webhook with a header and a JSON body, send an email, and read what each failure looks like.</p>
+  <h3>Goal</h3><p>Start a local test server, send a webhook with a header and a JSON body, send an email, and read what each failure looks like. Then open both nodes in Studio to see the same parameters as forms.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init act2-demo</code>. Workflow files go in <code>act2-demo/workflows</code>.</li><li>Python, for the local test server. Nothing leaves your machine.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I send a webhook and an email from a workflow?</h2>
 
@@ -162,6 +162,28 @@ Subject: Load finished
   <p data-kind="TRAP">The SSH action needs a remote machine. This lesson does not cover it.</p>
 </div>
 
+  <div class="step">
+    <h3><i>07</i>Open the Webhook action in Studio</h3>
+    <h4>Objective</h4><p>See the same parameters as a form.</p>
+    <h4>Actions</h4><ol><li>Open the workflow in Hydra Studio and double-click its Webhook node.</li></ol>
+    <pre class="cmd">double-click the Webhook node</pre>
+    <p>The dialog is titled <b>Webhook</b>, <b>Outgoing HTTP call</b>. The first three fields are common to every action: step name, <b>On failure</b> (default <b>fail</b>) and a run condition. Below them come the four parameters of the YAML: <b>URL</b> (marked required), <b>Method</b> (a list starting with POST), <b>Body (JSON)</b> and <b>Headers (JSON)</b>. Each text field has an <b>{x}</b> button to insert a parameter or a secret reference.</p>
+    <div class="expect"><b>What you should see</b><p>The URL <code>http://127.0.0.1:8099/hook</code> and the body of the YAML, in the fields.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-notify-actions/webhook-action-dialog-fields-light.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Webhook action dialog of Hydra Studio with the step name notify, the URL, the POST method and the JSON body filled in." /><figcaption>The <b>Webhook</b> dialog.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Open the Email action in Studio</h3>
+    <h4>Objective</h4><p>Same idea for the email.</p>
+    <h4>Actions</h4><ol><li>Open the workflow with the Email node and double-click the node.</li></ol>
+    <pre class="cmd">double-click the Email node</pre>
+    <p>The dialog is titled <b>Email</b>, <b>Send email</b>. <b>Recipient</b> and <b>Subject</b> are required; then come <b>Body</b>, <b>Sender (From)</b>, <b>SMTP server</b>, <b>SMTP port</b>, <b>SMTP user</b>, <b>SMTP password</b> and a <b>TLS (STARTTLS)</b> list set to false by default. Scroll the dialog to reach the SMTP fields.</p>
+    <div class="expect"><b>What you should see</b><p>Recipient <code>team@example.test</code> and subject <code>Load finished</code>.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-notify-actions/email-action-dialog-fields-dark.png" width="1232" height="844" loading="lazy" decoding="async" alt="The Email action dialog of Hydra Studio with the step name send_mail, the recipient, the subject and the body filled in." /><figcaption>The <b>Email</b> dialog.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Webhook</td><td>action: webhook, params: url, method, headers, body</td></tr><tr><td>Email</td><td>action: email, params: smtp_host, smtp_port, to, subject, body</td></tr><tr><td>Required</td><td>url (webhook), to (email)</td></tr><tr><td>Test</td><td>local server on 8099 (HTTP) and 1025 (SMTP)</td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>HTTPError: HTTP Error 404: Not Found</td><td>The server has no such path</td><td>Check the url</td></tr><tr><td>URLError / ConnectionRefusedError</td><td>Nothing listens on that host and port</td><td>Start the server, or fix host and port</td></tr><tr><td>'headers' is not valid JSON</td><td>The text is not a JSON object</td><td>Write it as {"Name": "value"}</td></tr><tr><td>requires parameter 'url' / 'to'</td><td>A required parameter is missing</td><td>Add it in params</td></tr></tbody></table>
@@ -177,6 +199,9 @@ Subject: Load finished
   <p>Use action email with smtp_host, smtp_port, to, subject and body. It sends through an SMTP server. We tested it against a local test server on port 1025, and the message arrived with the right sender, recipient and subject.</p>
   <h3>Which parameters are required?</h3>
   <p>url for a webhook and to for an email. Without them, hdrctl workflow run stops before the run with: action 'webhook' requires parameter 'url', or action 'email' requires parameter 'to'.</p>
+
+  <h3>Can I configure the webhook and email actions in Hydra Studio?</h3>
+  <p>Yes. Double-clicking the node opens a dialog with the same parameters as the YAML: URL, method, body and headers for the webhook; recipient, subject, body and SMTP settings for the email.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/log-python-and-shell-actions">Log, Python and shell actions</a></li><li><a href="/studio/start-a-project-with-a-webhook">Start a project from a webhook</a></li><li><a href="/studio/resolve-conflicts-and-recover">Resolve conflicts and recover</a></li></ul>

@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">hdrctl env</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p><code>hdrctl env</code> manages environments: common variables, one file per environment, and a parameter file in the project. A run picks one with <code>--env NAME</code>, and a job or workflow reads a variable with <code>${ENV:NAME}</code>.</p></div>
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl env</code> manages environments: common variables, one file per environment, and a parameter file in the project. A run picks one with <code>--env NAME</code>, and a job or workflow reads a variable with <code>${ENV:NAME}</code>. In Studio, the <b>Environments</b> card of Global settings does the same.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Redirect the settings folder, set common and prod variables, run a workflow with and without <code>--env</code>, then unset, rename and delete.</p>
+  <h3>Goal</h3><p>Redirect the settings folder, set common and prod variables, run a workflow with and without <code>--env</code>, then unset, rename and delete. Then create the same environment in Studio and choose it as the active one.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init envx-demo</code>, then <code>cd envx-demo</code>.</li><li>An empty folder for the settings, so that nothing is written in your own settings: <code>set HYDRA_HOME=C:\temp\fake-home</code> on Windows. Skip this line to use your real ones.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I switch environments in Hydra ETL?</h2>
 
@@ -115,6 +115,50 @@ hdrctl env delete production -y</pre>
   <p data-kind="TRAP">The global files are in the settings folder of your user, shared by all your projects. A variable you set for one project reaches the others.</p>
 </div>
 
+  <div class="step">
+    <h3><i>07</i>Open the Environments card</h3>
+    <h4>Objective</h4><p>Find the global variables in Studio.</p>
+    <h4>Actions</h4><ol><li>Click <b>Settings</b>, then <b>Global settings</b>.</li><li>Find the <b>Environments</b> card and stay on the <b>Common</b> tab.</li></ol>
+    <pre class="cmd">Settings → Global settings → Environments</pre>
+    <p>The card says where it saves: in the settings folder of this machine, not in the browser, so every project sees the same variables. The Common tab lists the values every run gets. In our test it held <code>REGION</code> and <code>API_URL</code>, set earlier with <code>hdrctl env set</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A Common tab with two variables.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-environments-panel/env-common-tab-light.png" width="702" height="336" loading="lazy" decoding="async" alt="The Environments card of Global settings on the Common tab, with the variables REGION and API_URL, an Add variable button and a Save common variables button." /><figcaption>The <b>Common</b> tab.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Create the prod environment</h3>
+    <h4>Objective</h4><p>One click, one name.</p>
+    <h4>Actions</h4><ol><li>Click <b>New environment</b>.</li><li>Type <code>prod</code> and press Enter, or click the check mark.</li></ol>
+    <pre class="cmd">New environment → prod</pre>
+    <p>A new tab named <code>prod</code> appears and is selected. It starts with the line <b>No variable.</b>. The tab also gets <b>Rename</b> and <b>Delete</b> buttons; according to the text of the page, Delete keeps a copy of the file in the <code>_backups</code> folder.</p>
+    <div class="expect"><b>What you should see</b><p>The name box beside the Common tab.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-environments-panel/env-new-box-dark.png" width="702" height="336" loading="lazy" decoding="async" alt="The Environments card with the New environment box open and the name prod typed, next to the Common tab." /><figcaption>The name box of the new environment.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Set a variable and save</h3>
+    <h4>Objective</h4><p>Write a value for prod.</p>
+    <h4>Actions</h4><ol><li>Click <b>Add variable</b>.</li><li>Type <code>API_URL</code> as the name and <code>https://api.example.test</code> as the value.</li><li>Click <b>Save prod</b>.</li></ol>
+    <pre class="cmd">Add variable → Save prod</pre>
+    <p>A name takes letters, digits and underscores, and cannot start with a digit; a duplicate name is flagged in red. The message <b>Saved</b> appears for two seconds, and the file shown above the table is the one Studio wrote: <code>env.prod</code> in the settings folder.</p>
+    <div class="expect"><b>What you should see</b><p><b>Saved</b>, and a file with one line of variable.</p><pre class="out">API_URL=https://api.example.test</pre>
+      <figure class="shot"><img src="/tutorials/studio-environments-panel/env-prod-saved-light.png" width="702" height="318" loading="lazy" decoding="async" alt="The Environments card on the prod tab after Save: one variable API_URL with the value https://api.example.test, the file name env.prod and the message Saved." /><figcaption>The <b>prod</b> tab after <b>Save prod</b>.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>10</i>Choose the active environment</h3>
+    <h4>Objective</h4><p>Pick it where you run.</p>
+    <h4>Actions</h4><ol><li>Open the project page.</li><li>In the <b>Environment</b> list, choose <b>prod</b>. The <b>Manage</b> link opens the card you just used.</li></ol>
+    <pre class="cmd">Project page → Environment → prod</pre>
+    <p>The list starts on <b>default (no environment)</b>. According to the text of the card, runs started from Studio then load the common variables, then those of the chosen environment, which is what <code>--env prod</code> does on the command line. The editor has the same list.</p>
+    <div class="expect"><b>What you should see</b><p>The list, with the Manage link beside it.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-environments-panel/env-active-selector-dark.png" width="358" height="78" loading="lazy" decoding="async" alt="The Environment list on the project page, set to default (no environment), next to a Manage link that opens the Environments card." /><figcaption>The environment list of the project page.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Set</td><td>hdrctl env set NAME VALUE [--env E]</td></tr><tr><td>Create / delete</td><td>hdrctl env create E, hdrctl env delete E -y</td></tr><tr><td>Inspect</td><td>hdrctl env list, hdrctl env show [E]</td></tr><tr><td>Rename</td><td>hdrctl env rename OLD NEW</td></tr><tr><td>Use</td><td>${ENV:NAME}, --env E, HYDRA_ENV</td></tr><tr><td>Redirect</td><td>HYDRA_HOME=<folder></td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Missing environment variable: NAME</td><td>The name is in no environment file and not in the shell</td><td>Run hdrctl env show, then hdrctl env set</td></tr><tr><td>NAME is not defined for (common)</td><td>env unset on a name that is not there</td><td>Check the scope with hdrctl env show</td></tr></tbody></table>
@@ -130,6 +174,9 @@ hdrctl env delete production -y</pre>
   <p>It adds to them and wins on a clash. In our test prod defined API_URL only, and REGION still came from the common file.</p>
   <h3>How do I try environments without touching my own settings?</h3>
   <p>Set HYDRA_HOME to an empty folder before you run the commands. The global files go there instead of the .hydra folder of your user. All the tests of this lesson used it.</p>
+
+  <h3>Can I manage environments in Hydra Studio?</h3>
+  <p>Yes. The Environments card of Global settings creates, renames and deletes environments and edits their variables. In our test it wrote env.prod in the settings folder, and the project page has a list to choose the active environment.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>

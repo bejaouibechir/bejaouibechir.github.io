@@ -1,0 +1,8 @@
+# Project triggers (Hydra 0.19) — run by `hdrctl watch` and `hdrctl serve`;
+# `hdrctl trigger fire NAME` runs one now. Written by Hydra Studio.
+version: "1.0"
+triggers:
+  - name: nightly
+    type: cron
+    cron: 0 2 * * *
+    timezone: Europe/Paris

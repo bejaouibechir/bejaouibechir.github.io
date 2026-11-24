@@ -1,0 +1,12 @@
+{
+  "id": "6d5971e8",
+  "name": "workflow1",
+  "project_id": "b1f5879f",
+  "description": "First workflow of the project",
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\scopes-probe\\scope-demo\\workflows\\workflow1.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

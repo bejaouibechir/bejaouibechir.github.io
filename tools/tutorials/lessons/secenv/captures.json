@@ -1,0 +1,231 @@
+{
+ "base_url": "http://127.0.0.1:5693",
+ "viewport": {
+  "width": 1440,
+  "height": 1100
+ },
+ "scale": 2,
+ "theme_cycle": [
+  "light",
+  "dark"
+ ],
+ "replace_text": {
+  "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\secenv-probe": "C:\\Users\\you\\projects",
+  "C:\\Users\\you\\Desktop\\hydra-site\\tools\\tutorials\\secenv-probe": "C:\\Users\\you\\projects",
+  "C:\\Users\\DELL": "C:\\Users\\you"
+ },
+ "shots": [
+  {
+   "name": "env-common-tab",
+   "path": "/settings/global",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "[data-testid=environments-manager]"
+    },
+    {
+     "wait_ms": 800
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=environments-manager]",
+    "padding": 8
+   },
+   "alt": "The Environments card of Global settings on the Common tab, with the variables REGION and API_URL, an Add variable button and a Save common variables button."
+  },
+  {
+   "name": "env-new-box",
+   "path": "/settings/global",
+   "theme": "dark",
+   "steps": [
+    {
+     "wait_for": "[data-testid=environments-manager]"
+    },
+    {
+     "click": "[data-testid=env-new]"
+    },
+    {
+     "wait_ms": 300
+    },
+    {
+     "fill": "[aria-label='Environment name']",
+     "value": "prod"
+    },
+    {
+     "wait_ms": 300
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=environments-manager]",
+    "padding": 8
+   },
+   "alt": "The Environments card with the New environment box open and the name prod typed, next to the tabs Common and New environment."
+  },
+  {
+   "name": "env-prod-saved",
+   "path": "/settings/global",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "[data-testid=environments-manager]"
+    },
+    {
+     "click": "[data-testid=env-new]"
+    },
+    {
+     "wait_ms": 300
+    },
+    {
+     "fill": "[aria-label='Environment name']",
+     "value": "prod"
+    },
+    {
+     "press": "Enter"
+    },
+    {
+     "wait_ms": 900
+    },
+    {
+     "click": "[data-testid=env-add-var]"
+    },
+    {
+     "wait_ms": 200
+    },
+    {
+     "fill": "[aria-label='Variable name'] >> nth=-1",
+     "value": "API_URL"
+    },
+    {
+     "fill": "[aria-label='Variable value'] >> nth=-1",
+     "value": "https://api.example.test"
+    },
+    {
+     "click": "[data-testid=env-save]"
+    },
+    {
+     "wait_ms": 500
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=environments-manager]",
+    "padding": 8
+   },
+   "alt": "The Environments card on the prod tab after Save: one variable API_URL with the value https://api.example.test, the file name env.prod and the message Saved."
+  },
+  {
+   "name": "env-active-selector",
+   "path": "/projects/3263cebf",
+   "theme": "dark",
+   "steps": [
+    {
+     "wait_for": "[data-testid=env-selector]"
+    },
+    {
+     "wait_ms": 800
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=env-selector]",
+    "padding": 24
+   },
+   "alt": "The Active environment list on the project page, set next to a Manage link that opens the Environments card."
+  },
+  {
+   "name": "secrets-form-filled",
+   "path": "/settings/project/3263cebf?tab=secrets",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "[data-testid=secrets-panel]"
+    },
+    {
+     "wait_ms": 600
+    },
+    {
+     "fill": "[aria-label='Secret name']",
+     "value": "db.password"
+    },
+    {
+     "fill": "[aria-label='Secret value']",
+     "value": "change-me-demo"
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=secrets-panel]",
+    "padding": 10
+   },
+   "alt": "The Secrets tab of the project settings with the name db.password typed and a hidden value, above an Add button, and the note that the file is ignored by git."
+  },
+  {
+   "name": "secrets-row-added",
+   "path": "/settings/project/3263cebf?tab=secrets",
+   "theme": "dark",
+   "steps": [
+    {
+     "wait_for": "[data-testid=secrets-panel]"
+    },
+    {
+     "wait_ms": 600
+    },
+    {
+     "fill": "[aria-label='Secret name']",
+     "value": "db.password"
+    },
+    {
+     "fill": "[aria-label='Secret value']",
+     "value": "change-me-demo"
+    },
+    {
+     "click": "form button[type=submit]"
+    },
+    {
+     "wait_ms": 1200
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=secrets-panel]",
+    "padding": 10
+   },
+   "alt": "The Secrets tab after adding db.password: one row with the name, six dots instead of the value, the source common, and a button copying the reference SECRET:db.password."
+  },
+  {
+   "name": "secrets-prod-scope",
+   "path": "/settings/project/3263cebf?tab=secrets",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "[data-testid=secrets-panel]"
+    },
+    {
+     "wait_ms": 600
+    },
+    {
+     "select_option": "[aria-label='Secrets scope']",
+     "value": "prod"
+    },
+    {
+     "wait_ms": 600
+    },
+    {
+     "fill": "[aria-label='Secret name']",
+     "value": "api.token"
+    },
+    {
+     "fill": "[aria-label='Secret value']",
+     "value": "prod-token-demo"
+    },
+    {
+     "click": "form button[type=submit]"
+    },
+    {
+     "wait_ms": 1200
+    }
+   ],
+   "clip": {
+    "selector": "[data-testid=secrets-panel]",
+    "padding": 10
+   },
+   "alt": "The Secrets tab with the scope set to prod: the list shows db.password from common and api.token from prod, and the file name .hydra/secrets.prod."
+  }
+ ]
+}

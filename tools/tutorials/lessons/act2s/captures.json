@@ -1,0 +1,70 @@
+{
+ "base_url": "http://127.0.0.1:5693",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "scale": 2,
+ "theme_cycle": [
+  "light",
+  "dark"
+ ],
+ "replace_text": {
+  "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\act2s-probe": "C:\\Users\\you\\projects",
+  "C:\\Users\\DELL": "C:\\Users\\you"
+ },
+ "shots": [
+  {
+   "name": "webhook-action-dialog-fields",
+   "path": "/workflows/6196cdbd?projectId=377354a3",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1800
+    },
+    {
+     "dblclick_last_node": true
+    },
+    {
+     "wait_ms": 1200
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "The Webhook action dialog of Hydra Studio with the URL, the Method list, the JSON body and the JSON headers filled in."
+  },
+  {
+   "name": "email-action-dialog-fields",
+   "path": "/workflows/594f2753?projectId=377354a3",
+   "theme": "dark",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1800
+    },
+    {
+     "dblclick_last_node": true
+    },
+    {
+     "wait_ms": 1200
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 56,
+    "width": 1232,
+    "height": 844
+   },
+   "alt": "The Email action dialog of Hydra Studio with the recipient, the subject, the body, the sender and the SMTP server and port filled in."
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "b1f5879f",
+  "name": "scope-demo",
+  "description": "",
+  "created_at": "2026-11-24T12:28:37.849279+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [
+    {
+      "id": "6d5971e8",
+      "name": "workflow1",
+      "file": "workflows/workflow1.yaml"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "job1",
+      "path": "jobs/job1"
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+slug	url	title	bundle	source
+01-open-a-project	/studio/01-open-a-project/	Create a project in Hydra Studio and add its first workflow	lessons-01-studio.md	dist\studio\01-open-a-project\index.html
+02-check-the-api	/studio/02-check-the-api/	Check the Hydra Studio API connection (API online or offline)	lessons-01-studio.md	dist\studio\02-check-the-api\index.html
+03-read-the-canvas	/studio/03-read-the-canvas/	Read the Hydra Studio canvas: nodes, ports and edges	lessons-01-studio.md	dist\studio\03-read-the-canvas\index.html
+04-use-the-palette	/studio/04-use-the-palette/	Hydra Studio node palette: sources, transformations, destinations and actions	lessons-01-studio.md	dist\studio\04-use-the-palette\index.html
+05-add-a-source	/studio/05-add-a-source/	Create a job in Hydra Studio and add its source	lessons-01-studio.md	dist\studio\05-add-a-source\index.html
+06-add-a-transformation	/studio/06-add-a-transformation/	Add a transformation in Hydra Studio: the 20 operations	lessons-01-studio.md	dist\studio\06-add-a-transformation\index.html
+07-add-a-destination	/studio/07-add-a-destination/	Add a destination in Hydra Studio: one job, one place to write	lessons-01-studio.md	dist\studio\07-add-a-destination\index.html
+08-see-the-yaml	/studio/08-see-the-yaml/	Read the YAML Hydra Studio generates (Hydra DSL panel)	lessons-01-studio.md	dist\studio\08-see-the-yaml\index.html
+09-reach-valid	/studio/09-reach-valid/	Hydra Studio Valid badge: what it checks and what it does not	lessons-01-studio.md	dist\studio\09-reach-valid\index.html
+10-run-the-job	/studio/10-run-the-job/	Run a Hydra job from Studio: four ways, one engine	lessons-01-studio.md	dist\studio\10-run-the-job\index.html
+11-review-a-run	/studio/11-review-a-run/	Review a past run in Hydra Studio: Runs page, filters and logs	lessons-01-studio.md	dist\studio\11-review-a-run\index.html
+12-compose-jobs	/studio/12-compose-jobs/	Compose jobs into an ordered workflow in Hydra Studio	lessons-01-studio.md	dist\studio\12-compose-jobs\index.html
+13-handle-failure	/studio/13-handle-failure/	Hydra Studio containers: Sequence, Error Scope and Retry Scope	lessons-01-studio.md	dist\studio\13-handle-failure\index.html
+14-use-parameters	/studio/14-use-parameters/	Use parameters in Hydra Studio: Set Param and Assign Param	lessons-01-studio.md	dist\studio\14-use-parameters\index.html
+all-or-nothing-load	/studio/all-or-nothing-load/	Make a load all-or-nothing in Hydra ETL Studio	lessons-01-studio.md	dist\studio\all-or-nothing-load\index.html
+branch-with-the-condition-node	/studio/branch-with-the-condition-node/	Branch a Hydra Studio workflow with the Condition node	lessons-01-studio.md	dist\studio\branch-with-the-condition-node\index.html
+break-it-then-recover	/studio/break-it-then-recover/	Break a Hydra ETL pipeline on purpose, then recover	lessons-01-studio.md	dist\studio\break-it-then-recover\index.html
+build-a-resilient-pipeline	/studio/build-a-resilient-pipeline/	Build a resilient ETL pipeline in Hydra ETL Studio	lessons-01-studio.md	dist\studio\build-a-resilient-pipeline\index.html
+check-the-execution-order	/studio/check-the-execution-order/	Check the execution order of a Hydra project for errors	lessons-01-studio.md	dist\studio\check-the-execution-order\index.html
+create-a-workflow	/studio/create-a-workflow/	Create a workflow in a Hydra project with hdrctl	lessons-01-studio.md	dist\studio\create-a-workflow\index.html
+declare-a-fallback-workflow	/studio/declare-a-fallback-workflow/	Declare a fallback workflow in Hydra ETL Studio	lessons-01-studio.md	dist\studio\declare-a-fallback-workflow\index.html
+declare-undo-actions	/studio/declare-undo-actions/	Declare the undo of an action in Hydra ETL Studio	lessons-01-studio.md	dist\studio\declare-undo-actions\index.html
+define-the-execution-order	/studio/define-the-execution-order/	Define the execution order of a Hydra project in Studio	lessons-01-studio.md	dist\studio\define-the-execution-order\index.html
+diagnose-a-failed-run	/studio/diagnose-a-failed-run/	Diagnose a failed Hydra run in Studio	lessons-01-studio.md	dist\studio\diagnose-a-failed-run\index.html
+dry-run-and-use-fallback	/studio/dry-run-and-use-fallback/	Rehearse fallbacks in Hydra ETL: --dry-run and --use-fallback	lessons-02-orchestration.md	dist\studio\dry-run-and-use-fallback\index.html
+fallback-conditions-when-on-failure	/studio/fallback-conditions-when-on-failure/	Fallback conditions in Hydra ETL: when, on_failure and on_probe_error	lessons-02-orchestration.md	dist\studio\fallback-conditions-when-on-failure\index.html
+global-and-project-settings	/studio/global-and-project-settings/	Hydra Studio settings: global preferences and project settings	lessons-02-orchestration.md	dist\studio\global-and-project-settings\index.html
+handle-step-failures-with-on-failure	/studio/handle-step-failures-with-on-failure/	Handle a failing step with on_failure	lessons-02-orchestration.md	dist\studio\handle-step-failures-with-on-failure\index.html
+import-a-job-into-a-workflow	/studio/import-a-job-into-a-workflow/	Import a job into a Hydra ETL workflow	lessons-02-orchestration.md	dist\studio\import-a-job-into-a-workflow\index.html
+install-and-start	/studio/install-and-start/	Install Hydra ETL and start Hydra Studio with hdrctl serve	lessons-02-orchestration.md	dist\studio\install-and-start\index.html
+log-python-and-shell-actions	/studio/log-python-and-shell-actions/	Run Log, Python and shell actions in a Hydra Studio workflow	lessons-02-orchestration.md	dist\studio\log-python-and-shell-actions\index.html
+notify-with-webhook-and-email-actions	/studio/notify-with-webhook-and-email-actions/	Send a webhook and an email from a Hydra ETL workflow	lessons-02-orchestration.md	dist\studio\notify-with-webhook-and-email-actions\index.html
+orchestrate-from-thread-yaml	/studio/orchestrate-from-thread-yaml/	Orchestrate a Hydra project from thread.yaml	lessons-02-orchestration.md	dist\studio\orchestrate-from-thread-yaml\index.html
+preview-the-execution-order	/studio/preview-the-execution-order/	Preview the execution order of a Hydra project	lessons-02-orchestration.md	dist\studio\preview-the-execution-order\index.html
+read-the-insights-statistics	/studio/read-the-insights-statistics/	Read the Insights statistics of Hydra Studio	lessons-02-orchestration.md	dist\studio\read-the-insights-statistics\index.html
+repeat-workflows-with-loops	/studio/repeat-workflows-with-loops/	Repeat Hydra workflows with loops in thread.yaml	lessons-02-orchestration.md	dist\studio\repeat-workflows-with-loops\index.html
+resolve-conflicts-and-recover	/studio/resolve-conflicts-and-recover/	Resolve a rollback conflict and recover in Hydra ETL	lessons-02-orchestration.md	dist\studio\resolve-conflicts-and-recover\index.html
+retry-a-failing-step-with-retry	/studio/retry-a-failing-step-with-retry/	Retry a failing step with retry	lessons-02-orchestration.md	dist\studio\retry-a-failing-step-with-retry\index.html
+roll-back-a-failed-workflow	/studio/roll-back-a-failed-workflow/	Roll back a failed workflow in Hydra ETL Studio	lessons-02-orchestration.md	dist\studio\roll-back-a-failed-workflow\index.html
+run-a-project-on-a-cron-schedule	/studio/run-a-project-on-a-cron-schedule/	Run a Hydra project on a schedule with a cron trigger	lessons-02-orchestration.md	dist\studio\run-a-project-on-a-cron-schedule\index.html
+run-steps-in-sequence-or-in-parallel	/studio/run-steps-in-sequence-or-in-parallel/	Run Hydra workflows in sequence or in parallel with stages	lessons-02-orchestration.md	dist\studio\run-steps-in-sequence-or-in-parallel\index.html
+set-timeouts-on-workflows	/studio/set-timeouts-on-workflows/	Set a timeout on a workflow in Hydra ETL Studio	lessons-02-orchestration.md	dist\studio\set-timeouts-on-workflows\index.html
+start-a-project-with-a-webhook	/studio/start-a-project-with-a-webhook/	Start a Hydra ETL project from a webhook	lessons-02-orchestration.md	dist\studio\start-a-project-with-a-webhook\index.html
+start-from-a-template	/studio/start-from-a-template/	Start from a Hydra Studio workflow template: View YAML and Copy YAML	lessons-02-orchestration.md	dist\studio\start-from-a-template\index.html
+store-and-use-secrets-with-hdrctl	/studio/store-and-use-secrets-with-hdrctl/	Store and use secrets in a Hydra ETL project	lessons-02-orchestration.md	dist\studio\store-and-use-secrets-with-hdrctl\index.html
+studio	/studio/	Hydra Studio tutorials	lessons-02-orchestration.md	dist\studio\index.html
+switch-environments-with-hdrctl-env	/studio/switch-environments-with-hdrctl-env/	Switch environments in Hydra ETL with hdrctl env	lessons-02-orchestration.md	dist\studio\switch-environments-with-hdrctl-env\index.html
+tour-the-pages	/studio/tour-the-pages/	Tour the Hydra Studio pages: Overview, Runs, Templates, Insights and Settings	lessons-02-orchestration.md	dist\studio\tour-the-pages\index.html
+use-the-bottom-panel	/studio/use-the-bottom-panel/	Use the Hydra Studio bottom panel: Logs, Parameters, Secrets and Terminal	lessons-02-orchestration.md	dist\studio\use-the-bottom-panel\index.html
+wait-with-the-delay-node	/studio/wait-with-the-delay-node/	Wait with the Hydra Studio Delay node: pause a workflow for N seconds	lessons-02-orchestration.md	dist\studio\wait-with-the-delay-node\index.html
+anatomy-of-a-job	/cli/guides/anatomy-of-a-job/	What a Hydra job is made of: four YAML files	cli-guides.md	dist\cli\guides\anatomy-of-a-job\index.html
+call-a-project-from-a-project	/cli/guides/call-a-project-from-a-project/	Call a Hydra project from another project	cli-guides.md	dist\cli\guides\call-a-project-from-a-project\index.html
+clean-split-window-pivot-and-script	/cli/guides/clean-split-window-pivot-and-script/	Clean, split, window, pivot and script transformations	cli-guides.md	dist\cli\guides\clean-split-window-pivot-and-script\index.html
+configure-snowflake-bigquery-and-cdc-sources	/cli/guides/configure-snowflake-bigquery-and-cdc-sources/	Advanced sources: Snowflake, BigQuery and CDC	cli-guides.md	dist\cli\guides\configure-snowflake-bigquery-and-cdc-sources\index.html
+connect-claude-code-to-hydra-etl-with-mcp	/cli/guides/connect-claude-code-to-hydra-etl-with-mcp/	Connect Claude Code to Hydra ETL with the MCP server	cli-guides.md	dist\cli\guides\connect-claude-code-to-hydra-etl-with-mcp\index.html
+declare-project-triggers	/cli/guides/declare-project-triggers/	Declare project triggers in triggers.yaml	cli-guides.md	dist\cli\guides\declare-project-triggers\index.html
+guides	/cli/guides/	Hydra CLI guides	cli-guides.md	dist\cli\guides\index.html
+launch-a-job-from-the-cli-and-the-api	/cli/guides/launch-a-job-from-the-cli-and-the-api/	Launch a Hydra job from the CLI and the API	cli-guides.md	dist\cli\guides\launch-a-job-from-the-cli-and-the-api\index.html
+manage-jobs-and-parameters-from-the-cli	/cli/guides/manage-jobs-and-parameters-from-the-cli/	Manage the jobs and parameters of a Hydra project	cli-guides.md	dist\cli\guides\manage-jobs-and-parameters-from-the-cli\index.html
+pass-parameters-to-a-sub-project	/cli/guides/pass-parameters-to-a-sub-project/	Pass parameters to a Hydra sub-project and read results back	cli-guides.md	dist\cli\guides\pass-parameters-to-a-sub-project\index.html
+read-and-write-sqlite-databases	/cli/guides/read-and-write-sqlite-databases/	Read from and write to a SQLite database in a Hydra ETL job	cli-guides.md	dist\cli\guides\read-and-write-sqlite-databases\index.html
+read-csv-json-and-parquet-files	/cli/guides/read-csv-json-and-parquet-files/	Read CSV, JSON and Parquet files in a Hydra job	cli-guides.md	dist\cli\guides\read-csv-json-and-parquet-files\index.html
+run-hydra-in-production-with-hdrctl-serve	/cli/guides/run-hydra-in-production-with-hdrctl-serve/	Run Hydra ETL in production with hdrctl serve	cli-guides.md	dist\cli\guides\run-hydra-in-production-with-hdrctl-serve\index.html
+run-triggers-with-hdrctl-watch	/cli/guides/run-triggers-with-hdrctl-watch/	Start a Hydra project with interval, marker, file and source triggers	cli-guides.md	dist\cli\guides\run-triggers-with-hdrctl-watch\index.html
+changelog	/changelog/	Hydra ETL changelog	pillars.md	dist\changelog\index.html
+firstjob	/firstjob/	Build your first Studio job	pillars.md	dist\firstjob\index.html
+get-started	/get-started/	From raw data to a repeatable pipeline	pillars.md	dist\get-started\index.html
+install	/install/	Install Hydra	pillars.md	dist\install\index.html
+license	/license/	License	pillars.md	dist\license\index.html
+migrate	/migrate/	Where Hydra ETL fits in your data stack	pillars.md	dist\migrate\index.html
+airbyte	/migrate/airbyte/	Hydra ETL vs Airbyte	pillars.md	dist\migrate\airbyte\index.html
+airflow	/migrate/airflow/	Hydra ETL vs Airflow	pillars.md	dist\migrate\airflow\index.html
+dagster	/migrate/dagster/	Hydra ETL vs Dagster	pillars.md	dist\migrate\dagster\index.html
+dbt	/migrate/dbt/	Hydra ETL vs dbt	pillars.md	dist\migrate\dbt\index.html
+dlt	/migrate/dlt/	Hydra ETL vs dlt	pillars.md	dist\migrate\dlt\index.html
+flowman	/migrate/flowman/	Hydra ETL vs Flowman	pillars.md	dist\migrate\flowman\index.html
+kestra	/migrate/kestra/	Hydra ETL vs Kestra	pillars.md	dist\migrate\kestra\index.html
+meltano	/migrate/meltano/	Hydra ETL vs Meltano	pillars.md	dist\migrate\meltano\index.html
+talend	/migrate/talend/	Hydra ETL vs Talend	pillars.md	dist\migrate\talend\index.html
+playground	/playground/	Playground	pillars.md	dist\playground\index.html
+vscode	/vscode/	VS Code extension	pillars.md	dist\vscode\index.html
+csv	/guide/destinations/csv/	Publishing a regenerable CSV export	guide.md	dist\guide\destinations\csv\index.html
+json	/guide/destinations/json/	Publishing records as JSON	guide.md	dist\guide\destinations\json\index.html
+mongodb	/guide/destinations/mongodb/	Loading product documents into MongoDB	guide.md	dist\guide\destinations\mongodb\index.html
+mysql	/guide/destinations/mysql/	Loading inventory into MySQL	guide.md	dist\guide\destinations\mysql\index.html
+parquet	/guide/destinations/parquet/	Writing a compact Parquet snapshot	guide.md	dist\guide\destinations\parquet\index.html
+postgresql	/guide/destinations/postgresql/	Upserting customers into PostgreSQL	guide.md	dist\guide\destinations\postgresql\index.html
+web_api	/guide/destinations/web_api/	Delivering records to a Web API	guide.md	dist\guide\destinations\web_api\index.html
+retry	/guide/policies/retry/	Retrying a transiently failing step	guide.md	dist\guide\policies\retry\index.html
+csv	/guide/sources/csv/	Ingesting the daily sales export	guide.md	dist\guide\sources\csv\index.html
+json	/guide/sources/json/	Turning application events into rows	guide.md	dist\guide\sources\json\index.html
+mongodb	/guide/sources/mongodb/	Flattening customer documents from MongoDB	guide.md	dist\guide\sources\mongodb\index.html
+mysql	/guide/sources/mysql/	Exporting the customer table from MySQL	guide.md	dist\guide\sources\mysql\index.html
+parquet	/guide/sources/parquet/	Reading an analytics extract efficiently	guide.md	dist\guide\sources\parquet\index.html
+postgresql	/guide/sources/postgresql/	Extracting paid orders from PostgreSQL	guide.md	dist\guide\sources\postgresql\index.html
+web_api	/guide/sources/web_api/	Collecting every page of a REST API	guide.md	dist\guide\sources\web_api\index.html
+aggregate	/guide/transforms/aggregate/	Summarising revenue by city	guide.md	dist\guide\transforms\aggregate\index.html
+calculate	/guide/transforms/calculate/	Computing line totals	guide.md	dist\guide\transforms\calculate\index.html
+cast	/guide/transforms/cast/	Giving text values real types	guide.md	dist\guide\transforms\cast\index.html
+clean	/guide/transforms/clean/	Normalising messy customer names	guide.md	dist\guide\transforms\clean\index.html
+deduplicate	/guide/transforms/deduplicate/	Keeping one event per identifier	guide.md	dist\guide\transforms\deduplicate\index.html
+fill_null	/guide/transforms/fill_null/	Providing defaults for missing values	guide.md	dist\guide\transforms\fill_null\index.html
+filter	/guide/transforms/filter/	Keeping only actionable orders	guide.md	dist\guide\transforms\filter\index.html
+join	/guide/transforms/join/	Enriching orders with customer segments	guide.md	dist\guide\transforms\join\index.html
+merge	/guide/transforms/merge/	Synchronising a master customer set	guide.md	dist\guide\transforms\merge\index.html
+pivot	/guide/transforms/pivot/	Turning monthly rows into report columns	guide.md	dist\guide\transforms\pivot\index.html
+rename	/guide/transforms/rename/	Aligning columns with a target contract	guide.md	dist\guide\transforms\rename\index.html
+script	/guide/transforms/script/	Implementing a reviewed custom rule	guide.md	dist\guide\transforms\script\index.html
+select	/guide/transforms/select/	Publishing only approved columns	guide.md	dist\guide\transforms\select\index.html
+sort	/guide/transforms/sort/	Ranking products by revenue	guide.md	dist\guide\transforms\sort\index.html
+transpose	/guide/transforms/transpose/	Rotating a compact metric table	guide.md	dist\guide\transforms\transpose\index.html
+trim	/guide/transforms/trim/	Removing invisible whitespace	guide.md	dist\guide\transforms\trim\index.html
+union	/guide/transforms/union/	Combining regional order feeds	guide.md	dist\guide\transforms\union\index.html
+unpivot	/guide/transforms/unpivot/	Turning month columns into rows	guide.md	dist\guide\transforms\unpivot\index.html
+manual	/guide/triggers/manual/	Running a workflow on demand	guide.md	dist\guide\triggers\manual\index.html
+schedule	/guide/triggers/schedule/	Scheduling a workflow every morning	guide.md	dist\guide\triggers\schedule\index.html
+webhook	/guide/triggers/webhook/	Starting a workflow from a webhook	guide.md	dist\guide\triggers\webhook\index.html
+action	/guide/workflows/action/	Sending a notification action	guide.md	dist\guide\workflows\action\index.html
+depends_on	/guide/workflows/depends_on/	Running independent jobs in parallel	guide.md	dist\guide\workflows\depends_on\index.html
+job	/guide/workflows/job/	Running a Hydra job as a workflow step	guide.md	dist\guide\workflows\job\index.html
+on_failure	/guide/workflows/on_failure/	Choosing what happens after a failed step	guide.md	dist\guide\workflows\on_failure\index.html
+when	/guide/workflows/when/	Guarding a workflow step with an expression	guide.md	dist\guide\workflows\when\index.html
+cli	/cli/	The	reference.md	dist\cli\index.html
+clear	/cli/clear/	hdrctl clear	reference.md	dist\cli\clear\index.html
+env	/cli/env/	hdrctl env	reference.md	dist\cli\env\index.html
+create	/cli/env/create/	hdrctl env create	reference.md	dist\cli\env\create\index.html
+delete	/cli/env/delete/	hdrctl env delete	reference.md	dist\cli\env\delete\index.html
+list	/cli/env/list/	hdrctl env list	reference.md	dist\cli\env\list\index.html
+rename	/cli/env/rename/	hdrctl env rename	reference.md	dist\cli\env\rename\index.html
+set	/cli/env/set/	hdrctl env set	reference.md	dist\cli\env\set\index.html
+show	/cli/env/show/	hdrctl env show	reference.md	dist\cli\env\show\index.html
+unset	/cli/env/unset/	hdrctl env unset	reference.md	dist\cli\env\unset\index.html
+init	/cli/init/	hdrctl init	reference.md	dist\cli\init\index.html
+job	/cli/job/	hdrctl job	reference.md	dist\cli\job\index.html
+add	/cli/job/add/	hdrctl job add	reference.md	dist\cli\job\add\index.html
+attach	/cli/job/attach/	hdrctl job attach	reference.md	dist\cli\job\attach\index.html
+detach	/cli/job/detach/	hdrctl job detach	reference.md	dist\cli\job\detach\index.html
+list	/cli/job/list/	hdrctl job list	reference.md	dist\cli\job\list\index.html
+list	/cli/list/	hdrctl list	reference.md	dist\cli\list\index.html
+mcp	/cli/mcp/	hdrctl mcp	reference.md	dist\cli\mcp\index.html
+setup	/cli/mcp/setup/	hdrctl mcp setup	reference.md	dist\cli\mcp\setup\index.html
+param	/cli/param/	hdrctl param	reference.md	dist\cli\param\index.html
+list	/cli/param/list/	hdrctl param list	reference.md	dist\cli\param\list\index.html
+set	/cli/param/set/	hdrctl param set	reference.md	dist\cli\param\set\index.html
+unset	/cli/param/unset/	hdrctl param unset	reference.md	dist\cli\param\unset\index.html
+run	/cli/run/	hdrctl run	reference.md	dist\cli\run\index.html
+secret	/cli/secret/	hdrctl secret	reference.md	dist\cli\secret\index.html
+delete	/cli/secret/delete/	hdrctl secret delete	reference.md	dist\cli\secret\delete\index.html
+list	/cli/secret/list/	hdrctl secret list	reference.md	dist\cli\secret\list\index.html
+set	/cli/secret/set/	hdrctl secret set	reference.md	dist\cli\secret\set\index.html
+serve	/cli/serve/	hdrctl serve	reference.md	dist\cli\serve\index.html
+test	/cli/test/	hdrctl test	reference.md	dist\cli\test\index.html
+trigger	/cli/trigger/	hdrctl trigger	reference.md	dist\cli\trigger\index.html
+fire	/cli/trigger/fire/	hdrctl trigger fire	reference.md	dist\cli\trigger\fire\index.html
+history	/cli/trigger/history/	hdrctl trigger history	reference.md	dist\cli\trigger\history\index.html
+list	/cli/trigger/list/	hdrctl trigger list	reference.md	dist\cli\trigger\list\index.html
+token	/cli/trigger/token/	hdrctl trigger token	reference.md	dist\cli\trigger\token\index.html
+validate	/cli/trigger/validate/	hdrctl trigger validate	reference.md	dist\cli\trigger\validate\index.html
+validate	/cli/validate/	hdrctl validate	reference.md	dist\cli\validate\index.html
+watch	/cli/watch/	hdrctl watch	reference.md	dist\cli\watch\index.html
+workflow	/cli/workflow/	hdrctl workflow	reference.md	dist\cli\workflow\index.html
+add	/cli/workflow/add/	hdrctl workflow add	reference.md	dist\cli\workflow\add\index.html
+list	/cli/workflow/list/	hdrctl workflow list	reference.md	dist\cli\workflow\list\index.html
+remove	/cli/workflow/remove/	hdrctl workflow remove	reference.md	dist\cli\workflow\remove\index.html
+run	/cli/workflow/run/	hdrctl workflow run	reference.md	dist\cli\workflow\run\index.html
+undo	/cli/workflow/undo/	hdrctl workflow undo	reference.md	dist\cli\workflow\undo\index.html
+validate	/cli/workflow/validate/	hdrctl workflow validate	reference.md	dist\cli\workflow\validate\index.html
+dsl	/dsl/	Build data pipelines you can read.	reference.md	dist\dsl\index.html
+01-basics	/dsl/01-basics/	Basics	reference.md	dist\dsl\01-basics\index.html
+02-jobs-part1	/dsl/02-jobs-part1/	Jobs: sources and destinations	reference.md	dist\dsl\02-jobs-part1\index.html
+02-jobs-part2	/dsl/02-jobs-part2/	Jobs: transformations	reference.md	dist\dsl\02-jobs-part2\index.html
+03-workflows	/dsl/03-workflows/	Workflows	reference.md	dist\dsl\03-workflows\index.html
+04-actions	/dsl/04-actions/	Actions	reference.md	dist\dsl\04-actions\index.html
+05-parameters-secrets	/dsl/05-parameters-secrets/	Parameters and secrets	reference.md	dist\dsl\05-parameters-secrets\index.html
+destinations-yaml	/dsl/destinations-yaml/	destinations.yaml decides how rows land	reference.md	dist\dsl\destinations-yaml\index.html
+connection	/dsl/destinations/connection/	connection reaches the target system	reference.md	dist\dsl\destinations\connection\index.html
+load	/dsl/destinations/load/	load binds a target to a write policy	reference.md	dist\dsl\destinations\load\index.html
+type	/dsl/destinations/type/	type chooses the writer	reference.md	dist\dsl\destinations\type\index.html
+calculate	/dsl/expressions/calculate/	calculate.expr produces one named column	reference.md	dist\dsl\expressions\calculate\index.html
+filter	/dsl/expressions/filter/	filter.expr decides which rows continue	reference.md	dist\dsl\expressions\filter\index.html
+script	/dsl/expressions/script/	script.code runs inside a declared boundary	reference.md	dist\dsl\expressions\script\index.html
+when	/dsl/expressions/when/	step.when gates one workflow node	reference.md	dist\dsl\expressions\when\index.html
+interpolation	/dsl/interpolation/	Four placeholders, resolved before the manifest is read	reference.md	dist\dsl\interpolation\index.html
+param-env	/dsl/interpolation/param-env/	Parameters and environment are substituted before parsing	reference.md	dist\dsl\interpolation\param-env\index.html
+pipeline-yaml	/dsl/pipeline-yaml/	pipeline.yaml names the two ends	reference.md	dist\dsl\pipeline-yaml\index.html
+pipeline	/dsl/pipeline/	Wire one source to one destination	reference.md	dist\dsl\pipeline\index.html
+reference	/dsl/reference/	Hydra DSL	reference.md	dist\dsl\reference\index.html
+sources-yaml	/dsl/sources-yaml/	sources.yaml is a catalogue, not a build list	reference.md	dist\dsl\sources-yaml\index.html
+sources	/dsl/sources/	The connection block changes shape with the type	reference.md	dist\dsl\sources\index.html
+extract	/dsl/sources/extract/	extract narrows what the connector reads	reference.md	dist\dsl\sources\extract\index.html
+schema	/dsl/sources/schema/	schema records expectations, not transformations	reference.md	dist\dsl\sources\schema\index.html
+type	/dsl/sources/type/	type chooses the connector contract	reference.md	dist\dsl\sources\type\index.html
+transformations-yaml	/dsl/transformations-yaml/	An ordered list, and the only file you may omit	reference.md	dist\dsl\transformations-yaml\index.html
+aggregate	/dsl/transformations/aggregate/	Aggregate changes the grain	reference.md	dist\dsl\transformations\aggregate\index.html
+columns	/dsl/transformations/columns/	Column operations change the table contract	reference.md	dist\dsl\transformations\columns\index.html
+combine	/dsl/transformations/combine/	Combine brings in a second declared source	reference.md	dist\dsl\transformations\combine\index.html
+compute	/dsl/transformations/compute/	Compute creates values without hiding the contract	reference.md	dist\dsl\transformations\compute\index.html
+reshape	/dsl/transformations/reshape/	Reshape changes where values live	reference.md	dist\dsl\transformations\reshape\index.html
+steps	/dsl/transformations/steps/	steps is the ordered execution plan	reference.md	dist\dsl\transformations\steps\index.html
+01-first-job	/dsl/tutorial/01-first-job/	Your first job	reference.md	dist\dsl\tutorial\01-first-job\index.html
+version	/dsl/version/	version declares an intent, not a contract	reference.md	dist\dsl\version\index.html
+workflow-yaml	/dsl/workflow-yaml/	workflow.yaml turns jobs into a graph	reference.md	dist\dsl\workflow-yaml\index.html
+name-version	/dsl/workflow/name-version/	A workflow needs an identity before it runs	reference.md	dist\dsl\workflow\name-version\index.html
+retry	/dsl/workflow/retry/	retry wraps one step in an attempt policy	reference.md	dist\dsl\workflow\retry\index.html
+steps	/dsl/workflow/steps/	Workflow steps are nodes, not a sequence	reference.md	dist\dsl\workflow\steps\index.html
+trigger	/dsl/workflow/trigger/	trigger declares how a workflow may start	reference.md	dist\dsl\workflow\trigger\index.html

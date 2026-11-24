@@ -1,0 +1,12 @@
+{
+  "id": "6196cdbd",
+  "name": "wf-hook",
+  "project_id": "377354a3",
+  "description": null,
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\act2s-probe\\act2-demo\\workflows\\wf-hook.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

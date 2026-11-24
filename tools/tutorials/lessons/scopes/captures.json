@@ -1,0 +1,79 @@
+{
+ "base_url": "http://127.0.0.1:5694",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "scale": 2,
+ "theme_cycle": [
+  "light"
+ ],
+ "replace_text": {
+  "C:\\Users\\DELL": "C:\\Users\\you"
+ },
+ "shots": [
+  {
+   "name": "retry-scope-container-canvas",
+   "path": "/workflows/6d5971e8?projectId=b1f5879f",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1500
+    },
+    {
+     "click_xy": [
+      1417,
+      140
+     ]
+    },
+    {
+     "wait_ms": 400
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1600
+    },
+    {
+     "click": "button:has(span:text-is(\"Actions\"))"
+    },
+    {
+     "wait_ms": 600
+    },
+    {
+     "drag_visible": "Log",
+     "x": 520,
+     "y": 90
+    },
+    {
+     "wait_ms": 700
+    },
+    {
+     "drag_visible": "Retry Scope",
+     "x": 60,
+     "y": 330
+    },
+    {
+     "wait_ms": 900
+    },
+    {
+     "drag_node_into_last": "Log"
+    },
+    {
+     "wait_ms": 1200
+    }
+   ],
+   "alt": "The Hydra Studio workflow editor with a Retry Scope container dropped on the canvas, with its Retries field.",
+   "clip": {
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 900
+   }
+  }
+ ]
+}

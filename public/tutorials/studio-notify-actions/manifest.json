@@ -1,0 +1,14 @@
+[
+  {
+    "file": "webhook-action-dialog-fields-light.png",
+    "name": "webhook-action-dialog-fields",
+    "theme": "light",
+    "alt": "The Webhook action dialog of Hydra Studio with the URL, the Method list, the JSON body and the JSON headers filled in."
+  },
+  {
+    "file": "email-action-dialog-fields-dark.png",
+    "name": "email-action-dialog-fields",
+    "theme": "dark",
+    "alt": "The Email action dialog of Hydra Studio with the recipient, the subject, the body, the sender and the SMTP server and port filled in."
+  }
+]

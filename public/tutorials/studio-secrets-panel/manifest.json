@@ -1,0 +1,20 @@
+[
+  {
+    "file": "secrets-form-filled-light.png",
+    "name": "secrets-form-filled",
+    "theme": "light",
+    "alt": "The Secrets tab of the project settings with the name db.password typed and a hidden value, above an Add button, and the note that the file is ignored by git."
+  },
+  {
+    "file": "secrets-row-added-dark.png",
+    "name": "secrets-row-added",
+    "theme": "dark",
+    "alt": "The Secrets tab after adding db.password: one row with the name, six dots instead of the value, the source common, and a button copying the reference SECRET:db.password."
+  },
+  {
+    "file": "secrets-prod-scope-light.png",
+    "name": "secrets-prod-scope",
+    "theme": "light",
+    "alt": "The Secrets tab with the scope set to prod: the list shows db.password from common and api.token from prod, and the file name .hydra/secrets.prod."
+  }
+]

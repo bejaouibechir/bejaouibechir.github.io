@@ -1,0 +1,44 @@
+[
+  {
+    "file": "trigger-cron-dialog-light.png",
+    "name": "trigger-cron-dialog",
+    "theme": "light",
+    "alt": "The Add a trigger box of the Triggers tab with the type At given times selected, the name nightly, the cron 0 2 * * * and the time zone Europe/Paris."
+  },
+  {
+    "file": "trigger-cron-saved-dark.png",
+    "name": "trigger-cron-saved",
+    "theme": "dark",
+    "alt": "The Triggers tab with one row, nightly, of type cron, with its next run time and an enabled checkbox."
+  },
+  {
+    "file": "trigger-webhook-dialog-light.png",
+    "name": "trigger-webhook-dialog",
+    "theme": "light",
+    "alt": "The Add a trigger box with the type An HTTP call selected, the name deploy and the token field holding a secret reference."
+  },
+  {
+    "file": "trigger-webhook-saved-dark.png",
+    "name": "trigger-webhook-saved",
+    "theme": "dark",
+    "alt": "The Triggers tab with the rows nightly and deploy; the deploy row says no token yet and has a key button."
+  },
+  {
+    "file": "trigger-token-before-light.png",
+    "name": "trigger-token-before",
+    "theme": "light",
+    "alt": "The Token of deploy box before the token exists, with the explanation and a Create the token button."
+  },
+  {
+    "file": "trigger-token-created-dark.png",
+    "name": "trigger-token-created",
+    "theme": "dark",
+    "alt": "The Token of deploy box after creation: the token value shown once, a Copy the token button, and PowerShell and curl commands with the webhook URL."
+  },
+  {
+    "file": "trigger-run-now-light.png",
+    "name": "trigger-run-now",
+    "theme": "light",
+    "alt": "The Triggers tab after Run now on nightly: the last run column shows a green check and the origin api, and the History list has a nightly line with its duration."
+  }
+]

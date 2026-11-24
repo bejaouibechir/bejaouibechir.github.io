@@ -1,0 +1,44 @@
+[
+  {
+    "file": "env-common-tab-light.png",
+    "name": "env-common-tab",
+    "theme": "light",
+    "alt": "The Environments card of Global settings on the Common tab, with the variables REGION and API_URL, an Add variable button and a Save common variables button."
+  },
+  {
+    "file": "env-new-box-dark.png",
+    "name": "env-new-box",
+    "theme": "dark",
+    "alt": "The Environments card with the New environment box open and the name prod typed, next to the tabs Common and New environment."
+  },
+  {
+    "file": "env-prod-saved-light.png",
+    "name": "env-prod-saved",
+    "theme": "light",
+    "alt": "The Environments card on the prod tab after Save: one variable API_URL with the value https://api.example.test, the file name env.prod and the message Saved."
+  },
+  {
+    "file": "env-active-selector-dark.png",
+    "name": "env-active-selector",
+    "theme": "dark",
+    "alt": "The Active environment list on the project page, set next to a Manage link that opens the Environments card."
+  },
+  {
+    "file": "secrets-form-filled-light.png",
+    "name": "secrets-form-filled",
+    "theme": "light",
+    "alt": "The Secrets tab of the project settings with the name db.password typed and a hidden value, above an Add button, and the note that the file is ignored by git."
+  },
+  {
+    "file": "secrets-row-added-dark.png",
+    "name": "secrets-row-added",
+    "theme": "dark",
+    "alt": "The Secrets tab after adding db.password: one row with the name, six dots instead of the value, the source common, and a button copying the reference SECRET:db.password."
+  },
+  {
+    "file": "secrets-prod-scope-light.png",
+    "name": "secrets-prod-scope",
+    "theme": "light",
+    "alt": "The Secrets tab with the scope set to prod: the list shows db.password from common and api.token from prod, and the file name .hydra/secrets.prod."
+  }
+]

@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">retry</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p><code>retry</code> is a key of a workflow step with three fields: <code>max</code> retries after the first failure, <code>delay</code> in seconds between tries, and <code>backoff</code>, <code>fixed</code> or <code>exponential</code>. The Retry Scope container of Studio writes the same key.</p></div>
+  <div class="callout"><b>Quick answer</b><p><code>retry</code> is a key of a workflow step with three fields: <code>max</code> retries after the first failure, <code>delay</code> in seconds between tries, and <code>backoff</code>, <code>fixed</code> or <code>exponential</code>. The Retry Scope container of Studio writes the same key. In Studio, the Containers group of the palette has a <b>Retry Scope</b>.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Run a step that fails twice and passes on the third run, then a step that always fails, then compare fixed and exponential waits.</p>
+  <h3>Goal</h3><p>Run a step that fails twice and passes on the third run, then a step that always fails, then compare fixed and exponential waits. Then find the Retry Scope in the palette of Studio.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init scope-demo</code>. Work in its <code>workflows</code> folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I retry a failing step in a Hydra ETL workflow?</h2>
 
@@ -107,6 +107,17 @@ INFO [flaky] succeeded after 2 retry(ies)</pre>
   <p data-kind="TRAP">The command line shows only the last attempt. Read the logs of the run when you need to know how many tries it took.</p>
 </div>
 
+  <div class="step">
+    <h3><i>06</i>Find the Retry Scope in Studio</h3>
+    <h4>Objective</h4><p>Drop the container on the canvas.</p>
+    <h4>Actions</h4><ol><li>Open a workflow in Hydra Studio, in the <b>Workflow configuration</b> tab.</li><li>In the node palette, open <b>Containers</b> and drag <b>Retry Scope</b> onto the canvas.</li><li>Read the two numbers at the top of the box.</li></ol>
+    <pre class="cmd">palette → Containers → Retry Scope</pre>
+    <p>The Retry Scope is a blue dashed box. Its first line holds two fields: <b>Retries</b>, set to 3 when we dropped it, and <b>delay</b> in seconds, set to 5. These are the two values this lesson sets with <code>retry</code> in the YAML.</p>
+    <div class="expect"><b>What you should see</b><p>A blue box named Retry Scope with Retries and delay fields.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-retry-scope-canvas/retry-scope-container-canvas-light.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Hydra Studio workflow editor with a Retry Scope container dropped on the canvas, with its Retries field set to 3 and its delay field set to 5 seconds." /><figcaption>The <b>Retry Scope</b> container on the canvas.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Key</td><td>retry on a step</td></tr><tr><td>max</td><td>retries after the first failure (0 = none)</td></tr><tr><td>delay</td><td>seconds between tries</td></tr><tr><td>backoff</td><td>fixed (default) or exponential</td></tr><tr><td>After the last retry</td><td>the step follows its on_failure value</td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>unknown key 'mx' — did you mean 'max'?</td><td>A typo in the retry block</td><td>Use max, delay or backoff</td></tr><tr><td>Step still FAILED</td><td>Every try failed</td><td>Read the error of the step: retrying does not fix a permanent cause</td></tr></tbody></table>
@@ -122,6 +133,9 @@ INFO [flaky] succeeded after 2 retry(ies)</pre>
   <p>In the logs of the step, kept by the server. The command line printed only the output of the last attempt in our test. Through the API, the logs showed each failure and the lines failed, retry 1/3 in 1s and succeeded after 2 retry(ies).</p>
   <h3>How does the Retry Scope container of Studio relate to this?</h3>
   <p>According to the Studio source (workflowSerializer.ts), a Retry Scope copies its retry settings onto each step it contains, so the YAML carries the same key. We did not test dragging steps into the container.</p>
+
+  <h3>Is there a Retry Scope in Hydra Studio?</h3>
+  <p>Yes. The Containers group of the node palette has a Retry Scope; dropped on the canvas, it shows a Retries field set to 3 and a delay of 5 seconds in our test.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/handle-step-failures-with-on-failure">Handle a failing step with on_failure</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/diagnose-a-failed-run">Diagnose a failed run</a></li></ul>

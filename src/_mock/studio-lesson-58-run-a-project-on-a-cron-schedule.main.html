@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">hdrctl watch</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>cron</code> starts the project at the times of a five-field expression, in the time zone you choose. <code>hdrctl watch</code> waits for those times and runs the project.</p></div>
+  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>cron</code> starts the project at the times of a five-field expression, in the time zone you choose. <code>hdrctl watch</code> waits for those times and runs the project. In Studio, the <b>Triggers</b> tab of the project settings does the same.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Declare two cron triggers, validate them, read the next run of each, start hdrctl watch, and read the runs it starts.</p>
+  <h3>Goal</h3><p>Declare two cron triggers, validate them, read the next run of each, start hdrctl watch, and read the runs it starts. Then make the same trigger in the Triggers tab of Studio and run it with one click.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and a project created with <code>hdrctl init sched-demo</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A second terminal: <code>hdrctl watch</code> stays open while it waits.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I run a Hydra project on a schedule?</h2>
 
@@ -104,6 +104,44 @@ Waiting for events. Ctrl+C to stop.</pre>
   <p data-kind="TRAP">Cron triggers run only while <code>hdrctl watch</code> is open. If it is closed at 02:00, nothing starts.</p>
 </div>
 
+  <div class="step">
+    <h3><i>07</i>Add the cron trigger in Studio</h3>
+    <h4>Objective</h4><p>Make the same trigger from the Triggers tab.</p>
+    <h4>Actions</h4><ol><li>Click <b>Settings</b>, then <b>Project settings</b>, then the <b>Triggers</b> tab.</li><li>Click <b>Add a trigger</b>.</li><li>Keep <b>At given times</b>, type the name <code>nightly</code>, keep the cron <code>0 2 * * *</code> and type <code>Europe/Paris</code> as the time zone.</li><li>Click <b>Add</b>.</li></ol>
+    <pre class="cmd">Settings → Project settings → Triggers → Add a trigger</pre>
+    <p>The Cron box is the same five-field expression as in the file, and the Preset list fills it for you with a common schedule. If you check no workflow under <b>Workflows to run</b>, the trigger starts the whole project, as <code>thread.yaml</code> orders it. The trigger runs while <code>hdrctl serve</code> runs, which is the server of this Studio, or while <code>hdrctl watch</code> runs, but not both on the same project.</p>
+    <div class="expect"><b>What you should see</b><p>The New trigger box, filled in.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-schedule-trigger/trigger-cron-dialog-light.png" width="680" height="635" loading="lazy" decoding="async" alt="The New trigger box of the Triggers tab with the type At given times selected, the name nightly, the cron 0 2 * * * and the time zone Europe/Paris." /><figcaption>The <b>New trigger</b> box for a cron trigger.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Read the row and the file</h3>
+    <h4>Objective</h4><p>See the next run and what Studio wrote.</p>
+    <h4>Actions</h4><ol><li>Read the <b>nightly</b> row: its <b>When</b> column, its <b>Next</b> run and its enabled checkbox.</li><li>Open <code>triggers.yaml</code> at the root of the project.</li></ol>
+    <pre class="cmd">type triggers.yaml</pre>
+    <p>The Next column shows the next time the expression fires, in your time zone: <code>25/11/2026 02:00</code> in our test. Each change is written to <code>triggers.yaml</code>; according to the text of the page, comments in the file are not kept and the previous file is copied to <code>~/.hydra/_backups</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A row with the next run, and a file with the same three keys as in the CLI steps.</p><pre class="out">version: "1.0"
+triggers:
+  - name: nightly
+    type: cron
+    cron: 0 2 * * *
+    timezone: Europe/Paris</pre>
+      <figure class="shot"><img src="/tutorials/studio-schedule-trigger/trigger-cron-saved-dark.png" width="1174" height="247" loading="lazy" decoding="async" alt="The Triggers tab with one row, nightly, of type cron, showing the expression and the time zone, the next run 25/11/2026 02:00 and an enabled checkbox." /><figcaption>The <b>nightly</b> row, with its next run.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Run it now</h3>
+    <h4>Objective</h4><p>Start the trigger without waiting for 02:00.</p>
+    <h4>Actions</h4><ol><li>Click the green play button of the <b>nightly</b> row.</li><li>Wait a few seconds: the Next column says <b>running</b>, then the Last run column shows a check mark.</li><li>Read the <b>History</b> list under the table.</li></ol>
+    <pre class="cmd">▶ Run now</pre>
+    <p>The run starts the project as the trigger would. In our test it lasted 4.79 seconds and the history line says <code>api</code> as its origin: the button calls the server, so it is not recorded as <code>manual</code> as <code>hdrctl trigger fire</code> is. The panel refreshes every five seconds.</p>
+    <div class="expect"><b>What you should see</b><p>A green check, <b>just now</b>, and one History line for <code>nightly</code>.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-schedule-trigger/trigger-run-now-light.png" width="1174" height="305" loading="lazy" decoding="async" alt="The Triggers tab after Run now on nightly: the last run column shows a green check and the origin api, and the History list has a nightly line with its duration." /><figcaption>After <b>Run now</b>: last run and history.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Type</td><td>cron</td></tr><tr><td>Expression</td><td>minute hour day month weekday</td></tr><tr><td>Time zone</td><td>timezone: Europe/Paris, or UTC</td></tr><tr><td>Run</td><td>hdrctl watch</td></tr><tr><td>Check</td><td>hdrctl trigger validate, hdrctl trigger history</td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>minute: 61 is out of range</td><td>A value is outside its field range</td><td>Use 0-59 for the minute</td></tr><tr><td>5 fields expected</td><td>The expression has fewer or more than five fields</td><td>Write minute hour day month weekday</td></tr><tr><td>unknown timezone</td><td>The name is not an IANA zone, or tzdata is missing on Windows</td><td>Check the name, or run pip install tzdata</td></tr><tr><td>every does not apply to type cron</td><td>A key of another trigger type was added</td><td>Remove the key</td></tr></tbody></table>
@@ -119,6 +157,9 @@ Waiting for events. Ctrl+C to stop.</pre>
   <p>Yes. hdrctl watch runs cron triggers and does not need the server extra. We tested hdrctl watch only. We did not test the scheduler of hdrctl serve.</p>
   <h3>What happens if the cron expression is wrong?</h3>
   <p>hdrctl trigger validate stops with the reason: a value out of range, a wrong number of fields, an unknown time zone, or a key that does not belong to the type.</p>
+
+  <h3>Can I add a cron trigger in Hydra Studio?</h3>
+  <p>Yes. Open Settings, Project settings and the Triggers tab, click Add a trigger and keep the type At given times. Studio writes the same keys to triggers.yaml. In our test the new row showed the next run, 25/11/2026 02:00, and the Run now button started the project in 4.79 seconds.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/cli/guides/declare-project-triggers">Declare project triggers</a></li><li><a href="/cli/guides/run-triggers-with-hdrctl-watch">Other triggers</a></li><li><a href="/cli/guides/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li></ul>

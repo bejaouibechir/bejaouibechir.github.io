@@ -1,0 +1,26 @@
+[
+  {
+    "file": "env-common-tab-light.png",
+    "name": "env-common-tab",
+    "theme": "light",
+    "alt": "The Environments card of Global settings on the Common tab, with the variables REGION and API_URL, an Add variable button and a Save common variables button."
+  },
+  {
+    "file": "env-new-box-dark.png",
+    "name": "env-new-box",
+    "theme": "dark",
+    "alt": "The Environments card with the New environment box open and the name prod typed, next to the tabs Common and New environment."
+  },
+  {
+    "file": "env-prod-saved-light.png",
+    "name": "env-prod-saved",
+    "theme": "light",
+    "alt": "The Environments card on the prod tab after Save: one variable API_URL with the value https://api.example.test, the file name env.prod and the message Saved."
+  },
+  {
+    "file": "env-active-selector-dark.png",
+    "name": "env-active-selector",
+    "theme": "dark",
+    "alt": "The Active environment list on the project page, set next to a Manage link that opens the Environments card."
+  }
+]

@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">on_failure</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p><code>on_failure</code> is a key of a workflow step. <code>fail</code> stops the workflow, <code>skip</code> skips the steps that depend on the failed step, and <code>continue</code> runs them anyway. The Error Scope container of Studio writes the same key.</p></div>
+  <div class="callout"><b>Quick answer</b><p><code>on_failure</code> is a key of a workflow step. <code>fail</code> stops the workflow, <code>skip</code> skips the steps that depend on the failed step, and <code>continue</code> runs them anyway. The Error Scope container of Studio writes the same key. In Studio, the Containers group of the palette has an <b>Error Scope</b>.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Run one workflow three times with a failing step, change <code>on_failure</code> each time, and compare the steps that run.</p>
+  <h3>Goal</h3><p>Run one workflow three times with a failing step, change <code>on_failure</code> each time, and compare the steps that run. Then find the Error Scope in the palette of Studio.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init scope-demo</code>. Work in its <code>workflows</code> folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I keep a Hydra ETL workflow going after a step fails?</h2>
 
@@ -123,6 +123,17 @@ workflow:
   <p data-kind="TRAP">Retrying is a different key. See <a href="/studio/retry-a-failing-step-with-retry">Retry a failing step</a>.</p>
 </div>
 
+  <div class="step">
+    <h3><i>06</i>Find the Error Scope in Studio</h3>
+    <h4>Objective</h4><p>Drop the container on the canvas.</p>
+    <h4>Actions</h4><ol><li>Open a workflow in Hydra Studio, in the <b>Workflow configuration</b> tab.</li><li>In the node palette, open <b>Containers</b> and drag <b>Error Scope</b> onto the canvas.</li><li>Read the box that appears and the panel on the right.</li></ol>
+    <pre class="cmd">palette → Containers → Error Scope</pre>
+    <p>The palette has three containers: <b>Sequence Container</b>, <b>Error Scope</b> and <b>Retry Scope</b>. The Error Scope is a red dashed box with the line <b>On child failure</b> and a list, set to <b>skip</b> in our test. The panel on the right gives the box a step name (<code>container_2</code> here) and an <b>On failure</b> list like the one of any other step.</p>
+    <div class="expect"><b>What you should see</b><p>A red box named Error Scope with its On child failure list.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-error-scope-canvas/error-scope-container-canvas-light.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Hydra Studio workflow editor with an Error Scope container dropped on the canvas, showing the line On child failure set to skip, and the container panel on the right." /><figcaption>The <b>Error Scope</b> container on the canvas.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Key</td><td>on_failure on a step</td></tr><tr><td>Values</td><td>fail (default), skip, continue</td></tr><tr><td>fail</td><td>stops the workflow, the rest is not run</td></tr><tr><td>skip</td><td>skips the steps that depend on it</td></tr><tr><td>continue</td><td>runs them anyway</td></tr><tr><td>Result</td><td>any failed step makes the workflow fail</td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Input should be 'fail', 'skip' or 'continue'</td><td>Another value was written</td><td>Use one of the three values</td></tr><tr><td>FAILED … — None</td><td>A step failed under skip or continue</td><td>Read the failed step above it</td></tr></tbody></table>
@@ -138,6 +149,9 @@ workflow:
   <p>According to the Studio source (workflowSerializer.ts), an Error Scope copies its on_failure value onto each step it contains, so the YAML carries the same key. We did not test dragging steps into the container.</p>
   <h3>What does Hydra ETL say when the value is wrong?</h3>
   <p>Validation refuses it and lists the three values: Input should be 'fail', 'skip' or 'continue'.</p>
+
+  <h3>Is there an Error Scope in Hydra Studio?</h3>
+  <p>Yes. The Containers group of the node palette has an Error Scope; dropped on the canvas, it shows an On child failure list, set to skip in our test.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/retry-a-failing-step-with-retry">Retry a failing step</a></li><li><a href="/studio/branch-with-the-condition-node">Branch with the Condition node</a></li><li><a href="/studio/diagnose-a-failed-run">Diagnose a failed run</a></li></ul>

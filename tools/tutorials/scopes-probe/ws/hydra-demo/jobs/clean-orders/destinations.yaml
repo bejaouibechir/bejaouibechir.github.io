@@ -1,0 +1,8 @@
+version: '1.0'
+destinations:
+  orders_clean_csv:
+    type: csv
+    connection: {}
+    load:
+      table: C:/Users/DELL/Desktop/hydra-site/tools/tutorials/scopes-probe/ws/hydra-demo/outputs/orders_clean.csv
+      mode: replace

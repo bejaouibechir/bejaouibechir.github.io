@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: workflow1
+  description: "First workflow of the project"
+  trigger:
+    type: manual
+  steps:
+    - name: job1
+      type: job
+      job: ../jobs/job1
+      depends_on: []
+      on_failure: fail

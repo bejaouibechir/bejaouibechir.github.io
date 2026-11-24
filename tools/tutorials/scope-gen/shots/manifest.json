@@ -1,0 +1,14 @@
+[
+  {
+    "file": "error-scope-container-canvas-light.png",
+    "name": "error-scope-container-canvas",
+    "theme": "light",
+    "alt": "The Hydra Studio workflow editor with an Error Scope container on the canvas holding a Log step."
+  },
+  {
+    "file": "retry-scope-container-canvas-dark.png",
+    "name": "retry-scope-container-canvas",
+    "theme": "dark",
+    "alt": "The Hydra Studio workflow editor with a Retry Scope container on the canvas holding a Log step."
+  }
+]

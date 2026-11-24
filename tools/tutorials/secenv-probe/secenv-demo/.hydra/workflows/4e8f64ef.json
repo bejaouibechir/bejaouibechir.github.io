@@ -1,0 +1,12 @@
+{
+  "id": "4e8f64ef",
+  "name": "workflow1",
+  "project_id": "3263cebf",
+  "description": "First workflow of the project",
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\secenv-probe\\secenv-demo\\workflows\\workflow1.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

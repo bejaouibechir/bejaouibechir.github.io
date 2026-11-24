@@ -3,9 +3,9 @@
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">hdrctl trigger token</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
-  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>webhook</code> starts the project when another system sends <code>POST /api/projects/ID/triggers/NAME/webhook</code> with the right token. <code>hdrctl serve</code> must be running.</p></div>
+  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>webhook</code> starts the project when another system sends <code>POST /api/projects/ID/triggers/NAME/webhook</code> with the right token. <code>hdrctl serve</code> must be running. In Studio, the <b>Triggers</b> tab declares the trigger and creates the token.</p></div>
   <h2>What will you learn in this lesson?</h2>
-  <h3>Goal</h3><p>Declare a webhook trigger, create its token, start the server, register the project, call the webhook with and without the right token, and read the history.</p>
+  <h3>Goal</h3><p>Declare a webhook trigger, create its token, start the server, register the project, call the webhook with and without the right token, and read the history. Then do the same in the Triggers tab of Studio, including the token.</p>
   <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init webhook-demo</code>. The project id is in <code>.hydra/project.json</code>.</li><li><code>curl.exe</code> (Windows) or <code>curl</code>, to make the calls.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I start a Hydra ETL project with a webhook?</h2>
 
@@ -112,6 +112,39 @@ HTTP/1.1 404 Not Found
   <p data-kind="TRAP">Anything on the network that reaches the server and has the token can start the project. Do not expose <code>hdrctl serve</code> to the internet without a proxy that you control.</p>
 </div>
 
+  <div class="step">
+    <h3><i>07</i>Add the webhook trigger in Studio</h3>
+    <h4>Objective</h4><p>Declare the trigger from the Triggers tab.</p>
+    <h4>Actions</h4><ol><li>Click <b>Settings</b>, <b>Project settings</b>, then the <b>Triggers</b> tab, and click <b>Add a trigger</b>.</li><li>Choose <b>An HTTP call</b>, and type the name <code>deploy</code>.</li><li>Leave the <b>Token</b> field as Studio filled it, then click <b>Add</b>.</li></ol>
+    <pre class="cmd">Settings → Project settings → Triggers → Add a trigger → An HTTP call</pre>
+    <p>The Token field does not hold a value. It holds a reference to a secret, <code>${SECRET:trigger.deploy.token}</code> in our test, and the box says to create the value after saving. It is the same kind of line as in the file of the CLI steps, where the secret was named <code>hooks.deploy</code>.</p>
+    <div class="expect"><b>What you should see</b><p>The box with the type <b>An HTTP call</b> selected.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-webhook-trigger/trigger-webhook-dialog-light.png" width="680" height="657" loading="lazy" decoding="async" alt="The New trigger box with the type An HTTP call selected, the name deploy and the token field holding a secret reference." /><figcaption>The <b>New trigger</b> box for a webhook.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>08</i>Read the missing token</h3>
+    <h4>Objective</h4><p>Studio tells you the secret does not exist yet.</p>
+    <h4>Actions</h4><ol><li>Read the <b>deploy</b> row: its <b>When</b> column says <b>HTTP call with token</b> and, under it, <b>no token yet</b>.</li><li>Read the orange line above the table.</li></ol>
+    <pre class="cmd">⚠ trigger 'deploy': secret 'trigger.deploy.token' is not set yet</pre>
+    <p>The warning is the same one that <code>hdrctl trigger validate</code> printed in the CLI steps, and it names the command that fixes it. In Studio, the key button of the row fixes it too.</p>
+    <div class="expect"><b>What you should see</b><p>A row with an orange <b>no token yet</b> and a key button.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-webhook-trigger/trigger-webhook-saved-dark.png" width="1174" height="323" loading="lazy" decoding="async" alt="The Triggers tab with the rows nightly and deploy: the deploy row says no token yet, a warning line names the missing secret, and the row has a key button." /><figcaption>The <b>deploy</b> row before its token exists.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>09</i>Create the token</h3>
+    <h4>Objective</h4><p>Generate it once, and copy it.</p>
+    <h4>Actions</h4><ol><li>Click the key button of the <b>deploy</b> row.</li><li>Read the explanation, then click <b>Create the token</b>.</li><li>Copy the token with <b>Copy the token</b>, or from the box.</li></ol>
+    <pre class="cmd">🔑 → Create the token</pre>
+    <p>The token is a random value saved as the project secret <code>trigger.deploy.token</code> in <code>.hydra/secrets</code>, a file git ignores. The box shows it once, with a PowerShell command and a curl command for the URL of the webhook, <code>/api/projects/&lt;id&gt;/triggers/deploy/webhook</code>. Once it exists, the row says <b>token set</b> and the box offers <b>Replace the token</b>, whose value cannot be shown again.</p>
+    <div class="expect"><b>What you should see</b><p>A box with the token, the two commands and the line saying where the secret was saved.</p><pre class="out"></pre>
+      <figure class="shot"><img src="/tutorials/studio-webhook-trigger/trigger-token-before-light.png" width="620" height="163" loading="lazy" decoding="async" alt="The Token of deploy box before the token exists, with the explanation that it is saved as a project secret and a Create the token button." /><figcaption>The box, before you create the token.</figcaption></figure><figure class="shot"><img src="/tutorials/studio-webhook-trigger/trigger-token-created-dark.png" width="620" height="359" loading="lazy" decoding="async" alt="The Token of deploy box after creation: the token value shown once, a Copy the token button, and PowerShell and curl commands with the webhook URL." /><figcaption>The token, shown once, with the commands to call the webhook.</figcaption></figure>
+    </div>
+  </div>
+
   <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Trigger</td><td>type: webhook, token: ${SECRET:name}</td></tr><tr><td>Token</td><td>hdrctl trigger token NAME [--rotate]</td></tr><tr><td>Call</td><td>POST /api/projects/ID/triggers/NAME/webhook</td></tr><tr><td>Header</td><td>X-Hydra-Token or Authorization: Bearer</td></tr><tr><td>Answers</td><td>202 started, 401 token, 404 unknown</td></tr></tbody></table>
 
   <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>token required</td><td>No X-Hydra-Token or Bearer header</td><td>Add the header</td></tr><tr><td>invalid token</td><td>The token does not match the secret</td><td>Copy it again, or rotate it</td></tr><tr><td>no webhook trigger 'x'</td><td>The name is wrong, the type is not webhook, or the trigger is disabled</td><td>Check hdrctl trigger list</td></tr><tr><td>Project 'id' not found</td><td>The server does not know the project</td><td>Register it with POST /api/projects/open</td></tr></tbody></table>
@@ -127,6 +160,9 @@ HTTP/1.1 404 Not Found
   <p>According to the source, nothing from the request is passed to the project: the call only starts the run. We did not test sending a body.</p>
   <h3>Does the webhook trigger work with hdrctl watch?</h3>
   <p>No. According to the list output, a webhook is called through hdrctl serve. hdrctl watch is for time, file and source triggers.</p>
+
+  <h3>Can I create the webhook token in Hydra Studio?</h3>
+  <p>Yes. In the Triggers tab, the key button of a webhook row opens a box with a Create the token button. The token is shown once, with a PowerShell and a curl command, and it is saved as a project secret in .hydra/secrets.</p>
 
   <h2>Related lessons</h2>
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/cli/guides/declare-project-triggers">Declare project triggers</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/cli/guides/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li></ul>
