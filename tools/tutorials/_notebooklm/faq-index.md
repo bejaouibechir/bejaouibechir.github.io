@@ -1,7 +1,7 @@
 # Questions already published on hydraetl.com
 
-This file is the exclusion list. Every question below is ALREADY answered on
-the page named above it. Do not propose any of them as a new question.
+This file is the exclusion list. Every question below is ALREADY answered
+on the page named above it. Do not propose any of them as a new question.
 
 Total: 541 questions across 118 pages.
 

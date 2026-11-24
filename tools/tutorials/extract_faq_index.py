@@ -91,6 +91,8 @@ def main():
     d = Path(args.dir).expanduser().resolve()
     rows = []
     for p in sorted(d.glob("*.md")):
+        if p.name.startswith("faq-index"):
+            continue          # sortie de ce script : la relire doublerait tout
         rows += extract(p)
 
     seen, uniq = set(), []
@@ -129,7 +131,28 @@ def main():
     for q, c in sorted(rep, key=lambda x: -x[1])[:15]:
         print(f"  {c}x  {q[:88]}")
 
+    # liste d'exclusion a charger comme source dans NotebookLM
+    md = out.parent / "faq-index.md"
+    by = {}
+    for r in sorted(faq, key=lambda r: r["url"]):
+        by.setdefault((r["url"], r["title"]), []).append(r["question"])
+    lines = [
+        "# Questions already published on hydraetl.com",
+        "",
+        "This file is the exclusion list. Every question below is ALREADY answered",
+        "on the page named above it. Do not propose any of them as a new question.",
+        "",
+        f"Total: {len(faq)} questions across {len(by)} pages.",
+        "",
+    ]
+    for (url, title), qs in by.items():
+        lines.append(f"## {title} — slug: {url}")
+        lines += [f"- {q}" for q in qs]
+        lines.append("")
+    md.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
     print(f"\nEcrit : {out}")
+    print(f"Ecrit : {md}   <- a charger comme 7e source dans NotebookLM")
 
 
 if __name__ == "__main__":
