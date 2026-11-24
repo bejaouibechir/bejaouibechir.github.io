@@ -1,0 +1,12 @@
+{
+  "id": "2f0f51ec",
+  "name": "workflow1",
+  "project_id": "0db43970",
+  "description": "First workflow of the project",
+  "trigger_type": "schedule",
+  "cron": "* * * * *",
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\prod-probe\\nightly-demo\\workflows\\workflow1.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

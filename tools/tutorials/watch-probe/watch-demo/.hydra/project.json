@@ -1,0 +1,12 @@
+{
+  "id": "3afe7b99",
+  "name": "watch-demo",
+  "description": "",
+  "created_at": "2026-11-24T06:26:08.434181+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

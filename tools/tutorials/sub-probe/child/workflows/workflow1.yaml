@@ -1,0 +1,20 @@
+version: "1.0"
+workflow:
+  name: workflow1
+  description: Child workflow
+  trigger:
+    type: manual
+  steps:
+    - name: job1
+      type: job
+      job: ../jobs/job1
+      depends_on: []
+      on_failure: fail
+    - name: publish
+      type: action
+      action: set_param
+      params:
+        name: result_rows
+        value: 2
+        type: int
+      depends_on: [job1]

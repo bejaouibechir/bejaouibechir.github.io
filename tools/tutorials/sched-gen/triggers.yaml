@@ -1,0 +1,10 @@
+version: "1.0"
+triggers:
+  - name: every-minute
+    type: cron
+    cron: "* * * * *"
+    timezone: UTC
+  - name: nightly-paris
+    type: cron
+    cron: "0 2 * * mon-fri"
+    timezone: Europe/Paris

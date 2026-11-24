@@ -1,0 +1,9 @@
+destinations:
+  dest:
+    type: sqlite
+    connection:
+      path: ../../data/warehouse.db
+    load:
+      table: orders
+      mode: upsert
+      key: [order_id]

@@ -1,0 +1,12 @@
+{
+  "id": "076ccc87",
+  "name": "envx-demo",
+  "description": "",
+  "created_at": "2026-11-24T06:52:29.670754+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

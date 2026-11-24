@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: wf-hook-down
+  trigger:
+    type: manual
+  steps:
+    - name: notify
+      type: action
+      action: webhook
+      params:
+        url: http://127.0.0.1:8097/hook
+        body: "{\"event\": \"x\"}"

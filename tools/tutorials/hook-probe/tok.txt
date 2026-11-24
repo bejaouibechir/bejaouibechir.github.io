@@ -1,0 +1,10 @@
+
+  ✅ Token saved as secret 'hooks.deploy' in C:\Users\DELL\Desktop\hydra-site\tools\tutorials\hook-probe\webhook-demo\.hydra\secrets
+  Copy it now, it is not shown again:
+
+    sjK9psVt-mXdsMNKB4qYBQ-F7Ih27wAG1W2M6BfZ6RM
+
+  Call (hdrctl serve running):
+    POST http://127.0.0.1:5678/api/projects/aa9187f9/triggers/deploy/webhook
+    X-Hydra-Token: <token>
+

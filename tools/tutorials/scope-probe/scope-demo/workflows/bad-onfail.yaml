@@ -1,0 +1,12 @@
+version: "1.0"
+workflow:
+  name: bad-onfail
+  trigger:
+    type: manual
+  steps:
+    - name: s
+      type: action
+      action: log
+      params:
+        message: "x"
+      on_failure: ignore

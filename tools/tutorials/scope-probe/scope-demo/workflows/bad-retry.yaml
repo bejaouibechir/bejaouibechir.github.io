@@ -1,0 +1,13 @@
+version: "1.0"
+workflow:
+  name: bad-retry
+  trigger:
+    type: manual
+  steps:
+    - name: s
+      type: action
+      action: log
+      params:
+        message: "x"
+      retry:
+        mx: 2

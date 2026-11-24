@@ -1,0 +1,17 @@
+version: "1.0"
+workflow:
+  name: workflow1
+  description: Master workflow
+  trigger:
+    type: manual
+  steps:
+    - name: job1
+      type: job
+      job: ../jobs/job1
+      depends_on: []
+      on_failure: fail
+    - name: call_child
+      type: project
+      project: ../child
+      outputs: [nope]
+      depends_on: [job1]

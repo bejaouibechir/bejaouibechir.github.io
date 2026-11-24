@@ -1,0 +1,12 @@
+{
+  "id": "dd0d86fb",
+  "name": "workflow1",
+  "project_id": "aa9187f9",
+  "description": "First workflow of the project",
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\hook-probe\\webhook-demo\\workflows\\workflow1.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

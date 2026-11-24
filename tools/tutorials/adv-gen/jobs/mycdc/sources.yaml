@@ -1,0 +1,13 @@
+sources:
+  src:
+    type: mysql_cdc
+    connection:
+      host: 127.0.0.1
+      port: 3399
+      user: demo_user
+      password: demo-password
+      database: shop
+      state: orders_mirror
+      server_id: 4201
+    extract:
+      table: orders

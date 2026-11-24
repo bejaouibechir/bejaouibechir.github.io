@@ -1,0 +1,8 @@
+version: '1.0'
+destinations:
+  revenue_csv:
+    type: csv
+    connection: {}
+    load:
+      table: C:/Users/DELL/Desktop/hydra-site/tools/tutorials/hook-probe/ws/hydra-demo/outputs/revenue_by_product.csv
+      mode: replace

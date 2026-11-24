@@ -1,0 +1,9 @@
+
+  ▶  Pipeline  mongodb  — jobs\mongodb
+
+
+
+  Cause:
+  ValueError: Cannot create the source 'src' (type='mongodb'). Error: Connector 'src': factory failed for type 'mongodb': MongoDB collection name is required
+
+  Hint: re-run with -v for more details

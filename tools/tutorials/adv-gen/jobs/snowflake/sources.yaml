@@ -1,0 +1,14 @@
+sources:
+  src:
+    type: snowflake
+    connection:
+      account: xy12345.example
+      user: demo_user
+      password: demo-password
+      warehouse: COMPUTE_WH
+      database: SALES
+      schema: PUBLIC
+      role: ANALYST
+      column_case: lower
+    extract:
+      table: ORDERS

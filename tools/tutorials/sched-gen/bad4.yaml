@@ -1,0 +1,6 @@
+version: "1.0"
+triggers:
+  - name: t
+    type: interval
+    every: 30s
+    timezone: UTC

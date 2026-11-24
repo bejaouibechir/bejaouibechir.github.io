@@ -1,0 +1,129 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 58</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 58 of 65 · Schedule trigger</div><h1>Run a Hydra project on a schedule with a cron trigger</h1><p class="lead">A cron trigger starts a Hydra project at fixed times. Declare it in triggers.yaml, validate the expression, start hdrctl watch and read the runs.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl watch</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>cron</code> starts the project at the times of a five-field expression, in the time zone you choose. <code>hdrctl watch</code> waits for those times and runs the project.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Declare two cron triggers, validate them, read the next run of each, start hdrctl watch, and read the runs it starts.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and a project created with <code>hdrctl init sched-demo</code>. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A second terminal: <code>hdrctl watch</code> stays open while it waits.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I run a Hydra project on a schedule?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Declare two cron triggers</h3>
+    <h4>Objective</h4><p>Edit triggers.yaml.</p>
+    <h4>Actions</h4><ol><li>Open <code>triggers.yaml</code> at the root of the project.</li><li>Write the content below.</li><li>Run <code>hdrctl trigger validate</code>.</li></ol>
+    <pre class="cmd">triggers.yaml</pre>
+    <p>The five fields are minute, hour, day of month, month and day of week. <code>* * * * *</code> means every minute. <code>0 2 * * mon-fri</code> means 02:00 from Monday to Friday. <code>timezone</code> takes an IANA name.</p><pre class="cmd">version: "1.0"
+triggers:
+  - name: every-minute
+    type: cron
+    cron: "* * * * *"
+    timezone: UTC
+  - name: nightly-paris
+    type: cron
+    cron: "0 2 * * mon-fri"
+    timezone: Europe/Paris</pre>
+    <div class="expect"><b>What you should see</b><p><code>Triggers valid — 2 trigger(s)</code>.</p><pre class="out">Triggers valid — 2 trigger(s)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>List the triggers</h3>
+    <h4>Objective</h4><p>Check what was read.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger list</pre>
+    <p>Each trigger shows its expression and its time zone, and the file it runs. The list does not show the next run: <code>hdrctl watch</code> prints it in the next step.</p>
+    <div class="expect"><b>What you should see</b><p>Two lines, each marked <code>on</code>.</p><pre class="out">on  every-minute       cron * * * * * (UTC)
+    runs thread.yaml · env: from watch/serve
+on  nightly-paris      cron 0 2 * * mon-fri (Europe/Paris)
+    runs thread.yaml · env: from watch/serve</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Start hdrctl watch</h3>
+    <h4>Objective</h4><p>Keep it open.</p>
+    <h4>Actions</h4><ol><li>Open a second terminal in the project folder.</li><li>Run the command below and leave it open.</li></ol>
+    <pre class="cmd">hdrctl watch</pre>
+    <p>The command prints the next run of each trigger. Times are those of your machine: ours was set to Paris time.</p>
+    <div class="expect"><b>What you should see</b><p>Two triggers with <code>next:</code>, then <code>Waiting for events</code>.</p><pre class="out">Project sched-demo
+  ● every-minute       cron * * * * * (UTC)  next: 2026-11-24 07:38
+  ● nightly-paris      cron 0 2 * * mon-fri (Europe/Paris)  next: 2026-11-25 02:00
+
+Waiting for events. Ctrl+C to stop.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Wait for the first runs</h3>
+    <h4>Objective</h4><p>Read each start and end.</p>
+    <h4>Actions</h4><ol><li>Wait for the next full minute.</li><li>Read the two lines of each run.</li></ol>
+    <pre class="cmd">hdrctl watch</pre>
+    <p>The run starts at second 00 of the minute. The <code>▶</code> line gives the start, the <code>✓</code> line gives the end and the duration. In our test the project ran twice in two minutes, in 2.4 s and 2.6 s.</p>
+    <div class="expect"><b>What you should see</b><p>A <code>▶</code> line and a <code>✓</code> line at the start of each minute.</p><pre class="out">2026-11-24 07:38:00 ▶ sched-demo/every-minute  cron * * * * * (UTC)  env: none
+2026-11-24 07:38:02 ✓ sched-demo/every-minute  2.4s
+2026-11-24 07:39:00 ▶ sched-demo/every-minute  cron * * * * * (UTC)  env: none
+2026-11-24 07:39:03 ✓ sched-demo/every-minute  2.6s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the history</h3>
+    <h4>Objective</h4><p>See the runs in one place.</p>
+    <h4>Actions</h4><ol><li>Stop <code>watch</code> with Ctrl+C.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger history</pre>
+    <p>The history lists each run with its trigger, its origin and its duration. Dates are in UTC here, so they are one hour earlier than the lines of <code>watch</code> on our machine. The Paris trigger did not run: its time had not come.</p>
+    <div class="expect"><b>What you should see</b><p>Two lines with ✓, both for <code>every-minute</code>.</p><pre class="out">✓ 2026-11-24T06:38:02+00:00  every-minute     watch  2.42s
+✓ 2026-11-24T06:39:03+00:00  every-minute     watch  2.63s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read a wrong expression</h3>
+    <h4>Objective</h4><p>Break one on purpose.</p>
+    <h4>Actions</h4><ol><li>Change the <code>cron</code> line to <code>"61 * * * *"</code>.</li><li>Run <code>hdrctl trigger validate</code>.</li></ol>
+    <pre class="cmd">hdrctl trigger validate</pre>
+    <p>Validation names the field and the limit. Put the expression back before you start <code>watch</code>.</p>
+    <div class="expect"><b>What you should see</b><p>An <code>Invalid triggers file</code> line, then the reason.</p><pre class="out">Invalid triggers file: ...\triggers.yaml
+  err   — trigger 't': cron '61 * * * *': minute: 61 is out of range (0-59)</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Validate before you wait: <code>hdrctl trigger validate</code> checks the expression and the time zone in a second.</p>
+  <p data-kind="TIP">Write <code>timezone</code> on every cron trigger, so that the schedule does not move with the machine.</p>
+  <p data-kind="TRAP"><code>timezone</code> only belongs to cron triggers: on an interval trigger, validate answers <code>timezone does not apply to type interval</code>.</p>
+  <p data-kind="TRAP">Cron triggers run only while <code>hdrctl watch</code> is open. If it is closed at 02:00, nothing starts.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Type</td><td>cron</td></tr><tr><td>Expression</td><td>minute hour day month weekday</td></tr><tr><td>Time zone</td><td>timezone: Europe/Paris, or UTC</td></tr><tr><td>Run</td><td>hdrctl watch</td></tr><tr><td>Check</td><td>hdrctl trigger validate, hdrctl trigger history</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>minute: 61 is out of range</td><td>A value is outside its field range</td><td>Use 0-59 for the minute</td></tr><tr><td>5 fields expected</td><td>The expression has fewer or more than five fields</td><td>Write minute hour day month weekday</td></tr><tr><td>unknown timezone</td><td>The name is not an IANA zone, or tzdata is missing on Windows</td><td>Check the name, or run pip install tzdata</td></tr><tr><td>every does not apply to type cron</td><td>A key of another trigger type was added</td><td>Remove the key</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does a cron trigger do in Hydra ETL?</h3>
+  <p>A trigger of type cron starts the project at the times a five-field cron expression gives. Under hdrctl watch, it ran every minute at second 00 in our test on Hydra ETL 0.22 on Windows.</p>
+  <h3>Which fields does the cron expression have?</h3>
+  <p>Five fields: minute, hour, day of month, month, day of week. The source accepts lists, ranges, steps such as */15, and names such as mon-fri or jan-mar. When day of month and day of week are both restricted, either one is enough, as in classic cron.</p>
+  <h3>How do I set the time zone of a cron trigger?</h3>
+  <p>Add timezone with an IANA name such as Europe/Paris or UTC. Without it, the time zone of the machine is used, according to the source. On Windows an unknown name asks you to run pip install tzdata.</p>
+  <h3>Does the cron trigger run without hdrctl serve?</h3>
+  <p>Yes. hdrctl watch runs cron triggers and does not need the server extra. We tested hdrctl watch only. We did not test the scheduler of hdrctl serve.</p>
+  <h3>What happens if the cron expression is wrong?</h3>
+  <p>hdrctl trigger validate stops with the reason: a value out of range, a wrong number of fields, an unknown time zone, or a key that does not belong to the type.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/declare-project-triggers">Declare project triggers</a></li><li><a href="/studio/run-triggers-with-hdrctl-watch">Other triggers</a></li><li><a href="/studio/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li></ul>
+
+  <h2>Next lesson</h2><p>One expression, one time zone, one command that waits. Not covered here: the scheduler of hdrctl serve.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/run-triggers-with-hdrctl-watch">Next: Other triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

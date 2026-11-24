@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: wf-env
+  trigger:
+    type: manual
+  steps:
+    - name: show_env
+      type: action
+      action: log
+      params:
+        message: "Target: ${ENV:API_URL} (region ${ENV:REGION})"

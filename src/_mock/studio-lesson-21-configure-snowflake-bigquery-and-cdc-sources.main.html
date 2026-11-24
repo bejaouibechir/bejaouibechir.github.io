@@ -1,0 +1,144 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 21</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 21 of 65 · Advanced sources</div><h1>Advanced sources: Snowflake, BigQuery and CDC</h1><p class="lead">Write a Snowflake, BigQuery, PostgreSQL CDC or MySQL CDC source, validate it without any server, and read what a run says when nothing answers.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl validate</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>Snowflake, BigQuery and the two CDC sources need an account or a server. <code>hdrctl validate</code> checks their YAML without one, and a run tells you which part is missing.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Write four sources, validate them offline, run them against nothing, and read the four messages.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>No account and no server: this lesson uses made-up values on purpose.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I configure a Snowflake or CDC source in Hydra ETL?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Write the Snowflake source</h3>
+    <h4>Objective</h4><p>One job folder, three files.</p>
+    <h4>Actions</h4><ol><li>Create the folder <code>jobs/snowflake</code>.</li><li>Save the three files below in it. The source is the one that changes; <code>pipeline.yaml</code> and <code>destinations.yaml</code> stay the same for every source in this lesson.</li></ol>
+    <pre class="cmd">hdrctl validate jobs\snowflake</pre>
+    <p><code>sources.yaml</code>:</p><pre class="cmd">sources:
+  src:
+    type: snowflake
+    connection:
+      account: xy12345.example
+      user: demo_user
+      password: demo-password
+      warehouse: COMPUTE_WH
+      database: SALES
+      schema: PUBLIC
+      role: ANALYST
+      column_case: lower
+    extract:
+      table: ORDERS</pre><p><code>pipeline.yaml</code>:</p><pre class="cmd">pipeline:
+  from: src
+  to: dest</pre><p><code>destinations.yaml</code>:</p><pre class="cmd">destinations:
+  dest:
+    type: csv
+    load:
+      table: data/out.csv
+      mode: replace</pre>
+    <div class="expect"><b>What you should see</b><p>Every line <code>ok</code>, then <code>DSL valid</code>.</p><pre class="out">  ok  sources.yaml                         — Pydantic valid
+  ok  destinations.yaml                    — Pydantic valid
+  ok  pipeline.from                        — resolved: src
+  ok  pipeline.to                          — resolved: dest
+
+  ✅ DSL valid — no errors detected.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Run it against nothing</h3>
+    <h4>Objective</h4><p>Validate is not a connection test.</p>
+    <h4>Actions</h4><ol><li>Run the job.</li><li>Read the message: it names the connector, the source and the address.</li></ol>
+    <pre class="cmd">hdrctl run jobs\snowflake</pre>
+    <p>The account is made up, but the run still reaches for the network and fails after about 13 seconds. Use an account that you own when you test for real. The long certificate text is cut here.</p>
+    <div class="expect"><b>What you should see</b><p>A failure that starts with <code>connection failed</code>.</p><pre class="out">ValueError: SnowflakeConnector [src]: connection failed.
+  DSN : snowflake://demo_user@xy12345.example/SALES/PUBLIC
+  Error: DatabaseError: 250001 (08001): Failed to login: HTTP request failed after retries: login request. invalid peer certificate: …
+
+❌ Pipeline FAILED in 13.4s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Swap in BigQuery</h3>
+    <h4>Objective</h4><p>A driver can be missing.</p>
+    <h4>Actions</h4><ol><li>Create <code>jobs/bigquery</code> with the same <code>pipeline.yaml</code> and <code>destinations.yaml</code>.</li><li>Use the source below, validate it, then run it.</li></ol>
+    <pre class="cmd">hdrctl run jobs\bigquery</pre>
+    <p><code>sources.yaml</code>:</p><pre class="cmd">sources:
+  src:
+    type: bigquery
+    connection:
+      project: my-project
+      dataset: sales
+      location: EU
+      credentials_file: ../../keys/sa.json
+    extract:
+      table: orders</pre><p>Validation passed here too. The run stops in 1.6 seconds because the BigQuery driver was not installed on our machine.</p>
+    <div class="expect"><b>What you should see</b><p>A failure that names the driver and the install command.</p><pre class="out">ValueError: BigQueryConnector [src]: query failed.
+  Error: ValueError: BigQueryConnector [src]: the BigQuery driver is not installed. Install it with 'pip install "hydra-etl[bigquery]"'.
+
+❌ Pipeline FAILED in 1.6s</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Swap in a CDC source</h3>
+    <h4>Objective</h4><p>Same job, a server that is not there.</p>
+    <h4>Actions</h4><ol><li>Create <code>jobs/pgcdc</code> with the same two other files.</li><li>Use the source below, validate it, then run it.</li></ol>
+    <pre class="cmd">hdrctl run jobs\pgcdc</pre>
+    <p><code>sources.yaml</code>:</p><pre class="cmd">sources:
+  src:
+    type: postgresql_cdc
+    connection:
+      host: 127.0.0.1
+      port: 5499
+      user: demo_user
+      password: demo-password
+      database: shop
+      slot: hydra_orders
+      publication: hydra_orders
+    extract:
+      table: public.orders</pre><p>Nothing listens on port 5499, so the run fails. The address in the message shows the password as three stars. A <code>mysql_cdc</code> source with <code>state</code> and <code>server_id</code> instead of <code>slot</code> and <code>publication</code> failed the same way in 4 seconds; its message follows the language of Windows.</p>
+    <div class="expect"><b>What you should see</b><p>A failure that starts with <code>database connection failed</code>.</p><pre class="out">ValueError: PostgreSQLCDCConnector [src]: database connection failed.
+  DSN : postgresql://demo_user:***@127.0.0.1:5499/shop?slot=hydra_orders&publication=hydra_orders
+  Error: OperationalError: connection to server at "127.0.0.1", port 5499 failed: Connection refused …
+
+❌ Pipeline FAILED in 3.6s</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Validate first, on every machine: it is the only step that needs nothing outside the YAML.</p>
+  <p data-kind="TIP">Read the first line of a failure: it names the connector and the source, so you know which of several sources failed.</p>
+  <p data-kind="TRAP"><code>validate</code> passing does not mean the account, the driver or the server exists. All four sources passed it and none could run.</p>
+  <p data-kind="TRAP">A made-up Snowflake account still makes the run call the network for about 13 seconds. Do not leave a real-looking host name in a test file.</p>
+  <p data-kind="TRAP">Keep real passwords out of <code>sources.yaml</code>. See <a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a>.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Snowflake</td><td>type: snowflake, connection: account, user, password, warehouse, database, schema</td></tr><tr><td>BigQuery</td><td>type: bigquery, connection: project, dataset, credentials_file</td></tr><tr><td>PostgreSQL CDC</td><td>type: postgresql_cdc, connection: slot, publication</td></tr><tr><td>MySQL CDC</td><td>type: mysql_cdc, connection: state, server_id</td></tr><tr><td>Check</td><td>hdrctl validate jobs\NAME</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>connection failed</td><td>The account, user or address is wrong</td><td>Check the DSN line in the message</td></tr><tr><td>driver is not installed</td><td>The optional package is missing</td><td>Run the pip command in the message</td></tr><tr><td>database connection failed</td><td>Nothing answers on that host and port</td><td>Start the server or fix the port</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I check a Snowflake, BigQuery or CDC source without a server?</h3>
+  <p>Run hdrctl validate on the job folder. In our test on Hydra ETL 0.22, validate accepted a Snowflake, a BigQuery, a PostgreSQL CDC and a MySQL CDC source with made-up values and no server. It checks the shape of the YAML only, not the connection.</p>
+  <h3>What does a run say when the server or the account is missing?</h3>
+  <p>It stops with a message that names the connector and the source. A PostgreSQL CDC run on a closed port answered Connection refused after 3.6 seconds, a BigQuery run without the driver answered that the driver is not installed after 1.6 seconds, and a Snowflake run with a made-up account failed after 13 seconds.</p>
+  <h3>Is the password shown in the error?</h3>
+  <p>Not in our test. The PostgreSQL CDC and MySQL CDC messages print the connection address with the password replaced by three stars, and the Snowflake message prints the user without the password.</p>
+  <h3>What do the CDC sources need on the database side?</h3>
+  <p>According to the connector documentation in the source, PostgreSQL needs a role with the REPLICATION attribute, and MySQL needs the binary log on in ROW format with full row images. We did not test either, because it needs a database server.</p>
+  <h3>Does Hydra ETL read MongoDB with this configuration?</h3>
+  <p>We did not cover it. In our test, validate accepted a MongoDB source with extract.table, but a run asked for a collection name, and with extract.collection alone the engine asked for a table or a query. Check the current documentation before you rely on it.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/read-and-write-sqlite-databases">Read and write SQLite databases</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/studio/switch-environments-with-hdrctl-env">Switch environments</a></li></ul>
+
+  <h2>Next lesson</h2><p>Four sources, one validation, four honest failures. Not covered here: a real account, a real server, and MongoDB.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/read-and-write-sqlite-databases">Back to Database sources <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

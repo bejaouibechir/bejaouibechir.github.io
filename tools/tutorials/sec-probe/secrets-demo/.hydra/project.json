@@ -1,0 +1,12 @@
+{
+  "id": "decce464",
+  "name": "secrets-demo",
+  "description": "",
+  "created_at": "2026-11-24T06:50:05.789017+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

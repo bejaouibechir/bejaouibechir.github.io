@@ -1,0 +1,5 @@
+version: '1.0'
+parameters:
+  min_value:
+    type: int
+    default: 0

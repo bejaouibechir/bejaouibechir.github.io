@@ -1,0 +1,140 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 29</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 29 of 65 · Environments</div><h1>Switch environments in Hydra ETL with hdrctl env</h1><p class="lead">Create dev and prod environments with hdrctl env, read their variables with ${ENV:NAME}, and pick one for a run with --env.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl env</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl env</code> manages environments: common variables, one file per environment, and a parameter file in the project. A run picks one with <code>--env NAME</code>, and a job or workflow reads a variable with <code>${ENV:NAME}</code>.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Redirect the settings folder, set common and prod variables, run a workflow with and without <code>--env</code>, then unset, rename and delete.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init envx-demo</code>, then <code>cd envx-demo</code>.</li><li>An empty folder for the settings, so that nothing is written in your own settings: <code>set HYDRA_HOME=C:\temp\fake-home</code> on Windows. Skip this line to use your real ones.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I switch environments in Hydra ETL?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Set common variables</h3>
+    <h4>Objective</h4><p>Values every run gets.</p>
+    <h4>Actions</h4><ol><li>Run the two commands below.</li></ol>
+    <pre class="cmd">hdrctl env set REGION eu-west
+hdrctl env set API_URL https://dev.example.test</pre>
+    <p>Without <code>--env</code>, <code>env set</code> writes the common file, named <code>env</code>, in the settings folder.</p>
+    <div class="expect"><b>What you should see</b><p>Two <code>ok</code> lines that name the file <code>env</code>.</p><pre class="out">ok  REGION set for (common) (...\fake-home\env)
+ok  API_URL set for (common) (...\fake-home\env)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Create the prod environment</h3>
+    <h4>Objective</h4><p>One command, two files.</p>
+    <h4>Actions</h4><ol><li>Create the environment.</li><li>Give it its own <code>API_URL</code>.</li></ol>
+    <pre class="cmd">hdrctl env create prod
+hdrctl env set API_URL https://api.example.test --env prod</pre>
+    <p><code>env create</code> makes <code>env.prod</code> in the settings folder and <code>environments/prod.yaml</code> in the project. The project file holds parameter values, as in <a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a>. Add <code>--global-only</code> to skip it.</p>
+    <div class="expect"><b>What you should see</b><p>A box that says <code>Environment 'prod' created</code> and two <code>created</code> lines.</p><pre class="out">✅ Environment 'prod' created
+  created ...\fake-home\env.prod
+  created ...\envx-demo\environments\prod.yaml
+
+ok  API_URL set for prod (...\fake-home\env.prod)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>List and show</h3>
+    <h4>Objective</h4><p>See what each scope holds.</p>
+    <h4>Actions</h4><ol><li>Run the two commands below.</li></ol>
+    <pre class="cmd">hdrctl env list
+hdrctl env show prod</pre>
+    <p><code>list</code> counts variables, parameter values and secrets for each environment. <code>show</code> prints the variables of one scope. Run <code>env show</code> with no name for the common ones.</p>
+    <div class="expect"><b>What you should see</b><p>A count per scope, then the names and values.</p><pre class="out">(common)          2 variable(s)
+prod              1 variable(s) · 0 parameter value(s) · no secrets
+
+Global variables — prod
+  API_URL  https://api.example.test</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read a variable in a workflow</h3>
+    <h4>Objective</h4><p>Use ${ENV:NAME}.</p>
+    <h4>Actions</h4><ol><li>Create <code>workflows/wf-env.yaml</code> with the content below.</li><li>Run it with and without <code>--env prod</code>.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\wf-env.yaml
+hdrctl workflow run workflows\wf-env.yaml --env prod</pre>
+    <p>The environment overrides the common value where both define a name. Here <code>prod</code> sets <code>API_URL</code> only: <code>REGION</code> still comes from the common file.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: wf-env
+  trigger:
+    type: manual
+  steps:
+    - name: show_env
+      type: action
+      action: log
+      params:
+        message: "Target: ${ENV:API_URL} (region ${ENV:REGION})"</pre>
+    <div class="expect"><b>What you should see</b><p>The dev URL first, the prod URL second, the same region.</p><pre class="out">│ Target: https://dev.example.test (region eu-west)
+│ Target: https://api.example.test (region eu-west)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Try a name that does not exist</h3>
+    <h4>Objective</h4><p>No error.</p>
+    <h4>Actions</h4><ol><li>Run the workflow with <code>--env staging</code>.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\wf-env.yaml --env staging</pre>
+    <p>The run uses the common values and prints no warning. A typo in <code>--env</code> therefore looks like a success: check the name with <code>hdrctl env list</code>.</p>
+    <div class="expect"><b>What you should see</b><p>The dev URL again.</p><pre class="out">│ Target: https://dev.example.test (region eu-west)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Unset, rename, delete</h3>
+    <h4>Objective</h4><p>Change an environment safely.</p>
+    <h4>Actions</h4><ol><li>Remove <code>REGION</code> and run the workflow.</li><li>Rename <code>prod</code> to <code>production</code>.</li><li>Delete it with <code>-y</code>.</li></ol>
+    <pre class="cmd">hdrctl env unset REGION
+hdrctl env rename prod production
+hdrctl env delete production -y</pre>
+    <p>A variable defined nowhere stops the step. <code>rename</code> and <code>delete</code> move both files, and each one keeps a copy in a <code>_backups</code> folder of the settings folder first. After a rename, update the scripts that pass the old name to <code>--env</code>.</p>
+    <div class="expect"><b>What you should see</b><p>A failed step, a rename box, a delete box with a backup path.</p><pre class="out">✗  Step 'show_env' FAILED: SecretResolutionError: Missing environment variable: REGION
+
+✅ Environment 'prod' renamed to 'production'
+  Update the scripts and schedules that pass --env with the old name.
+
+✅ Environment 'production' deleted
+  Backup: ...\fake-home\_backups\20261124-075240-delete-production</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Set <code>HYDRA_ENV=prod</code> in the shell once, instead of repeating <code>--env prod</code> on every command.</p>
+  <p data-kind="TIP">Keep tokens in <a href="/studio/store-and-use-secrets-with-hdrctl">secrets</a>, not in environment variables: the files of <code>hdrctl env</code> are plain text.</p>
+  <p data-kind="TRAP">An unknown <code>--env</code> name falls back to the common values and prints nothing.</p>
+  <p data-kind="TRAP">The global files are in the settings folder of your user, shared by all your projects. A variable you set for one project reaches the others.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Set</td><td>hdrctl env set NAME VALUE [--env E]</td></tr><tr><td>Create / delete</td><td>hdrctl env create E, hdrctl env delete E -y</td></tr><tr><td>Inspect</td><td>hdrctl env list, hdrctl env show [E]</td></tr><tr><td>Rename</td><td>hdrctl env rename OLD NEW</td></tr><tr><td>Use</td><td>${ENV:NAME}, --env E, HYDRA_ENV</td></tr><tr><td>Redirect</td><td>HYDRA_HOME=<folder></td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Missing environment variable: NAME</td><td>The name is in no environment file and not in the shell</td><td>Run hdrctl env show, then hdrctl env set</td></tr><tr><td>NAME is not defined for (common)</td><td>env unset on a name that is not there</td><td>Check the scope with hdrctl env show</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What is an environment in Hydra ETL?</h3>
+  <p>A named set of values, such as dev or prod, that a run picks with --env. In our test on Hydra ETL 0.22, an environment held global variables (one file per environment in the Hydra home folder) and, inside the project, a file of parameter values.</p>
+  <h3>How do I read an environment variable in a job or workflow?</h3>
+  <p>Write ${ENV:NAME}. In our test, a log step with ${ENV:API_URL} printed the dev URL in a normal run and the prod URL with --env prod. A name that is defined in no file fails the step: Missing environment variable.</p>
+  <h3>What happens if I give --env a name that does not exist?</h3>
+  <p>Nothing fails. In our test --env staging ran with the common values, with no warning. Check the name with hdrctl env list.</p>
+  <h3>Does an environment replace the common variables?</h3>
+  <p>It adds to them and wins on a clash. In our test prod defined API_URL only, and REGION still came from the common file.</p>
+  <h3>How do I try environments without touching my own settings?</h3>
+  <p>Set HYDRA_HOME to an empty folder before you run the commands. The global files go there instead of the .hydra folder of your user. All the tests of this lesson used it.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>
+
+  <h2>Next lesson</h2><p>Common values, one environment per target, one option to choose. Not covered here: the Environments panel of Studio.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/store-and-use-secrets-with-hdrctl">Next: Secrets <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

@@ -1,0 +1,137 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 55</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 55 of 65 · Webhook trigger</div><h1>Start a Hydra ETL project from a webhook</h1><p class="lead">A webhook trigger lets another system start your project with one HTTP call. Declare it, create a token, run hdrctl serve and call the URL.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl trigger token</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A trigger of type <code>webhook</code> starts the project when another system sends <code>POST /api/projects/ID/triggers/NAME/webhook</code> with the right token. <code>hdrctl serve</code> must be running.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Declare a webhook trigger, create its token, start the server, register the project, call the webhook with and without the right token, and read the history.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed with the server extra. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init webhook-demo</code>. The project id is in <code>.hydra/project.json</code>.</li><li><code>curl.exe</code> (Windows) or <code>curl</code>, to make the calls.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I start a Hydra ETL project with a webhook?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Declare the trigger</h3>
+    <h4>Objective</h4><p>Name a secret for the token.</p>
+    <h4>Actions</h4><ol><li>Create <code>triggers.yaml</code> at the root of the project with the content below.</li><li>Run <code>hdrctl trigger validate</code>.</li></ol>
+    <pre class="cmd">hdrctl trigger validate</pre>
+    <p>The <code>token</code> line does not hold a value: it names a <a href="/studio/store-and-use-secrets-with-hdrctl">secret</a>. Until the secret exists, validation passes with a warning.</p><pre class="cmd">version: "1.0"
+triggers:
+  - name: deploy
+    type: webhook
+    token: ${SECRET:hooks.deploy}</pre>
+    <div class="expect"><b>What you should see</b><p>A warning, then <code>Triggers valid</code>.</p><pre class="out">⚠  trigger 'deploy': secret 'hooks.deploy' is not set yet (hdrctl trigger token deploy)
+
+✅ Triggers valid — 1 trigger(s)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Create the token</h3>
+    <h4>Objective</h4><p>Copy it once.</p>
+    <h4>Actions</h4><ol><li>Run the command below.</li><li>Copy the token now: it is not shown again.</li></ol>
+    <pre class="cmd">hdrctl trigger token deploy</pre>
+    <p>The command generates a token, stores it in <code>.hydra/secrets</code> as <code>hooks.deploy</code>, prints it once, and prints the URL to call. A second run refuses to overwrite it: add <code>--rotate</code> to replace the token.</p>
+    <div class="expect"><b>What you should see</b><p>The token on a line of its own, then the URL.</p><pre class="out">✅ Token saved as secret 'hooks.deploy' in ...\.hydra\secrets
+  Copy it now, it is not shown again:
+
+    <your token>
+
+  Call (hdrctl serve running):
+    POST http://127.0.0.1:5678/api/projects/aa9187f9/triggers/deploy/webhook
+    X-Hydra-Token: <token>
+
+❌ Secret 'hooks.deploy' is already set
+  To replace it: hdrctl trigger token deploy --rotate</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Start the server and register the project</h3>
+    <h4>Objective</h4><p>The webhook is served by hdrctl serve.</p>
+    <h4>Actions</h4><ol><li>Start the server in a second terminal: <code>hdrctl serve</code>.</li><li>Save <code>open.json</code> as shown below, then register the project with the second command.</li></ol>
+    <pre class="cmd">hdrctl serve
+curl.exe -s -X POST -H "Content-Type: application/json" -d @open.json http://127.0.0.1:5678/api/projects/open</pre>
+    <p>The server finds a project by its id. <code>/api/projects/open</code> registers an existing folder and returns its id: <code>aa9187f9</code> in our test, the same as in <code>.hydra/project.json</code>. Save this as <code>open.json</code> first, with the full path of your project (backslashes doubled):</p><pre class="cmd">{"path": "C:\\path\\to\\webhook-demo", "adopt": true}</pre>
+    <div class="expect"><b>What you should see</b><p>A JSON answer with the id, the name and the path.</p><pre class="out">{"id":"aa9187f9","name":"webhook-demo","description":"","path":"C:\\...\\webhook-demo","created_at":"2026-11-24T06:56:37.880118+00:00"}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Call the webhook</h3>
+    <h4>Objective</h4><p>Send the token in a header.</p>
+    <h4>Actions</h4><ol><li>Replace the id and the token in the command below.</li><li>Run it.</li></ol>
+    <pre class="cmd">curl.exe -i -X POST -H "X-Hydra-Token: <token>" http://127.0.0.1:5678/api/projects/aa9187f9/triggers/deploy/webhook</pre>
+    <p>The server answers at once, before the run ends: <code>202 Accepted</code> means the run started. You can also send <code>Authorization: Bearer &lt;token&gt;</code>; it worked the same in our test.</p>
+    <div class="expect"><b>What you should see</b><p><code>HTTP/1.1 202 Accepted</code> and a JSON body.</p><pre class="out">HTTP/1.1 202 Accepted
+
+{"trigger":"deploy","status":"started","origin":"webhook"}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the refusals</h3>
+    <h4>Objective</h4><p>Three wrong calls.</p>
+    <h4>Actions</h4><ol><li>Call the URL with no header.</li><li>Call it with a wrong token.</li><li>Call it with the right token but another trigger name.</li></ol>
+    <pre class="cmd">curl.exe -i -X POST -H "X-Hydra-Token: wrong-token-value" http://127.0.0.1:5678/api/projects/aa9187f9/triggers/deploy/webhook</pre>
+    <p>Each refusal has its own status and message, and starts nothing.</p>
+    <div class="expect"><b>What you should see</b><p>401, 401 and 404.</p><pre class="out">HTTP/1.1 401 Unauthorized
+{"detail":"token required (X-Hydra-Token or Authorization: Bearer)"}
+
+HTTP/1.1 401 Unauthorized
+{"detail":"invalid token"}
+
+HTTP/1.1 404 Not Found
+{"detail":"no webhook trigger 'nope'"}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read the history</h3>
+    <h4>Objective</h4><p>See who started each run.</p>
+    <h4>Actions</h4><ol><li>In the project folder, run the command below.</li></ol>
+    <pre class="cmd">hdrctl trigger history</pre>
+    <p>The last column is the origin. In our test, <code>hdrctl trigger fire deploy</code> gave <code>manual</code> and the two good calls gave <code>webhook</code>. Note that <code>trigger fire</code> needs no token: it is run from your own machine.</p>
+    <div class="expect"><b>What you should see</b><p>Three runs, one manual and two webhook.</p><pre class="out">✓ 2026-11-24T06:56:43+00:00  deploy           manual  2.5s
+✓ 2026-11-24T06:57:19+00:00  deploy           webhook  2.74s
+✓ 2026-11-24T06:57:26+00:00  deploy           webhook  2.39s</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Rotate the token with <code>--rotate</code> when it may have leaked, then update the caller.</p>
+  <p data-kind="TIP">Keep the token in the secret store of the system that calls you, not in its code.</p>
+  <p data-kind="TRAP">The token is shown once. If you lose it, run <code>hdrctl trigger token NAME --rotate</code>.</p>
+  <p data-kind="TRAP">The call starts the run and returns 202 before it ends. A success answer does not mean the run succeeded: check <code>hdrctl trigger history</code>.</p>
+  <p data-kind="TRAP">Anything on the network that reaches the server and has the token can start the project. Do not expose <code>hdrctl serve</code> to the internet without a proxy that you control.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Trigger</td><td>type: webhook, token: ${SECRET:name}</td></tr><tr><td>Token</td><td>hdrctl trigger token NAME [--rotate]</td></tr><tr><td>Call</td><td>POST /api/projects/ID/triggers/NAME/webhook</td></tr><tr><td>Header</td><td>X-Hydra-Token or Authorization: Bearer</td></tr><tr><td>Answers</td><td>202 started, 401 token, 404 unknown</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>token required</td><td>No X-Hydra-Token or Bearer header</td><td>Add the header</td></tr><tr><td>invalid token</td><td>The token does not match the secret</td><td>Copy it again, or rotate it</td></tr><tr><td>no webhook trigger 'x'</td><td>The name is wrong, the type is not webhook, or the trigger is disabled</td><td>Check hdrctl trigger list</td></tr><tr><td>Project 'id' not found</td><td>The server does not know the project</td><td>Register it with POST /api/projects/open</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I start a Hydra ETL project from another system?</h3>
+  <p>Declare a trigger of type webhook, create its token with hdrctl trigger token NAME, run hdrctl serve, and call POST /api/projects/PROJECT_ID/triggers/NAME/webhook with the token in a header. In our test on Hydra ETL 0.22, a valid call answered 202 and the project ran in about 2.5 seconds.</p>
+  <h3>Where do I put the token?</h3>
+  <p>In the header X-Hydra-Token, or in Authorization: Bearer. Both worked in our test. The token is stored as a secret named in the trigger, in .hydra/secrets of the project.</p>
+  <h3>What answers do I get when the call is wrong?</h3>
+  <p>A call with no token answered 401, token required. A wrong token answered 401, invalid token. An unknown trigger name answered 404, no webhook trigger. We read the 503 answer, for a token that was never created, in the source and did not test it.</p>
+  <h3>Can I send data with the webhook?</h3>
+  <p>According to the source, nothing from the request is passed to the project: the call only starts the run. We did not test sending a body.</p>
+  <h3>Does the webhook trigger work with hdrctl watch?</h3>
+  <p>No. According to the list output, a webhook is called through hdrctl serve. hdrctl watch is for time, file and source triggers.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/declare-project-triggers">Declare project triggers</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/studio/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li></ul>
+
+  <h2>Next lesson</h2><p>One trigger, one token, one URL. Not covered here: sending data with the call, and the 503 answer when the token was never created.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/declare-project-triggers">Back to Triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

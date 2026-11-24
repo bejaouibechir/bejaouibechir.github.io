@@ -1,0 +1,11 @@
+version: "1.0"
+workflow:
+  name: wf-hook-nourl
+  trigger:
+    type: manual
+  steps:
+    - name: notify
+      type: action
+      action: webhook
+      params:
+        method: POST

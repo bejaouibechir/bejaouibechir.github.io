@@ -1,0 +1,31 @@
+{
+  "id": "079cc953",
+  "name": "hydra-demo",
+  "description": "",
+  "created_at": "2026-11-24T06:56:49.843432+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [
+    {
+      "id": "edd2046b",
+      "name": "first-pipeline",
+      "file": "workflows/first-pipeline.yaml"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "clean-orders",
+      "path": "jobs/clean-orders"
+    },
+    {
+      "name": "customers-json-to-csv",
+      "path": "jobs/customers-json-to-csv"
+    },
+    {
+      "name": "revenue-by-product",
+      "path": "jobs/revenue-by-product"
+    }
+  ]
+}

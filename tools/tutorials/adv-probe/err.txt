@@ -1,0 +1,3 @@
+Job 'mongodb' failed: ValueError: Cannot create the source 'src' (type='mongodb'). Error: Connector 'src': factory failed for type 'mongodb': MongoDB collection name is required
+
+  ❌ Pipeline FAILED in 1.3s

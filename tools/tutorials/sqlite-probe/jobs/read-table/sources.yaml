@@ -1,0 +1,7 @@
+sources:
+  src_app:
+    type: sqlite
+    connection:
+      path: ../../data/app.db
+    extract:
+      table: orders

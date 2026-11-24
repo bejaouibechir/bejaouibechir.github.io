@@ -1,0 +1,20 @@
+version: "1.0"
+triggers:
+  - name: every-30s
+    type: interval
+    every: 30s
+    overlap: skip
+  - name: flag-file
+    type: marker
+    path: go.flag
+  - name: new-files
+    type: file
+    path: Data/incoming/*.csv
+    events: [added]
+    debounce: 2s
+  - name: data-changed
+    type: source_change
+    source:
+      job: jobs/job1
+      id: src_csv
+      check: checksum

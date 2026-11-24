@@ -1,0 +1,23 @@
+{
+  "id": "0db43970",
+  "name": "nightly-demo",
+  "description": "",
+  "created_at": "2026-11-24T07:31:21.317913+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [
+    {
+      "id": "2f0f51ec",
+      "name": "workflow1",
+      "file": "workflows/workflow1.yaml"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "job1",
+      "path": "jobs/job1"
+    }
+  ]
+}

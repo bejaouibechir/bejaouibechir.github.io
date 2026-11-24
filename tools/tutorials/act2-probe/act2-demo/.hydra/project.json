@@ -1,0 +1,12 @@
+{
+  "id": "f7825bff",
+  "name": "act2-demo",
+  "description": "",
+  "created_at": "2026-11-24T07:00:05.316924+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

@@ -1,0 +1,13 @@
+sources:
+  src:
+    type: postgresql_cdc
+    connection:
+      host: 127.0.0.1
+      port: 5499
+      user: demo_user
+      password: demo-password
+      database: shop
+      slot: hydra_orders
+      publication: hydra_orders
+    extract:
+      table: public.orders

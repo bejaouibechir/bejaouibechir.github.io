@@ -1,0 +1,4 @@
+# Hydra global environment variables (all environments).
+# Shared by every project on this machine. One KEY=VALUE per line.
+# Order: env < env.<environment> < project .env < job .env < --env-file
+API_URL=https://dev.example.test

@@ -1,0 +1,148 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 52</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 52 of 65 · Error Scope</div><h1>Handle a failing step with on_failure</h1><p class="lead">Set on_failure to fail, skip or continue on a workflow step and read what each one does to the steps around it.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">on_failure</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>on_failure</code> is a key of a workflow step. <code>fail</code> stops the workflow, <code>skip</code> skips the steps that depend on the failed step, and <code>continue</code> runs them anyway. The Error Scope container of Studio writes the same key.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Run one workflow three times with a failing step, change <code>on_failure</code> each time, and compare the steps that run.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init scope-demo</code>. Work in its <code>workflows</code> folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I keep a Hydra ETL workflow going after a step fails?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Write a workflow with a failing step</h3>
+    <h4>Objective</h4><p>Four steps, one that fails.</p>
+    <h4>Actions</h4><ol><li>Save the file below as <code>workflows/scope-fail.yaml</code>.</li><li>Run it from the project folder.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\scope-fail.yaml</pre>
+    <p>The step <code>boom</code> ends the Python script with a non-zero code, so it fails. <code>after_boom</code> depends on it, <code>later</code> depends on <code>independent</code>, and <code>independent</code> depends on nothing. With no <code>on_failure</code> the default is <code>fail</code>.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: scope-fail
+  trigger:
+    type: manual
+  steps:
+    - name: boom
+      type: action
+      action: python
+      params:
+        script: |
+          raise SystemExit(1)
+    - name: after_boom
+      type: action
+      action: log
+      params:
+        message: "runs after boom"
+      depends_on: [boom]
+    - name: independent
+      type: action
+      action: log
+      params:
+        message: "independent step"
+    - name: later
+      type: action
+      action: log
+      params:
+        message: "later step"
+      depends_on: [independent]</pre>
+    <div class="expect"><b>What you should see</b><p><code>boom</code> fails, the two later steps are skipped, and the workflow fails.</p><pre class="out">  ✓  Step 'independent' OK (0.0s)
+     │ independent step
+  ✗  Step 'boom' FAILED: Python script exited with code 1
+  ⏭  Step 'after_boom' skipped
+  ⏭  Step 'later' skipped
+
+  ❌ Workflow 'scope-fail' FAILED in 0.1s — Step 'boom' failed: Python script exited with code 1</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Try skip</h3>
+    <h4>Objective</h4><p>Add one line to boom.</p>
+    <h4>Actions</h4><ol><li>Copy the file to <code>workflows/scope-skip.yaml</code> and change the name to <code>scope-skip</code>.</li><li>Add <code>on_failure: skip</code> under the <code>boom</code> step, at the same level as <code>action</code>.</li><li>Run it.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\scope-skip.yaml</pre>
+    <p><code>later</code> now runs, because it does not depend on <code>boom</code>. <code>after_boom</code> is still skipped, because it does.</p>
+    <div class="expect"><b>What you should see</b><p><code>later</code> runs, <code>after_boom</code> is skipped.</p><pre class="out">  ✓  Step 'independent' OK (0.0s)
+     │ independent step
+  ✗  Step 'boom' FAILED: Python script exited with code 1
+  ⏭  Step 'after_boom' skipped
+  ✓  Step 'later' OK (0.0s)
+     │ later step
+
+  ❌ Workflow 'scope-skip' FAILED in 0.1s — None</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Try continue</h3>
+    <h4>Objective</h4><p>Let the dependent step run.</p>
+    <h4>Actions</h4><ol><li>Copy the file to <code>workflows/scope-continue.yaml</code> and change the name to <code>scope-continue</code>.</li><li>Use <code>on_failure: continue</code> on <code>boom</code>.</li><li>Run it.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\scope-continue.yaml</pre>
+    <p>Now <code>after_boom</code> runs although the step it depends on failed. Use this for a step that must run whatever happened before, such as a cleanup or a notification.</p>
+    <div class="expect"><b>What you should see</b><p>All steps but <code>boom</code> run.</p><pre class="out">  ✓  Step 'independent' OK (0.0s)
+     │ independent step
+  ✗  Step 'boom' FAILED: Python script exited with code 1
+  ✓  Step 'after_boom' OK (0.0s)
+     │ runs after boom
+  ✓  Step 'later' OK (0.0s)
+     │ later step
+
+  ❌ Workflow 'scope-continue' FAILED in 0.1s — None</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Read the end of the run</h3>
+    <h4>Objective</h4><p>The workflow still failed.</p>
+    <h4>Actions</h4><ol><li>Look at the last line of the skip and continue runs.</li><li>Check the exit code in your shell: <code>echo %ERRORLEVEL%</code> in <code>cmd</code>.</li></ol>
+    <pre class="cmd">echo %ERRORLEVEL%</pre>
+    <p>In our test, both runs ended with <code>FAILED … — None</code> and exit code 1, although the steps after <code>boom</code> ran. The workflow counts as successful only when every step succeeded. A scheduler or a script that reads the exit code sees a failure.</p>
+    <div class="expect"><b>What you should see</b><p><code>1</code>.</p><pre class="out">1</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Check a wrong value</h3>
+    <h4>Objective</h4><p>Validation names the three values.</p>
+    <h4>Actions</h4><ol><li>Save a copy of the file with <code>on_failure: ignore</code> on a step.</li><li>Run the validation.</li></ol>
+    <pre class="cmd">hdrctl workflow validate workflows\bad-onfail.yaml</pre>
+    <p>The check runs before any step.</p>
+    <div class="expect"><b>What you should see</b><p>A refusal that lists <code>fail</code>, <code>skip</code> and <code>continue</code>.</p><pre class="out">  ❌ Invalid workflow: Workflow validation error in '...\workflows\bad-onfail.yaml':
+  - steps.0.on_failure: Input should be 'fail', 'skip' or 'continue'</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use <code>continue</code> only for steps that must run after a failure, such as a cleanup, and put the check in the step itself.</p>
+  <p data-kind="TIP">Use <code>skip</code> when later steps are independent: the rest of the work still gets done.</p>
+  <p data-kind="TRAP"><code>skip</code> and <code>continue</code> do not make the workflow succeed. The run ends as failed with exit code 1 and an empty reason (<code>None</code>).</p>
+  <p data-kind="TRAP">With the default <code>fail</code>, steps that do not depend on the failed step can already have run, because steps without dependencies start together. In our test, <code>independent</code> ran before <code>boom</code> was reported.</p>
+  <p data-kind="TRAP">Retrying is a different key. See <a href="/studio/retry-a-failing-step-with-retry">Retry a failing step</a>.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Key</td><td>on_failure on a step</td></tr><tr><td>Values</td><td>fail (default), skip, continue</td></tr><tr><td>fail</td><td>stops the workflow, the rest is not run</td></tr><tr><td>skip</td><td>skips the steps that depend on it</td></tr><tr><td>continue</td><td>runs them anyway</td></tr><tr><td>Result</td><td>any failed step makes the workflow fail</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Input should be 'fail', 'skip' or 'continue'</td><td>Another value was written</td><td>Use one of the three values</td></tr><tr><td>FAILED … — None</td><td>A step failed under skip or continue</td><td>Read the failed step above it</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What does on_failure do in a Hydra ETL workflow?</h3>
+  <p>It sets what happens to the rest of the workflow when this step fails. The values are fail (the default), skip and continue. In our test on Hydra ETL 0.22, fail stopped the workflow and left the steps after it unrun, skip ran the steps that did not depend on the failed step, and continue also ran the steps that did.</p>
+  <h3>What is the difference between skip and continue?</h3>
+  <p>With skip, the steps that depend on the failed step are skipped. With continue, they run anyway. In both cases the steps that do not depend on it run, in our test.</p>
+  <h3>Does the workflow succeed when I use skip or continue?</h3>
+  <p>Not in our test. With skip and with continue the run still ended as FAILED, with exit code 1 and an empty reason (None), because one step had failed. According to the source, the workflow succeeds only if every step succeeded.</p>
+  <h3>How does the Error Scope container of Studio relate to this?</h3>
+  <p>According to the Studio source (workflowSerializer.ts), an Error Scope copies its on_failure value onto each step it contains, so the YAML carries the same key. We did not test dragging steps into the container.</p>
+  <h3>What does Hydra ETL say when the value is wrong?</h3>
+  <p>Validation refuses it and lists the three values: Input should be 'fail', 'skip' or 'continue'.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/retry-a-failing-step-with-retry">Retry a failing step</a></li><li><a href="/studio/branch-with-the-condition-node">Branch with the Condition node</a></li><li><a href="/studio/diagnose-a-failed-run">Diagnose a failed run</a></li></ul>
+
+  <h2>Next lesson</h2><p>One key, three values. Not covered here: dragging steps into an Error Scope in Studio, and failures inside a job step.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/retry-a-failing-step-with-retry">Next: retry a failing step <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

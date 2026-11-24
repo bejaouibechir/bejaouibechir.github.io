@@ -1,0 +1,30 @@
+version: "1.0"
+workflow:
+  name: scope-continue
+  trigger:
+    type: manual
+  steps:
+    - name: boom
+      type: action
+      action: python
+      params:
+        script: |
+          raise SystemExit(1)
+      on_failure: continue
+    - name: after_boom
+      type: action
+      action: log
+      params:
+        message: "runs after boom"
+      depends_on: [boom]
+    - name: independent
+      type: action
+      action: log
+      params:
+        message: "independent step"
+    - name: later
+      type: action
+      action: log
+      params:
+        message: "later step"
+      depends_on: [independent]

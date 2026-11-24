@@ -1,0 +1,7 @@
+sources:
+  src_app:
+    type: sqlite
+    connection:
+      path: ../../data/nope.db
+    extract:
+      table: orders

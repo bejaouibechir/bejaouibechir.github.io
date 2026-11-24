@@ -1,0 +1,124 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 41</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 41 of 65 · Sub-project parameters</div><h1>Pass parameters to a Hydra sub-project and read results back</h1><p class="lead">Send a value to a called project with params, publish a result from it with set_param, and read the result in the calling project.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">params · outputs</span><span>about 20 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>params</code> on a project step hand values down to the called project. <code>outputs</code> names the parameters it must publish, and <code>{{ project:STEP.param.NAME }}</code> reads them in the calling project after the step.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Give the child a parameter, pass a value from the master, publish a result from the child and read it back.</p>
+  <h3>Prerequisites</h3><ul><li>The <code>child</code> and <code>master</code> projects of <a href="/studio/call-a-project-from-a-project">Call a project from a project</a>.</li><li>Parameters in a job: <a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I pass parameters to a sub-project?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Give the child a parameter</h3>
+    <h4>Objective</h4><p>A value the master will set.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>child</code> folder.</li><li>Run the command below.</li><li>In <code>jobs/job1/transformations.yaml</code>, change the filter expression to the line below.</li></ol>
+    <pre class="cmd">hdrctl param set min_value 0 --type int
+
+      expr: "value > {{ param:min_value }}"</pre>
+    <p>With the default 0, the sample job keeps the rows above zero: two of the three.</p>
+    <div class="expect"><b>What you should see</b><p>The message saying the default value was saved in <code>parameters.yaml</code>.</p><pre class="out">min_value: the default value saved in parameters.yaml</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Publish a result from the child</h3>
+    <h4>Objective</h4><p>A set_param step at the end of the child workflow.</p>
+    <h4>Actions</h4><ol><li>Open <code>child/workflows/workflow1.yaml</code>.</li><li>Add the step below after <code>job1</code>.</li></ol>
+    <pre class="cmd">child/workflows/workflow1.yaml</pre>
+    <p>The <code>set_param</code> action creates a parameter at run time. Here it is named <code>result_rows</code>. A caller can ask for it by name.</p><pre class="cmd">    - name: publish
+      type: action
+      action: set_param
+      params:
+        name: result_rows
+        value: 2
+        type: int
+      depends_on: [job1]</pre>
+    <div class="expect"><b>What you should see</b><p>A child workflow with two steps, <code>job1</code> and <code>publish</code>.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Pass a value and ask for the result</h3>
+    <h4>Objective</h4><p>params down, outputs up.</p>
+    <h4>Actions</h4><ol><li>Open <code>master/workflows/workflow1.yaml</code>.</li><li>Replace the project step with the two steps below.</li></ol>
+    <pre class="cmd">master/workflows/workflow1.yaml</pre>
+    <p><code>params</code> sets <code>min_value</code> in the child. <code>outputs</code> asks the child to publish <code>result_rows</code>. The <code>log</code> step reads three values of the project step, named after it.</p><pre class="cmd">    - name: call_child
+      type: project
+      project: ../child
+      params:
+        min_value: 150
+      outputs: [result_rows]
+      depends_on: [job1]
+    - name: show
+      type: action
+      action: log
+      params:
+        message: "child {{ project:call_child.status }}, {{ project:call_child.rows }} row(s), published {{ project:call_child.param.result_rows }}"
+      depends_on: [call_child]</pre>
+    <div class="expect"><b>What you should see</b><p>Two new steps in the master workflow.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Run the master</h3>
+    <h4>Objective</h4><p>See the value go down and the result come back.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>master</code> folder.</li><li>Run the command below.</li><li>Open <code>child/jobs/job1/data/output.csv</code>.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>The log line shows the status of the child, the rows it wrote and the published value. The output file of the child holds only the row above 150.</p><pre class="cmd">id,name,value
+2,Bob,200.0</pre>
+    <div class="expect"><b>What you should see</b><p>A log line starting with <code>child success</code>.</p><pre class="out">Step 'call_child' OK (0.1s)
+Step 'show' OK (0.0s)
+child success, 1 row(s), published 2
+Project 'master' completed in 1.5s — 1/1 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the failures</h3>
+    <h4>Objective</h4><p>An output that is not published, and a wrong name.</p>
+    <h4>Actions</h4><ol><li>Change <code>outputs</code> to <code>[nope]</code> and run again.</li><li>In another test, replace <code>{{ project:call_child.param.result_rows }}</code> by <code>{{ param:result_rows }}</code>.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>An output that the child does not publish fails the step. A plain <code>{{ param:... }}</code> does not see the result of a project step: use the <code>project:</code> form.</p>
+    <div class="expect"><b>What you should see</b><p>Two failed runs with the messages below.</p><pre class="out">Step 'call_child' failed: project child did not publish nope (outputs: set them with set_param / assign_param, or declare them)
+
+Step 'show' failed: ParameterError: unresolved parameter: 'result_rows'</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Name project steps clearly: the step name is part of the placeholder, as in <code>project:call_child.status</code>.</p>
+  <p data-kind="TIP">Pass only what the child declares. Check its names with <code>hdrctl param list</code> in the child folder.</p>
+  <p data-kind="TRAP">A value that you pass and the child does not declare is accepted without a message. A typo then keeps the default.</p>
+  <p data-kind="TRAP">According to the source, <code>params</code> and <code>variables</code> may not carry secrets: a project keeps its own. We did not test this.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Down</td><td>params on the project step</td></tr><tr><td>Up</td><td>outputs plus set_param in the child</td></tr><tr><td>Read</td><td>{{ project:STEP.param.NAME }}</td></tr><tr><td>Also</td><td>STEP.status and STEP.rows</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>did not publish</td><td>The child never set the output</td><td>Add a set_param step in the child</td></tr><tr><td>unresolved parameter</td><td>A plain param placeholder was used</td><td>Use project:STEP.param.NAME</td></tr><tr><td>Default value used</td><td>The parameter name does not match</td><td>Run hdrctl param list in the child</td></tr><tr><td>Step fails on secrets</td><td>A secret was passed in params</td><td>Let the child use its own secrets</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I pass a value to a sub-project?</h3>
+  <p>Add params to the project step, for example params: {min_value: 150}. The called project reads it as its parameter min_value. In our test the called job kept only the row above 150.</p>
+  <h3>How do I read a result from a sub-project?</h3>
+  <p>List the parameter names in outputs on the step. The called project must publish them, for example with a set_param action. After the step, read them with {{ project:STEP.param.NAME }}.</p>
+  <h3>What else can I read after the step?</h3>
+  <p>{{ project:STEP.status }} and {{ project:STEP.rows }}. In our test they gave success and 1 row for a step named call_child.</p>
+  <h3>What if the sub-project does not publish an output?</h3>
+  <p>The step fails with project child did not publish nope, and tells you to set the output with set_param or assign_param.</p>
+  <h3>What if I pass a parameter the sub-project does not declare?</h3>
+  <p>In our test nothing happened: the run succeeded and the value was not used. Check the name with hdrctl param list in the called project.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/call-a-project-from-a-project">Call a project from a project</a></li><li><a href="/studio/14-use-parameters">One placeholder, two values, two results</a></li><li><a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a></li></ul>
+
+  <h2>Next lesson</h2><p>Values go down with params and results come back with outputs. Next, see what starts a project.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

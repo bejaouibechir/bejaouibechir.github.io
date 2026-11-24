@@ -1,0 +1,13 @@
+version: "1.0"
+workflow:
+  name: wf-mail-noto
+  trigger:
+    type: manual
+  steps:
+    - name: send_mail
+      type: action
+      action: email
+      params:
+        smtp_host: 127.0.0.1
+        smtp_port: 1025
+        subject: "No recipient"

@@ -1,0 +1,12 @@
+{
+  "id": "9d641792",
+  "name": "sched-demo",
+  "description": "",
+  "created_at": "2026-11-24T06:37:14.861572+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

@@ -1,0 +1,132 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 53</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 53 of 65 · Retry Scope</div><h1>Retry a failing step with retry</h1><p class="lead">Add a retry policy with max, delay and backoff to a workflow step, then read how many times it runs and how long the workflow waits.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">retry</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>retry</code> is a key of a workflow step with three fields: <code>max</code> retries after the first failure, <code>delay</code> in seconds between tries, and <code>backoff</code>, <code>fixed</code> or <code>exponential</code>. The Retry Scope container of Studio writes the same key.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Run a step that fails twice and passes on the third run, then a step that always fails, then compare fixed and exponential waits.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project: <code>hdrctl init scope-demo</code>. Work in its <code>workflows</code> folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I retry a failing step in a Hydra ETL workflow?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Retry a step that passes the third time</h3>
+    <h4>Objective</h4><p>A script that fails twice.</p>
+    <h4>Actions</h4><ol><li>Save the file below as <code>workflows/retry-ok.yaml</code>.</li><li>Run it from the project folder.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\retry-ok.yaml</pre>
+    <p>The script counts its runs in <code>attempts.txt</code> and fails while the count is 2 or less. <code>max: 3</code> allows three retries, and <code>delay: 1</code> waits one second before each one. Delete <code>attempts.txt</code> before you run it again.</p><pre class="cmd">version: "1.0"
+workflow:
+  name: retry-ok
+  trigger:
+    type: manual
+  steps:
+    - name: flaky
+      type: action
+      action: python
+      params:
+        script: |
+          import pathlib
+          p = pathlib.Path("attempts.txt")
+          n = int(p.read_text()) + 1 if p.exists() else 1
+          p.write_text(str(n))
+          print("attempt", n)
+          raise SystemExit(1 if n &lt;= 2 else 0)
+      retry:
+        max: 3
+        delay: 1</pre>
+    <div class="expect"><b>What you should see</b><p>The step is OK, and the workflow lasted about two seconds.</p><pre class="out">  ✓  Step 'flaky' OK (0.2s)
+     │ attempt 3
+
+  ✅ Workflow 'retry-ok' completed in 2.6s — 1/1 steps OK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read every attempt</h3>
+    <h4>Objective</h4><p>The command line shows only the last one.</p>
+    <h4>Actions</h4><ol><li>Delete <code>attempts.txt</code>.</li><li>Start the server in a second terminal: <code>hdrctl serve --no-studio --port 5690</code>.</li><li>Save <code>run.json</code> as shown below, run the workflow through the API, wait three seconds, then list the runs.</li></ol>
+    <pre class="cmd">curl.exe -s -X POST -H "Content-Type: application/json" -d @run.json http://127.0.0.1:5690/api/runs</pre>
+    <p>Save this as <code>run.json</code>, with the full path of the workflow (backslashes doubled):</p><pre class="cmd">{"workflow_path": "C:\\path\\to\\scope-demo\\workflows\\retry-ok.yaml"}</pre><p>Then <code>curl.exe -s http://127.0.0.1:5690/api/runs</code> returns the run with the logs of each step. The retry lines, in order (the script lines are cut):</p>
+    <div class="expect"><b>What you should see</b><p>The lines <code>failed, retry 1/3 in 1s</code> and <code>succeeded after 2 retry(ies)</code> in the logs of <code>flaky</code>.</p><pre class="out">INFO   attempt 1
+ERROR [flaky] FAILED Python script exited with code 1
+WARNING [flaky] failed, retry 1/3 in 1s
+INFO   attempt 2
+ERROR [flaky] FAILED Python script exited with code 1
+WARNING [flaky] failed, retry 2/3 in 1s
+INFO   attempt 3
+INFO [flaky] succeeded after 2 retry(ies)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Let the retries run out</h3>
+    <h4>Objective</h4><p>A step that never passes.</p>
+    <h4>Actions</h4><ol><li>Save <code>workflows/retry-giveup.yaml</code> with the step below and <code>retry: {max: 2, delay: 1}</code>.</li><li>Run it.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\retry-giveup.yaml</pre>
+    <p>The step is <code>always_fails</code>, a Python action whose script is <code>raise SystemExit(1)</code>. After two retries the step fails for good, and the failure follows its <code>on_failure</code> value, <code>fail</code> by default.</p>
+    <div class="expect"><b>What you should see</b><p>A failed step and a failed workflow after about two seconds.</p><pre class="out">  ✗  Step 'always_fails' FAILED: Python script exited with code 1
+
+  ❌ Workflow 'retry-giveup' FAILED in 2.4s — Step 'always_fails' failed: Python script exited with code 1</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Double the wait</h3>
+    <h4>Objective</h4><p>Add exponential backoff.</p>
+    <h4>Actions</h4><ol><li>Copy the file to <code>workflows/retry-backoff.yaml</code>.</li><li>Add <code>backoff: exponential</code> to the <code>retry</code> block, next to <code>delay: 1</code>.</li><li>Run it.</li></ol>
+    <pre class="cmd">hdrctl workflow run workflows\retry-backoff.yaml</pre>
+    <p>The waits are one second, then two. The run lasts a second longer than with a fixed delay.</p>
+    <div class="expect"><b>What you should see</b><p>The same failure after about three seconds.</p><pre class="out">  ✗  Step 'always_fails' FAILED: Python script exited with code 1
+
+  ❌ Workflow 'retry-backoff' FAILED in 3.3s — Step 'always_fails' failed: Python script exited with code 1</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Check a typo</h3>
+    <h4>Objective</h4><p>Validation suggests the key.</p>
+    <h4>Actions</h4><ol><li>Write <code>mx: 2</code> instead of <code>max: 2</code> in a <code>retry</code> block.</li><li>Run the validation.</li></ol>
+    <pre class="cmd">hdrctl workflow validate workflows\bad-retry.yaml</pre>
+    <p>The three valid keys are listed.</p>
+    <div class="expect"><b>What you should see</b><p>A refusal with a suggestion.</p><pre class="out">  ❌ Invalid workflow: Workflow validation error in '...\workflows\bad-retry.yaml':
+  - steps.0.retry: retry: unknown key 'mx' — did you mean 'max'? Valid keys: backoff, delay, max</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Pick <code>delay</code> from the cause: a few seconds for a busy service, more for a service that restarts.</p>
+  <p data-kind="TIP">Put <code>retry</code> on the step that talks to the outside, not on every step.</p>
+  <p data-kind="TRAP">Retrying a failure that always happens, such as a missing file or a wrong password, only delays the failure. In our test, a step that could never pass kept the workflow waiting for the whole delay.</p>
+  <p data-kind="TRAP">A step that is not safe to run twice, such as one that sends a message, can act twice. Make it safe first, or do not retry it.</p>
+  <p data-kind="TRAP">The command line shows only the last attempt. Read the logs of the run when you need to know how many tries it took.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Key</td><td>retry on a step</td></tr><tr><td>max</td><td>retries after the first failure (0 = none)</td></tr><tr><td>delay</td><td>seconds between tries</td></tr><tr><td>backoff</td><td>fixed (default) or exponential</td></tr><tr><td>After the last retry</td><td>the step follows its on_failure value</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>unknown key 'mx' — did you mean 'max'?</td><td>A typo in the retry block</td><td>Use max, delay or backoff</td></tr><tr><td>Step still FAILED</td><td>Every try failed</td><td>Read the error of the step: retrying does not fix a permanent cause</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I retry a failing step in Hydra ETL?</h3>
+  <p>Add a retry key to the step with max, delay and, optionally, backoff. In our test on Hydra ETL 0.22, a step that failed twice and then passed ended as OK with max: 3 and delay: 1, and the workflow took 2.6 seconds, two waits of one second.</p>
+  <h3>Does max count the first try?</h3>
+  <p>No. max is the number of retries after the first failure, according to the source. With max: 3 a step can run four times. Our flaky step passed on its third run.</p>
+  <h3>What does exponential backoff do?</h3>
+  <p>The wait doubles at each retry. With delay: 1 and max: 2, the waits were one second then two seconds: the failing workflow took 3.3 seconds, against 2.4 seconds with fixed waits.</p>
+  <h3>Where do I see each attempt?</h3>
+  <p>In the logs of the step, kept by the server. The command line printed only the output of the last attempt in our test. Through the API, the logs showed each failure and the lines failed, retry 1/3 in 1s and succeeded after 2 retry(ies).</p>
+  <h3>How does the Retry Scope container of Studio relate to this?</h3>
+  <p>According to the Studio source (workflowSerializer.ts), a Retry Scope copies its retry settings onto each step it contains, so the YAML carries the same key. We did not test dragging steps into the container.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/handle-step-failures-with-on-failure">Handle a failing step with on_failure</a></li><li><a href="/studio/wait-with-the-delay-node">Wait with the Delay node</a></li><li><a href="/studio/diagnose-a-failed-run">Diagnose a failed run</a></li></ul>
+
+  <h2>Next lesson</h2><p>One key, three fields. Not covered here: dragging steps into a Retry Scope in Studio, and retrying a job step.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/handle-step-failures-with-on-failure">Back to on_failure <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

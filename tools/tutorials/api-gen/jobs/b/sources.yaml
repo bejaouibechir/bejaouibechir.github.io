@@ -1,0 +1,8 @@
+sources:
+  src_api:
+    type: web_api
+    connection:
+      base_url: http://127.0.0.1:8099
+    extract:
+      endpoint: /products
+      json_path: $.items[*]

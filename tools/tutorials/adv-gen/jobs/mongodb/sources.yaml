@@ -1,0 +1,8 @@
+sources:
+  src:
+    type: mongodb
+    connection:
+      uri: "mongodb://127.0.0.1:27099"
+      database: mydb
+    extract:
+      table: orders

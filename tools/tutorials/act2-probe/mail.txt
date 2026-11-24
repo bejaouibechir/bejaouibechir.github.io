@@ -1,0 +1,17 @@
+## mail from:<hydra@example.test>
+## rcpt to:<team@example.test>
+Content-Type: multipart/mixed; boundary="===============6968165920604459517=="
+MIME-Version: 1.0
+From: hydra@example.test
+To: team@example.test
+Subject: Load finished
+
+--===============6968165920604459517==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+
+MTQgcm93cyB3ZXJlIHdyaXR0ZW4u
+
+--===============6968165920604459517==--
+=====

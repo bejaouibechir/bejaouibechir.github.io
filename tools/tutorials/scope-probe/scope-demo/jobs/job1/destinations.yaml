@@ -1,0 +1,6 @@
+destinations:
+  dest_csv:
+    type: csv
+    load:
+      table: data/output.csv
+      mode: replace

@@ -1,0 +1,6 @@
+version: "1.0"
+triggers:
+  - name: t
+    type: cron
+    cron: "0 2 * * *"
+    every: 30s

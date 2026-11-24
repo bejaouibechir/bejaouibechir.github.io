@@ -1,0 +1,116 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 40</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 40 of 65 · Sub-projects</div><h1>Call a Hydra project from another project</h1><p class="lead">A workflow step of type project runs another project. Build a master and a child, run the master, and read what happens when the path is wrong.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">type: project</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A workflow step with <code>type: project</code> and <code>project: ../child</code> runs another project after the steps it depends on. The calling project prints the called project's steps under the step, and refuses a missing folder or a project that calls itself.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Create two projects side by side, call the second from the first, run the first and read the two errors you will meet.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>Basics of workflows and jobs: <a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I call a project from a project?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Create two projects</h3>
+    <h4>Objective</h4><p>A child and a master, in the same folder.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in an empty folder.</li><li>Run the two commands below.</li></ol>
+    <pre class="cmd">hdrctl init child
+hdrctl init master</pre>
+    <p>Each command creates a full project with <code>job1</code> and <code>workflow1</code>. The two folders sit side by side, so the master reaches the child with <code>../child</code>.</p>
+    <div class="expect"><b>What you should see</b><p>Two lines, <code>Project 'child' created</code> and <code>Project 'master' created</code>.</p><pre class="out">Project 'child' created (workflow1 with job1).
+Project 'master' created (workflow1 with job1).</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Run the child alone</h3>
+    <h4>Objective</h4><p>Check that it works before you call it.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>child</code> folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>The child is a normal project. Calling it from another project adds nothing to the child.</p>
+    <div class="expect"><b>What you should see</b><p><code>Project 'child' completed</code> with 1/1 workflow OK.</p><pre class="out">Project 'child' completed in 2.1s — 1/1 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Add a project step to the master</h3>
+    <h4>Objective</h4><p>A step that runs another project.</p>
+    <h4>Actions</h4><ol><li>Open <code>master/workflows/workflow1.yaml</code>.</li><li>Add the second step below, after <code>job1</code>.</li></ol>
+    <pre class="cmd">master/workflows/workflow1.yaml</pre>
+    <p>The step has no <code>job</code> and no <code>action</code>: its type is <code>project</code> and <code>project</code> holds the path of the folder. <code>depends_on</code> works as for any step.</p><pre class="cmd">  steps:
+    - name: job1
+      type: job
+      job: ../jobs/job1
+      depends_on: []
+      on_failure: fail
+    - name: call_child
+      type: project
+      project: ../child
+      depends_on: [job1]</pre>
+    <div class="expect"><b>What you should see</b><p>A workflow with two steps.</p><pre class="out"></pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Run the master</h3>
+    <h4>Objective</h4><p>Read the called project under its step.</p>
+    <h4>Actions</h4><ol><li>Open a terminal in the <code>master</code> folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>The master runs <code>job1</code>, then <code>call_child</code>. The workflow and the job of the child are listed under the step. The dry run, <code>hdrctl run . --dry-run</code>, answers <code>Dry run OK</code>.</p>
+    <div class="expect"><b>What you should see</b><p>Both steps OK and <code>Project 'master' completed</code>.</p><pre class="out">Workflow  workflow1
+  Step 'job1' OK (1.4s)
+  Step 'call_child' OK (0.1s)
+    ✓ workflow1 (0.0s)
+        ✓ job1
+Workflow 'workflow1' OK (1.5s)
+Project 'master' completed in 1.5s — 1/1 workflow(s) OK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Read the two errors</h3>
+    <h4>Objective</h4><p>A wrong path and a loop.</p>
+    <h4>Actions</h4><ol><li>Change <code>project</code> to <code>../nothing</code> and run <code>hdrctl run .</code>.</li><li>Change it to <code>.</code> and run again.</li></ol>
+    <pre class="cmd">hdrctl run .</pre>
+    <p>Both errors stop the run before any step starts. The first gives the path you wrote and the folder it resolved to. The second shows that a project cannot call itself.</p>
+    <div class="expect"><b>What you should see</b><p>Two <code>Project 'master' cannot run</code> boxes.</p><pre class="out">step 'call_child': project folder not found: ../nothing (resolved from the project root: ...\nothing)
+
+step 'call_self': the project calls itself</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Run the child alone first. A failure is easier to read there than under the step of the master.</p>
+  <p data-kind="TIP">Keep related projects in sibling folders and use relative paths such as <code>../child</code>.</p>
+  <p data-kind="TRAP">The path is read from the root of the calling project, not from the workflow file. <code>../child</code> works from <code>master/</code>.</p>
+  <p data-kind="TRAP">Each project keeps its own <code>.hydra</code> folder and its own parameters and secrets.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Step</td><td>type: project, project: ../child</td></tr><tr><td>Order</td><td>depends_on, as for any step</td></tr><tr><td>Output</td><td>Child steps listed under the step</td></tr><tr><td>Errors</td><td>Folder not found, project calls itself</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>project folder not found</td><td>The path does not resolve from the project root</td><td>Check the path against the master folder</td></tr><tr><td>the project calls itself</td><td>project points to the current project</td><td>Point to another project</td></tr><tr><td>Step type error</td><td>A job or action key was mixed in</td><td>Keep only project keys in a project step</td></tr><tr><td>Child fails</td><td>A step of the child failed</td><td>Run the child alone and read its error</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How does a Hydra project call another project?</h3>
+  <p>With a workflow step of type project. The step has a name and a project path, for example project: ../child. The path is read from the root of the calling project. Both projects are ordinary Hydra projects, each with its own .hydra folder.</p>
+  <h3>What does the calling project print?</h3>
+  <p>The step is reported like any other, and the steps of the called project appear under it. In our test: Step 'call_child' OK, then the called workflow and its job.</p>
+  <h3>Can a project call itself?</h3>
+  <p>No. With project: . the run stops before it starts with the message the project calls itself. The same check applies to a loop through several projects, according to the source; we tested only the direct case.</p>
+  <h3>What happens if the project folder does not exist?</h3>
+  <p>The run stops with project folder not found, followed by the path as given and the folder it resolved to. The dry run reports the same error.</p>
+  <h3>Does a dry run run the called project?</h3>
+  <p>In our test the dry run printed Dry run OK for the calling project and did not list the steps of the called project.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/pass-parameters-to-a-sub-project">Pass parameters to a sub-project</a></li><li><a href="/studio/launch-a-job-from-the-cli-and-the-api">Launch a job from the CLI and the API</a></li><li><a href="/studio/create-a-workflow">Create a workflow</a></li></ul>
+
+  <h2>Next lesson</h2><p>A project can be a step of another project. Next, hand values to the called project and read results back.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/pass-parameters-to-a-sub-project">Pass parameters <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

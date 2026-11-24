@@ -1,0 +1,7 @@
+version: "1.0"
+triggers:
+  - name: new-files
+    type: file
+    path: Data/incoming/*.csv
+    events: [added]
+    debounce: 2s

@@ -1,0 +1,6 @@
+destinations:
+  dest:
+    type: csv
+    load:
+      table: data/out_read-table.csv
+      mode: replace

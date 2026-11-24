@@ -1,0 +1,16 @@
+version: "1.0"
+workflow:
+  name: retry-backoff
+  trigger:
+    type: manual
+  steps:
+    - name: always_fails
+      type: action
+      action: python
+      params:
+        script: |
+          raise SystemExit(1)
+      retry:
+        max: 2
+        delay: 1
+        backoff: exponential

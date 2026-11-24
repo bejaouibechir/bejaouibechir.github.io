@@ -1,0 +1,162 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 20</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 20 of 65 · Database sources</div><h1>Read from and write to a SQLite database in a Hydra ETL job</h1><p class="lead">A sqlite source reads a table or a query from a local file, and a sqlite destination writes it back with append, replace or upsert. No server, no install.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">type: sqlite</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p>A source of type <code>sqlite</code> reads a table or a SQL query from a local database file. A destination of type <code>sqlite</code> writes to a table with <code>append</code>, <code>replace</code> or <code>upsert</code>. SQLite needs no server.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Create a small SQLite file, read a table and a query into CSV files, upsert the table into a second database, run it again after a change, and read the two errors.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>Python, to create the test database (<code>py</code> on Windows, <code>python3</code> elsewhere). SQLite is part of Python.</li><li>A job folder, for example from <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>. Paths below are relative to the job folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I read from and write to SQLite?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Create a test database</h3>
+    <h4>Objective</h4><p>Five orders in a file.</p>
+    <h4>Actions</h4><ol><li>Create the folder <code>data</code> at the root of the project.</li><li>Save the script below as <code>make_db.py</code> and run it.</li></ol>
+    <pre class="cmd">py make_db.py</pre>
+    <p>The script creates <code>data/app.db</code> with one table, <code>orders</code>.</p><pre class="cmd">import sqlite3
+c = sqlite3.connect("data/app.db")
+c.execute("CREATE TABLE orders (order_id INTEGER PRIMARY KEY, customer TEXT, amount REAL, status TEXT)")
+c.executemany("INSERT INTO orders VALUES (?,?,?,?)", [
+ (1,"Alice",120.5,"paid"),(2,"Bob",35.0,"pending"),(3,"Carla",80.0,"paid"),
+ (4,"Dan",15.25,"paid"),(5,"Eve",60.0,"pending")])
+c.commit(); c.close()</pre>
+    <div class="expect"><b>What you should see</b><p>The file <code>data/app.db</code> exists.</p><pre class="out">app.db created: 5 rows</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Read a table</h3>
+    <h4>Objective</h4><p>One source, one CSV destination.</p>
+    <h4>Actions</h4><ol><li>In a job folder, write <code>sources.yaml</code>, <code>destinations.yaml</code> and <code>pipeline.yaml</code> as below.</li><li>Run <code>hdrctl run</code> on the job.</li></ol>
+    <pre class="cmd">hdrctl run jobs\read-table</pre>
+    <p><code>connection.path</code> is relative to the job folder, so a job in <code>jobs/read-table</code> reaches the database with <code>../../data/app.db</code>.</p><pre class="cmd"># sources.yaml
+sources:
+  src_app:
+    type: sqlite
+    connection:
+      path: ../../data/app.db
+    extract:
+      table: orders
+
+# destinations.yaml
+destinations:
+  dest:
+    type: csv
+    load:
+      table: data/out_read-table.csv
+      mode: replace
+
+# pipeline.yaml
+pipeline:
+  from: src_app
+  to: dest</pre>
+    <div class="expect"><b>What you should see</b><p><code>Rows read : 5</code> and <code>Rows written: 5</code>.</p><pre class="out">Pipeline completed successfully in 1.9s
+  Rows read   : 5
+  Rows written: 5</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read a query</h3>
+    <h4>Objective</h4><p>Filter in SQL.</p>
+    <h4>Actions</h4><ol><li>In the source, replace <code>table: orders</code> with the <code>query</code> below.</li><li>Run the job again.</li></ol>
+    <pre class="cmd">hdrctl run jobs\read-query</pre>
+    <p>Use <code>query</code> instead of <code>table</code> to choose the columns and the rows in SQL.</p><pre class="cmd">    extract:
+      query: "SELECT order_id, customer, amount FROM orders WHERE amount >= 50"</pre>
+    <div class="expect"><b>What you should see</b><p>3 rows read, and a CSV with 3 columns.</p><pre class="out">Rows read   : 3
+Rows written: 3
+
+order_id,customer,amount
+1,Alice,120.5
+3,Carla,80.0
+5,Eve,60.0</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Write to SQLite with upsert</h3>
+    <h4>Objective</h4><p>Create the warehouse.</p>
+    <h4>Actions</h4><ol><li>Keep the table source of step 2.</li><li>Replace the destination with the one below.</li><li>Run the job.</li></ol>
+    <pre class="cmd">hdrctl run jobs\load-sqlite</pre>
+    <p>The database <code>data/warehouse.db</code> and the table <code>orders</code> do not exist yet: the first run creates them. With <code>mode: upsert</code> and <code>key</code>, the key becomes the primary key of the new table.</p><pre class="cmd">destinations:
+  dest:
+    type: sqlite
+    connection:
+      path: ../../data/warehouse.db
+    load:
+      table: orders
+      mode: upsert
+      key: [order_id]</pre>
+    <div class="expect"><b>What you should see</b><p>5 rows read and written. The table definition ends with <code>PRIMARY KEY ("order_id")</code>.</p><pre class="out">Rows read   : 5
+Rows written: 5
+
+CREATE TABLE "orders" ("order_id" INTEGER, "customer" TEXT, "amount" REAL, "status" TEXT, PRIMARY KEY ("order_id"))</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Change the source and run again</h3>
+    <h4>Objective</h4><p>Watch the upsert.</p>
+    <h4>Actions</h4><ol><li>Mark order 2 as paid and add order 6 in <code>app.db</code>.</li><li>Run the same job.</li></ol>
+    <pre class="cmd">hdrctl run jobs\load-sqlite</pre>
+    <p>The existing keys are updated and the new key is inserted. Our script ran <code>UPDATE orders SET status='paid' WHERE order_id=2</code> and added order 6. The warehouse then held six rows, and order 2 was paid. A third run, with no change, left six rows.</p>
+    <div class="expect"><b>What you should see</b><p>6 rows read, 6 rows in the warehouse, no duplicate.</p><pre class="out">Rows read   : 6
+Rows written: 6
+
+(2, 'Bob', 35.0, 'paid')
+(6, 'Fay', 200.0, 'paid')
+
+SELECT count(*) after a third run: (6,)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read the two errors</h3>
+    <h4>Objective</h4><p>Break the source on purpose.</p>
+    <h4>Actions</h4><ol><li>Set <code>path</code> to <code>../../data/nope.db</code> and run the job.</li><li>Set the file back and set <code>table</code> to <code>nothing</code>, then run it.</li></ol>
+    <pre class="cmd">hdrctl run jobs\missing-db</pre>
+    <p><code>hdrctl validate</code> passes in both cases: it does not open the database. Only the run fails, and the message names the file or the table.</p>
+    <div class="expect"><b>What you should see</b><p>A <code>Pipeline FAILED</code> block with the cause.</p><pre class="out">ValueError: SQLiteConnector [src_app]: database file not found: C:\...\data\nope.db
+
+OperationalError: no such table: nothing</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Use <code>query</code> to filter early: fewer rows leave the database and reach the next step.</p>
+  <p data-kind="TIP">Give an upsert a <code>key</code> that is unique in the source, so that each key lands on one row.</p>
+  <p data-kind="TRAP"><code>connection.path</code> is relative to the job folder, not to the project: <code>data/app.db</code> alone looks inside <code>jobs/&lt;job&gt;/data</code>.</p>
+  <p data-kind="TRAP"><code>hdrctl validate</code> does not check that the file or the table exists. Run the job to find out.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Source</td><td>type: sqlite, connection.path, extract.table or extract.query</td></tr><tr><td>Destination</td><td>type: sqlite, connection.path, load.table, load.mode, load.key</td></tr><tr><td>Modes</td><td>append, replace, upsert</td></tr><tr><td>Install</td><td>none: sqlite3 is part of Python</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>database file not found: ...</td><td>The path is wrong or relative to the wrong folder</td><td>Count from the job folder, for example ../../data/app.db</td></tr><tr><td>no such table: nothing</td><td>The table name does not exist in the file</td><td>List the tables with a SQLite client and fix extract.table</td></tr><tr><td>Two rows for one key</td><td>mode append or replace, or no key on the upsert</td><td>Use mode: upsert with key</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>How do I read a SQLite database with Hydra ETL?</h3>
+  <p>Declare a source of type sqlite with connection.path, the database file relative to the job folder, and extract.table or extract.query. SQLite is part of Python: there is no server and nothing to install. We tested it with Hydra ETL 0.22 on Windows.</p>
+  <h3>Should I read a table or a query?</h3>
+  <p>Use table to read everything, and query to filter or select columns in SQL. In our test the query SELECT order_id, customer, amount FROM orders WHERE amount >= 50 read 3 rows out of 5, with only 3 columns.</p>
+  <h3>Can Hydra ETL write to SQLite?</h3>
+  <p>Yes. A destination of type sqlite takes connection.path, load.table and load.mode: append, replace or upsert. The database and the table are created at the first run.</p>
+  <h3>What does upsert do?</h3>
+  <p>With mode upsert and key: [order_id], a row whose key exists is updated and a new key is inserted. In our test the second run updated order 2, added order 6 and the table held 6 rows. A third run kept 6 rows. The key became the primary key of the new table.</p>
+  <h3>What error do I get when the file or the table is missing?</h3>
+  <p>A missing file gives SQLiteConnector [src_app]: database file not found, followed by the full path. A missing table gives OperationalError: no such table. hdrctl validate passes in both cases: only the run fails.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/anatomy-of-a-job">Anatomy of a job</a></li><li><a href="/studio/read-csv-json-and-parquet-files">File sources</a></li><li><a href="/studio/clean-split-window-pivot-and-script">Transformations 2</a></li></ul>
+
+  <h2>Next lesson</h2><p>A local database as a source and as a destination, with no server. Not covered here: PostgreSQL, MySQL, SQL Server and MongoDB.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio/read-csv-json-and-parquet-files">Back to File sources <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

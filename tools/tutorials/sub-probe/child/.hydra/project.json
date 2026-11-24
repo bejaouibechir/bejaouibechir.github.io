@@ -1,0 +1,12 @@
+{
+  "id": "062cab6b",
+  "name": "child",
+  "description": "",
+  "created_at": "2026-11-24T06:13:49.562380+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [],
+  "jobs": []
+}

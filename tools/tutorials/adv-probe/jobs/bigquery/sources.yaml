@@ -1,0 +1,10 @@
+sources:
+  src:
+    type: bigquery
+    connection:
+      project: my-project
+      dataset: sales
+      location: EU
+      credentials_file: ../../keys/sa.json
+    extract:
+      table: orders
