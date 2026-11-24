@@ -14,13 +14,339 @@ Search Ctrl K
 
 Every release of Hydra ETL, newest first. Each one lists its new features, then its patches and fixes.
 
-Latest version: 0.19.0 — released 4 November 2026.
+Latest version: 0.22.0 — released 24 November 2026.
 
 Install or upgrade: pip install -U hydra-etl
 
+#### v0.22.0 — BigQuery, MySQL CDC, object stores
+
+24 November 2026 latest GitHub release PyPI
+
+###### Added
+
+BigQuery connector (type: bigquery), source and destination (pip install "hydra-etl[bigquery]").
+connection: project (required), dataset (default dataset), location, credentials_file (service account
+
+key, relative to the job folder; without it, the default credentials of gcloud auth application-default login).
+
+Source: table (table, dataset.table or project.dataset.table) or query (SELECT / WITH only). Exact
+
+types: NUMERIC / BIGNUMERIC as decimals, DATETIME without time zone, TIMESTAMP with its time zone, JSON
+
+as values (json: text for the JSON text).
+
+Destination: append, replace, upsert, all-or-nothing in every mode by default. Each batch goes to a
+
+staging table of the same dataset (_hydra_stage_…, load jobs, expires after 24 h); the target is written in one
+
+statement at the end: INSERT … SELECT, DELETE + INSERT in a transaction for replace, MERGE for
+upsert (the last row of a key wins; the deletes of a PostgreSQL CDC source are applied). Every value is
+
+converted by BigQuery into the type of its column: no integer or decimal goes through a float. A missing table
+
+is created from the data (INT64, NUMERIC / BIGNUMERIC, FLOAT64, BOOL, DATE, DATETIME,
+TIMESTAMP, JSON, BYTES, STRING). load.atomic: false writes after each batch.
+
+Columns are matched regardless of case. A column the table does not have, two columns that only differ by
+
+case, a RECORD / ARRAY column, or a row without a key value in upsert are refused.
+
+rollback: true in a workflow is not available for BigQuery yet: the workflow is refused before it starts.
+
+Studio — BigQuery source and destination nodes. MCP server and /api/nodes: BigQuery listed.
+
+MySQL CDC source (type: mysql_cdc, pip install "hydra-etl[mysql-cdc]"): the inserts, updates and deletes
+
+of a MySQL table, read from the binlog in the order of the transactions, with the same _op, _lsn and
+_commit_time columns as the PostgreSQL CDC source (a destination in upsert keeps a mirror up to date).
+
+MySQL has no replication slot: the binlog position is saved in .hydra/cdc/<state>.json, only after the
+
+destination is published; a failed run reads the same changes again. A transaction is emitted whole.
+
+First run: current position, then the whole table in a consistent snapshot (snapshot: false to skip it), no
+
+global lock.
+
+Checked before reading: log_bin, binlog_format = ROW, binlog_row_image = FULL. A position whose binlog was
+
+purged by MySQL fails the run with the steps to rebuild the mirror; lag_warning_mb warns before.
+
+Studio node MySQL CDC; VS Code schema and snippet hsrc-mysql-cdc.
+
+Fallback conditions — cdc.lag('source') (changes still to read, in bytes) and cdc.status('source')
+
+(ok, at_risk, lost, missing) for any CDC source, PostgreSQL or MySQL. cdc.slot_lag and
+cdc.slot_status keep working for PostgreSQL.
+
+Relative paths of bigquery (credentials_file) sources and destinations are read from the job folder.
+
+Object stores — S3, Azure Blob / ADLS and Google Cloud Storage for CSV, JSON and Parquet sources and destinations
+
+(pip install "hydra-etl[s3]", "hydra-etl[azure]", "hydra-etl[gcs]"). A location is a URI in the keys that
+
+already exist: connection.base_path: az://landing/sales/ with a relative table, or table: s3://bucket/path/file.csv
+
+(s3://, az://, abfs://, abfss://, gs://). Credentials go in connection.storage (passed to the fsspec file
+
+system: key / secret / endpoint_url for S3 and MinIO, account_name / account_key / connection_string /
+sas_token for Azure, token / project for GCS), or come from the usual environment variables of each service.
+
+Sources: the file, or every file of a pattern (orders_*.csv), is copied to a temporary folder and read with the
+
+usual readers (native CSV reader, large-volume engine, multi-file sources).
+
+Destinations: the file is written locally, then uploaded in one go after the load is published; an object store only
+
+shows an object once complete, so the remote file is the old one or the new one, never half written. append
+
+downloads the existing file first. A failed upload leaves the remote file unchanged.
+
+rollback: true is not available yet with a destination on an object store. sftp:// is refused with a clear message
+
+(planned).
+
+Studio — CSV, JSON and Parquet nodes get a Location field (local, S3, Azure, GCS) and the credential fields of
+
+the chosen service, written to connection.storage; a path without s3:// / az:// / gs:// gets the prefix of
+
+the chosen location.
+
+File triggers — path can be an object store pattern (s3://bucket/landing/*.csv, az://…, gs://…), with the
+
+credentials in storage (${SECRET:…} and ${ENV:…} are resolved).
+
+#### v0.21.0 — Snowflake destination
+
+24 November 2026 GitHub release PyPI
+
+###### Added
+
+Snowflake destination (type: snowflake in destinations.yaml): append, replace and upsert.
+
+Every value is sent as text and converted by Snowflake into the type of the target column: no integer or
+
+decimal goes through a float (NUMBER(p, s), FLOAT, DATE, TIME, TIMESTAMP_NTZ / _TZ / _LTZ,
+VARIANT / OBJECT / ARRAY from dict / list or JSON text, BINARY).
+
+A missing table is created at the first batch, with types taken from the data (integers NUMBER(38,0),
+
+decimals NUMBER(38,s), datetimes with a time zone TIMESTAMP_TZ, dict / list VARIANT…). Simple column
+
+names are written without quotes, so Snowflake stores them in upper case (order_id → ORDER_ID).
+
+Columns are matched with the table's columns regardless of case. Two columns of the data that only differ
+
+by case, or a column the table does not have, are refused with the list of the table's columns.
+
+replace deletes and inserts in one transaction (all-or-nothing by default). upsert runs a MERGE on
+load.key: a row without a key value is refused (it would be added again at every run), and when a batch
+
+holds the same key twice the last row wins. The deletes of a PostgreSQL CDC source are applied.
+
+Snowflake commits every DDL statement at once: when an all-or-nothing load fails, the table it created is
+
+dropped.
+
+rollback: true in a workflow undoes a Snowflake load, as for the other databases.
+
+Studio — Snowflake destination node: account, key pair or password, warehouse, database, schema, role,
+
+table, mode, upsert key and all-or-nothing.
+
+MCP server — hydra_list_connectors lists Snowflake as a source and a destination.
+
+###### Changed
+
+Studio — Global settings and Project settings are displayed twice as large: the text (11 to 13 px)
+
+was hard to read, and the page had room to spare. On a narrow screen, the project header and the execution
+
+order wrap to the next line instead of overlapping.
+
+#### v0.20.0 — SQLite and Snowflake source
+
+24 November 2026 GitHub release PyPI
+
+###### Added
+
+SQLite connector (type: sqlite), source and destination, built in: sqlite3 is part of Python, nothing to
+
+install, no server. connection.path is the database file, relative to the job folder. Source: table or
+query; a missing file is an error and is never created by a read or by hdrctl test. Destination: the file
+
+and the table are created at the first batch (types from the data; in upsert the key becomes the primary
+
+key); append, replace, upsert (INSERT … ON CONFLICT … DO UPDATE, primary key or unique index required
+
+on an existing table, with the CREATE UNIQUE INDEX to run in the error). All-or-nothing by default in the
+
+three modes (one transaction, table creation included; load.atomic: false commits batch by batch).
+rollback: true undoes a SQLite load; source_change triggers count and max with one SQL query. The
+
+database uses the WAL journal, so a job can read one table while it writes another in the same file.
+
+Studio — SQLite source and destination nodes in the palette: database file, table or SQL query; in
+
+destination, mode, key columns for upsert and all-or-nothing. Read from and written to the YAML files like
+
+the other nodes; View data reads the destination table. The node catalogue of the API (/api/nodes) lists
+
+SQLite, and its descriptions are in English. The data viewer also reads SQL Server destinations (it fell back
+
+to CSV).
+
+VS Code extension 0.1.10: type: sqlite in sources.yaml and destinations.yaml (connection.path
+
+required, server keys refused), sqlserver / mssql in the list of types; snippets hsrc-sqlite,
+hdst-sqlite.
+
+Snowflake connector (type: snowflake), read-only source (pip install "hydra-etl[snowflake]").
+connection: account, user, password (or private_key_file / authenticator), warehouse,
+database, schema, role. Source: table (table, schema.table or database.schema.table) or
+query, which must start with SELECT, WITH, SHOW or DESCRIBE; extract.limit is applied. Values keep their
+
+exact type: NUMBER(p,0) → integers, even beyond 64 bits; NUMBER(p,s) → exact decimals; DATE → dates;
+TIMESTAMP_NTZ → timestamps without time zone; TIMESTAMP_TZ / TIMESTAMP_LTZ → timestamps with their time
+
+zone; VARIANT, OBJECT, ARRAY → JSON values (connection.json: text keeps the JSON text).
+connection.column_case: lower lowercases the column names (what PostgreSQL expects); two columns that only
+
+differ by case are refused before any row is read. Reads Arrow batches when the driver provides them,
+
+otherwise fetchmany, with the same values. Refused as a destination. Every query is tagged hydra-etl
+
+(QUERY_TAG). source_change triggers count and max with one SQL query. An unknown account
+
+(404 Not Found at login) gets a hint on the expected connection.account format.
+
+PostgreSQL CDC source (type: postgresql_cdc, alias postgres_cdc): the changes of a table (inserts,
+
+updates, deletes) read by logical replication (pgoutput plugin, nothing to install on the server), in the order
+
+of the transactions. connection: the usual PostgreSQL keys plus slot and publication, created at the first
+
+run (create: false to require them); extract.table. The first run reads the whole table (snapshot: false to
+
+skip it), the next runs only the changes. Each row carries _op (snapshot, insert, update, delete),
+_lsn and _commit_time; values keep their PostgreSQL type (integers, exact decimals, dates, timestamps with
+
+their time zone, JSON). The changes are read without being consumed, and the slot only moves on after the
+
+destination has published (the job confirms the source at the end): a failed load reads the same changes again
+
+at the next run. A workflow with rollback: true refuses a CDC source. Needs wal_level = logical, PostgreSQL 11+
+
+and a role with REPLICATION. Example: examples/postgres-cdc-mirror.
+
+PostgreSQL destination — in upsert, rows that carry _op (from a CDC source) are applied as changes: the last
+
+change of each key in a batch wins, deletes are applied by key, an update whose large value was not changed
+
+(TOAST) keeps the current value, and _op, _lsn, _commit_time are not written. In append, they are all
+
+written (a log of the changes).
+
+Studio — Snowflake source node in the palette: account, user, private key file or password, warehouse,
+
+database, schema, role, column names (preserve / lower), JSON columns (parse / text), table or SELECT
+
+query. Read from and written to sources.yaml like the other nodes; a field emptied in the form is removed
+
+from the file, and references such as {{ env:SNOWFLAKE_ACCOUNT }} are kept as written.
+
+Studio — PostgreSQL CDC source node: host, port, database, user, password, table, replication slot,
+
+publication, and two yes / no lists (create slot and publication if missing; first run copies the whole table).
+
+VS Code extension 0.1.11: type: snowflake in sources.yaml (account and user required, unknown
+
+connection keys refused, column_case and json offered as lists, extract.query limited to SELECT /
+
+WITH / SHOW / DESCRIBE), refused in destinations.yaml; snippet hsrc-snowflake.
+
+VS Code extension 0.1.12: type: postgresql_cdc / postgres_cdc in sources.yaml (user, database, slot,
+publication required, slot and publication names checked, create and snapshot booleans, extract.table
+
+required and extract.query refused), refused in destinations.yaml; snippet hsrc-cdc.
+
+###### Changed
+
+PostgreSQL destination — a table created by Hydra ETL now gets exact types from all the values of the first
+
+batch: exact decimals and integers beyond 64 bits → NUMERIC (decimals were TEXT), dates → DATE (were
+TIMESTAMP), timestamps with a time zone → TIMESTAMPTZ (the time zone was dropped), dicts and lists →
+JSONB (were refused). In upsert, a missing table is created with the key as primary key (the load used to
+
+fail and ask for a CREATE UNIQUE INDEX); an existing table still needs a primary key or unique index on the
+
+key. Existing tables are not changed.
+
+PostgreSQL destination — an integer too large for a smallint, integer or bigint column is reported before
+
+the batch is written, with the column, the value and the ALTER TABLE … TYPE NUMERIC(38,0) to run (the error
+
+was bigint out of range, without the column).
+
+PostgreSQL destination — rows are written in multi-row statements of 1,000 rows instead of one statement per
+
+row, in the three modes (in upsert, a batch that holds the same key twice is still written row by row, so the
+
+last row wins as before). In append, a missing table is now created at the first batch, as in replace and
+upsert.
+
+###### Fixed
+
+Studio — saving no longer damages the YAML files written by hand: a file whose content did not change is not
+
+rewritten at all; a changed file keeps, for every unchanged line, its original text (quotes, inline lists,
+
+end-of-line comments) and the comments above it. The description of a workflow is kept, and Studio no longer
+
+adds trigger: {type: manual} or pipeline.name to files that did not have them.
+
+Studio — a workflow file added on disk after the project was opened (by hdrctl, git pull, or after Studio's
+
+metadata was deleted) now appears in the project's list without reopening the project. A YAML file of
+workflows/ that is not a workflow is no longer listed as one.
+
+#### v0.19.1
+
+24 November 2026 GitHub release PyPI
+
+###### Fixed
+
+aggregate with sum or mean on a text column concatenated the values instead of adding them
+
+("19.9" + "49.9" → "19.949.9"), with no error: a CSV column read without cast is text, so a job that
+
+re-read a CSV written by another job produced a wrong total. The step now fails with
+aggregate.agg.revenue: sum needs a numeric column ('amount' is object). Add a cast step before aggregate, for example: cast: {mapping: {amount: float}}. Same message with the large-volume engine (DuckDB hands the
+
+step back to pandas instead of raising a Binder Error). count, min, max, first and last still
+
+accept text.
+
+The log action's message was written to the logger only, so hdrctl run did not show it. It is now the
+
+step's output: shown under the step, like the output of a script action, and kept in the run result.
+
+Error messages still in French are in English: transformations (select, rename, cast, filter,
+calculate, clean, join, merge, union, script, transpose, aggregate), manifest checks
+
+(clean.case must be none, lower or upper, join.how, cast types), the job runner (Cannot create the source 'raw_orders' (type='csv'), Step 2/3: … instead of Erreur à l'étape 2/3), parameters, .env
+
+files, the MCP workspace guard and the API routes.
+
+###### Added
+
+examples/end-to-end-retail: a master project runs two sub-projects in parallel, then a job and actions
+
+read what they returned. Files only, runs in a few seconds.
+
 #### v0.19.0 — Project triggers and sub-projects
 
-4 November 2026 latest GitHub release PyPI
+4 November 2026 GitHub release PyPI
 
 Start a project when a file arrives, a table changes, a webhook is called or another project ends — and let one project run another — without an external scheduler or message broker.
 
@@ -1081,7 +1407,7 @@ $ hdrctl run my_job -vv
 
 Requires Python 3.9+. The repository install uses pip install -e .
 Build the guided example → Explore the language
-No Python on this machine?Run the engine, the CLI, the API and the Studio as one container — nothing installed on the host. Step-by-step for Linux, Windows and macOS. → What's new — version 0.19.0Latest release 4 November 2026. Every release of Hydra ETL, with its new features and fixes. →
+No Python on this machine?Run the engine, the CLI, the API and the Studio as one container — nothing installed on the host. Step-by-step for Linux, Windows and macOS. → What's new — version 0.22.0Latest release 24 November 2026. Every release of Hydra ETL, with its new features and fixes. →
 
 ###### Which connector?
 

@@ -33,14 +33,14 @@ CHECKS = [
         r"sortie|étape|défaut|impact|absence|perte|silencieuse|actualiser|conserver|"
         r"décision|corriger|publié|documenté)(?![\w-])", re.I), 3, True, True),
     ("note de revue interne", re.compile(
-        r"(?i)(REVIEW\s*\(|\bnote interne\b|\bne pas publier\b|\bbrouillon\b)"), 1, True, True),
+        r"(?i)(\bREVIEW\s*\(|\bnote interne\b|\bne pas publier\b|\bbrouillon\b)"), 1, True, True),
     # XXX dans une URL d'exemple (hooks.slack.com/services/XXX) n'est pas une note
     ("note a faire", re.compile(
         r"(?i)(\bTODO\b|\bFIXME\b|(?<!/)\bXXX\b(?!/)|\bà corriger\b|\ba corriger\b)"),
      1, True, True),
     # dans les sources : cosmetique, le prebuild les reecrit. Dans dist : fuite.
     ("chemin personnel", re.compile(
-        r"[A-Za-z]:\\+Users\\+(?!<user>)[A-Za-z0-9_.-]+"), 1, False, True),
+        r"[A-Za-z]:\\+Users\\+(?!<user>|you\b|user\b|username\b|%USERNAME%|USER\b)[A-Za-z0-9_.-]+"), 1, False, True),
     # citer ses propres fichiers en provenance est legitime ; seul le detail
     # d'implementation interne pose probleme
     ("chemin de code interne", re.compile(
@@ -65,6 +65,10 @@ def scan(root, label, html=False, dist=False):
         if not path.is_file() or path.suffix not in (".md", ".html"):
             continue
         if any(p in SKIP_DIRS for p in path.parts):
+            continue
+        # cote source, seuls les chapitres numerotes sont importes par
+        # src/pages/dsl/[chapter].astro : le reste n'est pas publie
+        if not dist and path.suffix == ".md" and not re.match(r"\d", path.name):
             continue
         raw = path.read_text(encoding="utf-8", errors="replace")
         text = strip_html(raw) if html else raw

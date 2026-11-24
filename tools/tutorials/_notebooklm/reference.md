@@ -3605,61 +3605,6 @@ Instead of uri, you can give host, port, username and password.
 
 Browse the code on GitHub · Download the ZIP
 
-erreur du moteur à corriger ici
-
-Défaut — Politiques de dérive MongoDB inopérantes
-
-Version testée : Hydra ETL 0.16.0
-Impact : perte silencieuse des nouveaux champs et absence d’arrêt avec drift_policy: fail.
-
-#### Reproduction
-
-La collection contient 102 documents :
-
-Les 100 premiers : _id, customer, amount.
-
-Les deux suivants ajoutent sales_channel, avec les valeurs web et store.
-
-Configuration : mode: infer_strict, sample_size: 100. Répéter avec drift_policy: warn, fail, puis adapt.
-
-PolitiqueRésultat attenduRésultat constaté
-
-warnContinuer avec un avertissement de dérive102 lignes, aucun avertissement
-
-failArrêter avec une erreur de dérive102 lignes, aucune erreur
-
-adaptÉtendre le schéma et conserver sales_channel102 lignes, nouveau champ perdu
-
-Le champ **sales_channel** est perdu dans les trois cas.
-
-#### Deux causes identifiées
-
-Le schéma n’atteint pas le connecteur.
-
-Dans hydra_etl/internal/runner/executor.py, JobExecutor._build_connector() transmet connection et extract, mais omet definition.schema.
-
-L’extraction ne gère pas la dérive.
-
-Dans hydra_etl/plugins/connectors/mongodb/connector.py, extract_batches() normalise les documents sans déclencher leur validation ni adapter le schéma. Les champs inconnus disparaissent pendant la normalisation. Fournir directement le schéma au connecteur reproduit donc encore le défaut.
-
-#### Correction nécessaire
-
-Transmettre intégralement le bloc schema au connecteur.
-
-Détecter les changements avant la normalisation.
-
-Appliquer réellement warn, fail et adapt.
-
-Pour adapt, actualiser le schéma, le normaliseur et la sortie afin de conserver les nouveaux champs.
-
-Ajouter un test de régression vérifiant les trois comportements et les valeurs conservées.
-
-Limite de la vérification : défaut reproduit avec le vrai moteur installé et un curseur MongoDB en mémoire. Le transfert complet avec un serveur MongoDB reste à tester. Aucun fichier du moteur n’a été modifié.
-
-|
-
-v
-
 [LAB lab-02-03 · Killercoda] MongoDB documents and schema drift — Read a collection whose documents differ, then compare drift_policy: warn, fail and adapt.
 
 Open the Killercoda lab
