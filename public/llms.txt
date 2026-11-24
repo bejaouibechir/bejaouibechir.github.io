@@ -1,13 +1,16 @@
 # Hydra ETL
 
-> Hydra ETL is an open-source (AGPL-3.0, commercial license available) declarative ETL engine for Python 3.9+. Pipelines are described in YAML, validated before any data is read or written, and run from a CLI (`hdrctl`), a REST API or a visual editor (Hydra Studio), all installed with `pip install hydra-etl`. Latest version: 0.19.0 (November 4, 2026), beta.
+> Hydra ETL is an open-source (AGPL-3.0, commercial license available) declarative ETL engine for Python 3.9+. Pipelines are described in YAML, validated before any data is read or written, and run from a CLI (`hdrctl`), a REST API or a visual editor (Hydra Studio), all installed with `pip install hydra-etl`. Latest version: 0.22.0 (November 16, 2026), beta.
 
 Key facts:
 - A project holds jobs (one source, an ordered list of transformations, one destination: four YAML files), workflows that chain jobs and actions, and `workflows/thread.yaml`, the order in which workflows run (sequential or parallel stages, delays, loops). `hdrctl run <project>` checks the whole project before running anything.
-- Connectors: CSV, JSON, Parquet, PostgreSQL, MySQL/MariaDB, SQL Server, MongoDB, Web API. 20 transformations, including join (inner, left, right, outer, cross), aggregate, window functions and text_to_rows.
+- Connectors, as sources and destinations: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, SQL Server, SQLite, MongoDB, Web API, Snowflake and BigQuery. CSV, JSON and SQLite are built in; the others are one `pip install` extra away.
+- Change data capture: PostgreSQL CDC and MySQL CDC read the inserts, updates and deletes of a table (logical replication, and the MySQL binlog) and keep a mirror up to date through an `upsert` destination.
+- Object stores: CSV, JSON and Parquet sources and destinations read and write S3, Azure Blob / ADLS and Google Cloud Storage. The location is a URI (`s3://`, `az://`, `abfs://`, `abfss://`, `gs://`) in the keys that already exist, with credentials in `connection.storage` or in the usual environment variables.
+- 20 transformations, including join (inner, left, right, outer, cross), aggregate, window functions and text_to_rows.
 - Engines: pandas by default; DuckDB + pyarrow for large volumes (20 million rows aggregated in 34 s instead of 113 s, same results as pandas), chosen per job with `engine:`; optional Rust acceleration.
 - Reliability: all-or-nothing load per job, workflow rollback (`rollback: true`, `undo:` on actions), fallback workflows (before the start or after a failure, only if nothing was published), timeouts per workflow.
-- Triggers (`triggers.yaml`, since 0.19): cron, interval, file arrival, marker file, source change, webhook with token, end of another project. Run by `hdrctl watch` or `hdrctl serve`.
+- Triggers (`triggers.yaml`, since 0.19): cron, interval, file arrival, marker file, source change, webhook with token, end of another project. Run by `hdrctl watch` or `hdrctl serve`. A file trigger also watches an object store pattern.
 - Sub-projects (since 0.19): a workflow step `type: project` runs another project, with cycle checks and results readable by the next steps.
 - Parameters, environments and secrets: `parameters.yaml`, `environments/<env>.yaml`, global variables in `~/.hydra/env`, secrets in `.hydra/secrets` or encrypted with SOPS, masked in every log.
 - Ships an MCP server so AI assistants can write and check pipelines, and a VS Code extension with schemas and snippets.
@@ -16,6 +19,7 @@ Key facts:
 
 - [Get started](https://hydraetl.com/get-started/): what Hydra ETL is and your first job
 - [Install](https://hydraetl.com/install/): `pip install hydra-etl`, extras and troubleshooting
+- [Build your first Studio job](https://hydraetl.com/firstjob/): a complete job, step by step
 - [Hydra DSL reference](https://hydraetl.com/dsl/reference/): the YAML manifest language
 - [Guide](https://hydraetl.com/guide/): every source, destination, transformation and workflow element
 - [CLI tutorials](https://hydraetl.com/cli/): create, validate and run jobs with `hdrctl`
@@ -25,7 +29,16 @@ Key facts:
 
 ## Comparisons
 
-- [Hydra ETL vs Airflow, dbt, Dagster, Prefect, Databricks, Airbyte](https://hydraetl.com/migrate/)
+- [Where Hydra ETL fits in your data stack](https://hydraetl.com/migrate/): what it replaces, what it sits beside
+- [Hydra ETL vs Airflow](https://hydraetl.com/migrate/airflow/)
+- [Hydra ETL vs dbt](https://hydraetl.com/migrate/dbt/)
+- [Hydra ETL vs Dagster](https://hydraetl.com/migrate/dagster/)
+- [Hydra ETL vs Airbyte](https://hydraetl.com/migrate/airbyte/)
+- [Hydra ETL vs Talend](https://hydraetl.com/migrate/talend/)
+- [Hydra ETL vs Meltano](https://hydraetl.com/migrate/meltano/)
+- [Hydra ETL vs Kestra](https://hydraetl.com/migrate/kestra/)
+- [Hydra ETL vs dlt](https://hydraetl.com/migrate/dlt/)
+- [Hydra ETL vs Flowman](https://hydraetl.com/migrate/flowman/)
 
 ## Optional
 
