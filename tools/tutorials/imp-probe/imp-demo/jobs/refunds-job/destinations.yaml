@@ -1,0 +1,8 @@
+version: '1.0'
+destinations:
+  dest_refunds:
+    type: csv
+    connection: {}
+    load:
+      table: ../../outputs/refunds.csv
+      mode: replace

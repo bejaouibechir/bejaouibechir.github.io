@@ -1,0 +1,6 @@
+version: '1.0'
+pipeline:
+  name: refunds-job
+  from: src_orders
+  to: dest_refunds
+  transformations: transformations

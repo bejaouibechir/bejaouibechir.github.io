@@ -1,0 +1,12 @@
+{
+  "id": "b68dd238",
+  "name": "first-pipeline",
+  "project_id": "58a9af7c",
+  "description": "Demo : clean the raw orders, export active customers, compute revenue by product.",
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\imp-probe\\ws\\hydra-demo\\workflows\\first-pipeline.yaml",
+  "layout": null,
+  "disk_hashes": null
+}

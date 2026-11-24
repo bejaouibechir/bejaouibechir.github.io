@@ -1,0 +1,4 @@
+order_id,customer,amount,status
+1002,Blue Harbor,144.00,refunded
+1004,Acme Retail,162.50,refunded
+1020,Evergreen Co,144.00,refunded

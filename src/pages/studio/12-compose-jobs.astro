@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/12-compose-jobs/',
   name: article.headline,
   steps: ["Bring in a second job", "Order the two with an edge", "Run the pair", "Read what the arrow did not do", "Read the composition as YAML"],
-  faq: [
-    ["Does an edge between two jobs pass data?", "No. It only orders the jobs. If the second job needs the first job's output, the first job must write it to a file or table that the second job reads."],
-    ["How is an edge written in workflow.yaml?", "As a depends_on list on the later step, naming the earlier step."],
-    ["How is a job step written in workflow.yaml?", "As a step with type: job and a job: path, such as job: ../jobs/first-job."],
-    ["Can a workflow hold more than two jobs?", "Yes. A workflow does not care how many jobs it holds, only how they are ordered."],
-  ],
+  faq: [["Does an edge between two jobs pass data?", "No. It only orders the jobs. If the second job needs the first job's output, the first job must write it to a file or table that the second job reads."], ["How is an edge written in workflow.yaml?", "As a depends_on list on the later step, naming the earlier step."], ["How is a job step written in workflow.yaml?", "As a step with type: job and a job: path, such as job: ../jobs/first-job."], ["Can a workflow hold more than two jobs?", "Yes. A workflow does not care how many jobs it holds, only how they are ordered."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Compose jobs", '/studio/12-compose-jobs/']],
 });
 ---

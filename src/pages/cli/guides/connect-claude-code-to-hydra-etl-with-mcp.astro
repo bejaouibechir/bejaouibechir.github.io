@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import css from '../../../_mock/learning-hub.css?raw';
+import lessonCss from '../../../_mock/cli-lesson.css?raw';
+import js from '../../../_mock/learning-hub.js?raw';
+import main from '../../../_mock/studio-lesson-62-connect-claude-code-to-hydra-etl-with-mcp.main.html?raw';
+import { lessonJsonLd } from '../../../data/lesson-jsonld.js';
+const article = { headline: "Connect Claude Code to Hydra ETL with the MCP server", description: "Run hdrctl mcp setup to write .mcp.json, then check the 21 tools of the Hydra ETL MCP server and its path guardrails. Tested with Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/cli/guides/connect-claude-code-to-hydra-etl-with-mcp/',
+  name: article.headline,
+  steps: ["Install the MCP extra", "Run the setup", "Read .mcp.json", "Run it again", "Talk to the server", "Read the refusals"],
+  faq: [["What is the Hydra ETL MCP server?", "A local program, started with python -m hydra_etl.mcp, that lets an AI assistant call 21 Hydra ETL tools: list the vocabulary, read, validate, write and run jobs and workflows. In our test on Hydra ETL 0.22 with the MCP SDK 2.3.0, a client listed all 21 tools over stdio."], ["Does hdrctl mcp setup change my global Claude Code settings?", "No. According to the source and to our test, it writes a file named .mcp.json at the root of the project and nothing else. Existing servers of that file are kept, and a file that is not valid JSON is never overwritten."], ["Can the assistant read files outside my project?", "In our test, a path with .. and an absolute path were both refused with a message naming the allowed root. The server works inside the folder given by --workspace."], ["Can the assistant run a job without asking me?", "The tools that run or delete are flagged destructive, so a client can ask you first. The server description also tells the assistant to run a job only when you ask. Whether your client asks is a setting of the client, which we did not test."], ["Can I use it with a client other than Claude Code?", "The server speaks standard MCP over stdio, and hdrctl mcp setup supports only claude-code. According to the source, there is also an HTTP mode with no authentication, meant for your own machine. We did not test other clients or the HTTP mode."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra CLI', '/cli/'], ['Guides', '/cli/guides/'], ["MCP server", '/cli/guides/connect-claude-code-to-hydra-etl-with-mcp/']],
+});
+---
+
+<BaseLayout title="Connect Claude Code to Hydra ETL with the MCP server" exactTitle="Hydra ETL MCP Server: Connect Claude Code | Hydra ETL" description="Run hdrctl mcp setup to write .mcp.json, then check the 21 tools of the Hydra ETL MCP server and its path guardrails. Tested with Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <CliReferenceShell current="mcp" guide="connect-claude-code-to-hydra-etl-with-mcp">
+    <article class="cli-article cli-guide">
+      <Fragment set:html={main} />
+    </article>
+  </CliReferenceShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

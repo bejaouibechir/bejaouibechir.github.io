@@ -1,0 +1,14 @@
+[
+  {
+    "file": "import-menu-import-a-job-light.png",
+    "name": "import-menu-import-a-job",
+    "theme": "light",
+    "alt": "The Import menu of the workflow editor, open under the toolbar, with one entry named Import a job and the hint Select a job folder (4 YAML files) and add a node to the canvas."
+  },
+  {
+    "file": "import-job-node-on-canvas-dark.png",
+    "name": "import-job-node-on-canvas",
+    "theme": "dark",
+    "alt": "The workflow canvas after importing the folder refunds-job: a third job node named refunds-job sits to the right of first-job and second-job, with a small red alert icon, and refunds-job is listed under Jobs in the palette."
+  }
+]

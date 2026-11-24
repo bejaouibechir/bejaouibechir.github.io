@@ -1,12 +1,12 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 41</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 41 of 65 · Sub-project parameters</div><h1>Pass parameters to a Hydra sub-project and read results back</h1><p class="lead">Send a value to a called project with params, publish a result from it with set_param, and read the result in the calling project.</p>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/cli">Hydra CLI</a><span>›</span><a href="/cli/guides">Guides</a><span>›</span><span>Sub-projects</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Guide · Sub-projects</div><h1>Pass parameters to a Hydra sub-project and read results back</h1><p class="lead">Send a value to a called project with params, publish a result from it with set_param, and read the result in the calling project.</p>
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">params · outputs</span><span>about 20 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
   <div class="callout"><b>Quick answer</b><p><code>params</code> on a project step hand values down to the called project. <code>outputs</code> names the parameters it must publish, and <code>{{ project:STEP.param.NAME }}</code> reads them in the calling project after the step.</p></div>
   <h2>What will you learn in this lesson?</h2>
   <h3>Goal</h3><p>Give the child a parameter, pass a value from the master, publish a result from the child and read it back.</p>
-  <h3>Prerequisites</h3><ul><li>The <code>child</code> and <code>master</code> projects of <a href="/studio/call-a-project-from-a-project">Call a project from a project</a>.</li><li>Parameters in a job: <a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h3>Prerequisites</h3><ul><li>The <code>child</code> and <code>master</code> projects of <a href="/cli/guides/call-a-project-from-a-project">Call a project from a project</a>.</li><li>Parameters in a job: <a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I pass parameters to a sub-project?</h2>
 
   <div class="step">
@@ -116,9 +116,9 @@ Step 'show' failed: ParameterError: unresolved parameter: 'result_rows'</pre>
   <p>In our test nothing happened: the run succeeded and the value was not used. Check the name with hdrctl param list in the called project.</p>
 
   <h2>Related lessons</h2>
-  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/call-a-project-from-a-project">Call a project from a project</a></li><li><a href="/studio/14-use-parameters">One placeholder, two values, two results</a></li><li><a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a></li></ul>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/cli/guides/call-a-project-from-a-project">Call a project from a project</a></li><li><a href="/studio/14-use-parameters">One placeholder, two values, two results</a></li><li><a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage the jobs and parameters of a project</a></li></ul>
 
   <h2>Next lesson</h2><p>Values go down with params and results come back with outputs. Next, see what starts a project.</p>
-  <div class="lesson-nav"><a class="primary" href="/studio/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="lesson-nav"><a class="primary" href="/cli/guides/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/cli/guides">Back to all guides</a></div>
   <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

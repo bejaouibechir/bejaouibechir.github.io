@@ -1,12 +1,12 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 39</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 39 of 65 · Manage projects</div><h1>Manage the jobs and parameters of a Hydra project</h1><p class="lead">Add, attach and detach jobs in a workflow, and give a parameter a default value and a value per environment, all with hdrctl.</p>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/cli">Hydra CLI</a><span>›</span><a href="/cli/guides">Guides</a><span>›</span><span>Jobs and parameters</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Guide · Jobs and parameters</div><h1>Manage the jobs and parameters of a Hydra project</h1><p class="lead">Add, attach and detach jobs in a workflow, and give a parameter a default value and a value per environment, all with hdrctl.</p>
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">hdrctl job · hdrctl param</span><span>about 20 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
   <div class="callout"><b>Quick answer</b><p><code>hdrctl job</code> adds, attaches, detaches and lists the jobs of a project. <code>hdrctl param</code> declares parameters in <code>parameters.yaml</code> and gives them a value per environment. A job reads a parameter with <code>{{ param:NAME }}</code>.</p></div>
   <h2>What will you learn in this lesson?</h2>
   <h3>Goal</h3><p>Create a project, add a job to its workflow, move and detach it, then declare a parameter and run a job with two values of it.</p>
-  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. Create a project with <code>hdrctl init manage-demo</code> and open a terminal in it. See <a href="/studio/install-and-start">Install and start</a> and <a href="/studio/anatomy-of-a-job">Anatomy of a job</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. Create a project with <code>hdrctl init manage-demo</code> and open a terminal in it. See <a href="/studio/install-and-start">Install and start</a> and <a href="/cli/guides/anatomy-of-a-job">Anatomy of a job</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I manage the jobs and parameters of a project?</h2>
 
   <div class="step">
@@ -139,6 +139,6 @@ id,name,value
   <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/create-a-workflow">Create a workflow</a></li><li><a href="/studio/14-use-parameters">One placeholder, two values, two results</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>
 
   <h2>Next lesson</h2><p>You can manage jobs and parameters without opening Studio. Next, see how triggers start a project.</p>
-  <div class="lesson-nav"><a class="primary" href="/studio/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="lesson-nav"><a class="primary" href="/cli/guides/declare-project-triggers">Triggers <span aria-hidden="true">→</span></a><a href="/cli/guides">Back to all guides</a></div>
   <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>

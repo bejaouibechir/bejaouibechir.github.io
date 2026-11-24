@@ -1,0 +1,6 @@
+sources:
+  src_orders:
+    type: csv
+    extract:
+      table: data/orders.csv
+      batch_size: 50000

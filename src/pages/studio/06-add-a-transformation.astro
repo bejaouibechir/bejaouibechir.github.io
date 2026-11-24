@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/06-add-a-transformation/',
   name: article.headline,
   steps: ["Read the twenty operations", "Open the Select and Filter nodes", "Chain them: the order is the meaning", "Add one, and connect it", "Bring a second flow in"],
-  faq: [
-    ["How many transformations does Hydra Studio have?", "Twenty in Hydra ETL 0.22, from Filter to Script. Script closes the list and holds your own Python for what the other nineteen do not cover."],
-    ["Does the order of transformations matter?", "Yes. The engine runs them top to bottom. In our test on the course job, a Select that dropped the status column before a Filter on status made the run fail with: name 'status' is not defined."],
-    ["Which transformations combine two streams?", "Join, Merge and Union. According to the Studio node catalog, Join combines two flows on a key or as a cross product, Merge upserts a source into a target, and Union appends a source."],
-    ["Why does Studio refuse an edge between two nodes?", "Studio checks every connection and shows a Connection rejected warning with the reason: the edge already exists, it would create a cycle, a node cannot have an input or an output, or a node has reached its maximum number of inputs or outputs."],
-  ],
+  faq: [["How many transformations does Hydra Studio have?", "Twenty in Hydra ETL 0.22, from Filter to Script. Script closes the list and holds your own Python for what the other nineteen do not cover."], ["Does the order of transformations matter?", "Yes. The engine runs them top to bottom. In our test on the course job, a Select that dropped the status column before a Filter on status made the run fail with: name 'status' is not defined."], ["Which transformations combine two streams?", "Join, Merge and Union. According to the Studio node catalog, Join combines two flows on a key or as a cross product, Merge upserts a source into a target, and Union appends a source."], ["Why does Studio refuse an edge between two nodes?", "Studio checks every connection and shows a Connection rejected warning with the reason: the edge already exists, it would create a cycle, a node cannot have an input or an output, or a node has reached its maximum number of inputs or outputs."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Transformations", '/studio/06-add-a-transformation/']],
 });
 ---

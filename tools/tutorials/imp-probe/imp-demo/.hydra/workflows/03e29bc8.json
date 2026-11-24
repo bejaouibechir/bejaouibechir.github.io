@@ -1,0 +1,300 @@
+{
+  "id": "03e29bc8",
+  "name": "workflow1",
+  "project_id": "4e0ea12e",
+  "description": "First workflow of the project",
+  "trigger_type": "manual",
+  "cron": null,
+  "published": false,
+  "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\imp-probe\\imp-demo\\workflows\\workflow1.yaml",
+  "layout": {
+    "nodes": [
+      {
+        "id": "job1",
+        "type": "hydraNode",
+        "position": {
+          "x": 50,
+          "y": 50
+        },
+        "data": {
+          "label": "job1",
+          "nodeType": "job",
+          "stepName": "job1",
+          "jobPath": "../jobs/job1",
+          "onFailure": "fail",
+          "enabled": true,
+          "jobRef": "job1"
+        },
+        "measured": {
+          "width": 54,
+          "height": 86
+        }
+      },
+      {
+        "id": "job_1795508669807",
+        "type": "hydraNode",
+        "position": {
+          "x": 270,
+          "y": 50
+        },
+        "data": {
+          "label": "refunds-job",
+          "nodeType": "job",
+          "stepName": "job_1795508669807",
+          "jobRef": "job_1795508669807",
+          "onFailure": "fail",
+          "enabled": true
+        },
+        "measured": {
+          "width": 58,
+          "height": 86
+        }
+      }
+    ],
+    "edges": [],
+    "job_canvases": {
+      "job1": {
+        "nodes": [
+          {
+            "id": "imported_src_src_csv",
+            "type": "hydraNode",
+            "position": {
+              "x": 60,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "source_csv",
+              "label": "src_csv",
+              "params": {
+                "table": "data/input.csv",
+                "batch_size": 50000,
+                "path": "data/input.csv",
+                "_key": "src_csv",
+                "_orig": "{\"connection\":{},\"extract\":{\"table\":\"data/input.csv\",\"batch_size\":50000}}",
+                "location": "local"
+              }
+            },
+            "measured": {
+              "width": 54,
+              "height": 72
+            }
+          },
+          {
+            "id": "imported_tf_0",
+            "type": "hydraNode",
+            "position": {
+              "x": 320,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "transform_select",
+              "label": "select",
+              "params": {
+                "columns": "id,name,value"
+              }
+            },
+            "measured": {
+              "width": 54,
+              "height": 72
+            }
+          },
+          {
+            "id": "imported_tf_1",
+            "type": "hydraNode",
+            "position": {
+              "x": 520,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "transform_cast",
+              "label": "cast",
+              "params": {
+                "mapping": "{\"value\":\"float\"}"
+              }
+            },
+            "measured": {
+              "width": 54,
+              "height": 72
+            }
+          },
+          {
+            "id": "imported_tf_2",
+            "type": "hydraNode",
+            "position": {
+              "x": 720,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "transform_filter",
+              "label": "filter",
+              "params": {
+                "expr": "value > 0"
+              }
+            },
+            "measured": {
+              "width": 54,
+              "height": 72
+            }
+          },
+          {
+            "id": "imported_dst_dest_csv",
+            "type": "hydraNode",
+            "position": {
+              "x": 920,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "dest_csv",
+              "label": "dest_csv",
+              "params": {
+                "path": "data/output.csv",
+                "mode": "replace",
+                "location": "local",
+                "_key": "dest_csv",
+                "_orig": "{\"connection\":{},\"load\":{\"table\":\"data/output.csv\",\"mode\":\"replace\"}}"
+              }
+            },
+            "measured": {
+              "width": 54,
+              "height": 72
+            }
+          }
+        ],
+        "edges": [
+          {
+            "id": "imported_src_src_csv->imported_tf_0",
+            "source": "imported_src_src_csv",
+            "target": "imported_tf_0",
+            "animated": false
+          },
+          {
+            "id": "imported_tf_0->imported_tf_1",
+            "source": "imported_tf_0",
+            "target": "imported_tf_1",
+            "animated": false
+          },
+          {
+            "id": "imported_tf_1->imported_tf_2",
+            "source": "imported_tf_1",
+            "target": "imported_tf_2",
+            "animated": false
+          },
+          {
+            "id": "imported_tf_2->imported_dst_dest_csv",
+            "source": "imported_tf_2",
+            "target": "imported_dst_dest_csv",
+            "animated": false
+          }
+        ]
+      },
+      "job_1795508669807": {
+        "nodes": [
+          {
+            "id": "imported_src_src_orders",
+            "type": "hydraNode",
+            "position": {
+              "x": 60,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "source_csv",
+              "label": "src_orders",
+              "params": {
+                "table": "data/orders.csv",
+                "batch_size": 50000,
+                "path": "data/orders.csv",
+                "_key": "src_orders",
+                "_orig": "{\"connection\":{},\"extract\":{\"table\":\"data/orders.csv\",\"batch_size\":50000}}",
+                "location": "local"
+              }
+            }
+          },
+          {
+            "id": "imported_tf_0",
+            "type": "hydraNode",
+            "position": {
+              "x": 320,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "transform_select",
+              "label": "select",
+              "params": {
+                "columns": "order_id,customer,amount,status"
+              }
+            }
+          },
+          {
+            "id": "imported_tf_1",
+            "type": "hydraNode",
+            "position": {
+              "x": 520,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "transform_filter",
+              "label": "filter",
+              "params": {
+                "expr": "status == 'refunded'"
+              }
+            }
+          },
+          {
+            "id": "imported_dst_dest_refunds",
+            "type": "hydraNode",
+            "position": {
+              "x": 720,
+              "y": 100
+            },
+            "data": {
+              "nodeType": "dest_csv",
+              "label": "dest_refunds",
+              "params": {
+                "path": "../../outputs/refunds.csv",
+                "mode": "replace",
+                "location": "local",
+                "_key": "dest_refunds",
+                "_orig": "{\"connection\":{},\"load\":{\"table\":\"../../outputs/refunds.csv\",\"mode\":\"replace\"}}"
+              }
+            }
+          }
+        ],
+        "edges": [
+          {
+            "id": "imported_src_src_orders->imported_tf_0",
+            "source": "imported_src_src_orders",
+            "target": "imported_tf_0",
+            "animated": false
+          },
+          {
+            "id": "imported_tf_0->imported_tf_1",
+            "source": "imported_tf_0",
+            "target": "imported_tf_1",
+            "animated": false
+          },
+          {
+            "id": "imported_tf_1->imported_dst_dest_refunds",
+            "source": "imported_tf_1",
+            "target": "imported_dst_dest_refunds",
+            "animated": false
+          }
+        ]
+      }
+    },
+    "job_names": {
+      "job1": "job1",
+      "job_1795508669807": "refunds-job"
+    }
+  },
+  "disk_hashes": {
+    "workflows/workflow1.yaml": "3dbc8b1e0c1a4523cf8526a158f8e5867ca9bfeafecb76e394a24c363bf10a4a",
+    "jobs/job1/sources.yaml": "c62dc0435ff836382d0a43b5a6455550081932aae174002ae6611182c58eff6d",
+    "jobs/job1/transformations.yaml": "028002ce2b2dc4722aac4be40c70fdce403c1bab32ffdac44eb22ae33f5618cd",
+    "jobs/job1/destinations.yaml": "8e0a119b0d2180112ed64c0a331cdf7154a34ba508461c7c63fc586af3dc3bff",
+    "jobs/job1/pipeline.yaml": "098a443d74985a64852494f73792fb961de02c5ce8a0409376a9a8edffd128e0",
+    "jobs/refunds-job/sources.yaml": "69cd26310915680d7918bc18e16e25d184d00844c1a179319dc70b917866d387",
+    "jobs/refunds-job/transformations.yaml": "4348ae597761e27f02c411cd7488e621f892cc61ea5f090999c6bef820336e32",
+    "jobs/refunds-job/destinations.yaml": "f4095bdc4d0102d2a297d175c0863cbdbbb02068e70a8e06c5cda90f382a2e84",
+    "jobs/refunds-job/pipeline.yaml": "20ca01496040459dcc1093d594d40b46a0577b76e0e692f55b4aa1f39a3f043f"
+  }
+}

@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/14-use-parameters/',
   name: article.headline,
   steps: ["Read the shape of the workflow", "Separate the jobs from the actions", "Create the first parameter", "Create the parameter the jobs will read", "Read a parameter back", "Change a value mid-run", "Read it back after the change", "Run it and read the timeline", "Watch the value change in the log", "Look at what the jobs wrote"],
-  faq: [
-    ["What is the syntax of a parameter in Hydra?", "{{ param:name }}, for example {{ param:region }}."],
-    ["What is the difference between Set Param and Assign Param?", "Set Param creates a runtime parameter and fails if it already exists. Assign Param changes the value of an existing one."],
-    ["Can a value change in the middle of a run?", "Yes. The workflow can assign a new value between two jobs, and the second job then reads the new value."],
-    ["Where do I learn about environments and secrets?", "They are covered in the lessons on environments and secrets, coming soon in the Settings block."],
-  ],
+  faq: [["What is the syntax of a parameter in Hydra?", "{{ param:name }}, for example {{ param:region }}."], ["What is the difference between Set Param and Assign Param?", "Set Param creates a runtime parameter and fails if it already exists. Assign Param changes the value of an existing one."], ["Can a value change in the middle of a run?", "Yes. The workflow can assign a new value between two jobs, and the second job then reads the new value."], ["Where do I learn about environments and secrets?", "They are covered in the lessons on environments and secrets, coming soon in the Settings block."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Parameters", '/studio/14-use-parameters/']],
 });
 ---

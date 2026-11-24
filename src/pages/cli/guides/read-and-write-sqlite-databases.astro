@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import css from '../../../_mock/learning-hub.css?raw';
+import lessonCss from '../../../_mock/cli-lesson.css?raw';
+import js from '../../../_mock/learning-hub.js?raw';
+import main from '../../../_mock/studio-lesson-20-read-and-write-sqlite-databases.main.html?raw';
+import { lessonJsonLd } from '../../../data/lesson-jsonld.js';
+const article = { headline: "Read from and write to a SQLite database in a Hydra ETL job", description: "Read a SQLite table or query, write to SQLite with append, replace or upsert, and read the errors. No server. Tested with Hydra ETL 0.22 on Windows.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/cli/guides/read-and-write-sqlite-databases/',
+  name: article.headline,
+  steps: ["Create a test database", "Read a table", "Read a query", "Write to SQLite with upsert", "Change the source and run again", "Read the two errors"],
+  faq: [["How do I read a SQLite database with Hydra ETL?", "Declare a source of type sqlite with connection.path, the database file relative to the job folder, and extract.table or extract.query. SQLite is part of Python: there is no server and nothing to install. We tested it with Hydra ETL 0.22 on Windows."], ["Should I read a table or a query?", "Use table to read everything, and query to filter or select columns in SQL. In our test the query SELECT order_id, customer, amount FROM orders WHERE amount >= 50 read 3 rows out of 5, with only 3 columns."], ["Can Hydra ETL write to SQLite?", "Yes. A destination of type sqlite takes connection.path, load.table and load.mode: append, replace or upsert. The database and the table are created at the first run."], ["What does upsert do?", "With mode upsert and key: [order_id], a row whose key exists is updated and a new key is inserted. In our test the second run updated order 2, added order 6 and the table held 6 rows. A third run kept 6 rows. The key became the primary key of the new table."], ["What error do I get when the file or the table is missing?", "A missing file gives SQLiteConnector [src_app]: database file not found, followed by the full path. A missing table gives OperationalError: no such table. hdrctl validate passes in both cases: only the run fails."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra CLI', '/cli/'], ['Guides', '/cli/guides/'], ["Database sources", '/cli/guides/read-and-write-sqlite-databases/']],
+});
+---
+
+<BaseLayout title="Read and write a SQLite database in a Hydra ETL job" exactTitle="Hydra SQLite Source and Destination: Upsert | Hydra ETL" description="Read a SQLite table or query, write to SQLite with append, replace or upsert, and read the errors. No server. Tested with Hydra ETL 0.22 on Windows." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <CliReferenceShell current="" guide="read-and-write-sqlite-databases">
+    <article class="cli-article cli-guide">
+      <Fragment set:html={main} />
+    </article>
+  </CliReferenceShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

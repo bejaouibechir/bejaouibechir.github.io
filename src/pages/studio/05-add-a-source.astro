@@ -12,13 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/05-add-a-source/',
   name: article.headline,
   steps: ["Create a job", "Rename it, and know Archive from Delete", "Find the job in the workflow palette", "Drop a source, and read its warning", "Configure the CSV source", "Read a database source", "Read an HTTP source"],
-  faq: [
-    ["What is a Hydra job made of?", "A job is a folder holding four manifests: sources.yaml, transformations.yaml, destinations.yaml and pipeline.yaml. Studio writes them from the canvas when you save, and hdrctl runs the same files whether you wrote them by hand or designed them."],
-    ["How do I create a job in Hydra Studio?", "Open Jobs configuration and press the plus button in the tab bar at the bottom left. Studio adds a job named job1 and opens an empty canvas; double-click its tab, or use Rename in its options menu, to give it your name."],
-    ["What is the difference between Archive and Delete for a job?", "Archive renames the job folder to name.backup, with a timestamp suffix if that name is taken, so nothing is lost. Delete asks whether to also remove the folder from disk. Both are refused while the job is still placed on the workflow canvas."],
-    ["Which sources can I add to a job?", "CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, PostgreSQL CDC, MySQL CDC, Snowflake, BigQuery, MongoDB and Web API: thirteen in Hydra ETL 0.22."],
-    ["Which HTTP methods does the Web API source offer?", "GET, POST, PUT and DELETE, with GET selected by default."],
-  ],
+  faq: [["What is a Hydra job made of?", "A job is a folder holding four manifests: sources.yaml, transformations.yaml, destinations.yaml and pipeline.yaml. Studio writes them from the canvas when you save, and hdrctl runs the same files whether you wrote them by hand or designed them."], ["How do I create a job in Hydra Studio?", "Open Jobs configuration and press the plus button in the tab bar at the bottom left. Studio adds a job named job1 and opens an empty canvas; double-click its tab, or use Rename in its options menu, to give it your name."], ["What is the difference between Archive and Delete for a job?", "Archive renames the job folder to name.backup, with a timestamp suffix if that name is taken, so nothing is lost. Delete asks whether to also remove the folder from disk. Both are refused while the job is still placed on the workflow canvas."], ["Which sources can I add to a job?", "CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, PostgreSQL CDC, MySQL CDC, Snowflake, BigQuery, MongoDB and Web API: thirteen in Hydra ETL 0.22."], ["Which HTTP methods does the Web API source offer?", "GET, POST, PUT and DELETE, with GET selected by default."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Create a job", '/studio/05-add-a-source/']],
 });
 ---

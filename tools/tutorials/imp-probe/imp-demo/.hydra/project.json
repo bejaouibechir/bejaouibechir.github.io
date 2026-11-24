@@ -1,0 +1,27 @@
+{
+  "id": "4e0ea12e",
+  "name": "imp-demo",
+  "description": "",
+  "created_at": "2026-11-24T08:23:52.115754+00:00",
+  "conventions": {
+    "data_dir": "Data",
+    "output_dir": "outputs"
+  },
+  "workflows": [
+    {
+      "id": "03e29bc8",
+      "name": "workflow1",
+      "file": "workflows/workflow1.yaml"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "job1",
+      "path": "jobs/job1"
+    },
+    {
+      "name": "refunds-job",
+      "path": "jobs/refunds-job"
+    }
+  ]
+}

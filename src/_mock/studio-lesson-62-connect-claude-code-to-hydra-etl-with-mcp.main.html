@@ -1,0 +1,175 @@
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/cli">Hydra CLI</a><span>›</span><a href="/cli/guides">Guides</a><span>›</span><span>MCP server</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Guide · MCP server</div><h1>Connect Claude Code to Hydra ETL with the MCP server</h1><p class="lead">Install the mcp extra, run hdrctl mcp setup to write .mcp.json, then check the 21 tools of the Hydra ETL MCP server and its guardrails from a small client.</p>
+<p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
+<div class="lesson-meta"><span class="mono">hdrctl mcp setup</span><span>about 15 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
+<section class="doc">
+  <div class="callout"><b>Quick answer</b><p><code>hdrctl mcp setup</code> writes a <code>.mcp.json</code> file at the root of your project. It tells Claude Code to start the Hydra ETL MCP server, which gives the assistant 21 tools limited to that project folder.</p></div>
+  <h2>What will you learn in this lesson?</h2>
+  <h3>Goal</h3><p>Install the extra, write <code>.mcp.json</code>, run setup again, then talk to the server from a short Python client to see its tools and its refusals.</p>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed. See <a href="/studio/install-and-start">Install and start</a>.</li><li>Python 3.10 or later: the MCP SDK needs it.</li><li>A project: <code>hdrctl init mcp-demo --template csv</code>. Work in its folder.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h2>How do I connect Claude Code to Hydra ETL with MCP?</h2>
+
+  <div class="step">
+    <h3><i>01</i>Install the MCP extra</h3>
+    <h4>Objective</h4><p>The server needs the MCP SDK.</p>
+    <h4>Actions</h4><ol><li>Run the command below in the environment where <code>hdrctl</code> lives.</li><li>Check the SDK with <code>py -m pip show mcp</code>.</li></ol>
+    <pre class="cmd">py -m pip install "hydra-etl[mcp]"</pre>
+    <p>The extra installs the <code>mcp</code> package, for Python 3.10 or later. In our test, a clean environment got Hydra ETL 0.22.0 and mcp 2.3.0. Without the extra, <code>hdrctl mcp setup</code> stops and asks for it.</p>
+    <div class="expect"><b>What you should see</b><p><code>pip show mcp</code> prints a name and a version.</p><pre class="out">Name: mcp
+Version: 2.3.0
+Summary: Model Context Protocol SDK</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>02</i>Run the setup</h3>
+    <h4>Objective</h4><p>One command, in the project.</p>
+    <h4>Actions</h4><ol><li>Go to the project folder.</li><li>Run the command below.</li></ol>
+    <pre class="cmd">hdrctl mcp setup</pre>
+    <p>The command finds the root of the project from where you are, writes <code>.mcp.json</code> there, and prints the Python it will use and the folder the server may read and write. The project made by <code>hdrctl init</code> does not list <code>.mcp.json</code> in its <code>.gitignore</code>, so the command reminds you to add it if the project is shared.</p>
+    <div class="expect"><b>What you should see</b><p>A green line saying the file was created, then the notes.</p><pre class="out">  ✅ Claude Code: ...\mcp-demo\.mcp.json created (server "hydra-etl").
+  Python: ...\venv\Scripts\python.exe
+  Workspace: ...\mcp-demo  (the server reads and writes only there)
+  .mcp.json holds paths of this computer: add it to .gitignore if the project is shared; each person runs `hdrctl mcp setup` once.
+
+  Next: open a terminal in the project, run `claude`, approve the hydra-etl server,
+  then type /mcp to see its tools, and ask for a pipeline in a sentence.</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>03</i>Read .mcp.json</h3>
+    <h4>Objective</h4><p>It starts the server with the Python that ran hdrctl.</p>
+    <h4>Actions</h4><ol><li>Open the file.</li></ol>
+    <pre class="cmd">type .mcp.json</pre>
+    <p>The command is the full path of the Python that runs <code>hdrctl</code>, so the server uses the Hydra ETL you installed, whatever is on the PATH. <code>--workspace</code> is the folder the server may touch. Because the file holds paths of your computer, each person of a team runs the setup once.</p>
+    <div class="expect"><b>What you should see</b><p>One server named <code>hydra-etl</code>.</p><pre class="out">{
+  "mcpServers": {
+    "hydra-etl": {
+      "type": "stdio",
+      "command": "...\\venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "hydra_etl.mcp",
+        "--workspace",
+        "...\\mcp-demo"
+      ]
+    }
+  }
+}</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>04</i>Run it again</h3>
+    <h4>Objective</h4><p>Setup is safe to repeat.</p>
+    <h4>Actions</h4><ol><li>Run <code>hdrctl mcp setup</code> a second time, then once from the <code>jobs</code> folder.</li><li>Try <code>hdrctl mcp setup --path nope</code>.</li></ol>
+    <pre class="cmd">hdrctl mcp setup --path nope</pre>
+    <p>Run again, even from a subfolder, the command finds the same project root and reports the file as <code>unchanged</code>. If the file already holds other servers, they are kept. According to the source, a <code>.mcp.json</code> that is not valid JSON is never overwritten: the command refuses and changes nothing. We tested the repeat and the wrong folder, not the invalid file.</p>
+    <div class="expect"><b>What you should see</b><p><code>unchanged</code> on the repeats, and an error for the wrong folder.</p><pre class="out">  ✅ Claude Code: ...\mcp-demo\.mcp.json unchanged (server "hydra-etl").
+
+  ❌ Folder not found: nope</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>05</i>Talk to the server</h3>
+    <h4>Objective</h4><p>A short client, as Claude Code would.</p>
+    <h4>Actions</h4><ol><li>Save the script below as <code>check_mcp.py</code>.</li><li>Run it with the Python of <code>.mcp.json</code>, giving the project folder and that Python.</li></ol>
+    <pre class="cmd">py check_mcp.py "%CD%" "<python from .mcp.json>"</pre>
+    <p>The script starts the server over stdio, as Claude Code does, and lists its tools with the two flags a client reads before it asks you to confirm an action. It then reads a job and two paths that must be refused.</p><pre class="cmd">import asyncio, sys
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+WORKSPACE, PYTHON = sys.argv[1], sys.argv[2]
+
+async def main():
+    params = StdioServerParameters(
+        command=PYTHON, args=[&quot;-m&quot;, &quot;hydra_etl.mcp&quot;, &quot;--workspace&quot;, WORKSPACE])
+    async with stdio_client(params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            tools = await session.list_tools()
+            print(len(tools.tools), &quot;tools&quot;)
+            for t in tools.tools:
+                a = t.annotations
+                print(t.name, &quot;| readOnly =&quot;, a.read_only_hint, &quot;| destructive =&quot;, a.destructive_hint)
+            for path in (&quot;jobs/job1&quot;, &quot;../outside&quot;, &quot;C:/Windows&quot;):
+                result = await session.call_tool(&quot;hydra_read_job&quot;, {&quot;job_path&quot;: path})
+                print(&quot;#&quot;, path)
+                print(result.content[0].text[:120])
+
+asyncio.run(main())
+</pre>
+    <div class="expect"><b>What you should see</b><p>21 tools, with the read-only ones flagged as such.</p><pre class="out">21 tools
+hydra_list_operations | readOnly = True | destructive = False
+hydra_list_connectors | readOnly = True | destructive = False
+hydra_list_jobs | readOnly = True | destructive = False
+hydra_read_job | readOnly = True | destructive = False
+hydra_validate_job | readOnly = True | destructive = False
+hydra_write_job | readOnly = False | destructive = False
+hydra_delete_job | readOnly = False | destructive = True
+hydra_run_job | readOnly = False | destructive = True
+hydra_write_workflow | readOnly = False | destructive = False
+hydra_run_workflow | readOnly = False | destructive = True
+... (11 more, all read-only)</pre>
+      
+    </div>
+  </div>
+
+  <div class="step">
+    <h3><i>06</i>Read the refusals</h3>
+    <h4>Objective</h4><p>The server stays inside the project.</p>
+    <h4>Actions</h4><ol><li>Look at the last lines of the output of the script.</li></ol>
+    <pre class="cmd">py check_mcp.py ...</pre>
+    <p>The first path is a real job and is read. The two others are refused before any file is touched. In our test the server also refused a job written with invalid YAML (<code>REFUSED — sources.yaml is not valid YAML</code>), and refused to delete a job that a workflow still runs (<code>REFUSED — nothing was moved</code>). Deleting a job moves it to <code>.hydra/trash</code>, according to the source.</p>
+    <div class="expect"><b>What you should see</b><p><code>REFUSED</code> for both bad paths.</p><pre class="out"># jobs/job1
+### sources.yaml
+sources:
+  src_csv:
+    type: csv
+...
+# ../outside
+REFUSED — Path outside the workspace: '../outside'. Allowed root: ...\mcp-demo
+# C:/Windows
+REFUSED — Absolute path refused: 'C:/Windows'. Give a path relative to ...\mcp-demo</pre>
+      
+    </div>
+  </div>
+
+<div class="rules">
+  <h5>Tips and tricks</h5>
+  <p data-kind="TIP">Open Claude Code in the project folder, approve the <code>hydra-etl</code> server when asked, then type <code>/mcp</code>. We did not run Claude Code in this test: the steps above check the server it will start.</p>
+  <p data-kind="TIP">Ask the assistant to read and validate before it writes. The tool <code>hydra_write_job</code> validates first and writes nothing if the job is invalid, according to the source.</p>
+  <p data-kind="TRAP"><code>hydra_run_job</code> writes real data to the destination. In our test, running <code>job1</code> through the server read 3 rows and wrote 2 to <code>data/output.csv</code>. Run only what you asked for.</p>
+  <p data-kind="TRAP">Without the extra, setup stops. Install <code>hydra-etl[mcp]</code> in the same environment as <code>hdrctl</code>, because <code>.mcp.json</code> points to that Python.</p>
+  <p data-kind="TRAP">Move the project or recreate the virtual environment and the paths in <code>.mcp.json</code> are wrong. Run <code>hdrctl mcp setup</code> again: it updates the entry.</p>
+</div>
+
+  <h2>What should I have at the end?</h2><table><thead><tr><th>Verification</th><th>Expected result</th></tr></thead><tbody><tr><td>Command</td><td>hdrctl mcp setup [claude-code] [--path FOLDER]</td></tr><tr><td>Writes</td><td>.mcp.json at the project root (other servers kept)</td></tr><tr><td>Server</td><td>python -m hydra_etl.mcp --workspace FOLDER (stdio)</td></tr><tr><td>Tools</td><td>21, with read-only and destructive flags</td></tr><tr><td>Scope</td><td>files inside the workspace folder only</td></tr></tbody></table>
+
+  <h2>What if something goes wrong?</h2><table><thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>The MCP server needs its extra: pip install "hydra-etl[mcp]"</td><td>The mcp package is missing, or Python is older than 3.10</td><td>Install hydra-etl[mcp] with Python 3.10 or later</td></tr><tr><td>Folder not found: nope</td><td>--path is not a folder</td><td>Give an existing folder of the project</td></tr><tr><td>REFUSED — Path outside the workspace</td><td>The assistant asked for a path with ..</td><td>Give a path relative to the project</td></tr></tbody></table>
+
+  <h2>Frequently asked questions</h2>
+  <h3>What is the Hydra ETL MCP server?</h3>
+  <p>A local program, started with python -m hydra_etl.mcp, that lets an AI assistant call 21 Hydra ETL tools: list the vocabulary, read, validate, write and run jobs and workflows. In our test on Hydra ETL 0.22 with the MCP SDK 2.3.0, a client listed all 21 tools over stdio.</p>
+  <h3>Does hdrctl mcp setup change my global Claude Code settings?</h3>
+  <p>No. According to the source and to our test, it writes a file named .mcp.json at the root of the project and nothing else. Existing servers of that file are kept, and a file that is not valid JSON is never overwritten.</p>
+  <h3>Can the assistant read files outside my project?</h3>
+  <p>In our test, a path with .. and an absolute path were both refused with a message naming the allowed root. The server works inside the folder given by --workspace.</p>
+  <h3>Can the assistant run a job without asking me?</h3>
+  <p>The tools that run or delete are flagged destructive, so a client can ask you first. The server description also tells the assistant to run a job only when you ask. Whether your client asks is a setting of the client, which we did not test.</p>
+  <h3>Can I use it with a client other than Claude Code?</h3>
+  <p>The server speaks standard MCP over stdio, and hdrctl mcp setup supports only claude-code. According to the source, there is also an HTTP mode with no authentication, meant for your own machine. We did not test other clients or the HTTP mode.</p>
+
+  <h2>Related lessons</h2>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage jobs and parameters from the CLI</a></li><li><a href="/cli/guides/anatomy-of-a-job">Anatomy of a job</a></li><li><a href="/cli/guides/run-hydra-in-production-with-hdrctl-serve">Run Hydra ETL in production</a></li></ul>
+
+  <h2>Next lesson</h2><p>Setup, the file it writes, and the server seen from a client. Not covered here: Claude Code itself, other clients, and the HTTP mode.</p>
+  <div class="lesson-nav"><a class="primary" href="/studio">Back to all lessons <span aria-hidden="true">→</span></a><a href="/cli/guides">Back to all guides</a></div>
+  <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
+</section>

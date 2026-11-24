@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductLearningShell from '../../components/ProductLearningShell.astro';
+import { studioLessons } from '../../data/studio-lessons.js';
+import css from '../../_mock/learning-hub.css?raw';
+import lessonCss from '../../_mock/cli-lesson.css?raw';
+import js from '../../_mock/learning-hub.js?raw';
+import main from '../../_mock/studio-lesson-22-import-a-job-into-a-workflow.main.html?raw';
+import { lessonJsonLd } from '../../data/lesson-jsonld.js';
+const article = { headline: "Import a job into a Hydra ETL workflow", description: "Import a job folder into a Hydra ETL workflow from the Import menu, save it into the project and run it. Tested with Hydra ETL 0.22 on Windows.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/studio/import-a-job-into-a-workflow/',
+  name: article.headline,
+  steps: ["Check the job folder", "Open the Import menu", "Read the new node", "Save and read what was written", "Add the data and run it", "Read the alert for a missing file"],
+  faq: [["How do I bring a job written elsewhere into a Hydra ETL workflow?", "Open the workflow in Studio, choose the Workflow configuration tab, then Import and Import a job, and pick the job folder. In our test on Hydra ETL 0.22, the folder refunds-job, with four YAML files at its root, added a node of the same name to the canvas."], ["Which files does the folder need?", "Four files at its root: sources.yaml, transformations.yaml, destinations.yaml and pipeline.yaml. With transformations.yaml missing, Studio showed an alert that lists the missing file and added nothing."], ["What does Save write?", "In our test, Save created the folder jobs/refunds-job in the project with the four files, rewritten by Studio (they start with version: '1.0' and the source and destination gain connection: {}), and added a step to the workflow file that points to ../jobs/refunds-job. The data folder of the original job is not copied."], ["What is the name of the step that Import creates?", "A generated name, job_ followed by a number (job_1795508669807 in our test), not the name of the folder. The node label shows the folder name."], ["Does the imported job run?", "Yes, once its data is in place. We copied an orders.csv into jobs/refunds-job/data and ran the workflow: both steps were OK in 2.0 seconds and the output file refunds.csv was written."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Import a job", '/studio/import-a-job-into-a-workflow/']],
+});
+---
+
+<BaseLayout title="Import a job into a Hydra ETL workflow" exactTitle="Hydra Studio: Import a Job into a Workflow | Hydra ETL" description="Import a job folder into a Hydra ETL workflow from the Import menu, save it into the project and run it. Tested with Hydra ETL 0.22 on Windows." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <ProductLearningShell
+    product="Studio"
+    title="Hydra Studio tutorials"
+    lead="Learn the visual path from an empty canvas to generated YAML, a validated design and a run you can inspect node by node."
+    duration="about 90 minutes"
+    lessons={studioLessons}
+    activeSlug="import-a-job-into-a-workflow"
+    referenceHref="/playground"
+    referenceLabel="Explore a job without installing"
+  >
+    <Fragment set:html={main} />
+  </ProductLearningShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CliReferenceShell from '../../components/CliReferenceShell.astro';
+import { cliGuidesFor } from '../../data/cli-guides.js';
 import { cliEntries, cliByKey, cliChildren, cliNext, cliVersion, type CliEntry } from '../../data/cli-reference';
 
 export function getStaticPaths() {
@@ -10,6 +11,7 @@ interface Props { entry: CliEntry }
 const { entry } = Astro.props;
 const parent = entry.path.length > 1 ? cliByKey.get(entry.path[0]) : undefined;
 const next = cliNext(entry);
+const guides = entry.path.length === 1 ? cliGuidesFor(entry.key) : [];
 ---
 
 <BaseLayout title={`hdrctl ${entry.key} | CLI reference`} description={`${entry.objective} Syntax, example, tips and pitfalls for Hydra CLI ${cliVersion}.`}>
@@ -27,6 +29,7 @@ const next = cliNext(entry);
       <section aria-labelledby="cli-example"><h2 id="cli-example"><span>03</span> Explained example</h2><pre><code>{entry.example}</code></pre><p>{entry.explanation}</p></section>
       <section aria-labelledby="cli-advice"><h2 id="cli-advice"><span>04</span> Tips and pitfalls</h2><div class="cli-advice-grid"><div class="cli-advice-tip"><strong>Tip</strong><p>{entry.tip}</p></div><div class="cli-advice-trap"><strong>Avoid this pitfall</strong><p>{entry.pitfall}</p></div></div></section>
       {entry.children.length > 0 && <section aria-labelledby="cli-subcommands"><h2 id="cli-subcommands"><span>05</span> Related subcommands</h2><div class="cli-subcommands">{cliChildren(entry).map((child) => <a href={child.url}><code>hdrctl {child.key}</code><span>{child.objective}</span><b aria-hidden="true">→</b></a>)}</div></section>}
+      {guides.length > 0 && <section aria-labelledby="cli-guides"><h2 id="cli-guides"><span>06</span> Guides</h2><div class="cli-subcommands">{guides.map((g) => <a href={`/cli/guides/${g.slug}/`}><code>{g.label}</code><span>{g.description}</span><b aria-hidden="true">→</b></a>)}</div></section>}
       {next && <nav class="cli-next" aria-label="Next command"><span>Next in the reference</span><a href={next.url}><code>hdrctl {next.key}</code> →</a></nav>}
     </article>
   </CliReferenceShell>

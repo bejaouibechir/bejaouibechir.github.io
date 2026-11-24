@@ -1,0 +1,5 @@
+steps:
+  - select:
+      columns: [order_id, customer, amount, status]
+  - filter:
+      expr: "status == 'refunded'"

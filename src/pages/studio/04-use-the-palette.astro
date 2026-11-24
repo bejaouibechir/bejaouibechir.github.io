@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/04-use-the-palette/',
   name: article.headline,
   steps: ["Discover the palette", "Read what a workflow can do", "Tell someone, or tell something", "The palette knows which machine it runs on", "Run Python, on any host", "Reach outside the machine, and carry values across steps", "Steer the graph, and group what it holds", "Your own jobs become palette entries", "Read the connectors, in and out", "Twenty ways to reshape data", "Write the transformation that does not exist", "Give the canvas room"],
-  faq: [
-    ["How many sources, transformations and destinations does Hydra Studio offer?", "In Hydra ETL 0.22 the job palette lists 13 sources, 20 transformations and 10 destinations. The workflow palette lists 9 actions, 2 control-flow nodes, 3 containers and the jobs of the project."],
-    ["Which sources have no matching destination?", "Web API, PostgreSQL CDC and MySQL CDC are sources only. The other ten connectors work in both directions."],
-    ["Why is Bash or PowerShell dimmed in the palette?", "Each shell action is tied to an operating system. Bash runs on Linux and macOS, PowerShell on Windows, and the other one is dimmed on your host."],
-    ["What if no transformation fits my rule?", "Use the Script transformation: you declare the input and output columns and write the Python in between. It can run vectorized on whole columns or row by row."],
-  ],
+  faq: [["How many sources, transformations and destinations does Hydra Studio offer?", "In Hydra ETL 0.22 the job palette lists 13 sources, 20 transformations and 10 destinations. The workflow palette lists 9 actions, 2 control-flow nodes, 3 containers and the jobs of the project."], ["Which sources have no matching destination?", "Web API, PostgreSQL CDC and MySQL CDC are sources only. The other ten connectors work in both directions."], ["Why is Bash or PowerShell dimmed in the palette?", "Each shell action is tied to an operating system. Bash runs on Linux and macOS, PowerShell on Windows, and the other one is dimmed on your host."], ["What if no transformation fits my rule?", "Use the Script transformation: you declare the input and output columns and write the Python in between. It can run vectorized on whole columns or row by row."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Use the palette", '/studio/04-use-the-palette/']],
 });
 ---

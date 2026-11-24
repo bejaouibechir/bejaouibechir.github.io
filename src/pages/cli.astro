@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CliReferenceShell from '../components/CliReferenceShell.astro';
+import { cliGuideCategories } from '../data/cli-guides.js';
 import { cliRoots, cliChildren, cliVersion } from '../data/cli-reference';
 ---
 
@@ -26,6 +27,15 @@ hdrctl run shop --env dev</code></pre>
           <a href={root.url}><code>hdrctl {root.key}</code><span aria-hidden="true">→</span></a>
           <p>{root.objective}</p>
           {root.children.length > 0 && <div class="cli-card-children">{cliChildren(root).map((child) => <a href={child.url}>{child.path.at(-1)}</a>)}</div>}
+        </article>)}
+      </div>
+    </section>
+    <section class="cli-overview" aria-labelledby="cli-guides-home">
+      <div class="cli-section-heading"><div><p class="cli-eyebrow">GUIDES</p><h2 id="cli-guides-home">Step-by-step guides</h2></div><a href="/cli/guides/">All guides →</a></div>
+      <div class="cli-command-grid">
+        {cliGuideCategories.map((cat) => <article class="cli-command-card">
+          <a href={`/cli/guides/#${cat.id}`}><span>{cat.title}</span><span aria-hidden="true">→</span></a>
+          <div class="cli-card-children">{cat.lessons.map((l) => <a href={`/cli/guides/${l.slug}/`}>{l.label}</a>)}</div>
         </article>)}
       </div>
     </section>

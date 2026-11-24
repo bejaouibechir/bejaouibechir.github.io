@@ -1,0 +1,23 @@
+{
+ "project": "4e0ea12e",
+ "workflows": [
+  [
+   "03e29bc8",
+   "workflow1"
+  ]
+ ],
+ "nodes_before": 1,
+ "nodes_after_import": 2,
+ "dialogs": [],
+ "toast_or_text": [],
+ "nodes_after_reload": 2,
+ "node_texts_reload": [
+  "job1\n\njob1",
+  "refunds-job\n\njob_1795508669807"
+ ],
+ "jobs_on_disk": [
+  "job1",
+  "refunds-job"
+ ],
+ "workflow_yaml": "# Execution order of this project's workflows (read by `hdrctl run`).\n# Stages run one after the other.\n#   mode        : sequential (one workflow after the other) | parallel (all at once)\n#   delay_after : pause after the stage, in seconds or 30s / 5m / 1h (optional)\n#   delay_before: on a workflow, wait before starting it (sequential: after the\n#                 previous one; parallel: after the stage starts) (optional)\n#   timeout     : on a workflow, maximum duration; beyond it the workflow fails (optional)\n#   active      : false skips the workflow without removing it (debugging)\n# Each name refers to workflows/<name>.yaml.\n# Optional loops, to replay a part of the thread N times:\n#   loops:\n#     - from: workflow1   # last workflow of the part\n#       to: workflow1     # first workflow of the part\n#       times: 3          # total passes\n#       delay: 5m         # pause before each repeat (optional)\n# Optional fallback on a workflow (a backup workflow, outside the thread):\n#       - name: workflow1\n#         fallback:\n#           use: [workflow1_backup]                   # tried in order\n#           when: \"not source_available('my_db')\"   # checked just before the start\n#           on_failure: true                          # also after a failure (nothing published)\nversion: \"1.0\"\nthread:\n  - mode: sequential\n    workflows:\n      - name: workflow1\n        active: true\n"
+}

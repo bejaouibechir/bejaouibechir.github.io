@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/11-review-a-run/',
   name: article.headline,
   steps: ["Open run history", "Read the run history", "Inspect one execution"],
-  faq: [
-    ["Where are past runs in Hydra Studio?", "On the Runs page, opened from the sidebar or from the editor. It lists each execution with its workflow, status, step count, start time and duration."],
-    ["How do I filter runs by status?", "Use the All, Running, Success, Failed and Pending filters above the list."],
-    ["Where do I read the logs of one step?", "Open the run to reach its detail page, then inspect the captured logs of the executed step."],
-    ["Does the run history survive closing Studio?", "Yes. Runs are saved by the API, so the history is still there when you reopen Studio."],
-  ],
+  faq: [["Where are past runs in Hydra Studio?", "On the Runs page, opened from the sidebar or from the editor. It lists each execution with its workflow, status, step count, start time and duration."], ["How do I filter runs by status?", "Use the All, Running, Success, Failed and Pending filters above the list."], ["Where do I read the logs of one step?", "Open the run to reach its detail page, then inspect the captured logs of the executed step."], ["Does the run history survive closing Studio?", "Yes. Runs are saved by the API, so the history is still there when you reopen Studio."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Review a run", '/studio/11-review-a-run/']],
 });
 ---

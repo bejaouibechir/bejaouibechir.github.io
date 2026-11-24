@@ -1,0 +1,13 @@
+version: '1.0'
+transformations:
+  steps:
+    - select:
+        columns:
+          - id
+          - name
+          - value
+    - cast:
+        mapping:
+          value: float
+    - filter:
+        expr: value > 0

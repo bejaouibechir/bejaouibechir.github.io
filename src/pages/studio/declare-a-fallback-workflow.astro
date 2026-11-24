@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/declare-a-fallback-workflow/',
   name: article.headline,
   steps: ["Open the execution order", "Add a fallback to the workflow", "Choose the replacement and write the condition", "Preview the result", "Save, then check the project", "Run it and read the switch"],
-  faq: [
-    ["What is a fallback workflow in Hydra ETL?", "A workflow that runs only in place of another one, when a condition written in thread.yaml is true just before the main workflow would start."],
-    ["Where is a fallback declared?", "In workflows/thread.yaml, as a fallback block with use (the replacement workflows) and when (the condition) under the workflow it protects."],
-    ["Does a fallback run when a workflow fails?", "Only if the fallback sets on_failure: true, which Studio shows as the also after a failure checkbox. Without it, the condition is the only trigger."],
-    ["Can I test a fallback without running anything?", "Yes. hdrctl run . --dry-run prints the plan, including a fallback line under each workflow that has one, and writes nothing."],
-  ],
+  faq: [["What is a fallback workflow in Hydra ETL?", "A workflow that runs only in place of another one, when a condition written in thread.yaml is true just before the main workflow would start."], ["Where is a fallback declared?", "In workflows/thread.yaml, as a fallback block with use (the replacement workflows) and when (the condition) under the workflow it protects."], ["Does a fallback run when a workflow fails?", "Only if the fallback sets on_failure: true, which Studio shows as the also after a failure checkbox. Without it, the condition is the only trigger."], ["Can I test a fallback without running anything?", "Yes. hdrctl run . --dry-run prints the plan, including a ↪ fallback line under each workflow that has one, and writes nothing."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Declare a fallback workflow", '/studio/declare-a-fallback-workflow/']],
 });
 ---

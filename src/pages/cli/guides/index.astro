@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import { cliGuideCategories } from '../../../data/cli-guides.js';
+import { cliByKey } from '../../../data/cli-reference';
+const n = cliGuideCategories.reduce((a, c) => a + c.lessons.length, 0);
+---
+
+<BaseLayout title="Hydra CLI guides: step-by-step tutorials" description="Step-by-step Hydra ETL guides for the command line, grouped by command: init, run, job, triggers, watch, serve, MCP, sources and sub-projects.">
+  <CliReferenceShell guide="*">
+    <header class="cli-hero">
+      <p class="cli-eyebrow">HYDRA CLI · GUIDES</p>
+      <h1>Hydra CLI guides</h1>
+      <p>{n} tested, step-by-step guides. Each one sits under the command it teaches; topics with no command of their own have their own heading.</p>
+    </header>
+    {cliGuideCategories.map((cat) => (
+      <section class="cli-overview" id={cat.id} aria-labelledby={`g-${cat.id}`}>
+        <div class="cli-section-heading"><div><p class="cli-eyebrow">{cat.command ? `HDRCTL ${cat.command.toUpperCase()}` : 'TOPIC'}</p><h2 id={`g-${cat.id}`}>{cat.title}</h2></div>{cat.command && cliByKey.get(cat.command) && <a class="cli-parent-link" href={cliByKey.get(cat.command).url}>hdrctl {cat.command} reference →</a>}</div>
+        <div class="cli-subcommands">{cat.lessons.map((l) => <a href={`/cli/guides/${l.slug}/`}><code>{l.label}</code><span>{l.description}</span><b aria-hidden="true">→</b></a>)}</div>
+      </section>
+    ))}
+  </CliReferenceShell>
+</BaseLayout>

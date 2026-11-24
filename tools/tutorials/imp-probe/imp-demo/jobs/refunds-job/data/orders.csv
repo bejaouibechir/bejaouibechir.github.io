@@ -1,0 +1,21 @@
+order_id,customer,country,product,quantity,unit_price,amount,order_date,status
+1001,Acme Retail,GB,Keyboard,1,49.00,49.00,2026-02-05,paid
+1002,Blue Harbor,FR,Desk lamp,6,24.00,144.00,2026-01-16,refunded
+1003,Acme Retail,US,Headset,1,59.00,59.00,2026-02-01,paid
+1004,Acme Retail,FR,Monitor stand,5,32.50,162.50,2026-01-30,refunded
+1005,Harvest Moon,FR,Headset,2,59.00,118.00,2026-02-09,paid
+1006,Granite Labs,GB,Desk lamp,6,24.00,144.00,2026-02-09,paid
+1007,Blue Harbor,US,Desk lamp,3,24.00,72.00,2026-02-22,paid
+1008,Evergreen Co,US,Backpack,3,39.90,119.70,2026-04-08,pending
+1009,Granite Labs,US,Monitor stand,1,32.50,32.50,2026-03-16,paid
+1010,Fjord Supply,FR,Keyboard,5,49.00,245.00,2026-01-29,paid
+1011,Delta Parts,GB,Notebook,6,4.50,27.00,2026-01-15,paid
+1012,Evergreen Co,DE,Notebook,4,4.50,18.00,2026-03-27,paid
+1013,Fjord Supply,CA,Desk lamp,3,24.00,72.00,2026-03-31,paid
+1014,Blue Harbor,FR,Keyboard,6,49.00,294.00,2026-03-27,paid
+1015,Delta Parts,CA,Monitor stand,6,32.50,195.00,2026-03-05,pending
+1016,Delta Parts,GB,Backpack,6,39.90,239.40,2026-04-22,paid
+1017,Fjord Supply,DE,Desk lamp,1,24.00,24.00,2026-02-08,paid
+1018,Fjord Supply,CA,Desk lamp,5,24.00,120.00,2026-03-29,pending
+1019,Harvest Moon,CA,Headset,6,59.00,354.00,2026-02-07,paid
+1020,Evergreen Co,FR,Desk lamp,6,24.00,144.00,2026-02-28,refunded

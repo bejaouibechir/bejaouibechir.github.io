@@ -51,7 +51,7 @@ import sys
 
 THEMES = {"light", "dark", "midnight", "ocean"}
 NAME_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+){2,}")
-STEP_KEYS = {"goto", "click", "click_text", "fill", "press", "hover", "scroll_into_view", "wait_for", "wait_ms", "block_api", "click_last_text", "drag", "dblclick_last_node", "dblclick_node", "dblclick_node_event", "click_xy", "drag_xy", "drag_visible", "type", "dblclick_text", "drag_node_into_last", "rightclick_node", "click_last_node_header", "select_option"}
+STEP_KEYS = {"goto", "click", "click_text", "fill", "press", "hover", "scroll_into_view", "wait_for", "wait_ms", "block_api", "click_last_text", "drag", "dblclick_last_node", "dblclick_node", "dblclick_node_event", "click_xy", "drag_xy", "drag_visible", "type", "dblclick_text", "drag_node_into_last", "rightclick_node", "click_last_node_header", "select_option", "upload_dir"}
 
 
 def load_spec(path) -> dict:
@@ -178,6 +178,10 @@ def run(spec: dict, out_dir: pathlib.Path, only: str | None, headed: bool, chann
                     c = page.locator(".react-flow__node").last.bounding_box()
                     page.mouse.click(c["x"] + c["width"] * 0.5, c["y"] + 14)
                     page.wait_for_timeout(600)
+                elif "upload_dir" in st:
+                    # {"upload_dir": "input[type=file][webkitdirectory] >> nth=1", "path": "C:\\path\\to\\folder"}: pick a folder in a hidden folder input
+                    page.locator(st["upload_dir"]).set_input_files(st["path"])
+                    page.wait_for_timeout(1500)
                 elif "select_option" in st:
                     # {"select_option": "[aria-label='x']", "value": "wf_load_backup"}
                     page.select_option(st["select_option"], st["value"])

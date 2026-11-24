@@ -28,7 +28,7 @@ ok  API_URL set for (common) (...\fake-home\env)</pre>
     <h4>Actions</h4><ol><li>Create the environment.</li><li>Give it its own <code>API_URL</code>.</li></ol>
     <pre class="cmd">hdrctl env create prod
 hdrctl env set API_URL https://api.example.test --env prod</pre>
-    <p><code>env create</code> makes <code>env.prod</code> in the settings folder and <code>environments/prod.yaml</code> in the project. The project file holds parameter values, as in <a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a>. Add <code>--global-only</code> to skip it.</p>
+    <p><code>env create</code> makes <code>env.prod</code> in the settings folder and <code>environments/prod.yaml</code> in the project. The project file holds parameter values, as in <a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a>. Add <code>--global-only</code> to skip it.</p>
     <div class="expect"><b>What you should see</b><p>A box that says <code>Environment 'prod' created</code> and two <code>created</code> lines.</p><pre class="out">✅ Environment 'prod' created
   created ...\fake-home\env.prod
   created ...\envx-demo\environments\prod.yaml
@@ -132,7 +132,7 @@ hdrctl env delete production -y</pre>
   <p>Set HYDRA_HOME to an empty folder before you run the commands. The global files go there instead of the .hydra folder of your user. All the tests of this lesson used it.</p>
 
   <h2>Related lessons</h2>
-  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/studio/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/store-and-use-secrets-with-hdrctl">Store and use secrets</a></li><li><a href="/cli/guides/manage-jobs-and-parameters-from-the-cli">Manage projects from the CLI</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li></ul>
 
   <h2>Next lesson</h2><p>Common values, one environment per target, one option to choose. Not covered here: the Environments panel of Studio.</p>
   <div class="lesson-nav"><a class="primary" href="/studio/store-and-use-secrets-with-hdrctl">Next: Secrets <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>

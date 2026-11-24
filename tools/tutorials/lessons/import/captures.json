@@ -1,0 +1,105 @@
+{
+ "base_url": "http://127.0.0.1:5678",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "scale": 2,
+ "theme_cycle": [
+  "light",
+  "dark"
+ ],
+ "replace_text": {
+  "C:\\Users\\DELL": "C:\\Users\\you",
+  "essai012": "orders-demo",
+  "fallbackproject": "backup-demo",
+  "env-project": "env-demo",
+  "hydra-cdc-mirror-demo": "cdc-demo",
+  "snwoflake": "warehouse-demo"
+ },
+ "shots": [
+  {
+   "name": "import-menu-import-a-job",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "light",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1500
+    },
+    {
+     "click_xy": [
+      1417,
+      140
+     ]
+    },
+    {
+     "wait_ms": 400
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "click": "button[title='Import a job into the workflow']"
+    },
+    {
+     "wait_ms": 500
+    }
+   ],
+   "clip": {
+    "x": 440,
+    "y": 50,
+    "width": 1000,
+    "height": 140
+   },
+   "alt": "The Import menu of the workflow editor, open under the toolbar, with one entry named Import a job and the hint Select a job folder (4 YAML files) and add a node to the canvas."
+  },
+  {
+   "name": "import-job-node-on-canvas",
+   "path": "/workflows/a991cb22?projectId=e84ae443",
+   "theme": "dark",
+   "steps": [
+    {
+     "wait_for": "header"
+    },
+    {
+     "wait_ms": 1500
+    },
+    {
+     "click_xy": [
+      1417,
+      140
+     ]
+    },
+    {
+     "wait_ms": 400
+    },
+    {
+     "click_text": "Workflow configuration"
+    },
+    {
+     "wait_ms": 1000
+    },
+    {
+     "upload_dir": "input[type=file][webkitdirectory] >> nth=1",
+     "path": "C:\\Users\\DELL\\Desktop\\hydra-site\\tools\\tutorials\\imp-gen\\refunds-job"
+    },
+    {
+     "wait_ms": 800
+    }
+   ],
+   "clip": {
+    "x": 208,
+    "y": 55,
+    "width": 1232,
+    "height": 675
+   },
+   "alt": "The workflow canvas after importing the folder refunds-job: a third job node named refunds-job sits to the right of first-job and second-job, with a small red alert icon, and refunds-job is listed under Jobs in the palette."
+  }
+ ]
+}

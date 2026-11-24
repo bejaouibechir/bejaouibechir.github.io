@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import css from '../../../_mock/learning-hub.css?raw';
+import lessonCss from '../../../_mock/cli-lesson.css?raw';
+import js from '../../../_mock/learning-hub.js?raw';
+import main from '../../../_mock/studio-lesson-15-launch-a-job-from-the-cli-and-the-api.main.html?raw';
+import { lessonJsonLd } from '../../../data/lesson-jsonld.js';
+const article = { headline: "Launch a Hydra job from the CLI and the API", description: "Run a Hydra job or project with hdrctl run, then start it with POST /api/runs and read the run back. Tested with Hydra ETL 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/cli/guides/launch-a-job-from-the-cli-and-the-api/',
+  name: article.headline,
+  steps: ["Run one job", "Run the whole project", "Start the API server", "Start a run with a POST", "Read the run"],
+  faq: [["How do I run a Hydra job without Studio?", "Run hdrctl run , for example hdrctl run jobs/job1. It runs that one job and prints the rows read and written."], ["What is the difference between running a job and running a project?", "hdrctl run on a job folder runs that job only. hdrctl run on a project folder, a folder with .hydra, runs the workflows of workflows/thread.yaml in order. In our test the project run took 1.6 seconds and reported 1/1 workflow(s) OK."], ["How do I start a run from the API?", "Start hdrctl serve, then send POST /api/runs with a JSON body that holds workflow_path, the path of a workflow file or a project folder. The server answers 202 Accepted with a run_id and the status pending, and the run goes on in the background."], ["How do I read the result of an API run?", "Call GET /api/runs. Each run lists its status, its duration and its steps. In our test the run went from pending to success in under a second."], ["Can an AI assistant launch a job?", "Hydra ETL ships an MCP server with a hydra_run_job tool. According to its source, it runs hdrctl run on the job folder and returns the log. We did not test it here: the MCP server has its own lesson."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra CLI', '/cli/'], ['Guides', '/cli/guides/'], ["Other launches", '/cli/guides/launch-a-job-from-the-cli-and-the-api/']],
+});
+---
+
+<BaseLayout title="Launch a Hydra job from the CLI and the API" exactTitle="Hydra Run a Job: hdrctl run and POST /api/runs | Hydra ETL" description="Run a Hydra job or project with hdrctl run, then start it with POST /api/runs and read the run back. Tested with Hydra ETL 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <CliReferenceShell current="run" guide="launch-a-job-from-the-cli-and-the-api">
+    <article class="cli-article cli-guide">
+      <Fragment set:html={main} />
+    </article>
+  </CliReferenceShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

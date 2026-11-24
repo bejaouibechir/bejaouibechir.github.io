@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import css from '../../../_mock/learning-hub.css?raw';
+import lessonCss from '../../../_mock/cli-lesson.css?raw';
+import js from '../../../_mock/learning-hub.js?raw';
+import main from '../../../_mock/studio-lesson-24-clean-split-window-pivot-and-script.main.html?raw';
+import { lessonJsonLd } from '../../../data/lesson-jsonld.js';
+const article = { headline: "Clean, split, window, pivot and script transformations", description: "Clean text, split values into rows, add window columns, pivot, unpivot and run a Python script step in Hydra ETL. Tested with 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/cli/guides/clean-split-window-pivot-and-script/',
+  name: article.headline,
+  steps: ["Clean spaces and case", "Split a value into rows", "Number rows and add a running total", "Turn rows into columns", "Turn columns into rows", "Write your own step"],
+  faq: [["How do I clean spaces and letter case in Hydra ETL?", "Use the clean transformation: clean with columns and case set to lower or upper. It removed the spaces around values and lowered the case in our test. According to the source, without columns it applies to all text columns; we did not test that."], ["How do I split a value into several rows?", "Use text_to_rows with the column and a separator. In our test a tags value a;b became two rows, and the other columns were copied. 3 rows in, 5 rows out."], ["How do I number rows or compute a running total?", "Use window with partition_by, order_by and columns. row_number, cumsum and lag worked in our test. cumsum needs a numeric column, so cast a CSV column first."], ["What do pivot and unpivot do?", "pivot turns the values of a column into columns, with an aggregate such as sum. unpivot does the reverse and turns columns back into rows. Both ran on two small files in our test."], ["Can I write my own Python step?", "Yes, with the script transformation: you declare input columns, typed output columns and the code. It runs in a restricted environment: an import was refused in our test. The error message is in French in Hydra ETL 0.22."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra CLI', '/cli/'], ['Guides', '/cli/guides/'], ["Transformations 2", '/cli/guides/clean-split-window-pivot-and-script/']],
+});
+---
+
+<BaseLayout title="Clean, split, window, pivot and script in Hydra ETL" exactTitle="Hydra Window, Pivot and Script Transforms | Hydra ETL" description="Clean text, split values into rows, add window columns, pivot, unpivot and run a Python script step in Hydra ETL. Tested with 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <CliReferenceShell current="" guide="clean-split-window-pivot-and-script">
+    <article class="cli-article cli-guide">
+      <Fragment set:html={main} />
+    </article>
+  </CliReferenceShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

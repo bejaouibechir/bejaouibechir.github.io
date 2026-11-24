@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/13-handle-failure/',
   name: article.headline,
   steps: ["Find the Containers category", "Compare the three container types", "Group a job in a Sequence", "Detach a step from its container", "Choose an Error Scope policy", "Configure a Retry Scope"],
-  faq: [
-    ["What are the containers in Hydra Studio?", "Sequence, which only groups; Error Scope, which sets what happens when a child fails (skip, continue or fail); and Retry Scope, which sets the number of retries and the delay."],
-    ["Do containers appear in workflow.yaml?", "No. Containers are visual. Their policy is copied onto the enclosed steps, as on_failure or retry, when the YAML is written."],
-    ["What are the on_failure values?", "fail stops the workflow, skip marks the step skipped and continue carries on."],
-    ["Can a step override its container?", "Yes. A child that sets its own value keeps it."],
-  ],
+  faq: [["What are the containers in Hydra Studio?", "Sequence, which only groups; Error Scope, which sets what happens when a child fails (skip, continue or fail); and Retry Scope, which sets the number of retries and the delay."], ["Do containers appear in workflow.yaml?", "No. Containers are visual. Their policy is copied onto the enclosed steps, as on_failure or retry, when the YAML is written."], ["What are the on_failure values?", "fail stops the workflow, skip marks the step skipped and continue carries on."], ["Can a step override its container?", "Yes. A child that sets its own value keeps it."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Use containers", '/studio/13-handle-failure/']],
 });
 ---

@@ -1,0 +1,18 @@
+{
+ "nodes_before": 2,
+ "menu_text": 1,
+ "dir_inputs": 2,
+ "alert_broken": [
+  "Missing files at the folder root:\ntransformations.yaml"
+ ],
+ "alert_ok": [],
+ "nodes_after": 3,
+ "node_texts": [
+  "first-job\n\nfirst-job",
+  "second-job\n\nsecond-job",
+  "refunds-job\n\njob_1795508479782"
+ ],
+ "tabs_text": [
+  "Hydra Studio\nAPI online\nH"
+ ]
+}

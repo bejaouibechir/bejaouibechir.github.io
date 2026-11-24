@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/07-add-a-destination/',
   name: article.headline,
   steps: ["Read the ten destinations", "Open the CSV destination", "One destination, and only one"],
-  faq: [
-    ["Which destinations does Hydra Studio offer?", "CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, Snowflake, BigQuery and MongoDB: ten in Hydra ETL 0.22."],
-    ["Can a Hydra job write to two destinations?", "No. The pipeline names a single destination in its to key. We declared a second destination without referencing it and it was ignored; we wrote to as a list and hdrctl validate rejected it. To write to two places, use two jobs in a workflow."],
-    ["Why is there no Web API destination?", "Web API is a source only in Hydra ETL 0.22, like PostgreSQL CDC and MySQL CDC. To send data out over HTTP, use the Webhook action in the workflow scene."],
-    ["How do I keep a password out of a destination?", "Write a reference such as ${ENV:MY_SECRET} in the field and keep the value under Environments, never in the manifest."],
-  ],
+  faq: [["Which destinations does Hydra Studio offer?", "CSV, JSON, Parquet, MySQL, PostgreSQL, SQL Server, SQLite, Snowflake, BigQuery and MongoDB: ten in Hydra ETL 0.22."], ["Can a Hydra job write to two destinations?", "No. The pipeline names a single destination in its to key. We declared a second destination without referencing it and it was ignored; we wrote to as a list and hdrctl validate rejected it. To write to two places, use two jobs in a workflow."], ["Why is there no Web API destination?", "Web API is a source only in Hydra ETL 0.22, like PostgreSQL CDC and MySQL CDC. To send data out over HTTP, use the Webhook action in the workflow scene."], ["How do I keep a password out of a destination?", "Write a reference such as ${ENV:MY_SECRET} in the field and keep the value under Environments, never in the manifest."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Destinations", '/studio/07-add-a-destination/']],
 });
 ---

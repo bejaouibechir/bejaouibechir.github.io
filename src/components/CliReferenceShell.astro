@@ -1,9 +1,10 @@
 ---
 import { cliRoots, cliChildren, cliVersion } from '../data/cli-reference';
 import styles from '../styles/cli-reference.css?raw';
+import { cliGuideCategories } from '../data/cli-guides.js';
 
-interface Props { current?: string }
-const { current = '' } = Astro.props;
+interface Props { current?: string; guide?: string }
+const { current = '', guide = '' } = Astro.props;
 ---
 
 <style is:global set:html={styles}></style>
@@ -18,6 +19,12 @@ const { current = '' } = Astro.props;
     </div>
     <nav aria-label="Commands and subcommands">
       <a class:list={['cli-nav-home', {active: !current}]} href="/cli/" aria-current={!current ? 'page' : undefined}>All commands</a>
+            <details class="cli-nav-group" open>
+        <summary><span class="cli-nav-chevron" aria-hidden="true">▾</span><a class:list={['cli-nav-root', {active: guide === '*'}]} href="/cli/guides/">Guides</a></summary>
+        <div class="cli-nav-children">
+          {cliGuideCategories.flatMap((cat) => cat.lessons.map((l) => <a class:list={['cli-nav-child', {active: guide === l.slug}]} href={`/cli/guides/${l.slug}/`} aria-current={guide === l.slug ? 'page' : undefined}>{l.label}</a>))}
+        </div>
+      </details>
       {cliRoots.map((root) => (
         root.children.length ? (
           <details class="cli-nav-group" open>
@@ -31,7 +38,7 @@ const { current = '' } = Astro.props;
     </nav>
   </aside>
   <main class="cli-main">
-    <div class="cli-topbar"><span><a href="/cli/">CLI reference</a>{current && <span> / hdrctl {current}</span>}</span><span class="cli-top-actions"><a href="/cli/shop.zip" download="hydra-cli-shop.zip">Download shop project ↓</a><a href="/academy/">Watch Hydra Academy <span aria-hidden="true">↗</span></a></span></div>
+    <div class="cli-topbar"><span><a href="/cli/">CLI reference</a>{current && !guide && <span> / hdrctl {current}</span>}{guide && <span> / <a href="/cli/guides/">Guides</a></span>}</span><span class="cli-top-actions"><a href="/cli/shop.zip" download="hydra-cli-shop.zip">Download shop project ↓</a><a href="/academy/">Watch Hydra Academy <span aria-hidden="true">↗</span></a></span></div>
     <slot />
   </main>
 </div>

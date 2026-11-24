@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CliReferenceShell from '../../../components/CliReferenceShell.astro';
+import css from '../../../_mock/learning-hub.css?raw';
+import lessonCss from '../../../_mock/cli-lesson.css?raw';
+import js from '../../../_mock/learning-hub.js?raw';
+import main from '../../../_mock/studio-lesson-41-pass-parameters-to-a-sub-project.main.html?raw';
+import { lessonJsonLd } from '../../../data/lesson-jsonld.js';
+const article = { headline: "Pass parameters to a Hydra sub-project and read results back", description: "Pass values to a called Hydra project with params, publish a result with set_param and read it with project placeholders. Tested with 0.22.", datePublished: '2026-11-23', dateModified: '2026-11-23', author: 'Bechir Bejaoui' };
+const jsonld = lessonJsonLd({
+  path: '/cli/guides/pass-parameters-to-a-sub-project/',
+  name: article.headline,
+  steps: ["Give the child a parameter", "Publish a result from the child", "Pass a value and ask for the result", "Run the master", "Read the failures"],
+  faq: [["How do I pass a value to a sub-project?", "Add params to the project step, for example params: {min_value: 150}. The called project reads it as its parameter min_value. In our test the called job kept only the row above 150."], ["How do I read a result from a sub-project?", "List the parameter names in outputs on the step. The called project must publish them, for example with a set_param action. After the step, read them with {{ project:STEP.param.NAME }}."], ["What else can I read after the step?", "{{ project:STEP.status }} and {{ project:STEP.rows }}. In our test they gave success and 1 row for a step named call_child."], ["What if the sub-project does not publish an output?", "The step fails with project child did not publish nope, and tells you to set the output with set_param or assign_param."], ["What if I pass a parameter the sub-project does not declare?", "In our test nothing happened: the run succeeded and the value was not used. Check the name with hdrctl param list in the called project."]],
+  crumbs: [['Get started', '/get-started'], ['Hydra CLI', '/cli/'], ['Guides', '/cli/guides/'], ["Sub-project parameters", '/cli/guides/pass-parameters-to-a-sub-project/']],
+});
+---
+
+<BaseLayout title="Pass parameters to a Hydra sub-project" exactTitle="Hydra Sub-project Parameters: params and outputs | Hydra ETL" description="Pass values to a called Hydra project with params, publish a result with set_param and read it with project placeholders. Tested with 0.22." article={article} jsonld={jsonld}>
+  <style is:global set:html={css}></style>
+  <style is:global set:html={lessonCss}></style>
+  <CliReferenceShell current="" guide="pass-parameters-to-a-sub-project">
+    <article class="cli-article cli-guide">
+      <Fragment set:html={main} />
+    </article>
+  </CliReferenceShell>
+  <script is:inline set:html={js}></script>
+</BaseLayout>
+

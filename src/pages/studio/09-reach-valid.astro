@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/09-reach-valid/',
   name: article.headline,
   steps: ["Add and configure Cast", "Add and configure Filter", "Add the CSV destination", "Connect and verify both layers"],
-  faq: [
-    ["What does the Valid badge mean in Hydra Studio?", "It comes from graph validation: no duplicated IDs, no unknown dependencies and no cycle. It says nothing about whether each node has its required fields."],
-    ["Why is my job valid but a node still has a red badge?", "Node badges check that the node is configured, which the header badge does not. Open the node and fill the field marked with a red asterisk."],
-    ["Does a valid job always run successfully?", "No. Valid is a design-time check before any data moves. Run the job to prove it works, then read the result on the Runs page."],
-    ["What does a Cast node need?", "A Types (JSON) mapping from column to type, for example {\"price\":\"float\",\"qty\":\"int\"}."],
-  ],
+  faq: [["What does the Valid badge mean in Hydra Studio?", "It comes from graph validation: no duplicated IDs, no unknown dependencies and no cycle. It says nothing about whether each node has its required fields."], ["Why is my job valid but a node still has a red badge?", "Node badges check that the node is configured, which the header badge does not. Open the node and fill the field marked with a red asterisk."], ["Does a valid job always run successfully?", "No. Valid is a design-time check before any data moves. Run the job to prove it works, then read the result on the Runs page."], ["What does a Cast node need?", "A Types (JSON) mapping from column to type, for example {\"price\":\"float\",\"qty\":\"int\"}."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["Reach Valid", '/studio/09-reach-valid/']],
 });
 ---

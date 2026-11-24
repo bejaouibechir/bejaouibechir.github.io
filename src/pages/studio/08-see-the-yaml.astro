@@ -12,12 +12,7 @@ const jsonld = lessonJsonLd({
   path: '/studio/08-see-the-yaml/',
   name: article.headline,
   steps: ["Open the panel", "Read the workflow file", "Read a job, section by section", "Read what is missing", "Read the wiring"],
-  faq: [
-    ["Where do I see the YAML in Hydra Studio?", "Select Hydra DSL in the top bar. In Workflow configuration it shows workflow.yaml, marked synced when it matches the canvas. In Jobs configuration it shows the job's manifests in four tabs."],
-    ["What does a job step look like in workflow.yaml?", "A job step has type: job and a job: path, for example job: ../jobs/first-job. An action step has type: action and an action name such as log."],
-    ["Does a container appear in workflow.yaml?", "No. Containers are purely visual. They only copy their failure or retry policy onto the steps they enclose."],
-    ["Can I write the YAML by hand instead?", "Studio writes the same YAML files that hdrctl runs, so you can also write them by hand. See the Hydra DSL reference for the full syntax."],
-  ],
+  faq: [["Where do I see the YAML in Hydra Studio?", "Select Hydra DSL in the top bar. In Workflow configuration it shows workflow.yaml, marked synced when it matches the canvas. In Jobs configuration it shows the job's manifests in four tabs."], ["What does a job step look like in workflow.yaml?", "A job step has type: job and a job: path, for example job: ../jobs/first-job. An action step has type: action and an action name such as log."], ["Does a container appear in workflow.yaml?", "No. Containers are purely visual. They only copy their failure or retry policy onto the steps they enclose."], ["Can I write the YAML by hand instead?", "Studio writes the same YAML files that hdrctl runs, so you can also write them by hand. See the Hydra DSL reference for the full syntax."]],
   crumbs: [['Get started', '/get-started'], ['Hydra Studio', '/studio'], ["See the YAML", '/studio/08-see-the-yaml/']],
 });
 ---

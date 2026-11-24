@@ -1,12 +1,12 @@
-<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/studio">Hydra Studio</a><span>›</span><span>Lesson 15</span></div>
-<div class="lesson-head"><div class="eyebrow"><span></span>Lesson 15 of 65 · Other launches</div><h1>Launch a Hydra job from the CLI and the API</h1><p class="lead">Run the same job without Studio: from the command line for one job or a whole project, and from the API with one POST request.</p>
+<div class="crumbs"><a href="/get-started">Get started</a><span>›</span><a href="/cli">Hydra CLI</a><span>›</span><a href="/cli/guides">Guides</a><span>›</span><span>Run and launch</span></div>
+<div class="lesson-head"><div class="eyebrow"><span></span>Guide · Run and launch</div><h1>Launch a Hydra job from the CLI and the API</h1><p class="lead">Run the same job without Studio: from the command line for one job or a whole project, and from the API with one POST request.</p>
 <p class="byline">By <a href="https://github.com/bejaouibechir" rel="author">Bechir Bejaoui</a> (<a href="https://www.linkedin.com/in/bejaoui-bechir-06b2452b/" rel="author noopener">LinkedIn</a>) · Published 23 November 2026 · Last verified 23 November 2026 · Tested with Hydra ETL 0.22.0 (Studio on Windows, engine checks with hdrctl)</p></div>
 <div class="lesson-meta"><span class="mono">hdrctl run</span><span>about 10 minutes</span><span>Hydra ETL 0.22 on Windows</span></div>
 <section class="doc">
   <div class="callout"><b>Quick answer</b><p><code>hdrctl run jobs/job1</code> runs one job. <code>hdrctl run .</code> runs a whole project, and <code>POST /api/runs</code> starts the same project through the API of <code>hdrctl serve</code>. The engine underneath is the same.</p></div>
   <h2>What will you learn in this lesson?</h2>
   <h3>Goal</h3><p>Run a job and a project from the command line, then start the project from the API and read the run back.</p>
-  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and the project built in <a href="/studio/anatomy-of-a-job">Anatomy of a job</a> (a folder created by <code>hdrctl init</code>). See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
+  <h3>Prerequisites</h3><ul><li>Hydra ETL 0.22 installed, and the project built in <a href="/cli/guides/anatomy-of-a-job">Anatomy of a job</a> (a folder created by <code>hdrctl init</code>). See <a href="/studio/install-and-start">Install and start</a>.</li><li>A project with a few workflows, such as the one built in <a href="/studio/run-steps-in-sequence-or-in-parallel">Stages</a>. The screenshots use that project plus a <code>cleanup</code> workflow that is not in the thread.</li></ul>
   <h2>How do I launch a job without Studio?</h2>
 
   <div class="step">
@@ -100,9 +100,9 @@ curl.exe -s -i -X POST -H "Content-Type: application/json" -d @run.json http://1
   <p>Hydra ETL ships an MCP server with a hydra_run_job tool. According to its source, it runs hdrctl run on the job folder and returns the log. We did not test it here: the MCP server has its own lesson.</p>
 
   <h2>Related lessons</h2>
-  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/10-run-the-job">Four ways to run, one engine underneath</a></li><li><a href="/studio/11-review-a-run">Find a past execution and its result</a></li><li><a href="/studio/anatomy-of-a-job">What a Hydra job is made of</a></li></ul>
+  <ul class="linklist"><li><a href="/studio/run-steps-in-sequence-or-in-parallel">Run workflows in sequence or in parallel</a></li><li><a href="/studio/repeat-workflows-with-loops">Repeat workflows with loops</a></li><li><a href="/studio/global-and-project-settings">Project settings and Global settings</a></li><li><a href="/studio/10-run-the-job">Four ways to run, one engine underneath</a></li><li><a href="/studio/11-review-a-run">Find a past execution and its result</a></li><li><a href="/cli/guides/anatomy-of-a-job">What a Hydra job is made of</a></li></ul>
 
   <h2>Next lesson</h2><p>One engine, three doors: the terminal, the API and, later, an assistant. Next, review what a run produced.</p>
-  <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review a run <span aria-hidden="true">→</span></a><a href="/studio">Back to the course map</a></div>
+  <div class="lesson-nav"><a class="primary" href="/studio/11-review-a-run">Review a run <span aria-hidden="true">→</span></a><a href="/cli/guides">Back to all guides</a></div>
   <div class="cta"><b>Try Hydra ETL</b><p>Install it in a minute, or explore a job in your browser first.</p><a class="primary" href="/get-started">Get started</a><a href="/playground">Open the Playground</a><a href="/license">Commercial license</a></div>
 </section>
