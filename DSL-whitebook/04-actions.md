@@ -236,7 +236,6 @@ The defaults point to a local test mail server. In production, set `smtp_host`, 
     password: ${SECRET:SMTP_PASSWORD}
 ```
 
-<!-- REVIEW (décision J) : sujet par défaut « (sans objet) » en français dans le code. -->
 
 > **[LAB lab-04-02 · Killercoda]** **Notify the team** — Send a webhook to a local request inspector and an email to a test mail server at the end of a workflow, and read both.
 

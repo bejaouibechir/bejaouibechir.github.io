@@ -139,13 +139,6 @@ sources:
       batch_size: 50000
 ```
 
-<!-- REVIEW (décision H) : extract.limit est accepté pour tous les types mais n'est
-     appliqué que par MongoDB ; ignoré en silence ailleurs (CSV, SQL…). Le documenter
-     comme MongoDB seulement, ou l'implémenter partout ? -->
-
-<!-- REVIEW (décision E) : base_path relatif est résolu depuis le répertoire courant
-     et non depuis le dossier du job. Exemple avec base_path non publié tant que
-     ce point n'est pas tranché. -->
 
 ---
 
@@ -531,9 +524,6 @@ load:
 
 [**[LAB lab-02-04 · Killercoda]** **Load modes and atomicity** ](https://killercoda.com/hydra-etl/scenario/11-load-modes-and-atomicity)
 
-<!-- REVIEW (décision G) : MongoDB en destination — le connecteur utilise les modes
-     insert / upsert / replace et `upsert_key` (défaut _id). Correspondance avec
-     load.mode / load.key à confirmer avant de publier un exemple. -->
 
 ![](C:\Users\DELL\Desktop\Hydra\DSL-whitebook\images\02-jobs-part1\25.png)
 

@@ -203,9 +203,6 @@ Converts the type of columns.
 
 **Why `cast` matters.** A CSV column is read as **text**. Comparisons, sums and window functions on numbers need a `cast` first: `"9" > "10"` is true for text, false for numbers. Since Hydra 0.19.1, `aggregate` (`sum`, `mean`) and `window` (`cumsum`, `cummin`, `cummax`, `sum`, `mean`) refuse a text column and tell you which `cast` to add.
 
-<!-- REVIEW (décision I) : le parseur accepte `date`, mais le moteur le refuse
-     (« Unsupported type »). `date` non documenté tant que ce n'est pas corrigé.
-     Les alias integer/string/boolean sont refusés par le parseur. -->
 
 ---
 
@@ -579,8 +576,6 @@ Both use groups. `aggregate` **replaces** the rows with one row per group; `wind
 
 > **[FIGURE fig-02-08 · diagram]** Rows coloured by `country`, gathered into three groups, each group reduced to one row with `sum(amount)` and `count(id)`.
 
-<!-- REVIEW (décision B) : le code transmet `func` à pandas sans contrôle (median,
-     std, nunique… fonctionnent). Seules les 8 fonctions annoncées sont documentées. -->
 
 ---
 
@@ -732,8 +727,6 @@ The second source can be of **any type**: a CSV file can be joined with a MySQL 
 | 101         | Bob   |
 | 103         | Chloé |
 
-<!-- REVIEW (décision D) : `right` accepte aussi une source inline (dict avec `type`).
-     Non documenté tant que ce n'est pas décidé. -->
 
 ## join
 
@@ -1140,9 +1133,6 @@ Change `rn == 1` to `rn <= 3` for the top 3 per customer.
     expr: "amount != amount"      # empty amount: no sale that day
 ```
 
-<!-- REVIEW : `amount != amount` est l'idiome pandas pour « valeur vide ». Pas de
-     fonction isnull() documentée dans les expressions. À confirmer ou à remplacer
-     par une opération dédiée. -->
 
 ## Clean, deduplicate, enrich, aggregate
 
@@ -1256,9 +1246,6 @@ These need no DSL key. They are listed so that you recognise them in the logs.
 
 > **[GITHUB gh-02-05 · example]** **large_volume_engine** — Job with a data generator script for a large CSV, and three variants of `transformations.yaml` (`auto`, `pandas`, `duckdb`).
 
-<!-- REVIEW : la ligne de log de l'exemple 1 est en français dans le code
-     (executor.py, large_volume.decide). À traduire côté code (Règle −2) ou à
-     retirer de la page. -->
 
 ---
 
