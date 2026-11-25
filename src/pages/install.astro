@@ -143,7 +143,10 @@ const renderCode = (lines) => lines.map((l) =>
 ).join('\n');
 ---
 
-<BaseLayout software title="Install Hydra: pip install hydra-etl" description="Install Hydra in one command: pip install hydra-etl. Prerequisites, optional extras, verification and troubleshooting.">
+<BaseLayout software
+  exactTitle="Install Hydra ETL: pip install hydra-etl"
+  title="Install Hydra ETL"
+  description="pip install hydra-etl installs the Hydra ETL engine and the hdrctl command line. Python 3.9+, optional extras for PostgreSQL, Snowflake and BigQuery, verification and troubleshooting.">
   <style is:global set:html={css}></style>
 
   <main class="install-wrap">
@@ -153,8 +156,8 @@ const renderCode = (lines) => lines.map((l) =>
 
     <section class="install-intro">
       <div class="eyebrow"><span></span>Get Hydra on your machine</div>
-      <h1>Install Hydra</h1>
-      <p>Hydra is one Python package on PyPI. A single command installs the engine and the <code>hdrctl</code> command line. The API server, the Studio and the database connectors are extras you add only when you need them.</p>
+      <h1>Install Hydra ETL</h1>
+      <p>Hydra ETL is one Python package on PyPI, published as <code>hydra-etl</code>. A single command installs the engine and the <code>hdrctl</code> command line. The API server, the Studio and the database connectors are extras you add only when you need them.</p>
     </section>
 
     <div class="hero-cmd">

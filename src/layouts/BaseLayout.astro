@@ -5,6 +5,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import mobileFixes from '../styles/mobile-fixes.css?raw';
 import sideToggleJs from '../scripts/side-toggle.js?raw';
+import version from '../data/version.json';
 
 interface Props {
   title: string;
@@ -36,6 +37,24 @@ const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
 const fullTitle = exactTitle ?? `${title} — Hydra ETL`;
 const githubUrl = 'https://github.com/bejaouibechir/Hydra';
+const authorUrl = 'https://github.com/bejaouibechir';
+const linkedinUrl = 'https://www.linkedin.com/in/bejaoui-bechir-06b2452b/';
+
+/* Profils tiers qui decrivent le MEME logiciel. Portes a la fois par
+   l'organisation et par SoftwareApplication : la collision de nom
+   ("Hydra" de Meta, HydraETL en Haskell) se joue au niveau du produit,
+   donc c'est le noeud produit qui doit etre reconcilie. */
+const sameAs = [
+  githubUrl,
+  'https://pypi.org/project/hydra-etl/',
+  'https://glama.ai/mcp/servers/bejaouibechir/Hydra',
+  'https://sourceforge.net/projects/hydra-etl/',
+  'https://alternativeto.net/software/hydra-etl/',
+  'https://www.saashub.com/hydra-etl',
+  'https://python.libhunt.com/bejaouibechir-hydra-alternatives',
+  'https://dev.to/bejaouibechir',
+];
+
 const graph: Record<string, unknown>[] = [
   {
     '@type': 'Organization',
@@ -43,16 +62,15 @@ const graph: Record<string, unknown>[] = [
     name: 'Hydra ETL',
     url: `${site.origin}/`,
     logo: `${site.origin}/hydra-mark-512.png`,
-    sameAs: [
-      githubUrl,
-      'https://pypi.org/project/hydra-etl/',
-      'https://glama.ai/mcp/servers/bejaouibechir/Hydra',
-      'https://sourceforge.net/projects/hydra-etl/',
-      'https://alternativeto.net/software/hydra-etl/',
-      'https://www.saashub.com/hydra-etl',
-      'https://python.libhunt.com/bejaouibechir-hydra-alternatives',
-      'https://dev.to/bejaouibechir',
-    ],
+    sameAs,
+    founder: { '@id': `${site.origin}/#author` },
+  },
+  {
+    '@type': 'Person',
+    '@id': `${site.origin}/#author`,
+    name: 'Bechir Bejaoui',
+    url: authorUrl,
+    sameAs: [authorUrl, linkedinUrl],
   },
   {
     '@type': 'WebSite',
@@ -67,14 +85,28 @@ if (software) {
     '@type': 'SoftwareApplication',
     '@id': `${site.origin}/#software`,
     name: 'Hydra ETL',
+    alternateName: ['hydra-etl', 'Hydra ETL engine', 'hdrctl'],
     description: 'Open-source declarative ETL engine: YAML pipelines validated before they run, with a CLI, a REST API and a visual Studio.',
+    /* Propriete schema.org prevue exactement pour ce cas : trois projets
+       distincts partagent le nom "Hydra". Sans cette phrase, les moteurs et
+       les LLM melangent les trois et citent PyPI ou GitHub a la place du site. */
+    disambiguatingDescription: 'Hydra ETL is a Python ETL engine published on PyPI as hydra-etl and maintained by Bechir Bejaoui. It is a different project from Hydra (hydra-core), the Python configuration framework from Meta hosted at hydra.cc, and from HydraETL, a Haskell streaming library.',
     applicationCategory: 'DeveloperApplication',
+    applicationSubCategory: 'ETL and data integration',
     operatingSystem: 'Linux, macOS, Windows',
+    programmingLanguage: 'Python',
+    softwareVersion: version.version,
+    softwareRequirements: 'Python 3.9 or later',
     url: `${site.origin}/`,
     downloadUrl: 'https://pypi.org/project/hydra-etl/',
+    installUrl: `${site.origin}/install`,
     codeRepository: githubUrl,
     license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+    isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    sameAs,
+    author: { '@id': `${site.origin}/#author` },
+    maintainer: { '@id': `${site.origin}/#author` },
     publisher: { '@id': `${site.origin}/#organization` },
   });
 }
@@ -88,7 +120,7 @@ if (article) {
     description: article.description,
     datePublished: article.datePublished,
     dateModified: article.dateModified ?? article.datePublished,
-    author: { '@type': 'Person', name: article.author, url: 'https://github.com/bejaouibechir', sameAs: ['https://github.com/bejaouibechir', 'https://www.linkedin.com/in/bejaoui-bechir-06b2452b/'] },
+    author: { '@type': 'Person', '@id': `${site.origin}/#author`, name: article.author, url: authorUrl, sameAs: [authorUrl, linkedinUrl] },
     publisher: { '@id': `${site.origin}/#organization` },
     mainEntityOfPage: canonical,
     image: ogImage,
