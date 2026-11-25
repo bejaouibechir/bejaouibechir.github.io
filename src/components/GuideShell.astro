@@ -16,11 +16,46 @@ interface Props {
   current?: string;
   related?: Related[];
 }
-const { related = [] } = Astro.props;
-const searchItems = [
-  { label: 'Read a CSV file', href: '/guide/sources/csv' },
-  ...guideTutorials.map((tutorial) => ({ label: tutorial.title, href: tutorial.route }))
-];
+const { current, related = [] } = Astro.props;
+
+/* Navigation entre pages soeurs.
+
+   Avant : les 40 pages /guide partageaient le meme bloc `related`, qui ne
+   pointe que vers /dsl. Chaque page n'avait donc qu'un seul lien entrant, celui
+   du catalogue /guide, et Google n'en avait jamais explore 24 sur 40.
+   Ici on liste les pages de la meme categorie : chaque page passe de 1 lien
+   entrant a autant qu'il y a de soeurs. */
+const CATEGORY_LABELS = {
+  sources: 'Sources',
+  destinations: 'Destinations',
+  transforms: 'Transformations',
+  workflows: 'Workflows',
+  triggers: 'Triggers',
+  policies: 'Policies',
+};
+const currentTutorial = guideTutorials.find((t) => t.key === current);
+/* Repli sur l'URL : /guide/sources/csv est une page autonome dont la cle
+   ("csv-source") n'existe pas dans guideTutorials. Sans ce repli elle reste
+   sans voisines, ce qui est exactement le defaut qu'on corrige ici. */
+const pathCategory = Astro.url.pathname.split('/').filter(Boolean)[1] ?? '';
+const currentCategory = currentTutorial?.category ?? (pathCategory in CATEGORY_LABELS ? pathCategory : '');
+const siblings = currentCategory
+  ? guideTutorials.filter((t) => t.category === currentCategory && t.route !== Astro.url.pathname.replace(/\/$/, ''))
+  : [];
+const siblingLabel = currentCategory ? (CATEGORY_LABELS[currentCategory] ?? currentCategory) : '';
+/* Les autres categories, pour que chaque page atteigne aussi les autres
+   familles sans repasser par le catalogue. */
+const otherCategories = currentCategory
+  ? Object.keys(CATEGORY_LABELS)
+      .filter((c) => c !== currentCategory)
+      .map((c) => ({
+        key: c,
+        label: CATEGORY_LABELS[c],
+        count: guideTutorials.filter((t) => t.category === c).length,
+        first: guideTutorials.find((t) => t.category === c),
+      }))
+      .filter((c) => c.count > 0 && c.first)
+  : [];
 ---
 
 <div class="shell">
@@ -29,6 +64,38 @@ const searchItems = [
       <span class="backarrow" aria-hidden="true">←</span>
       <span class="backcopy"><b>All guides</b><small>browse the catalogue</small></span>
     </a>
+
+    {siblings.length > 0 && (
+      <nav class="related guide-siblings" aria-label={`More ${siblingLabel.toLowerCase()}`}>
+        <div class="side-title">More {siblingLabel.toLowerCase()}</div>
+        <ul>
+          {siblings.map((t) => (
+            <li>
+              <a href={t.route}>
+                <b>{t.name}</b>
+                <small>{t.title}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    {otherCategories.length > 0 && (
+      <nav class="related guide-families" aria-label="Other guide families">
+        <div class="side-title">Other families</div>
+        <ul>
+          {otherCategories.map((c) => (
+            <li>
+              <a href={c.first.route}>
+                <b>{c.label}</b>
+                <small>{c.count} {c.count > 1 ? 'guides' : 'guide'}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
 
     {related.length > 0 && (
       <nav class="related" aria-label="Related topics">
