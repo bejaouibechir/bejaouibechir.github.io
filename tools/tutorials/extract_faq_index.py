@@ -54,6 +54,37 @@ def answer_after(lines, n):
     return ""
 
 
+# en-tete annoncant une zone de questions-reponses
+QA_HEAD = re.compile(r"(?i)^#{3,6}\s*(FAQ\b.*|Questions? .*|Frequently asked.*|Common questions.*)$")
+SENT = re.compile(r"^(.{15,160}?[.!])\s+(\S.*)$")
+
+
+def scenario_rows(head, lines):
+    """Q/R redigees en affirmations sous un en-tete de FAQ (ex. /license/)."""
+    out, inside = [], False
+    for n, raw in enumerate(lines):
+        s = raw.strip()
+        if s.startswith("#"):
+            inside = bool(QA_HEAD.match(s))
+            continue
+        if not inside or s.endswith("?") or len(s.split()) < 8:
+            continue
+        m = SENT.match(s)
+        if not m:
+            continue
+        if not m.group(1)[:1].isupper():
+            continue          # fragment de phrase, pas un scenario
+        out.append({
+            "question": m.group(1).strip(),
+            "kind": "faq",
+            "url": head["url"],
+            "title": head["title"],
+            "bundle": "",
+            "answer_preview": m.group(2).strip()[:300],
+        })
+    return out
+
+
 def extract(path):
     rows = []
     for head, lines in sections(path.read_text(encoding="utf-8")):
@@ -79,6 +110,13 @@ def extract(path):
                 "bundle": path.name,
                 "answer_preview": answer_after(lines, n)[:300],
             })
+        # Les scenarios ne servent que pour une page dont la FAQ est redigee en
+        # affirmations. Des qu'une vraie question existe, la page est deja couverte
+        # et l'heuristique ne ferait qu'avaler de la prose.
+        if not any(r["url"] == head["url"] and r["kind"] == "faq" for r in rows):
+            for r in scenario_rows(head, lines):
+                r["bundle"] = path.name
+                rows.append(r)
     return rows
 
 

@@ -26,6 +26,8 @@ Key facts:
 - [Studio tutorials](https://hydraetl.com/studio/): build jobs visually
 - [VS Code extension](https://hydraetl.com/vscode/): completion and validation for manifests
 - [Changelog](https://hydraetl.com/changelog/): every release, dated, with its new features and fixes
+- [FAQ](https://hydraetl.com/faq/): the questions that cross several pages — licensing, installing, Studio or the CLI, how projects and workflows fit together, where a value comes from
+- [Error messages](https://hydraetl.com/errors/): every message Hydra prints when something goes wrong, reproduced exactly, with its cause and its fix
 
 ## Comparisons
 

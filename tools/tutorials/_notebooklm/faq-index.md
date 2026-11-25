@@ -3,7 +3,7 @@
 This file is the exclusion list. Every question below is ALREADY answered
 on the page named above it. Do not propose any of them as a new question.
 
-Total: 541 questions across 118 pages.
+Total: 544 questions across 119 pages.
 
 ## Hydra ETL changelog — slug: /changelog/
 - - steps.1: Step 'b': unknown key 'depend_on' — did you mean 'depends_on'?
@@ -243,6 +243,11 @@ Total: 541 questions across 118 pages.
 
 ## Guarding a workflow step with an expression — slug: /guide/workflows/when/
 - How do you make when explicit in workflow.yaml and verify the resulting execution states?
+
+## License — slug: /license/
+- We run Hydra ETL on our own servers to load our own warehouse.
+- We wrote our own connector for internal use only.
+- We ship a product that bundles a modified Hydra ETL.
 
 ## Hydra ETL vs Airbyte — slug: /migrate/airbyte/
 - Should you replace Airbyte with Hydra ETL?

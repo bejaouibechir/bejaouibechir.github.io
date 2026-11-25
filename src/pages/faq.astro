@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { faqGroups, faqCount } from '../data/faq';
+
+/* FAQ transverse. Regle de la page : elle route, elle ne republie pas.
+   Une question deja traitee par une lecon ou par une page /migrate/<outil>/
+   n'a pas sa place ici : on la laisse ou elle est et on lie.
+   Le JSON-LD FAQPage ne porte que les questions de cette page. */
+
+const pageTitle = 'Frequently asked questions';
+const pageDescription =
+  'The questions that cross several pages: licensing, installing, Studio or the command line, how projects and workflows fit together, where a value comes from, and running unattended.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqGroups.flatMap((g) =>
+    g.entries.map((e) => ({
+      '@type': 'Question',
+      name: e.q,
+      acceptedAnswer: { '@type': 'Answer', text: e.a },
+    })),
+  ),
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style is:global>
+    .faq-wrap { max-width: 48rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .faq-wrap h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .faq-lead { color: var(--text-soft); font-size: 1.05rem; margin: 0 0 2rem; max-width: 40rem; }
+    .faq-wrap a { color: var(--accent-text); }
+
+    .faq-toc { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel);
+               padding: 1rem 1.2rem; margin: 0 0 3rem; }
+    .faq-toc h2 { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+                  color: var(--text-mut); margin: 0 0 .7rem; }
+    .faq-toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem .5rem; margin: 0; padding: 0; }
+    .faq-toc li { margin: 0; }
+    .faq-toc a { display: inline-block; border: 1px solid var(--border); border-radius: 999px;
+                 padding: .2rem .7rem; font-size: .88rem; text-decoration: none; }
+    .faq-toc a:hover { border-color: var(--accent); }
+
+    .faq-group { margin: 3.5rem 0 0; scroll-margin-top: 5rem; }
+    .faq-group > h2 { font-size: 1.45rem; margin: 0 0 .3rem; }
+    .faq-group > p.faq-blurb { color: var(--text-mut); margin: 0 0 1.5rem; font-size: .95rem; }
+
+    .faq-item { border-top: 1px solid var(--border); padding: 1.3rem 0; scroll-margin-top: 5rem; }
+    .faq-item:target h3 { color: var(--accent-text); }
+    .faq-item h3 { font-size: 1.05rem; margin: 0 0 .5rem; line-height: 1.4; }
+    .faq-item p { color: var(--text); line-height: 1.65; margin: 0; }
+    .faq-item code { font-family: var(--mono); background: var(--bg-code);
+                     padding: .1rem .35rem; border-radius: 4px; font-size: .92em; }
+    .faq-route { margin-top: .6rem !important; font-size: .92rem; color: var(--text-mut); }
+    .faq-anchor { float: right; color: var(--text-mut); font-size: .8rem; text-decoration: none;
+                  font-family: var(--mono); font-weight: 400; }
+    .faq-anchor:hover { color: var(--accent-text); }
+
+    .faq-callout { border: 1px solid var(--accent); background: var(--accent-soft);
+                   border-radius: 12px; padding: 1.1rem 1.3rem; margin: 2.5rem 0 0; }
+    .faq-callout p { color: var(--accent-text); margin: 0; line-height: 1.6; }
+    .faq-foot { color: var(--text-mut); font-size: .92rem; border-top: 1px solid var(--border);
+                margin-top: 3.5rem; padding-top: 1rem; line-height: 1.6; }
+  </style>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <main class="faq-wrap">
+    <h1>Frequently asked questions</h1>
+    <p class="faq-lead">
+      {faqCount} questions that cross several pages. Anything that belongs to one lesson is
+      answered on that lesson, and linked from here.
+    </p>
+
+    <nav class="faq-toc" aria-label="Sections">
+      <h2>Jump to</h2>
+      <ul>
+        {faqGroups.map((g) => (
+          <li><a href={`#${g.id}`}>{g.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    {faqGroups.map((group) => (
+      <section class="faq-group" id={group.id}>
+        <h2>{group.title}</h2>
+        <p class="faq-blurb">{group.blurb}</p>
+
+        {group.entries.map((e) => (
+          <article class="faq-item" id={e.anchor}>
+            <h3>
+              <a class="faq-anchor" href={`#${e.anchor}`} aria-label="Link to this question">#</a>
+              {e.q}
+            </h3>
+            <p set:html={e.a.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+            {e.routeSlug && (
+              <p class="faq-route">
+                Full answer: <a href={e.routeSlug}>{e.routeTitle}</a>
+              </p>
+            )}
+          </article>
+        ))}
+      </section>
+    ))}
+
+    <div class="faq-callout">
+      <p>
+        Hit an error message? Every one Hydra prints is listed, with its cause and its fix,
+        on <a href="/errors/">Error messages</a>.
+      </p>
+    </div>
+
+    <p class="faq-foot">
+      Moving from a named tool — Airflow, dbt, Dagster, Airbyte, Talend, Meltano, Kestra, dlt,
+      Flowman — has its own guide under <a href="/migrate/">migration</a>, each with the questions
+      specific to that product. Still stuck? Open an issue on
+      <a href="https://github.com/bejaouibechir/Hydra/issues" target="_blank" rel="noopener">GitHub</a>.
+    </p>
+  </main>
+</BaseLayout>

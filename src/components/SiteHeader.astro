@@ -23,6 +23,8 @@ const links = [
   { href: '/migrate', label: 'Migrate', match: ['migrate'] },
   { href: '/vscode', label: 'VS Code extension', match: ['vscode'] },
   { href: '/blog', label: 'Blog', match: ['blog'] },
+  { href: '/faq', label: 'FAQ', match: ['faq'] },
+  { href: '/errors', label: 'Errors', match: ['errors'] },
 ];
 
 const segment = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';

@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { errorSections, errorCount } from '../data/errors';
+
+/* Page erreurs : chaque message que le moteur ou Studio affiche, reproduit a
+   l'identique, avec sa cause, sa correction et la lecon qui le traite.
+   Une ancre stable par erreur : des liens pointent dessus depuis /faq et
+   depuis l'exterieur. Ne pas renommer une ancre existante. */
+
+const pageTitle = 'Error messages';
+const pageDescription =
+  `Every Hydra ETL error message, reproduced exactly as the engine prints it, with what causes it and how to fix it. ${errorCount} entries, each linked to the lesson that covers it.`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style is:global>
+    .err-wrap { max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .err-wrap h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .err-lead { color: var(--text-soft); font-size: 1.05rem; margin: 0 0 2rem; max-width: 42rem; }
+    .err-wrap a { color: var(--accent-text); }
+
+    .err-toc { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel);
+               padding: 1rem 1.2rem; margin: 0 0 3rem; }
+    .err-toc h2 { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+                  color: var(--text-mut); margin: 0 0 .7rem; }
+    .err-toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem .5rem; margin: 0; padding: 0; }
+    .err-toc li { margin: 0; }
+    .err-toc a { display: inline-block; border: 1px solid var(--border); border-radius: 999px;
+                 padding: .2rem .7rem; font-size: .88rem; text-decoration: none; }
+    .err-toc a:hover { border-color: var(--accent); }
+
+    .err-section { margin: 3.5rem 0 0; scroll-margin-top: 5rem; }
+    .err-section > h2 { font-size: 1.45rem; margin: 0 0 .3rem; }
+    .err-section > p.err-blurb { color: var(--text-mut); margin: 0 0 1.5rem; font-size: .95rem; }
+
+    .err-item { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel);
+                padding: 1.1rem 1.25rem; margin: 0 0 1rem; scroll-margin-top: 5rem; }
+    .err-item:target { border-color: var(--accent); background: var(--accent-soft); }
+    .err-item h3 { margin: 0 0 .8rem; font-size: 1rem; }
+    .err-item h3 code { font-family: var(--mono); font-size: .88rem; line-height: 1.5;
+                        background: var(--bg-code); padding: .35rem .5rem; border-radius: 6px;
+                        display: block; white-space: pre-wrap; word-break: break-word; font-weight: 600; }
+    .err-item dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .35rem .8rem; }
+    .err-item dt { color: var(--text-mut); font-size: .82rem; letter-spacing: .04em;
+                   text-transform: uppercase; padding-top: .15rem; }
+    .err-item dd { margin: 0; color: var(--text); line-height: 1.6; }
+    .err-item code { font-family: var(--mono); background: var(--bg-code);
+                     padding: .1rem .35rem; border-radius: 4px; }
+    .err-item h3 code { padding: .35rem .5rem; }
+    .err-note { color: var(--text-mut); font-size: .9rem; border-top: 1px solid var(--border);
+                margin-top: .9rem; padding-top: .7rem; line-height: 1.55; }
+    .err-anchor { float: right; color: var(--text-mut); font-size: .8rem; text-decoration: none;
+                  font-family: var(--mono); }
+    .err-anchor:hover { color: var(--accent-text); }
+
+    .err-foot { color: var(--text-mut); font-size: .92rem; border-top: 1px solid var(--border);
+                margin-top: 4rem; padding-top: 1rem; line-height: 1.6; }
+
+    @media (max-width: 34rem) {
+      .err-item dl { grid-template-columns: 1fr; gap: .15rem; }
+      .err-item dt { margin-top: .5rem; }
+    }
+  </style>
+
+  <main class="err-wrap">
+    <h1>Error messages</h1>
+    <p class="err-lead">
+      Every message Hydra ETL prints when something goes wrong, copied exactly as you see it,
+      with what causes it and what to do. {errorCount} entries. Search this page for your message,
+      or paste it into your browser's find box.
+    </p>
+
+    <nav class="err-toc" aria-label="Sections">
+      <h2>Jump to</h2>
+      <ul>
+        {errorSections.map((s) => (
+          <li><a href={`#${s.id}`}>{s.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    {errorSections.map((section) => (
+      <section class="err-section" id={section.id}>
+        <h2>{section.title}</h2>
+        <p class="err-blurb">{section.blurb}</p>
+
+        {section.entries.map((e) => (
+          <article class="err-item" id={e.anchor}>
+            <h3>
+              <a class="err-anchor" href={`#${e.anchor}`} aria-label="Link to this error">#</a>
+              <code>{e.error}</code>
+            </h3>
+            <dl>
+              <dt>Why</dt>
+              <dd set:html={e.cause.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+              <dt>Fix</dt>
+              <dd set:html={e.fix.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+              <dt>Lesson</dt>
+              <dd><a href={e.sourceSlug}>{e.sourceTitle}</a></dd>
+            </dl>
+            {e.note && (
+              <p class="err-note" set:html={e.note.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+            )}
+          </article>
+        ))}
+      </section>
+    ))}
+
+    <p class="err-foot">
+      Every message on this page was produced by a real run and copied from the lesson that
+      reproduces it. If you hit one that is not here, or a message that differs from what is
+      written, it is worth reporting on
+      <a href="https://github.com/bejaouibechir/Hydra/issues" target="_blank" rel="noopener">GitHub</a>.
+      Looking for something that is not an error? Start with the
+      <a href="/faq/">frequently asked questions</a>.
+    </p>
+  </main>
+</BaseLayout>
