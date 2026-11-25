@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../styles/legal.css?raw';
+
+/* Conditions d'utilisation du SITE. Le logiciel est regi separement par
+   l'AGPL (voir /license). Les deux ne doivent jamais se contredire.
+   Le Playground tourne entierement dans le navigateur : les clauses
+   d'usage interdit portent donc sur le site, pas sur un service distant. */
+const contactEmail = 'admin@hydraetl.com';
+const updated = '25 November 2026';
+---
+
+<BaseLayout
+  title="Terms of Use"
+  description="The terms covering the hydraetl.com website, its documentation and the Playground. The Hydra ETL software itself is governed separately by the AGPL-3.0-or-later license."
+>
+  <style is:global set:html={css}></style>
+
+  <main class="lg-wrap">
+    <h1>Terms of Use</h1>
+    <p class="lg-lead">
+      These terms cover this website &mdash; its documentation, the Academy and the Playground.
+      By using the site you accept them.
+    </p>
+    <p class="lg-updated">Last updated: {updated}</p>
+
+    <h2>Who operates this site</h2>
+    <p>
+      <strong>Bechir Bejaoui</strong>, acting as an individual, in Tunisia.
+      Contact: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+    </p>
+
+    <div class="lg-card accent">
+      <h2>The software is governed separately</h2>
+      <p>
+        These terms apply to the <strong>website</strong>. The Hydra ETL <strong>software</strong> is governed
+        by its own license: <strong>AGPL-3.0-or-later</strong>. See
+        <a href="/license">the license page</a> for a plain-language summary, and
+        <a href="https://github.com/bejaouibechir/Hydra/blob/main/LICENSE" target="_blank" rel="noopener">the LICENSE file</a>,
+        which is what actually applies. A <a href="/pricing">commercial license</a> is available where the
+        AGPL does not fit.
+      </p>
+      <p>
+        Nothing on this page grants, restricts or modifies any right you have under the software license.
+      </p>
+    </div>
+
+    <h2>Documentation</h2>
+    <p>
+      The documentation, guides, DSL and CLI references, FAQ, error pages and blog posts are provided for
+      information. They describe Hydra ETL as released and are updated as the software changes.
+    </p>
+    <p>
+      They are provided <strong>as is</strong>. A command, a YAML key or a behaviour described here may differ
+      from the version you have installed. Check the <a href="/changelog">changelog</a> for what changed in
+      each release, and treat <code>hdrctl validate</code> as the authority on whether your project is correct.
+    </p>
+    <p>
+      You may read, quote and link to this documentation. When you quote it, attribute it to Hydra ETL and
+      link back to the page.
+    </p>
+
+    <h2>The Playground</h2>
+    <p>
+      The <a href="/playground">Playground</a> is a free demonstration surface for trying the Hydra DSL
+      without installing anything. It runs entirely in your browser &mdash; see the
+      <a href="/privacy">Privacy Policy</a>.
+    </p>
+    <p>
+      It is a simulator, not the engine. It is provided <strong>as is</strong>, with no guarantee of
+      availability, and it can change or be withdrawn at any time without notice. Results it shows are
+      illustrative: before relying on a pipeline, run it with <code>hdrctl</code> on your own machine.
+    </p>
+    <p>Do not:</p>
+    <ul>
+      <li>paste credentials, connection strings, API keys, tokens or secrets into it, or into any page of this site</li>
+      <li>attempt to disrupt the site, or to gain unauthorised access to any part of it or its hosting</li>
+      <li>resell access to it, or present it as your own service</li>
+    </ul>
+
+    <h2>Acceptable use of the site</h2>
+    <p>
+      Normal browsing, reading and linking are fine. Crawling at a reasonable rate is fine &mdash; see
+      <a href="/robots.txt">robots.txt</a> and <a href="/llms.txt">llms.txt</a>, which state what is open.
+      Do not attempt to disrupt the site or to gain unauthorised access to any part of it.
+    </p>
+
+    <h2>Name and content</h2>
+    <p>
+      &ldquo;Hydra ETL&rdquo; and the Hydra ETL mark identify this project. You may use the name to refer to
+      the project, in comparisons and in articles. Do not use it in a way that suggests your product is
+      official, endorsed or affiliated.
+    </p>
+    <p>
+      Site text, page design and illustrations are the author&rsquo;s, except where they come from the
+      software&rsquo;s own repository or are quoted from third parties. Code samples in the documentation may
+      be used freely in your own projects.
+    </p>
+
+    <h2>No warranty</h2>
+    <p>
+      The site, its documentation and the Playground are provided <strong>&ldquo;as is&rdquo;, without
+      warranty of any kind</strong>, express or implied, including fitness for a particular purpose and
+      accuracy. No warranty is given that the documentation is complete or error-free, or that the site will
+      be available or uninterrupted.
+    </p>
+    <p>
+      The software&rsquo;s own warranty disclaimer is in the
+      <a href="https://github.com/bejaouibechir/Hydra/blob/main/LICENSE" target="_blank" rel="noopener">LICENSE file</a>
+      and is unaffected by this section.
+    </p>
+
+    <h2>Limitation of liability</h2>
+    <p>
+      To the fullest extent permitted by applicable law, the operator is not liable for any loss or damage
+      &mdash; including lost data, lost profit, business interruption, or any indirect or consequential loss
+      &mdash; arising from your use of this site, its documentation or the Playground.
+    </p>
+    <div class="lg-card warn">
+      <p>
+        In particular: <strong>you are responsible for the pipelines you build and for the data they
+        move.</strong> Validate them against sample data before pointing them at anything that matters.
+      </p>
+    </div>
+    <p>Nothing here excludes liability that cannot be excluded under applicable law.</p>
+
+    <h2>Third-party links</h2>
+    <p>
+      This site links to external resources &mdash; GitHub, PyPI, Killercoda, SaaSHub, video platforms and
+      others. Those are operated by third parties under their own terms. Following such a link is at your own
+      risk.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      These terms may change. The current version is always the one on this page, with the date above.
+      Continuing to use the site after a change means you accept the new version.
+    </p>
+
+    <h2>Governing law</h2>
+    <p>
+      These terms are governed by <strong>Tunisian law</strong>. Disputes fall under the jurisdiction of the
+      competent Tunisian courts, except where mandatory consumer-protection rules in your country of
+      residence provide otherwise.
+    </p>
+
+    <p class="lg-note">
+      Questions about these terms: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+      See also the <a href="/privacy">Privacy Policy</a> and the <a href="/license">license</a>.
+      This page is not legal advice.
+    </p>
+  </main>
+</BaseLayout>

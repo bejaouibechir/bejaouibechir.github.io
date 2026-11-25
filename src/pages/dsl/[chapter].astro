@@ -32,7 +32,7 @@ const next = whitebookChapters[index + 1];
 const Content = pages[chapter.slug as keyof typeof pages].Content;
 ---
 
-<BaseLayout title={chapter.title + ' | Hydra DSL White Book'} description={chapter.description}>
+<BaseLayout title={chapter.title} description={chapter.description}>
   <WhitebookFrame current={chapter.slug}>
     <header class="wb-chapter-top">
       <p class="wb-kicker">CHAPTER {chapter.number} / HYDRA DSL WHITE BOOK</p>

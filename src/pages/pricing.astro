@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../styles/legal.css?raw';
+
+/* Page tarifs : Hydra ETL est gratuit, sans palier et sans fonction derriere
+   un paywall. La page existe pour deux raisons :
+   1. les annuaires et plateformes d'avis (G2, Capterra, SourceForge, SaaSHub)
+      exigent une page tarifs pour accepter une fiche ;
+   2. "combien ca coute" est la question que les moteurs IA posent en premier.
+   Le fond juridique vit sur /license ; ici on repond au prix. */
+const contactEmail = 'admin@hydraetl.com';
+
+/* FAQPage : reflete exactement les quatre questions visibles en bas de page. */
+const faq = [
+  {
+    q: 'Is Hydra ETL really free for commercial use?',
+    a: 'Yes. You can use Hydra ETL inside a company, for paid client work and in production, at no cost. The only case that needs a paid license is distributing or hosting a modified version of the engine without publishing your changes.',
+  },
+  {
+    q: 'Is there a paid tier or a feature behind a paywall?',
+    a: 'No. There is no community edition. The package published on PyPI is the whole product: every connector, Hydra Studio, the hdrctl CLI, the REST API, triggers, the VS Code extension and the MCP server.',
+  },
+  {
+    q: 'Do I need a license to write my own connector?',
+    a: 'No, as long as the connector stays internal and is not distributed or exposed to third parties over a network.',
+  },
+  {
+    q: 'What exactly do I have to publish if the AGPL applies?',
+    a: 'Your modifications to Hydra ETL source code, under the same license. Not your pipelines, not your data, not the rest of your stack.',
+  },
+];
+
+const faqJsonLd = {
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Pricing"
+  description="Hydra ETL is free and open source under AGPL-3.0-or-later. Every connector, Hydra Studio, the CLI, the REST API and the VS Code extension are included. A commercial license is available on request."
+  software={true}
+  jsonld={[faqJsonLd]}
+>
+  <style is:global set:html={css}></style>
+
+  <main class="lg-wrap">
+    <h1>Pricing</h1>
+    <p class="lg-lead">
+      Hydra ETL is <strong>free</strong>. There is no paid tier, no seat count, no row limit and no feature
+      behind a paywall.
+    </p>
+
+    <div class="lg-install">
+      <code>pip install hydra-etl</code>
+      <a href="/install">Installation guide</a>
+    </div>
+
+    <h2>What it costs</h2>
+    <div class="lg-scroll">
+      <table class="lg-table">
+        <thead>
+          <tr><th>&nbsp;</th><th>Open source</th><th>Commercial license</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Price</th><td>$0, forever</td><td>On request</td></tr>
+          <tr><th>License</th><td>AGPL-3.0-or-later</td><td>Negotiated</td></tr>
+          <tr><th>Use inside a company</th><td>Yes</td><td>Yes</td></tr>
+          <tr><th>Use for paid client work</th><td>Yes</td><td>Yes</td></tr>
+          <tr><th>Modify the engine</th><td>Yes</td><td>Yes</td></tr>
+          <tr><th>Publish your changes</th><td>Required if you distribute or host your modified version</td><td>Not required</td></tr>
+          <tr><th>Connectors</th><td>All of them</td><td>All of them</td></tr>
+          <tr><th>Hydra Studio</th><td>Included</td><td>Included</td></tr>
+          <tr><th>CLI, REST API, triggers</th><td>Included</td><td>Included</td></tr>
+          <tr><th>VS Code extension, MCP server</th><td>Included</td><td>Included</td></tr>
+          <tr><th>Support</th><td>GitHub issues</td><td>Agreed in the contract</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Everything is in the free version</h2>
+    <p>There is no community edition. The package on PyPI is the whole product:</p>
+    <ul>
+      <li>All sources and destinations: CSV, JSON, Parquet, MySQL/MariaDB, PostgreSQL, SQL Server, SQLite, MongoDB, Web API, Snowflake, BigQuery</li>
+      <li>Change data capture for PostgreSQL and MySQL</li>
+      <li>Object stores: S3, Azure Blob / ADLS, Google Cloud Storage</li>
+      <li>All transformations, the pandas and DuckDB engines, optional Rust acceleration</li>
+      <li>Workflows, rollback, fallbacks, timeouts, triggers and sub-projects</li>
+      <li><a href="/studio">Hydra Studio</a>, the <a href="/cli">hdrctl CLI</a>, the REST API, the <a href="/vscode">VS Code extension</a> and the MCP server</li>
+    </ul>
+
+    <div class="lg-card">
+      <h2>Your data is not covered by the license</h2>
+      <p>
+        Running your pipelines through Hydra ETL does not place your data, your YAML manifests or your other
+        applications under the AGPL. The license applies to Hydra ETL&rsquo;s own source code.
+      </p>
+    </div>
+
+    <h2>When you need a commercial license</h2>
+    <p>Two cases:</p>
+    <ol>
+      <li>You <strong>embed a modified Hydra ETL</strong> inside a proprietary product you distribute.</li>
+      <li>You <strong>offer a modified Hydra ETL as a hosted service</strong> without publishing your changes.</li>
+    </ol>
+    <p>
+      In both cases the AGPL would require you to publish your modified source. A commercial license removes
+      that obligation. Everything else &mdash; running it on your own servers, loading your own warehouse,
+      building pipelines for clients, writing connectors for internal use &mdash; needs no commercial license.
+    </p>
+
+    <div class="lg-card accent">
+      <h2>Getting a quote</h2>
+      <p>
+        Email <a href={`mailto:${contactEmail}`}>{contactEmail}</a> with a short description of how you intend
+        to use Hydra ETL. You get a reply within two business days.
+      </p>
+      <p>
+        Pricing is set case by case: it depends on how the engine is distributed and on the scope of the
+        support you need.
+      </p>
+    </div>
+
+    <h2>Questions</h2>
+    {faq.map((f) => (
+      <Fragment>
+        <h3>{f.q}</h3>
+        <p>{f.a}</p>
+      </Fragment>
+    ))}
+
+    <p class="lg-note">
+      This page answers what Hydra ETL costs. For what the license allows and requires, see
+      <a href="/license"> the license page</a>; the
+      <a href="https://github.com/bejaouibechir/Hydra/blob/main/LICENSE" target="_blank" rel="noopener">LICENSE file</a>
+      is what applies. It is not legal advice.
+    </p>
+  </main>
+</BaseLayout>

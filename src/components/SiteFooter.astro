@@ -1,0 +1,141 @@
+---
+/*
+  Pied de page unique du site, rendu par BaseLayout sur toutes les pages.
+  Il porte les liens que la barre de navigation ne peut plus accueillir
+  (12 entrees deja) et les pages institutionnelles exigees par les annuaires
+  et les plateformes d'avis : About, Privacy, Terms.
+
+  Les classes sont prefixees `sf-` pour echapper aux CSS de page, sur le
+  meme principe que `sh-` dans SiteHeader.
+*/
+const contactEmail = 'admin@hydraetl.com';
+const githubUrl = 'https://github.com/bejaouibechir/Hydra';
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/get-started', label: 'Get started' },
+      { href: '/install', label: 'Install' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/changelog', label: 'Changelog' },
+      { href: '/vscode', label: 'VS Code extension' },
+    ],
+  },
+  {
+    title: 'Learn',
+    links: [
+      { href: '/academy', label: 'Academy' },
+      { href: '/studio', label: 'Hydra Studio' },
+      { href: '/playground', label: 'Playground' },
+      { href: '/firstjob', label: 'Build your first job' },
+      { href: '/migrate', label: 'Migrate from another tool' },
+    ],
+  },
+  {
+    title: 'Reference',
+    links: [
+      { href: '/dsl', label: 'Hydra DSL' },
+      { href: '/cli', label: 'Hydra CLI' },
+      { href: '/guide', label: 'Guide' },
+      { href: '/faq', label: 'FAQ' },
+      { href: '/errors', label: 'Errors' },
+      { href: '/blog', label: 'Blog' },
+    ],
+  },
+  {
+    title: 'Project',
+    links: [
+      { href: githubUrl, label: 'GitHub', external: true },
+      { href: 'https://pypi.org/project/hydra-etl/', label: 'PyPI', external: true },
+      { href: '/license', label: 'License' },
+      { href: '/llms.txt', label: 'llms.txt' },
+    ],
+  },
+];
+---
+
+<style is:global>
+  .sf-foot {
+    border-top: 1px solid var(--border);
+    background: var(--bg-soft);
+    margin-top: 4rem;
+    padding: 3rem 1.25rem 1.5rem;
+    font-size: .92rem;
+  }
+  .sf-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .sf-col h2 {
+    margin: 0 0 .75rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-mut);
+  }
+  .sf-col ul { list-style: none; margin: 0; padding: 0; }
+  .sf-col li { margin: 0 0 .45rem; }
+  .sf-col a { color: var(--text-soft); text-decoration: none; }
+  .sf-col a:hover { color: var(--accent-text); text-decoration: underline; }
+  .sf-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1.25rem;
+    max-width: 68rem;
+    margin: 2.5rem auto 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-mut);
+    font-size: .88rem;
+  }
+  .sf-bar nav { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+  .sf-bar a { color: var(--text-mut); text-decoration: none; }
+  .sf-bar a:hover { color: var(--accent-text); text-decoration: underline; }
+  .sf-spacer { flex: 1 1 auto; }
+  @media (max-width: 860px) {
+    .sf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem; }
+  }
+  @media (max-width: 460px) {
+    .sf-grid { grid-template-columns: 1fr; }
+    .sf-foot { padding-top: 2.25rem; }
+  }
+</style>
+
+<footer class="sf-foot">
+  <div class="sf-grid">
+    {columns.map((col) => (
+      <div class="sf-col">
+        <h2>{col.title}</h2>
+        <ul>
+          {col.links.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                target={l.external ? '_blank' : undefined}
+                rel={l.external ? 'noopener' : undefined}
+              >{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <div class="sf-bar">
+    <span>&copy; {year} Bechir Bejaoui</span>
+    <span class="sf-spacer"></span>
+    <nav aria-label="Legal and company">
+      <a href="/about">About</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../styles/legal.css?raw';
+import releases from '../data/releases.json';
+
+/* Page "a propos" : l'entite derriere le projet, et pourquoi il existe.
+   Elle sert aussi de source aux formulaires d'annuaires (Product Hunt, G2,
+   Crunchbase, Wikidata) qui demandent tous une description de l'editeur.
+   La version est lue depuis releases.json pour ne jamais devenir fausse. */
+const contactEmail = 'admin@hydraetl.com';
+const latest = releases.find((r) => !r.prerelease) ?? releases[0];
+const version = latest?.tag?.replace(/^v/, '') ?? '';
+const released = latest?.published
+  ? new Date(latest.published).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  : '';
+const linkedin = 'https://www.linkedin.com/in/bejaoui-bechir-06b2452b/';
+---
+
+<BaseLayout
+  title="About"
+  description="Hydra ETL is an open-source declarative ETL engine maintained by Bechir Bejaoui. Pipelines are YAML manifests, cross-checked before any data is read or written."
+>
+  <style is:global set:html={css}></style>
+
+  <main class="lg-wrap">
+    <h1>About Hydra ETL</h1>
+    <p class="lg-lead">
+      An open-source ETL engine in which a pipeline is <strong>described, not programmed</strong>.
+    </p>
+
+    <p>
+      A job in Hydra ETL is a handful of small YAML files &mdash; sources, transformations, destinations
+      &mdash; that can be reviewed in a pull request and checked with one command before any data is touched.
+    </p>
+
+    <h2>Why it exists</h2>
+    <p>
+      Most data pipelines start as a script. The script works, then it grows: a flag here, a
+      <code>try/except</code> there, a hard-coded path, a credential in a variable. Six months later nobody
+      can say what the pipeline does without reading all of it, and nobody dares change it.
+    </p>
+    <p>
+      Hydra ETL takes the opposite route. The pipeline is a declaration.
+      <a href="/cli/validate"><code>hdrctl validate</code></a> cross-checks the sources, the transformations
+      and the destinations against each other &mdash; column names, types, load modes &mdash; and fails
+      <em>before</em> reading or writing anything. What runs in production is the file you reviewed.
+    </p>
+
+    <h2>The project</h2>
+    <div class="lg-scroll">
+      <table class="lg-table">
+        <tbody>
+          <tr><th>Current version</th><td>{version} ({released}) &mdash; beta &middot; <a href="/changelog">changelog</a></td></tr>
+          <tr><th>License</th><td>AGPL-3.0-or-later &middot; <a href="/pricing">commercial license available</a></td></tr>
+          <tr><th>Language</th><td>Python 3.9+</td></tr>
+          <tr><th>Package</th><td><a href="https://pypi.org/project/hydra-etl/" target="_blank" rel="noopener">hydra-etl on PyPI</a></td></tr>
+          <tr><th>Source</th><td><a href="https://github.com/bejaouibechir/Hydra" target="_blank" rel="noopener">github.com/bejaouibechir/Hydra</a></td></tr>
+          <tr><th>Maintainer</th><td><a href={linkedin} target="_blank" rel="noopener">Bechir Bejaoui</a> &mdash; Tunisia</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lg-card">
+      <p>
+        Hydra ETL is maintained by one person. It is an independent open-source project, not a
+        venture-funded company. That shapes the roadmap: features land when they are solid, and the engine
+        stays something one person can reason about end to end.
+      </p>
+    </div>
+
+    <h2>What you can do with it</h2>
+    <ul>
+      <li><strong>Declare</strong> jobs and workflows in <a href="/dsl">YAML</a>, with parameters, environments and secrets kept out of the manifests</li>
+      <li><strong>Validate</strong> a whole project before it runs, including across files</li>
+      <li><strong>Run</strong> it from the <a href="/cli">hdrctl CLI</a>, a REST API, or <a href="/studio">Hydra Studio</a>&rsquo;s visual canvas &mdash; the same jobs, three surfaces</li>
+      <li><strong>Orchestrate</strong> with workflows, sub-projects, cron and file triggers, webhooks, retries, timeouts, rollback and fallback workflows</li>
+      <li><strong>Scale</strong> by switching a job from pandas to DuckDB with one line</li>
+    </ul>
+
+    <h2>Try it without installing anything</h2>
+    <ul>
+      <li><a href="/playground">Playground</a> &mdash; edit and validate pipelines in your browser</li>
+      <li><a href="https://killercoda.com/hydra-etl" target="_blank" rel="noopener">Killercoda labs</a> &mdash; a guided Linux terminal, no account needed</li>
+      <li><a href="/academy">Hydra Academy</a> &mdash; video walkthroughs</li>
+      <li><a href="/migrate">Migration guides</a> &mdash; coming from Airflow, dbt, Airbyte, Dagster, Kestra, Meltano, Talend, dlt or Flowman</li>
+    </ul>
+
+    <div class="lg-card accent">
+      <h2>Contact</h2>
+      <p>
+        <a href={`mailto:${contactEmail}`}>{contactEmail}</a> &mdash; reply within two business days.
+      </p>
+      <p>
+        For bugs and feature requests,
+        <a href="https://github.com/bejaouibechir/Hydra/issues" target="_blank" rel="noopener">open an issue on GitHub</a>.
+        For commercial licensing, see <a href="/pricing">Pricing</a>.
+      </p>
+    </div>
+
+    <p class="lg-note">
+      See also the <a href="/license">license</a>, the <a href="/privacy">Privacy Policy</a> and the
+      <a href="/terms">Terms of Use</a>.
+    </p>
+  </main>
+</BaseLayout>

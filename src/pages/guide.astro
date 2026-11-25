@@ -1,12 +1,130 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import css from '../_mock/guide.css?raw';
-import body from '../_mock/guide.body.html?raw';
-import js from '../_mock/guide.js?raw';
+import { guideTutorials } from '../data/guide-tutorials.js';
+
+/* Index du guide, genere depuis guide-tutorials.js — la meme source que les
+   pages elles-memes, pour qu'un atelier ajoute apparaisse ici sans geste.
+
+   Avant : cette page affichait une maquette statique sans aucun lien vers ses
+   sous-pages. Les 41 ateliers etaient publies et presents dans le sitemap,
+   mais orphelins : Google en ignorait 24. Un hub qui ne lie pas ses pages ne
+   sert ni le lecteur ni l'exploration. */
+
+type Tut = {
+  category: string; name: string; title: string;
+  lead?: string; duration?: number;
+};
+
+const ORDER = ['sources', 'transforms', 'destinations', 'workflows', 'triggers', 'policies'];
+const LABEL: Record<string, string> = {
+  sources: 'Sources',
+  transforms: 'Transformations',
+  destinations: 'Destinations',
+  workflows: 'Workflows',
+  triggers: 'Triggers',
+  policies: 'Policies',
+};
+const BLURB: Record<string, string> = {
+  sources: 'Read what you already have: files, databases, documents, web APIs.',
+  transforms: 'Reshape the rows between the source and the destination.',
+  destinations: 'Write the result where the next system expects it.',
+  workflows: 'Order the steps, and decide what happens when one fails.',
+  triggers: 'Start a workflow by hand, on a schedule, or from an event.',
+  policies: 'What the engine does around a step: retries, timeouts, rollback.',
+};
+
+const all: Tut[] = [...(guideTutorials as Tut[])];
+// L'atelier CSV a sa propre page et n'est pas dans le catalogue genere.
+if (!all.some((t) => t.category === 'sources' && t.name === 'csv')) {
+  all.unshift({
+    category: 'sources', name: 'csv',
+    title: 'Read a CSV file',
+    lead: 'Automate the daily sales export: nine steps from an empty folder to rows on disk.',
+  });
+}
+
+const groups = ORDER
+  .map((cat) => ({
+    cat,
+    label: LABEL[cat] ?? cat,
+    blurb: BLURB[cat] ?? '',
+    items: all.filter((t) => t.category === cat),
+  }))
+  .filter((g) => g.items.length);
+
+const total = all.length;
 ---
 
-<BaseLayout title="Hydra DSL guide: sources, transforms, workflows" description={"Executable reference for Hydra DSL sources, destinations, transformations, workflows, triggers and policies."}>
-  <style is:global set:html={css}></style>
-  <Fragment set:html={body} />
-  <script is:inline set:html={js}></script>
+<BaseLayout
+  title="Hydra DSL guide: sources, transforms, workflows"
+  description={`${total} short workshops on the Hydra DSL — one per source, transformation, destination, workflow element, trigger and policy. Each one is a worked example you can run.`}
+>
+  <style is:global>
+    .gx-wrap { max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    .gx-wrap h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 .75rem; }
+    .gx-lead { color: var(--text-soft); font-size: 1.05rem; margin: 0 0 2rem; max-width: 42rem; }
+    .gx-wrap a { color: var(--accent-text); }
+
+    .gx-toc { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-panel);
+              padding: 1rem 1.2rem; margin: 0 0 3rem; }
+    .gx-toc h2 { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+                 color: var(--text-mut); margin: 0 0 .7rem; }
+    .gx-toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem .5rem; margin: 0; padding: 0; }
+    .gx-toc a { display: inline-block; border: 1px solid var(--border); border-radius: 999px;
+                padding: .2rem .7rem; font-size: .88rem; text-decoration: none; }
+    .gx-toc a:hover { border-color: var(--accent); }
+
+    .gx-group { margin: 3.25rem 0 0; scroll-margin-top: 5rem; }
+    .gx-group > h2 { font-size: 1.45rem; margin: 0 0 .25rem; }
+    .gx-group > p { color: var(--text-mut); margin: 0 0 1.25rem; font-size: .95rem; }
+
+    .gx-list { list-style: none; margin: 0; padding: 0; }
+    .gx-item { border-top: 1px solid var(--border); padding: .9rem 0; }
+    .gx-item a { font-weight: 600; text-decoration: none; }
+    .gx-item a:hover { text-decoration: underline; }
+    .gx-item p { margin: .25rem 0 0; color: var(--text); line-height: 1.55; font-size: .95rem; }
+    .gx-meta { color: var(--text-mut); font-size: .85rem; font-weight: 400; margin-left: .5rem; }
+    .gx-foot { color: var(--text-mut); font-size: .92rem; border-top: 1px solid var(--border);
+               margin-top: 3.5rem; padding-top: 1rem; line-height: 1.6; }
+  </style>
+
+  <main class="gx-wrap">
+    <h1>Hydra DSL guide</h1>
+    <p class="gx-lead">
+      {total} short workshops, one per element of the DSL. Each takes a real situation,
+      shows the YAML that solves it, and the output you should get.
+    </p>
+
+    <nav class="gx-toc" aria-label="Sections">
+      <h2>Jump to</h2>
+      <ul>
+        {groups.map((g) => (
+          <li><a href={`#${g.cat}`}>{g.label} ({g.items.length})</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    {groups.map((g) => (
+      <section class="gx-group" id={g.cat}>
+        <h2>{g.label}</h2>
+        <p>{g.blurb}</p>
+        <ul class="gx-list">
+          {g.items.map((t) => (
+            <li class="gx-item">
+              <a href={`/guide/${t.category}/${t.name}/`}>{t.title}</a>
+              {t.duration && <span class="gx-meta">{t.duration} min</span>}
+              {t.lead && <p>{t.lead}</p>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <p class="gx-foot">
+      Looking for the full element reference rather than a workshop? See the
+      <a href="/dsl/reference/">Hydra DSL reference</a>. For the visual editor, see the
+      <a href="/studio/">Studio tutorials</a>; for the terminal, the
+      <a href="/cli/">CLI guides</a>.
+    </p>
+  </main>
 </BaseLayout>

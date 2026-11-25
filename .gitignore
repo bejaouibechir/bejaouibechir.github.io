@@ -15,3 +15,7 @@ tools/tutorials/recon*/
 tools/tutorials/walk/
 tools/tutorials/__pycache__/
 tools/tutorials/watcher/queue/
+
+# Cle du compte de service Search Console : ne jamais committer
+.gsc-key.json
+tools/tutorials/_gsc/

@@ -274,3 +274,31 @@ html[data-theme="dark"] .sh-drawer .sh-cta:hover {
     transition: none;
   }
 }
+
+/* Bouton Pricing : contour discret, pas l'accent plein du CTA principal.
+   Il reste visible plus longtemps que .sh-cta (masque des 1400px) et ne
+   disparait qu'au passage en tiroir, ou il est repris dans .sh-drawer. */
+.sh-price {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sh-price:hover {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+@media (max-width: 1120px) {
+  .sh-top > .sh-tools > .sh-price {
+    display: none;
+  }
+}

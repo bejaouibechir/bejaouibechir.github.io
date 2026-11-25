@@ -16,7 +16,7 @@ export function getStaticPaths() {
 const { tutorial, workshopNumber } = Astro.props;
 ---
 
-<BaseLayout title={`${tutorial.title} — Hydra Guide`} description={tutorial.lead}>
+<BaseLayout title={tutorial.title} description={tutorial.lead}>
   <style is:global set:html={css}></style>
   <GuideShell current={tutorial.key} related={tutorial.related}>
     <div class="main-inner">

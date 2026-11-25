@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import css from '../styles/legal.css?raw';
+
+/* Politique de confidentialite. Chaque affirmation ici est verifiable dans le
+   depot, et doit etre mise a jour si la pile change :
+   - hebergement : GitHub Pages (.github/workflows/build.yml, public/CNAME)
+   - mesure d'audience : Umami Cloud, sans cookie (BaseLayout.astro)
+   - tiers charge sur toutes les pages : badge SaaSHub (SiteHeader.astro)
+   - stockage local : cle `hydra-theme` seulement (SiteHeader.astro, BaseLayout)
+   - Playground : 100 % navigateur, aucun appel reseau dans
+     public/assets/hydra-chatbot-engine.js
+   Si l'un de ces points change, cette page change. */
+const contactEmail = 'admin@hydraetl.com';
+const updated = '25 November 2026';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="What hydraetl.com collects and what it does not. No cookies, no advertising, no cross-site tracking, and a Playground that runs entirely in your browser."
+>
+  <style is:global set:html={css}></style>
+
+  <main class="lg-wrap">
+    <h1>Privacy Policy</h1>
+    <p class="lg-lead">
+      What this website collects, why, and how to have it removed.
+    </p>
+    <p class="lg-updated">Last updated: {updated}</p>
+
+    <p>
+      This policy covers the website <strong>hydraetl.com</strong>, including the
+      <a href="/playground">Playground</a>. It does not cover the Hydra ETL software you install on your own
+      machine: that runs entirely on your infrastructure and sends us nothing.
+    </p>
+
+    <h2>Who is responsible</h2>
+    <p>
+      This site is operated by <strong>Bechir Bejaoui</strong>, acting as an individual, in Tunisia.
+      Contact: <a href={`mailto:${contactEmail}`}>{contactEmail}</a> &mdash; reply within two business days.
+    </p>
+
+    <div class="lg-card accent">
+      <h2>The short version</h2>
+      <ul>
+        <li>No account, no login, no newsletter, no contact form.</li>
+        <li><strong>No cookies.</strong> None are set by this site.</li>
+        <li>No advertising, no ad networks, no cross-site tracking, no profiling.</li>
+        <li>Audience figures are aggregated and cannot identify you.</li>
+        <li>The Playground runs <strong>entirely in your browser</strong>. Nothing you type into it is sent anywhere.</li>
+        <li>Nothing is sold, rented or shared for marketing purposes.</li>
+      </ul>
+    </div>
+
+    <h2>Audience measurement</h2>
+    <p>
+      This site counts visits with <a href="https://umami.is/" target="_blank" rel="noopener">Umami</a>
+      (Umami Cloud). Umami is cookieless and collects no personal data. It records, in aggregate: the page
+      visited, the referring page, country, browser, operating system, device type, screen size and language.
+    </p>
+    <p>
+      No cookie is written, no identifier is stored on your device for this purpose, and nothing follows you
+      to other sites. A few clicks are counted as anonymous events &mdash; opening GitHub, the pricing page or
+      the SaaSHub badge from the navigation bar &mdash; so that useless links can be removed.
+      Umami&rsquo;s own terms: <a href="https://umami.is/privacy" target="_blank" rel="noopener">umami.is/privacy</a>.
+    </p>
+
+    <h2>Hosting and server logs</h2>
+    <p>
+      This site is a set of static files served by <strong>GitHub Pages</strong> (GitHub, Inc.). There is no
+      application server and no database of our own, so we hold no server logs.
+    </p>
+    <p>
+      GitHub does record technical information about requests to its servers &mdash; including your IP address
+      &mdash; to deliver the site and to protect it against abuse. That processing is GitHub&rsquo;s, under
+      <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub&rsquo;s Privacy Statement</a>.
+      We have no access to those logs.
+    </p>
+
+    <h2>The Playground</h2>
+    <div class="lg-card">
+      <p>
+        The <a href="/playground">Playground</a> runs <strong>entirely in your browser</strong>. The YAML you
+        edit and the data you paste are processed by JavaScript on your own machine. There is no server call:
+        nothing is transmitted, nothing is logged, nothing is stored.
+      </p>
+      <p>
+        Close the tab and it is gone. Even so, the Playground is a demonstration surface &mdash; prefer sample
+        data over production extracts, and never paste credentials or secrets into any web page.
+      </p>
+    </div>
+
+    <h2>What is stored on your device</h2>
+    <p>
+      One entry in your browser&rsquo;s local storage: <code>hydra-theme</code>, holding
+      <code>light</code> or <code>dark</code>, so the site opens in the theme you chose. It is not a cookie,
+      it is never sent to any server, and it contains nothing about you. Clearing your browser&rsquo;s site
+      data removes it.
+    </p>
+
+    <h2>Third-party content</h2>
+    <p>
+      Every page&rsquo;s navigation bar displays a listing badge served by <strong>SaaSHub</strong>
+      (<code>cdn-b.saashub.com</code>). Loading that image means your IP address and user agent reach
+      SaaSHub&rsquo;s servers. We send them nothing else and receive nothing from them.
+      Their policy: <a href="https://www.saashub.com/privacy" target="_blank" rel="noopener">saashub.com/privacy</a>.
+    </p>
+    <p>
+      Some pages link out to or embed third-party services &mdash; video platforms in the
+      <a href="/academy">Academy</a>, Killercoda labs, GitHub Codespaces, PyPI. Following such a link hands
+      you over to that provider, each with its own policy.
+    </p>
+
+    <h2>Email</h2>
+    <p>
+      If you write to <a href={`mailto:${contactEmail}`}>{contactEmail}</a>, your address and the content of
+      your message are kept for as long as needed to answer you, and to keep a record of licensing
+      discussions. There is no mailing list and your address is never added to one.
+    </p>
+
+    <h2>Legal basis</h2>
+    <p>
+      For visitors in the European Union, processing rests on <strong>legitimate interest</strong>
+      (GDPR Article 6(1)(f)): serving a working, secure website and understanding, in aggregate, which pages
+      are useful. No consent banner is shown because no cookie is set and no personal data is used for
+      audience measurement.
+    </p>
+    <p>
+      In Tunisia, processing is carried out in accordance with
+      <strong> Loi organique n&deg; 2004-63 du 27 juillet 2004</strong> on the protection of personal data.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask for access to, correction of, or deletion of any personal data relating to you, and object
+      to its processing. Write to <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+    </p>
+    <p>
+      In practice, the only personal data we hold is the content of emails you have sent us: the audience
+      figures cannot be traced back to an individual, and the hosting logs are GitHub&rsquo;s, not ours.
+    </p>
+    <p>
+      If you are in the EU you may also complain to your national data protection authority. In Tunisia, the
+      competent authority is the <strong>Instance Nationale de Protection des Donn&eacute;es Personnelles
+      (INPDP)</strong>.
+    </p>
+
+    <h2>Children</h2>
+    <p>
+      This site is aimed at developers and data engineers. It is not directed at children and knowingly
+      collects no data from them.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      Any change to this policy is published on this page with a new date above. If the change is material
+      &mdash; a new third-party service, a new form of collection &mdash; it is also noted in the
+      <a href="/changelog">changelog</a>.
+    </p>
+
+    <p class="lg-note">
+      This page describes the site as it is built and deployed today. It is not legal advice.
+      See also the <a href="/terms">Terms of Use</a>.
+    </p>
+  </main>
+</BaseLayout>
