@@ -7,8 +7,9 @@ import { researchF } from './migrate-research-f';
 import { researchG } from './migrate-research-g';
 import { researchH } from './migrate-research-h';
 import { researchI } from './migrate-research-i';
+import { researchJ } from './migrate-research-j';
 
 export const researchPages: Record<string, ResearchSection[]> = {
   ...researchA, ...researchB, ...researchC, ...researchD, ...researchE,
-  ...researchF, ...researchG, ...researchH, ...researchI,
+  ...researchF, ...researchG, ...researchH, ...researchI, ...researchJ,
 };

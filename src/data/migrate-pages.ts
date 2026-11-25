@@ -206,6 +206,30 @@ export const pages: MigratePage[] = [
     source: { label: 'Dagster: asset jobs', url: 'https://dagster.io/docs/guides/build/jobs/asset-jobs' },
     example: 'from dagster import asset, Definitions\n\n@asset\ndef orders_by_status():\n    orders = read_orders()\n    big = orders[orders.amount > 50]\n    return big.groupby("status").amount.sum()\n\ndefs = Definitions(assets=[orders_by_status])',
   },
+  {
+    slug: 'prefect', name: 'Prefect', category: 'Python workflow orchestration',
+    answer: 'Prefect orchestrates Python: you decorate functions with @flow and @task, then deploy them to work pools that provide the infrastructure. The transformation logic stays in your own Python code. Hydra declares the ETL itself in YAML and validates it before any data is read. Prefect is the stronger choice when you orchestrate heterogeneous Python work; Hydra is simpler when the work is a source-to-destination data chain.',
+    scope: 'One Prefect flow that reads, reshapes and writes data, compared with the equivalent Hydra job. Not Prefect’s scheduling, infrastructure or automation layers.',
+    common: ['Schedule and retry runs', 'Observe run status and failures', 'Keep definitions in source control', 'Pass parameters per run'],
+    differences: [
+      { area: 'What is declared', competitor: 'Orchestration of Python functions', hydra: 'The ETL steps themselves' },
+      { area: 'Authoring', competitor: 'Python decorators, @flow and @task', hydra: 'YAML job and workflow manifests' },
+      { area: 'Role of YAML', competitor: 'prefect.yaml configures deployments, not transformations', hydra: 'YAML is the pipeline' },
+      { area: 'Validation', competitor: 'Errors surface when the task runs', hydra: 'hdrctl validate cross-checks the project before any run' },
+      { area: 'Infrastructure', competitor: 'Work pools and workers, dynamic provisioning', hydra: 'A process you run, no infrastructure layer' },
+      { area: 'Best fit', competitor: 'Heterogeneous Python work on varied infrastructure', hydra: 'Declared source-to-destination data chains' },
+    ],
+    keep: 'Keep Prefect where flows do more than move data, where runs need dynamic infrastructure through work pools, or where automations react to events.',
+    chooseHydra: 'Move a flow whose tasks only read a source, reshape rows and write a destination. That logic becomes four YAML files that can be reviewed in a pull request and checked before it runs.',
+    steps: ['List the tasks in one flow and mark which are data movement and which are not.', 'Confirm the flow is a linear read, reshape, write chain.', 'Rebuild it as a Hydra job: sources, transformations, destination, pipeline.', 'Run hdrctl validate, then run against a separate target.', 'Compare row counts and failure behaviour with the Prefect run.', 'Decide whether Prefect still triggers the Hydra job, or whether the schedule moves to triggers.yaml.'],
+    pitfalls: ['Do not migrate a flow that also calls APIs, trains models or runs arbitrary side effects.', 'Prefect retries a task; Hydra retries a workflow step. The granularity differs, so re-test partial failures.', 'Prefect result persistence and caching have no direct Hydra equivalent.', 'A Prefect deployment carries infrastructure configuration that does not travel with the YAML.'],
+    faqs: [
+      { question: 'Does Hydra replace Prefect?', answer: 'Not in general. Prefect orchestrates arbitrary Python; Hydra declares ETL. Hydra replaces a Prefect flow only when that flow does nothing but move and reshape data.' },
+      { question: 'Can Prefect call Hydra?', answer: 'Yes, and it is often the right arrangement. A Prefect task can run hdrctl or call the Hydra REST API, so Prefect keeps the schedule and the infrastructure while the data logic becomes reviewable YAML.' },
+    ],
+    source: { label: 'Prefect: flows', url: 'https://docs.prefect.io/v3/concepts/flows' },
+    example: 'from prefect import flow, task\n\n@task\ndef extract():\n    return read_orders()\n\n@task\ndef transform(orders):\n    big = orders[orders.amount > 50]\n    return big.groupby("status").amount.sum()\n\n@task\ndef load(result):\n    result.to_csv("by_status.csv")\n\n@flow\ndef orders_by_status():\n    load(transform(extract()))',
+  },
 ];
 
 export const pageBySlug = Object.fromEntries(pages.map((page) => [page.slug, page])) as Record<string, MigratePage>;
